@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "python2 python3 print 在底层实现上的区别是什么？"
-date:   2023-1-24
-last_modified_at: 2023-1-24
+date:   2022-12-17
+last_modified_at: 2022-12-17
 categories: [python]
 ---
 
