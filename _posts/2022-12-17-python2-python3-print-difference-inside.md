@@ -1,9 +1,9 @@
 ---
-title: python2 python3 print 在底层实现上的区别是什么？
-author: antsmallant
-date: 2023-1-24
-category: python
 layout: post
+title:  "python2 python3 print 在底层实现上的区别是什么？"
+date:   2023-1-24
+last_modified_at: 2023-1-24
+categories: [python]
 ---
 
 今天在看 python2 与 python3 的区别，看到 print 在 python2 中是语句，在 python3 中是函数，那底层上的区别是什么？

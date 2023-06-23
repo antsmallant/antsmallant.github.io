@@ -1,10 +1,9 @@
 ---
-title: Page with cover image
-author: test
-date: 2022-05-24
-category: xxx
 layout: post
-+ cover: /assets/xxx.gif
+title:  "Welcome to Jekyll Paper!"
+date:   2018-02-11
+last_modified_at: 2019-10-16
+categories: [Jekyll Paper]
 ---
 
 Content here

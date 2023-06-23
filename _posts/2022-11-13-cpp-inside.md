@@ -1,9 +1,9 @@
 ---
-title: c++ 对象内存模型探究
-author: antsmallant
-date: 2023-1-24
-category: cpp
 layout: post
+title:  "c++ 对象内存模型探究"
+date:   2023-1-24
+last_modified_at: 2023-1-24
+categories: [cpp]
 ---
 
 ## 查看汇编代码
