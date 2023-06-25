@@ -14,7 +14,7 @@ jit 技术是通过将一部分热点的字节码编译成机器码存放于一�
 
 <br><br><br><br>
 
-参考：
+# 参考
 * 《深入理解计算机系统（原书第3版）》<https://book.douban.com/subject/26912767/>
 * Linux中的保护机制：<https://www.cnblogs.com/ncu-flyingfox/p/11223390.html>
 *  用好lua+unity，让性能飞起来——luajit集成篇/平台相关篇： <https://www.cnblogs.com/zwywilliam/p/5999980.html>
