@@ -6,7 +6,7 @@ title: antsmallant
 email: antsmallant@gmail.com
 name: antsmallant
 description: >- # this means to ignore newlines until "baseurl:"
-  a backend programmer
+  distributed systems
 keywords: [c++ c golang lua database]
 baseurl: '' # the subpath of your site, e.g. /`blog
 url: 'https://antsmallant.github.io' # the base hostname & protocol for your site, e.g. http://example.com
