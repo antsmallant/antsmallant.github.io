@@ -7,3 +7,10 @@ categories: [linux]
 ---
 
 先放上大神的个人主页：[brendangregg](https://www.brendangregg.com/index.html)  
+
+## 主题
+linux 性能负载的观测，常用工具的使用  
+探针，ebpf 的使用  
+常用调试工具的使用：pstack，gdb  
+coredump 的产生及使用  
+
