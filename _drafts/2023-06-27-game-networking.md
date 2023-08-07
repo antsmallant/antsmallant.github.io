@@ -69,5 +69,6 @@ AOI = area of interest，它的目的就是只给特定对象发送它关注的�
 引用3 [两种同步模式：状态同步和帧同步](https://zhuanlan.zhihu.com/p/36884005)  
 引用4 [网络同步技术](https://gameinstitute.qq.com/course/detail/10242)  
 引用5 [MMORPG如何做地图编辑器](https://www.bilibili.com/read/cv22912097/)  
-引用6 [天美干货分享：怎么解决大地图SLG的技术痛点](https://baijiahao.baidu.com/s?id=1759282491584995067&wfr=spider&for=pc)
-引用7 [用Unity DOTS，我们在《重返帝国》中实现了千人同屏战斗](https://developer.unity.cn/projects/642416adedbc2a1330b76230)
+引用6 [天美干货分享：怎么解决大地图SLG的技术痛点](https://baijiahao.baidu.com/s?id=1759282491584995067&wfr=spider&for=pc)  
+引用7 [用Unity DOTS，我们在《重返帝国》中实现了千人同屏战斗](https://developer.unity.cn/projects/642416adedbc2a1330b76230)  
+引用8 [影子跟随算法](http://www.skywind.me/blog/archives/1145)  
