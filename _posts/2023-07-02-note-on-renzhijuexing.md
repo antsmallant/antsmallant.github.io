@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "《认知觉醒》读后感"
+title:  "《认知觉醒》读书笔记"
 date:   2023-07-02
 last_modified_at: 2023-07-03
 categories: [reading]
