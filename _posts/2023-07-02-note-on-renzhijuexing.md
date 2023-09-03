@@ -6,7 +6,7 @@ last_modified_at: 2023-07-03
 categories: [reading]
 ---
 
-[《认知觉醒》](https://book.douban.com/subject/35193035/)读完了（微信听书），触动我的点主要有以下：
+[《认知觉醒》](https://book.douban.com/subject/35193035/)，触动我的点主要有以下：
   
 * 学习应该是有输入&输出的，输出特别重要，但往往被忽略了；写文章是一种很好的输出方式，这也是费曼学习法的一种实践。    
 
