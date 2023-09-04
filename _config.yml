@@ -9,8 +9,8 @@ description: >- # this means to ignore newlines until "baseurl:"
   distributed systems
 keywords: [c++ c golang lua database]
 baseurl: '' # the subpath of your site, e.g. /`blog
-url: 'https://antsmallant.github.io' # the base hostname & protocol for your site, e.g. http://example.com
-domain: 'antsmallant.github.io' # the domain name for your site, e.g. example.com
+url: 'https://blog.antsmallant.top' # the base hostname & protocol for your site, e.g. http://example.com
+domain: 'blog.antsmallant.top' # the domain name for your site, e.g. example.com
 language: en
 # Supported languages list:
 # en: English
