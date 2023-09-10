@@ -7,7 +7,7 @@ categories: [reading]
 ---
 
 
-瑞.达利欧的[《原则》](https://book.douban.com/subject/27608239/)是今年读过的最好的几本书之一，另外几本是[《刻意练习》]()，[《原则：应对变化中的世界秩序》](https://book.douban.com/subject/35732136/)，[《认知觉醒》](https://book.douban.com/subject/35193035/)，[《中央帝国的财经密码》](https://book.douban.com/subject/27007549/)，[《穿越百年中东》](https://book.douban.com/subject/26700104/)。  
+瑞.达利欧的《原则》是今年读过的最好的几本书之一，另外几本是《刻意练习》，《原则：应对变化中的世界秩序》，《认知觉醒》，《中央帝国的财经密码》，《穿越百年中东》。  
 
 <br>
 
