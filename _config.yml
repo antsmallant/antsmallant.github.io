@@ -11,6 +11,7 @@ keywords: [c++ c golang lua database]
 baseurl: '' # the subpath of your site, e.g. /`blog
 url: 'https://blog.antsmallant.top' # the base hostname & protocol for your site, e.g. http://example.com
 domain: 'blog.antsmallant.top' # the domain name for your site, e.g. example.com
+author: 'antsmallant'
 language: en
 # Supported languages list:
 # en: English
