@@ -6,6 +6,9 @@ last_modified_at: 2023-09-14
 categories: [server, devops]
 ---
 
+* awsl  
+{:toc}
+
 <br>
 
 ### 基本现状
