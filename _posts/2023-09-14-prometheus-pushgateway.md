@@ -32,7 +32,9 @@ pushgateway 性能太差，不足以支撑这样的并发量，每个 post 的�
 
 ### 优化措施
 对 prometheus、pushgateway 做了一些研究，经过几次优化，达到可用状态。
+
 <br>
+
 #### 优化一：多个游戏服的指标合并发送。
 具体做法：定时脚本每轮采集完本机上所有的指标 log，把内容合并后再一次性 post 给 pushgateway。  
 优化效果：单轮总耗时从 250 秒下降到 6 秒左右。
@@ -46,7 +48,9 @@ prometheus 的指标是这样定义的
 memory{"server_id":1,"zone":1001,"service":"clusterd"} 10000
 ```
 prometheus 会从多个 target pull 指标，但它并不是很关心一个指标是从哪个 target 来的（虽然可以配置不同 target 给指标附加一些特定的标签值），只要保证 “指标名+标签” 是唯一的就够了。我们的 server_id 是唯一的，能够保证唯一性。
+
 <br>
+
 #### 优化二：pushgateway 开启 gzip 支持
 具体做法：关于 gzip 使用的说明 [https://github.com/prometheus/pushgateway#request-compression](https://github.com/prometheus/pushgateway#request-compression)
 >Request compression
@@ -54,8 +58,11 @@ The body of a POST or PUT request may be gzip- or snappy-compressed. Add a heade
 >```
 >echo "some_metric 3.14" | gzip | curl -H 'Content-Encoding: gzip' --data-binary @- http://pushgateway.example.org:9091/metrics/job/some_job
 >```
+
 优化效果：单轮延迟大概从 6 秒降到 4 秒，效果不明显。文档的压缩率倒是挺高的，17MB 的经过压缩后是 94KB。
+
 <br>
+
 #### 优化三：每个物理服部署 pushgateway
 具体做法：直接在每个物理服上部署一个 pushgateway，服务于本服上的所有游戏服进程，prometheus 修改配置，从多个 pushgateway pull 数据；虽然 pushgateway 数量增加了，但其实也没增加多少，以 1000 个游戏服计，每个物理服部署 50 个游戏服，那也才 20 个 pushgateway，对 prometheus 来说压力不大。  
 优化效果：单轮延迟从 4 秒下降到 0.5 秒。  
