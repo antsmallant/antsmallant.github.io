@@ -6,6 +6,8 @@ last_modified_at: 2023-09-14
 categories: [server, devops]
 ---
 
+<br>
+
 ### 基本现状
 我们是分区分服的游戏，生产环境会有几百上千个游戏服进程，这些进程都想接入 prometheus 做一些指标监控。优化前的状况是：  
 1. 全局只部署一个 pushgateway。
@@ -21,8 +23,12 @@ categories: [server, devops]
 
 其实以上都是借口，不过多年的经验告诉我，让 prometheus 从上千个进程 pull 指标，估计也会出现一些性能问题：）
 
+<br>
+
 ### 存在的问题
 pushgateway 性能太差，不足以支撑这样的并发量，每个 post 的延迟是 5 秒左右，而定时脚本是串行工作的，所以每一轮总耗时达到 250 秒左右，完全是不可用状态。
+
+<br>
 
 ### 优化措施
 
@@ -55,6 +61,7 @@ The body of a POST or PUT request may be gzip- or snappy-compressed. Add a heade
 具体做法：直接在每个物理服上部署一个 pushgateway，服务于本服上的所有游戏服进程，prometheus 修改配置，从多个 pushgateway pull 数据；虽然 pushgateway 数量增加了，但其实也没增加多少，以 1000 个游戏服计，每个物理服部署 50 个游戏服，那也才 20 个 pushgateway，对 prometheus 来说压力不大。  
 优化效果：单轮延迟从 4 秒下降到 0.5 秒。  
 
+<br>
 
 ### 解决过程
 在 pushgateway 的 github 主页 ([https://github.com/prometheus/pushgateway](https://github.com/prometheus/pushgateway)) README.md 的最开始处，就写了设计初衷：
@@ -71,6 +78,8 @@ The body of a POST or PUT request may be gzip- or snappy-compressed. Add a heade
 
 <br>
 本来想研究一下 pushgateway 的大致实现，但最近时间比较少，留到后面有闲再研究吧：）
+
+<br>
 
 ### 总结
 1. 使用一个工具前，需要深入了解此工具的设计初衷、适用场景、性能局限等。
