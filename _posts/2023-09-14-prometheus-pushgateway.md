@@ -84,7 +84,7 @@ The body of a POST or PUT request may be gzip- or snappy-compressed. Add a heade
 
 <br>
 
-关于 performance，这个 issue "Feature request: Multi-thread support #402" ([https://github.com/prometheus/pushgateway/issues/402](https://github.com/prometheus/pushgateway/issues/402)) 说的内容跟我的场景有点类似。他提到他们有 1000 个 client 需要发指标给一个 pushgateway，当只有一个 pushgateway 的时候请求延迟是 4 分钟，当数量增加到三个之后，请求延迟下降到 12 秒，所以他问 pushgateway 是否能提供多线程支持。而项目维护者的回复是:
+关于 performance，这个 issue "Feature request: Multi-thread support #402" ([https://github.com/prometheus/pushgateway/issues/402](https://github.com/prometheus/pushgateway/issues/402)) 说的内容跟我的场景有点类似。他提到他们有 1000 个 client 需要发指标 pushgateway，当只有一个 pushgateway 的时候请求延迟是 4 分钟，当数量增加到三个之后，请求延迟下降到 12 秒，所以他问 pushgateway 是否能提供多线程支持。而项目维护者的回复是:
 
 >https://github.com/prometheus-community/PushProx may be helpful for your use case, but as said, details need to be discussed elsewhere.
 >
