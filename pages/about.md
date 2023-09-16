@@ -8,4 +8,4 @@ permalink: /about/
 |:-:|:-:|
 |github|[https://github.com/antsmallant](https://github.com/antsmallant)|
 |blog|[https://blog.antsmallant.top](https://blog.antsmallant.top/)|
-|email|[antsmallant@gmail.com](mailto:antsmallant@gmail.com)|
+|email|[antsmallant@gmail.com](mailto:412288482@qq.com)|
