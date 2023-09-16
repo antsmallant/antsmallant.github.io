@@ -27,7 +27,7 @@ language: zh-cn
 analytics: # the Google Analytics property ID, e.g. UA-XXXXX-Y
 
 comments: true # enable comments
-disqus: # disqus account
+disqus: antsmallant # disqus account
 
 mathjax: true # Math support
 diagram: true # Diagrams support
