@@ -7,21 +7,22 @@ categories: [server, devops]
 ---
 
 ### 基本现状
-我们是分区分服的游戏，生产环境会有几百上千个游戏服进程，这些进程都想接入 prometheus 做一些指标监控。优化前的做法是：  
+我们是分区分服的游戏，生产环境会有几百上千个游戏服进程，这些进程都想接入 prometheus 做一些指标监控。优化前的状况是：  
 1. 全局只部署一个 pushgateway。
-2. 每个物理服会部署 50 个左右游戏服进程，每个进程定时打印指标到各自的指标 log。
-3. 每个物理服部署一个定时脚本，每 10 秒串行的采集各个指标 log，并通过 curl  post 给 pushgateway。
-4. prometheus 从 pushgateway pull 这些指标。
+2. 每个物理服会部署 50 个左右的游戏服进程，每个进程定时打印指标到各自的指标 log 文件。
+3. 每个物理服部署一个定时脚本，每 10 秒串行的采集各个指标 log，并通过 curl post 给 pushgateway。
+4. prometheus 从 pushgateway pull 指标。
 
 <br>
 
-没有直接在游戏服进程中内置 exporter 的原因大致有两方面：     
+没有直接在游戏服进程中内置 exporter 的原因大致有：     
 1. 上线之后才考虑加上 prometheus 监控，不想做太多改动，毕竟还涉及端口暴露之类的问题，需要运维配合开服脚本。  
 2. 进程量太多了，而且频繁开新服、合服，需要频繁修改 prometheus 配置。
-3. 其实以上都是借口：），不过多年的经验告诉我，让 prometheus 从上千个进程 pull 指标，估计也会出现一些性能问题。
 
-### 存在问题
-pushgateway 性能太差，不足以支撑这样的并发量，每个 post 的延迟 5 秒左右，而定时脚本又是串行工作的，每一轮总耗时达到 250 秒左右，完全是不可用状态。
+其实以上都是借口，不过多年的经验告诉我，让 prometheus 从上千个进程 pull 指标，估计也会出现一些性能问题：）
+
+### 存在的问题
+pushgateway 性能太差，不足以支撑这样的并发量，每个 post 的延迟是 5 秒左右，而定时脚本是串行工作的，所以每一轮总耗时达到 250 秒左右，完全是不可用状态。
 
 ### 优化措施
 
@@ -51,8 +52,8 @@ The body of a POST or PUT request may be gzip- or snappy-compressed. Add a heade
 优化效果：单轮延迟大概从 6 秒降到 4 秒，效果不明显。文档的压缩率倒是挺高的，17MB 的经过压缩后是 94KB。
 
 #### 优化三：每个物理服部署 pushgateway
-具体做法：  
-优化效果：  
+具体做法：直接在每个物理服上部署一个 pushgateway，服务于本服上的所有游戏服进程，prometheus 修改配置，从多个 pushgateway pull 数据；虽然 pushgateway 数量增加了，但其实也没增加多少，以 1000 个游戏服计，每个物理服部署 50 个游戏服，那也才 20 个 pushgateway，对 prometheus 来说压力不大。  
+优化效果：单轮延迟从 4 秒下降到 0.5 秒。  
 
 
 ### 解决过程
@@ -68,6 +69,8 @@ The body of a POST or PUT request may be gzip- or snappy-compressed. Add a heade
 >
 >Also note that using the PGW to allow push with Prometheus is not just a performance problem. There are loads of semantic problems, too (like inability to deal with metric inconsistencies, up-monitoring, staleness handling, …). That's why I like to keep the PGW simple and focused on what it is meant for.
 
+<br>
+本来想研究一下 pushgateway 的大致实现，但最近时间比较少，留到后面有闲再研究吧：）
 
 ### 总结
 1. 使用一个工具前，需要深入了解此工具的设计初衷、适用场景、性能局限等。
