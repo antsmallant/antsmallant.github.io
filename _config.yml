@@ -26,8 +26,14 @@ language: zh-cn
 
 analytics: # the Google Analytics property ID, e.g. UA-XXXXX-Y
 
-comments: true # enable comments
+comments: true  # enable comments
+comments_provider: giscus # choose one comment provider
 disqus: antsmallant # disqus account
+giscus:
+    repo: antsmallant/antsmallant.github.io
+    repo-id: R_kgDOJzINng
+    category: Announcements
+    category-id: DIC_kwDOJzINns4CZsEQ
 
 mathjax: true # Math support
 diagram: true # Diagrams support
