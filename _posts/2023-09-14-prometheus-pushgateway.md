@@ -7,7 +7,7 @@ categories: [backend]
 tags: [server, devops]
 ---
 
-* awsl  
+awsl  
 {:toc}
 
 <br>
@@ -29,19 +29,21 @@ tags: [server, devops]
 其实以上都是借口，不过多年的经验告诉我，让 prometheus 从上千个进程 pull 指标，估计也会出现一些性能问题：）
 
 <br>
-
 ---
+<br>
 
 ### 存在的问题
 pushgateway 性能太差，不足以支撑这样的并发量，每个 post 的延迟为 5 秒左右，而定时脚本是串行工作的，所以每一轮总耗时为 250 秒左右，完全是不可用状态。
 
 <br>
-
 ---
+<br>
 
 ### 优化措施
 对 prometheus、pushgateway 做了一些研究，经过几次优化，达到可用状态。
 
+<br>
+---
 <br>
 
 #### 优化一：多个游戏服的指标合并发送。
@@ -75,8 +77,8 @@ The body of a POST or PUT request may be gzip- or snappy-compressed. Add a heade
 优化效果：单轮延迟从 4 秒下降到 0.1 秒。  
 
 <br>
-
 ---
+<br>
 
 ### 解决过程
 在 pushgateway 的 github 主页 ([https://github.com/prometheus/pushgateway](https://github.com/prometheus/pushgateway)) README.md 的最开始就写了设计初衷：
@@ -100,8 +102,8 @@ The body of a POST or PUT request may be gzip- or snappy-compressed. Add a heade
 本来想研究一下 pushgateway 的大致实现，但最近时间比较少，留到后面有闲再研究吧：）
 
 <br>
-
 ---
+<br>
 
 ### 总结
 1. 使用一个工具前，需要深入了解此工具的设计初衷、适用场景、性能局限等。
