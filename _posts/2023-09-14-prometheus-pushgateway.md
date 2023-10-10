@@ -50,8 +50,8 @@ pushgateway 性能太差，不足以支撑这样的并发量，每个 post 的�
 
 #### 优化一：多个游戏服的指标合并发送。
 * 具体做法  
-定时脚本每轮采集完本机上所有的指标 log，把内容合并后再一次性 post 给 pushgateway。        
-prometheus 的指标是这样定义的：   
+    定时脚本每轮采集完本机上所有的指标 log，把内容合并后再一次性 post 给 pushgateway。        
+    prometheus 的指标是这样定义的：   
     ```
     指标名{标签,...} 指标值
     ```
