@@ -13,7 +13,7 @@ tags: [server, devops]
 <br>
 ---
 
-### 基本现状
+## 基本现状
 我们是分区分服的游戏，生产环境会有几百上千个游戏服进程，这些进程都想接入 prometheus 做一些指标监控。优化前的状况是：  
 1. 全局只部署一个 pushgateway。
 2. 每个物理服会部署 50 个左右的游戏服进程，每个进程定时打印指标到各自的指标 log 文件。
@@ -31,16 +31,15 @@ tags: [server, devops]
 <br>
 <br>
 
-### 存在的问题
+## 存在的问题
 pushgateway 性能太差，不足以支撑这样的并发量，每个 post 的延迟为 5 秒左右，而定时脚本是串行工作的，所以每一轮总耗时为 250 秒左右，完全是不可用状态。
 
 <br>
 <br>
 
-### 优化措施
+## 优化措施
 对 prometheus、pushgateway 做了一些研究，经过几次优化，达到可用状态。
 
-<br>
 <br>
 
 #### 优化一：多个游戏服的指标合并发送。
@@ -55,7 +54,9 @@ prometheus 的指标是这样定义的
 ```
 memory{"server_id":1,"zone":1001,"service":"clusterd"} 10000
 ```
-prometheus 会从多个 target pull 指标，但它并不是很关心一个指标是从哪个 target 来的（虽然可以配置不同 target 给指标附加一些特定的标签值），只要保证 “指标名+标签” 是唯一的就够了。我们的 server_id 是唯一的，能够保证唯一性。<br>
+prometheus 会从多个 target pull 指标，但它并不是很关心一个指标是从哪个 target 来的（虽然可以配置不同 target 给指标附加一些特定的标签值），只要保证 “指标名+标签” 是唯一的就够了。我们的 server_id 是唯一的，能够保证唯一性。
+
+<br>
 
 #### 优化二：pushgateway 开启 gzip 支持
 具体做法：关于 gzip 使用的说明 [https://github.com/prometheus/pushgateway#request-compression](https://github.com/prometheus/pushgateway#request-compression)
@@ -76,7 +77,7 @@ The body of a POST or PUT request may be gzip- or snappy-compressed. Add a heade
 <br>
 <br>
 
-### 解决过程
+## 解决过程
 在 pushgateway 的 github 主页 ([https://github.com/prometheus/pushgateway](https://github.com/prometheus/pushgateway)) README.md 的最开始就写了设计初衷：
 
 >The Prometheus Pushgateway exists to allow ephemeral and batch jobs to expose their metrics to Prometheus. Since these kinds of jobs may not exist long enough to be scraped, they can instead push their metrics to a Pushgateway. The Pushgateway then exposes these metrics to Prometheus.
@@ -100,7 +101,7 @@ The body of a POST or PUT request may be gzip- or snappy-compressed. Add a heade
 <br>
 <br>
 
-### 总结
+## 总结
 1. 使用一个工具前，需要深入了解此工具的设计初衷、适用场景、性能局限等。
 2. 一个项目的文档，最关键的内容往往放在最开头，不妨花点时间好好读一读。
 
