@@ -75,7 +75,7 @@ prometheus 的指标是这样定义的
     >```
 
 * 优化效果   
-    单轮延迟大概从 6 秒降到 4 秒，效果不明显。文档的压缩率倒是挺高的，1.7MB 的 log 文件经过压缩后是 94KB。
+    单轮延迟从 6 秒降到 4 秒。文档的压缩率挺高，1.7MB 的 log 文件经过压缩后是 94KB。
 
 <br>
 
@@ -90,7 +90,7 @@ prometheus 的指标是这样定义的
 <br>
 
 ## 解决过程
-在 pushgateway 的 github 主页 ([https://github.com/prometheus/pushgateway](https://github.com/prometheus/pushgateway)) README.md 的最开始就写了设计初衷：
+在 pushgateway 的 github 主页 ([https://github.com/prometheus/pushgateway](https://github.com/prometheus/pushgateway))，README.md 最开始就写了设计初衷：
 >The Prometheus Pushgateway exists to allow ephemeral and batch jobs to expose their metrics to Prometheus. Since these kinds of jobs may not exist long enough to be scraped, they can instead push their metrics to a Pushgateway. The Pushgateway then exposes these metrics to Prometheus.
 
 <br>
