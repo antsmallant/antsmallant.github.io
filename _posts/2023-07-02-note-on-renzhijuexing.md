@@ -48,5 +48,3 @@ categories: [reading]
 <br>
 <br>
 <br>
-<br>
-<br>
