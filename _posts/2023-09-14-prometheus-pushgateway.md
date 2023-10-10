@@ -51,11 +51,11 @@ pushgateway 性能太差，不足以支撑这样的并发量，每个 post 的�
 #### 优化一：多个游戏服的指标合并发送。
 * 具体做法  
 定时脚本每轮采集完本机上所有的指标 log，把内容合并后再一次性 post 给 pushgateway。        
-prometheus 的指标是这样定义的
+prometheus 的指标是这样定义的：   
     ```
     指标名{标签,...} 指标值
     ```
-    比如   
+    比如：   
     ```
     memory{"server_id":1,"zone":1001,"service":"clusterd"} 10000
     ```   
@@ -67,7 +67,7 @@ prometheus 的指标是这样定义的
 
 #### 优化二：pushgateway 开启 gzip 支持
 * 具体做法  
-    关于 gzip 使用的说明 [https://github.com/prometheus/pushgateway#request-compression](https://github.com/prometheus/pushgateway#request-compression)
+    关于 gzip 使用的说明 [https://github.com/prometheus/pushgateway#request-compression](https://github.com/prometheus/pushgateway#request-compression)：   
     >Request compression
     >The body of a POST or PUT request may be gzip- or snappy-compressed. Add a header Content-Encoding: gzip or Content-Encoding: snappy to do so.
     >```
