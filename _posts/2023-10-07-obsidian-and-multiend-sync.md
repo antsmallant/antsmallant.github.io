@@ -7,6 +7,13 @@ categories: [tools]
 tags: [tools]
 ---
 
+* 目录  
+{:toc}
+
+<br>
+<br>
+<br>
+
 使用 evernote 已经好多年了，对它的持续可用性一直不放心，所以会定期对日志做备份。但最近我厌倦这么做了，于是打算试一下这两位老师提到的 obsidian，阮一峰：[最适合程序员的笔记软件](https://www.ruanyifeng.com/blog/2021/08/best-note-taking-software-for-programmers.html)，老C：[周刊（第18期）：网状的思考，线性的写作](https://www.codedump.info/post/20220612-weekly-18/) 。
 
 <br>
