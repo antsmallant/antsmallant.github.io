@@ -17,11 +17,15 @@ tags: [performance, c++]
 ## 查看汇编代码
 * 方法一
   
-这个网站 [compiler explorer](https://gcc.godbolt.org/) 可以方便的展示源代码与汇编代码的对应关系，特别方便，比自己用 gcc -S <文件名> 来生成汇编代码看更方便很多，当然也比 objdump -d <binary文件名> 更方便
+这个网站 [compiler explorer](https://gcc.godbolt.org/) 可以方便的展示源代码与汇编代码的对应关系，特别方便，比自己用 `gcc -S <文件名>` 来生成汇编代码看更方便很多，当然也比 `objdump -d <binary文件名>` 更方便
+
+<br>
 
 * 方法二
 
 使用 gcc -S 编译成汇编代码，然后再用 c++filt demangling 里面那些被 mangling 的 C++ 符号。
+
+<br>
 
 假设你的文件叫 abc.cpp
 ```
