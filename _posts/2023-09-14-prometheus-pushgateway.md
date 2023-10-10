@@ -81,7 +81,7 @@ pushgateway 性能太差，不足以支撑这样的并发量，每个 post 的�
 
 #### 优化三：每个物理服部署 pushgateway
 * 具体做法  
-    直接在每个物理服上部署一个 pushgateway，服务于本服上的所有游戏服进程；prometheus 修改配置，从多个 pushgateway pull 数据。虽然 pushgateway 数量增加了，但其实没增加多少，以 1000 个游戏服计算，每个物理服部署 50 个游戏服，也才 20 个 pushgateway，对 prometheus 来说压力不大。  
+    直接在每个物理服上部署一个 pushgateway，服务于本服上的所有游戏服进程；prometheus 修改配置，从多个 pushgateway pull 数据。虽然 pushgateway 数量增加了，但其实没增加多少，以 1000 个游戏服，每个物理服部署 50 个游戏服计算，也才 20 个 pushgateway，对 prometheus 来说压力不大。  
 * 优化效果  
     单轮延迟从 4 秒下降到 0.1 秒。  
 
