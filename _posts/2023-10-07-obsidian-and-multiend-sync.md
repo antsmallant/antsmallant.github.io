@@ -29,6 +29,11 @@ tags: [tools]
 
 <br>
 
+注意事项：
+1. ios 上安装的 iSH，对于脚本的错误容忍度很低，如果是在 windows 环境编辑 shell 脚本，那么由于换行是 \n\r，则 shell 脚本在 iSH 上执行会报错，最好提交脚本前先 dos2unix 转换一下，或者在 iSH 另外写个调用该脚本的脚本，先 dos2unix 再执行之。
+
+<br>
+
 obsidian 的核心功能体验，可以参考这个：[玩转 Obsidian 01：打造知识循环利器](https://sspai.com/post/62414)。
 
 <br>
