@@ -14,27 +14,47 @@ tags: [tools]
 <br>
 <br>
 
-使用 evernote 已经好多年了，对它的持续可用性一直不放心，所以会定期对日志做备份。但最近我厌倦这么做了，于是打算试一下这两位老师提到的 obsidian，阮一峰：[最适合程序员的笔记软件](https://www.ruanyifeng.com/blog/2021/08/best-note-taking-software-for-programmers.html)，老C：[周刊（第18期）：网状的思考，线性的写作](https://www.codedump.info/post/20220612-weekly-18/) 。
+## why
+使用 evernote 已经好多年了，对它的持续可用性一直不放心，所以会定期对日志做备份。但最近我厌倦这么做了，于是打算试一下这两位老师提到的 obsidian，阮一峰：[最适合程序员的笔记软件](https://www.ruanyifeng.com/blog/2021/08/best-note-taking-software-for-programmers.html)，老C：[周刊（第18期）：网状的思考，线性的写作](https://www.codedump.info/post/20220612-weekly-18/)。
 
 <br>
 
-记一下安装步骤：
-1. 创建日志仓库，我分别在 github、gitee 创了私有仓库，取名为 obnote，多年的后端经验，始终考虑冗余备份：）。
-2. iOS 同步，参照这个文章 [42号笔记：iOS上使用iSH的git同步Obsidian](https://zhuanlan.zhihu.com/p/565028534) 实现了 iOS 上的 git 同步。“iSH是一个模拟器，用来在ARM架构的iOS设备上模拟x86架构，让iOS设备在本地运行Linux Shell环境。”。
-3. pc 同步，obsidian 安装这个插件: Obsidian Git，简单配置一下，就可以自动的完成 git 同步了。
-
-<br>
-
-然后我就开始日志迁移了，好在 evernote 上我一直用 markdown 格式写文章，所以手动迁移起来并不是特别费劲。需要自我吐槽的是，之前写日志太随便了，什么垃圾都往里面丢，这是极不好的。所以重新给自己立了规矩：1、要写有用的日志；2、格式要简洁有序；3、知识密度要高。
-
-<br>
-
-注意事项：
-1. ios 上安装的 iSH，对于脚本的错误容忍度很低，如果是在 windows 环境编辑 shell 脚本，那么由于换行是 \n\r，则 shell 脚本在 iSH 上执行会报错，最好提交脚本前先 dos2unix 转换一下，或者在 iSH 另外写个调用该脚本的脚本，先 dos2unix 再执行之。
-
-<br>
-
+## 关于 obsidian
 obsidian 的核心功能体验，可以参考这个：[玩转 Obsidian 01：打造知识循环利器](https://sspai.com/post/62414)。
+
+<br>
+
+## 安装步骤
+### 创建日志仓库   
+在 github 或 gitee 创建私有仓库，比如命名为 obnote。
+
+### iOS 同步   
+* 参照这个文章 [42号笔记：iOS上使用iSH的git同步Obsidian](https://zhuanlan.zhihu.com/p/565028534)
+* 下载一个叫 iSH 的 APP
+* 运行 iSH，执行命令安装需要的软件
+```
+apk update
+
+apk add git
+apk add vim
+apk add openssh
+apk add openrc
+```
+* 打开 obsidian，创建一个新的仓库，比如命名为 obnote
+* 打开 iSH，创建一个新的目录并执行 mount
+    - 命令
+    ```
+    cd ~ && mkdir obs
+    mount -t ios-unsafe . obs
+    ```
+    - mount 执行时，iOS 会以交互式的方式让你选择要 mount 具体哪个 APP 的目录，选择 obsidian
+    - 特别注意，这里要使用 `ios-unsafe` 参数来 mount，参考教程使用的 `ios` 参数会导致使用 git 的过程中经常卡死，比如这样：[Git Commands Stuck Forever #1640](https://github.com/ish-app/ish/issues/1640)
+* 之后就是正常的在上面 mount 的目录下 git 操作
+
+### PC 同步   
+obsidian 安装这个插件: Obsidian Git，简单配置一下，就可以自动的完成 git 同步了。
+
+<br>
 
 <br>
 <br>
