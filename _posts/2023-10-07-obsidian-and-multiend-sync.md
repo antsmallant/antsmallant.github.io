@@ -32,21 +32,24 @@ obsidian 的核心功能体验，可以参考这个：[玩转 Obsidian 01：打�
 * 参照这个文章 [42号笔记：iOS上使用iSH的git同步Obsidian](https://zhuanlan.zhihu.com/p/565028534)
 * 下载一个叫 iSH 的 APP
 * 运行 iSH，执行命令安装需要的软件
-```
-apk update
 
-apk add git
-apk add vim
-apk add openssh
-apk add openrc
-```
+    ```
+    apk update
+    apk add git
+    apk add vim
+    apk add openssh
+    apk add openrc
+    ```
+
 * 打开 obsidian，创建一个新的仓库，比如命名为 obnote
 * 打开 iSH，创建一个新的目录并执行 mount
     - 命令
+
     ```
     cd ~ && mkdir obs
     mount -t ios-unsafe . obs
     ```
+
     - mount 执行时，iOS 会以交互式的方式让你选择要 mount 具体哪个 APP 的目录，选择 obsidian
     - 特别注意，这里要使用 `ios-unsafe` 参数来 mount，参考教程使用的 `ios` 参数会导致使用 git 的过程中经常卡死，比如这样：[Git Commands Stuck Forever #1640](https://github.com/ish-app/ish/issues/1640)
 * 之后就是正常的在上面 mount 的目录下 git 操作
