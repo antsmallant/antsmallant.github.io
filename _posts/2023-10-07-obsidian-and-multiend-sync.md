@@ -27,12 +27,12 @@ obsidian 的核心功能体验，可以参考这个：[玩转 Obsidian 01：打�
 <br>
 
 ## 安装步骤
-### 创建日志仓库   
+#### 创建日志仓库   
 在 github 或 gitee 创建私有仓库，比如命名为 obnote。
 
 <br>
 
-### iOS 同步   
+#### iOS 同步   
 * 参照这个文章 [42号笔记：iOS上使用iSH的git同步Obsidian](https://zhuanlan.zhihu.com/p/565028534)
 * 下载一个叫 iSH 的 APP
 * 运行 iSH，执行命令安装需要的软件
@@ -60,7 +60,7 @@ obsidian 的核心功能体验，可以参考这个：[玩转 Obsidian 01：打�
 
 <br>
 
-### PC 同步   
+#### PC 同步   
 obsidian 安装这个插件: Obsidian Git，简单配置一下，就可以自动的完成 git 同步了。
 
 <br>
