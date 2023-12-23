@@ -70,11 +70,11 @@ obsidian 安装这个插件: Obsidian Git，简单配置一下，就可以自动
 后来，我在这个 issue [rsyncing into mount point from fileprovider doesn't quite work after iSH restart](https://github.com/ish-app/ish/issues/1581) 中找到一个终极解决办法：即每次 git 操作前都重新 mount。   
 于是直接写了个小脚本放在 iSH 上，脚本里包含 mount + git pull 的逻辑，每次运行它就行。   
 
-    ```
-    cd ~ && mount -t ios-unsafe . obs    
-    cd obs/obnote && git pull --rebase
-    git add . && git commit -m "sync" && git push
-    ```
+```
+cd ~ && mount -t ios-unsafe . obs    
+cd obs/obnote && git pull --rebase
+git add . && git commit -m "sync" && git push
+```
 
 <br>
 
