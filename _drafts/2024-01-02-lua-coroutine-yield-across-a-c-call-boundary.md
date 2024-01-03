@@ -40,34 +40,66 @@ tags: [lua]
 ## 问题复现
 首先，什么情况下才会出现这个错误？   
 上面文章提到的 `C (skynet framework)->lua (skynet service) -> C -> lua` 或 `coroutine --> c --> coroutine --> yield  ===> 报错`，都说得太笼统了。  
-其实，看一下 lua 源码里面的 `lua_yieldk` 函数（在 ldo.c 中）的实现就可以知道，只要满足这样的条件就会报错：在同一个协程的调用链中，出现一个 c 调用，之后再 yield。大致是这样：`... -> c -> ... -> yield`。并且，不管这个 yield 是在 c 中还是 lua 中，都会引起报错。此处的关键是：同一个协程的调用链中。   
+其实，看一下 lua 源码里面的 `lua_yieldk` 函数（在 ldo.c 中）的实现，就可以知道，只要满足这样的条件就会报错：在同一个协程的调用链中，出现一个 c 调用，之后再 yield。大致是这样：`... -> c -> ... -> yield`。并且，不管这个 yield 是在 c 中还是 lua 中，都会引起报错。此处的关键是：同一个协程的调用链中。   
 下面举正反两个例子来说明。 
 
 <br>
 
 例1：会报错的  
-test1.c
+bad_1.lua
+```
+local co = require "coroutine"
+local ok, err = co.resume(co.create(function()
+    print("enter co func")
+    require "bad_2"
+    print("leave co func")
+end))
+print(ok, err)
 ```
 
+bad_2.lua
 ```
-test1.lua
+local co = require "coroutine"
+co.yield()
 ```
+
+执行：
+```
+lua bad_1.lua
+```
+
+输出：
+```
+enter co func
+false   attempt to yield across a C-call boundary
 ```
 
 <br>
 
 例2：不会报错的  
-test2.c
+good_1.lua
+```
+local co = require "coroutine"
+local ok, err = co.resume(co.create(function()
+    print("enter co func")
+    co.yield()
+    print("leave co func")
+end))
+print(ok, err)
 ```
 
+执行：
 ```
-test2.lua
+lua good_1.lua
 ```
 
+输出：
+```
+enter co func
+true    nil
 ```
 
-
-## 问题根源
+## 问题分析
 
 
 
