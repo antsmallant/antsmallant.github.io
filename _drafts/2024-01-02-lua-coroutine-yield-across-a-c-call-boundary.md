@@ -41,20 +41,61 @@ tags: [lua]
 所以，本文将尝试更清楚的剖析这个问题。使用 lua-5.3.6 进行分析。   
 <br>
 
-## 问题复现
+## 问题剖析
 首先，什么情况下才会出现这个错误？上面文章提到的 `C (skynet framework)->lua (skynet service) -> C -> lua` 或 `coroutine --> c --> coroutine --> yield  ===> 报错`，都说得太笼统了，不够精确。   
 <br>
 
 看一下 lua 源码里面的 `lua_yieldk` 函数（在 ldo.c 中）的实现，可以知道只要满足这样的条件就会报错：在一个协程的调用链中，出现一个 `luaD_callnoyield` 调用之后再 yield，大致是这样：`... -> luaD_callnoyield -> ... -> yield`。并且，不管这个 yield 是在 c 中调用 `lua_yield` 或是在 lua 中调用 `coroutine.yield`。
 <br>
 
-那什么情况下会调用 `luaD_callnoyield` 呢？从源码来看，有好几处，但跟我们日常开发关系密切的只有 `lua_callk` 及 `lua_pcallk`。这两个一般就是 c 函数调用 lua 函数的时候会使用。
+那 `luaD_callnoyield` 具体是如何限制后续逻辑调用 `yield` 的呢？  
+先看一下 `luaD_callnoyield` 的实现：
+```
+void luaD_callnoyield (lua_State *L, StkId func, int nResults) {
+  L->nny++;
+  luaD_call(L, func, nResults);
+  L->nny--;
+}
+```
+
+再看下 `lua_yieldk` 的实现:
+```
+LUA_API int lua_yieldk (lua_State *L, int nresults, lua_KContext ctx,
+                        lua_KFunction k) {
+  CallInfo *ci = L->ci;
+  luai_userstateyield(L, nresults);
+  lua_lock(L);
+  api_checknelems(L, nresults);
+  if (L->nny > 0) {
+    if (L != G(L)->mainthread)
+      luaG_runerror(L, "attempt to yield across a C-call boundary");
+    else
+      luaG_runerror(L, "attempt to yield from outside a coroutine");
+  }
+  L->status = LUA_YIELD;
+  ci->extra = savestack(L, ci->func);  /* save current 'func' */
+
+  ...
+```
+
+从源码可以看出 `luaD_callnoyield` 是通过设置 `L->nny` 这个变量来控制的。    
 <br>
 
+那什么情况下会调用 `luaD_callnoyield` 呢？从源码上看有好几处，但跟我们日常开发关系密切的只有 `lua_callk` 及 `lua_pcallk`。而这两个一般就是 c 调用 lua 的时候才会使用。    
+<br>
 
+ok，我们现在知道如果一个协程中的调用链中，先出现 `lua_callk` 或 `lua_pcallk`，之后就不能有 `yield` 了，但为什么要做这样的限制呢？   
+<br>
 
+这个跟 lua 协程的实现有关，它是通过 `setjmp` 和 `longjmp` 实现的，`resume` 对应 `setjmp`，`yield` 对应 `longjmp`。`longjmp` 对于协程内部纯 lua 的栈没啥影响，因为每个协程都有一块内存来保存自己的栈，但对于 C 栈就有影响了，一个线程只有一个 C 栈，`longjmp` 的时候，直接改掉了 C 栈的栈顶指针。如下图所示，`longjmp` 之后，逻辑回到了 A，那么 B 对应的整个栈帧都会被覆盖掉（相当于被抹除了）。   
 
-下面举正反两个例子来说明。 
+![lua-coroutine-yield](https://blog.antsmallant.top/media/blog/lua-coroutine-yield.png)
+         图1：yield 示意图
+<br>
+
+解释得七七八八了，但还是有些抽象。下面举一些例子说明什么情况会报错，什么情况不会。
+
+## 举例说明
 
 <br>
 
@@ -111,8 +152,3 @@ lua good_1.lua
 enter co func
 true    nil
 ```
-
-## 问题分析
-
-![lua-coroutine-yield](https://blog.antsmallant.top/media/blog/lua-coroutine-yield.png)
-
