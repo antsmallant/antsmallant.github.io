@@ -3,7 +3,7 @@ layout: post
 title:  "jit 与 nx 技术"
 date:   2022-12-10
 last_modified_at: 2022-12-10
-categories: [lang]
+categories: [语言]
 tags: [performance, jit]
 ---
 

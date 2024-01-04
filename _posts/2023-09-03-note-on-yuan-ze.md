@@ -3,7 +3,7 @@ layout: post
 title:  "《原则》读书笔记"
 date:   2023-09-03
 last_modified_at: 2023-09-03
-categories: [reading]
+categories: [读书]
 ---
 
 * 目录  
