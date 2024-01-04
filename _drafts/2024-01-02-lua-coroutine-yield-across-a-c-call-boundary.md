@@ -3,7 +3,7 @@ layout: post
 title:  "lua: attempt to yield across a C-call boundary 的原因分析"
 date:   2024-01-02
 last_modified_at: 2024-01-02
-categories: [lang]
+categories: [lua]
 tags: [lua]
 ---
 
