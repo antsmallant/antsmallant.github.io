@@ -45,7 +45,7 @@ tags: [lua]
 首先，什么情况下才会出现这个错误？上面文章提到的 `C (skynet framework)->lua (skynet service) -> C -> lua` 或 `coroutine --> c --> coroutine --> yield  ===> 报错`，都说得太笼统了，不够精确。   
 <br>
 
-看一下 lua 源码里面的 `lua_yieldk` 函数（在 ldo.c 中）的实现，可以知道只要满足这样的条件就会报错：在一个协程的调用链中，出现一个 `luaD_callnoyield` 调用之后再 yield，大致是这样：`... -> luaD_callnoyield -> ... -> yield`。并且，不管这个 yield 是在 c 中调用 `lua_yield` 或是在 lua 中调用 `coroutine.yield`。
+看一下 lua 源码里面的 `lua_yieldk` 函数（在 ldo.c 中）的实现，就可以知道，在一个协程的调用链中，出现一个 `luaD_callnoyield` 调用之后再 yield 就会报错，大致是这样：`... -> luaD_callnoyield -> ... -> yield`。并且，不管这个 yield 是在 c 中调用 `lua_yield` 还是在 lua 中调用 `coroutine.yield`。
 <br>
 
 那 `luaD_callnoyield` 具体是如何限制后续逻辑调用 `yield` 的呢？  
@@ -84,93 +84,80 @@ LUA_API int lua_yieldk (lua_State *L, int nresults, lua_KContext ctx,
 那什么情况下会调用 `luaD_callnoyield` 呢？从源码上看有好几处，但跟我们日常开发关系密切的只有 `lua_callk` 及 `lua_pcallk`。而这两个一般就是 c 调用 lua 的时候才会使用。    
 <br>
 
-ok，我们现在知道如果一个协程中的调用链中，先出现 `lua_callk` 或 `lua_pcallk`，之后就不能有 `yield` 了，但为什么要做这样的限制呢？   
+ok，我们现在知道如果一个协程的调用链中，如果先出现 `lua_callk` 或 `lua_pcallk`，之后就不能有 `yield` 了。但为什么要做这样的限制呢？   
 <br>
 
 这个跟 lua 协程的实现有关，它是通过 `setjmp` 和 `longjmp` 实现的，`resume` 对应 `setjmp`，`yield` 对应 `longjmp`。`longjmp` 对于协程内部纯 lua 的栈没啥影响，因为每个协程都有一块内存来保存自己的栈，但对于 C 栈就有影响了，一个线程只有一个 C 栈，`longjmp` 的时候，直接改掉了 C 栈的栈顶指针。如下图所示，`longjmp` 之后，逻辑回到了 A，那么 B 对应的整个栈帧都会被覆盖掉（相当于被抹除了）。   
 
-![lua-coroutine-yield](https://blog.antsmallant.top/media/blog/lua-coroutine-yield.png)
-         图1：yield 示意图
+![lua-coroutine-yield](https://blog.antsmallant.top/media/blog/lua-coroutine-yield.png)  
+         图1：yield 示意图    
 <br>
 
-解释得七七八八了，但还是有些抽象。先举个简单的例子来说明一下。  
+解释得七七八八了，但还是有些抽象。先举个简单的例子来验证一下上面的说法吧。  
 <br>
 
-A.lua
+clib.c
 ```
-local co = require "coroutine"
+#include <stdlib.h>
+#include <stdio.h>
+#include <lua.h>
+#include <lauxlib.h>
 
-function yield_func()
-    co.yield()
-end
+static int f1(lua_State* L) {
+    printf("enter f1\n");
+    lua_getglobal(L, "lua_yield");
+    lua_call(L, 0, 0);
+    printf("leave f1\n");
+    return 0;
+}
 
-local co_b = co.create(function()
-
-end)
-```
-
-c.c
-```
-static int f1() {
-
+LUAMOD_API int luaopen_clib(lua_State* L) {
+    luaL_Reg funcs[] = {
+        {"f1", f1},
+        {NULL, NULL}
+    };
+    luaL_newlib(L, funcs);
+    return 1;
 }
 ```
 
-
-## 举例说明
-
-<br>
-
-例1：会报错的  
-bad_1.lua
+test_co_1.lua
 ```
 local co = require "coroutine"
-local ok, err = co.resume(co.create(function()
-    print("enter co func")
-    require "bad_2"
-    print("leave co func")
-end))
-print(ok, err)
+local clib = require "clib"
+
+function lua_yield()
+    print("enter lua_yield")
+    co.yield()
+    print("leave lua_yield")
+end
+
+local co_b = co.create(function()
+    clib.f1()
+end)
+
+local ok, ret = co.resume(co_b)
+print(ok, ret)
+co.resume(co_b)
 ```
 
-bad_2.lua
+编译&执行：    
+（`install/include` 和 `install/lib` 是把 lua 源码先 make，然后再 make local 得到的）
 ```
-local co = require "coroutine"
-co.yield()
+gcc -fPIC -shared -g -o clib.so clib.c -I "/home/ant/code/lua/lua-5.3.6/install/include" -L "/home/ant/code/lua/lua-5.3.6/install/lib"
+
+/home/ant/code/lua/lua-5.3.6/install/bin/lua test_co_1.lua
 ```
 
-执行：
+输出：   
 ```
-lua bad_1.lua
-```
-
-输出：
-```
-enter co func
+enter f1
+enter lua_yield
 false   attempt to yield across a C-call boundary
 ```
 
 <br>
 
-例2：不会报错的  
-good_1.lua
-```
-local co = require "coroutine"
-local ok, err = co.resume(co.create(function()
-    print("enter co func")
-    co.yield()
-    print("leave co func")
-end))
-print(ok, err)
-```
+解释一下上面的代码，在 `test_co_1.lua`，我们创建了一个协程 co_b，co_b 里面调用了 c 函数 `f1`，而 `f1` 又通过 `lua_call` 调用了 `test_co_1.lua` 里面定义的 lua 函数 `lua_yield`，而 `lua_yield` 含有 yield 逻辑，所以就报错了：attempt to yield across a C-call boundary 。  
+符合上文说的，只要这样就会报错： `... -> lua_call -> ... -> yield `。   
 
-执行：
-```
-lua good_1.lua
-```
-
-输出：
-```
-enter co func
-true    nil
-```
