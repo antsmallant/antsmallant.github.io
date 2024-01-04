@@ -98,6 +98,7 @@ true    nil
 ```
 
 ## 问题分析
+![lua-coroutine-yield](https://blog.antsmallant.top/media/blog/lua-coroutine-yield.png)
 
 
 
