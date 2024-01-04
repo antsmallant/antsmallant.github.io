@@ -171,6 +171,8 @@ false   attempt to yield across a C-call boundary
 那如果 lua_call 不报错，允许 co_b 去 yield，当我们再次 resume co_b 的时候，f1 的那句 `printf("leave f1\n");` 会执行吗？不会的，因为栈帧已经完全被破坏，回不来了。  
 <br>
 
+## 深入讨论
+
 
 
 <br>
