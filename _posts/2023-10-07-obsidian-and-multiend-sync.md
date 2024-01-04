@@ -15,7 +15,7 @@ tags: [tools]
 <br>
 
 ## why
-使用 evernote 已经好多年了，对它的持续可用性一直不放心，所以会定期对日志做备份。但最近我厌倦这么做了，于是打算试一下这两位老师提到的 obsidian，阮一峰：[最适合程序员的笔记软件](https://www.ruanyifeng.com/blog/2021/08/best-note-taking-software-for-programmers.html)，老C：[周刊（第18期）：网状的思考，线性的写作](https://www.codedump.info/post/20220612-weekly-18/)。
+使用印象笔记（evernote 的中国版）已经好多年了，对它的持续可用性一直不放心，所以会定期手动对日志做备份。但最近我厌倦这么做了，于是打算试一下这两位老师提到的 obsidian，阮一峰：[最适合程序员的笔记软件](https://www.ruanyifeng.com/blog/2021/08/best-note-taking-software-for-programmers.html)，老C：[周刊（第18期）：网状的思考，线性的写作](https://www.codedump.info/post/20220612-weekly-18/)。
 
 <br>
 <br>
@@ -65,8 +65,8 @@ obsidian 安装这个插件: Obsidian Git，简单配置一下，就可以自动
 
 <br>
 
-#### 解决 iOS 上 iSH 执行 git 命令经常卡住的问题
-这是一个普遍存在的问题。这个 issue：[Git Commands Stuck Forever #1640](https://github.com/ish-app/ish/issues/1640) 提到 mount 时使用 `ios-unsafe` 参数可以解决，实际使用之后，还是经常会卡住。   
+* 解决 iOS 上 iSH 执行 git 命令时经常卡住的问题  
+这是一个普遍存在的问题。这个 issue：[Git Commands Stuck Forever #1640](https://github.com/ish-app/ish/issues/1640) 提到 mount 时使用 `ios-unsafe` 参数可以解决，实际使用之后，还是经常会卡住。    
 后来，我在这个 issue [rsyncing into mount point from fileprovider doesn't quite work after iSH restart](https://github.com/ish-app/ish/issues/1581) 中找到一个终极解决办法：即每次 git 操作前都重新 mount。   
 于是直接写了个小脚本放在 iSH 上，脚本里包含 mount + git pull 的逻辑，每次运行它就行。   
 
