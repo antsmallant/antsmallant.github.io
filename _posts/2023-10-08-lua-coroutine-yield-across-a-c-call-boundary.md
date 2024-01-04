@@ -142,7 +142,7 @@ co.resume(co_b)
 ```
 
 编译&执行：    
-（`install/include` 和 `install/lib` 是把 lua 源码先 make，然后再 make local 得到的）
+（install/include 和 install/lib 是把 lua 源码先 make，然后再 make local 得到的）
 ```
 gcc -fPIC -shared -g -o clib.so clib.c -I "/home/ant/code/lua/lua-5.3.6/install/include" -L "/home/ant/code/lua/lua-5.3.6/install/lib"
 
@@ -158,6 +158,12 @@ false   attempt to yield across a C-call boundary
 
 <br>
 
-解释一下上面的代码，在 `test_co_1.lua`，我们创建了一个协程 co_b，co_b 里面调用了 c 函数 `f1`，而 `f1` 又通过 `lua_call` 调用了 `test_co_1.lua` 里面定义的 lua 函数 `lua_yield`，而 `lua_yield` 含有 yield 逻辑，所以就报错了：attempt to yield across a C-call boundary 。  
-符合上文说的，只要这样就会报错： `... -> lua_call -> ... -> yield `。   
+解释一下上面的代码，在 test_co_1.lua，我们创建了一个协程 co_b，co_b 里面调用了 c 函数 f1，而 f1 又通过 lua_call 调用了 test_co_1.lua 里面定义的 lua 函数 lua_yield，而 lua_yield 含有 yield 逻辑，所以就报错了：attempt to yield across a C-call boundary 。符合上文说的，只要这样就会报错： `... -> lua_call -> ... -> yield `。   
 
+<br>
+
+
+
+<br>
+<br>
+<br>
