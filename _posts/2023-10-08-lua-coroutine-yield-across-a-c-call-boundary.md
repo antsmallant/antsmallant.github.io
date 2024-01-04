@@ -95,7 +95,7 @@ ok，我们现在知道如果一个协程的调用链中，如果先出现 `lua_
 <br>
 
 ![lua-coroutine-yield](https://blog.antsmallant.top/media/blog/lua-coroutine-yield.png)  
-         图1：yield 示意图    
+<center>图1：yield 示意图</center>  
 <br>
 
 解释得七七八八了，但还是有些抽象。先举个简单的例子来验证一下上面的说法吧。   
