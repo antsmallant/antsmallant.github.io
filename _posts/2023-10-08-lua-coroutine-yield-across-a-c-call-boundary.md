@@ -173,12 +173,15 @@ false   attempt to yield across a C-call boundary
 那如果 lua_call 不报错，允许 co_b 去 yield，当我们再次 resume co_b 的时候，f1 的那句 `printf("leave f1\n");` 会执行吗？不会的，因为栈帧已经完全被破坏，回不来了。  
 <br>
 
+那这里有什么办法让它能正常工作？  
+
+
 ## 深入讨论
 上文的例子中，如果把 clib 的 f1 改成这样，会报错吗？
 ```
 static int f1(lua_State* L) {
     printf("enter f1\n");
-    lua_yield()
+    lua_yield(L, 0);
     printf("leave f1\n");
     return 0;
 }
@@ -187,14 +190,14 @@ static int f1(lua_State* L) {
 不会的，它的输出是这样的：   
 ```
 enter co_b
-enter f1_v2
+enter f1
 true    nil
 ```
 
-为什么不会报错呢？在 co_b 中这样调用 clib.f1()，看起来就是调用一个 c 函数，这个地方难道不是用 lua_call 来调 c 函数的吗？还真的不是，这个我们可以通过生成 lua 的字节码来看一下。  
+为什么不会报错呢？在 co_b 中调用 clib.f1()，看起来就是在调用一个 c 函数，这个地方难道不是用 lua_call 来调 c 函数的吗？还真不是，这个我们可以通过生成 lua 的字节码来看一下。  
 <br>
 
-生成 lua 字节码可以使用这样的命令: `luac -l -l -p <文件名>`，对于上文的 test_co_1.lua，命令是这样 `luac -l -l -p test_co_1.lua`。也可以通过这个网站  lua bytecode explorer: [https://www.luac.nl/)](https://www.luac.nl/)，这个网站厉害的地方在于它有好多个 lua 版本可选，特别方便。   
+生成 lua 字节码可以使用这样的命令: `luac -l -l -p <文件名>`，对于上文的 test_co_1.lua，命令是这样 `luac -l -l -p test_co_1.lua`。也可以使用这个在线的 lua bytecode explorer: [https://www.luac.nl/](https://www.luac.nl/) 进行查看，这个网站厉害的地方在于它有好多个 lua 版本可选，很方便。   
 
 上文 test_co_1.lua 用 lua bytecode explorer 生成出来的字节码是这样的：  
 ![lua-coroutine-yield-bytecode](https://blog.antsmallant.top/media/blog/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/lua-coroutine-yield-bytecode.png)   
@@ -204,9 +207,39 @@ true    nil
 关于字节码的具体含义，可以参考这个文章：[Lua 5.3 Bytecode Reference](https://the-ravi-programming-language.readthedocs.io/en/latest/lua_bytecode_reference.html)，或是这个文章：[深入理解 Lua 虚拟机](https://cloud.tencent.com/developer/article/1648925)。     
 <br>  
 
-说回 co_b，调用 clib.f1()，实际上是使用了 lua 的指令 CALL，如下图所示：  
+说回 co_b，调用 clib.f1() 实际上是使用了 lua 的 CALL 指令，如下图所示：  
 ![lua-coroutine-yield-bytecode-co-func](https://blog.antsmallant.top/media/blog/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/lua-coroutine-yield-bytecode-co-func.png)   
-<center>图3：co_b 的字节码</center>
+<center>图3：co_b 的字节码</center>    
+<br>
+
+CALL 指令内部是如何实现的呢？可以看一下源码(lvm.c 的 luaV_execute)：  
+```
+      vmcase(OP_CALL) {
+        int b = GETARG_B(i);
+        int nresults = GETARG_C(i) - 1;
+        if (b != 0) L->top = ra+b;  /* else previous instruction set top */
+        if (luaD_precall(L, ra, nresults)) {  /* C function? */
+          if (nresults >= 0)
+            L->top = ci->top;  /* adjust results */
+          Protect((void)0);  /* update 'base' */
+        }
+        else {  /* Lua function */
+          ci = L->ci;
+          goto newframe;  /* restart luaV_execute over new Lua function */
+        }
+        vmbreak;
+      }
+```   
+<br>
+
+可以看到 OP_CALL 只是调用了 luaD_precall，而 luaD_precall 的内部并没有调用到 lua_call / lua_pcall 或 luaD_callnoyield。（这里就不贴 luaD_precall 的源码了，比较长，感兴趣的可自己去看）。
+
+
+## 总结
+* 一般情况下，lua_call / lua_pcall 之后如果跟着 yield，就会报这个错：attempt to yield across a C-call boundary。问题的根本原因是 lua 协程的 yield 是通过 longjmp 实现的，longjmp 直接回退了 C 栈的指针，使得执行了 yield 的协程的 C 栈被抹掉了，那么执行到一半的 C 逻辑就不会在下次 resume 的时候继续执行。  
+* lua 提供的函数中，有些使用 lua_call / lua_pcall，容易触发这个问题，比如 lua 函数：require，c 函数：luaL_dostring、luaL_dofile。
+* lua 提供的函数中，有些使用 lua_callk / lua_pcallk 规避了这个问题，比如 lua 函数：dofile。
+
 
 <br>
 <br>
