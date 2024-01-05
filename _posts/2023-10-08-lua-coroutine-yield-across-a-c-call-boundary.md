@@ -118,10 +118,10 @@ lua_callk 在 `L->nny > 0` 或者参数 k 为 NULL 的时候，都会调用 luaD
 它们传递的参数 k 都为 NULL，所以这两个绝对会调用 luaD_callnoyield。   
 <br>
 
-ok，我们现在知道如果一个协程的调用链中，如果先出现 lua_call 或 lua_pcall，之后就不能有 yield 了。但为什么要做这样的限制呢？   
+ok，我们现在知道，一个协程的调用链中如果先出现 lua_call 或 lua_pcall，之后就不能有 yield 了。但为什么要这样限制呢？   
 <br>
 
-这个跟 lua 协程的实现有关，它是通过 setjmp 和 longjmp 实现的，resume 对应 setjmp，yield 对应 longjmp。longjmp 对于协程内部纯 lua 的栈没啥影响，因为每个协程都有一块内存来保存自己的栈，但对于 C 栈就有影响了，一个线程只有一个 C 栈，longjmp 的时候，直接改掉了 C 栈的栈顶指针。如下图所示，longjmp 之后，逻辑回到了 A，那么 B 对应的整个栈帧都会被覆盖掉（相当于被抹除了）。      
+这个跟 lua 协程的实现有关，它是通过 setjmp 和 longjmp 实现的，resume 对应 setjmp，yield 对应 longjmp。longjmp 对于协程内部纯 lua 的栈没啥影响，因为每个协程都有一块内存来保存自己的栈，但对于 C 栈就有影响了，一个线程只有一个 C 栈，longjmp 的时候，直接改掉了 C 栈的栈顶指针。如下图所示，longjmp 之后，逻辑回到了 A，那么 B 对应的整个栈帧都会被覆盖掉（相当于被抹除了）。即 B 协程 yield 之后需要执行的 C 代码就不执行了。           
 <br>
 
 ![lua-coroutine-yield](https://blog.antsmallant.top/media/blog/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/lua-coroutine-yield.png)  
