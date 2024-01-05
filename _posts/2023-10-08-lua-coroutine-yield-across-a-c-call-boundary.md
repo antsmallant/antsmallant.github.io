@@ -72,10 +72,7 @@ void luaD_callnoyield (lua_State *L, StkId func, int nResults) {
 ```
 LUA_API int lua_yieldk (lua_State *L, int nresults, lua_KContext ctx,
                         lua_KFunction k) {
-  CallInfo *ci = L->ci;
-  luai_userstateyield(L, nresults);
-  lua_lock(L);
-  api_checknelems(L, nresults);
+  ...
   if (L->nny > 0) {
     if (L != G(L)->mainthread)
       luaG_runerror(L, "attempt to yield across a C-call boundary");
@@ -84,9 +81,9 @@ LUA_API int lua_yieldk (lua_State *L, int nresults, lua_KContext ctx,
   }
   L->status = LUA_YIELD;
   ci->extra = savestack(L, ci->func);  /* save current 'func' */
-
   ...
-```   
+}
+```     
 <br>
 
 从源码可以看出 luaD_callnoyield 是通过设置 `L->nny` 这个变量来控制的。    
@@ -96,13 +93,7 @@ LUA_API int lua_yieldk (lua_State *L, int nresults, lua_KContext ctx,
 ```
 LUA_API void lua_callk (lua_State *L, int nargs, int nresults,
                         lua_KContext ctx, lua_KFunction k) {
-  StkId func;
-  lua_lock(L);
-  api_check(L, k == NULL || !isLua(L->ci),
-    "cannot use continuations inside hooks");
-  api_checknelems(L, nargs+1);
-  api_check(L, L->status == LUA_OK, "cannot do calls on non-normal thread");
-  checkresults(L, nargs, nresults);
+  ...
   func = L->top - (nargs+1);
   if (k != NULL && L->nny == 0) {  /* need to prepare continuation? */
     L->ci->u.c.k = k;  /* save continuation */
@@ -111,8 +102,7 @@ LUA_API void lua_callk (lua_State *L, int nargs, int nresults,
   }
   else  /* no continuation or no yieldable */
     luaD_callnoyield(L, func, nresults);  /* just do the call */
-  adjustresults(L, nresults);
-  lua_unlock(L);
+  ...
 }
 ```     
 <br>
@@ -284,24 +274,21 @@ CALL 指令内部是如何实现的呢？可以看一下源码(lvm.c 的 luaV_ex
 
 
 ### lua 提供的函数里面，哪些容易导致这个报错？
-skynet ([https://github.com/cloudwu/skynet](https://github.com/cloudwu/skynet)) 里面调用 require 的时候很容易就报这个错 "attempt to yield across a C-call boundary"。我们看一下 require 是不是调用了 lua_call/lua_pcall，它的实现是 loadlib.c 的 ll_require ：
+skynet ([https://github.com/cloudwu/skynet](https://github.com/cloudwu/skynet)) 里面调用 require 的时候很容易就报这个错 "attempt to yield across a C-call boundary"。我们看一下 require 是不是调用了 lua_call/lua_pcall，它的实现是 loadlib.c 的 ll_require，果然是使用了 lua_call。
 ```
 static int ll_require (lua_State *L) {
   ...
-
   findloader(L, name);
   lua_pushstring(L, name);  /* pass name as argument to module loader */
   lua_insert(L, -2);  /* name is 1st argument (before search data) */
   lua_call(L, 2, 1);  /* run loader to load module */
-  
   ...
 }
 ```   
-果然是使用了 lua_call。  
-再翻看源码，可以发现，常用的这两个函数：luaL_dostring、luaL_dofile，也都会调用 lua_call/lua_pcall，所以也是容易报错的。  
+再翻看其他源码，可以发现，常用的这两个函数：luaL_dostring、luaL_dofile，也都会调用 lua_call/lua_pcall，所以也是容易报错的。  
 <br>
 
-那有没有使用 lua_callk/lua_pcallk 来避免报错的呢？有的，比如这个 dofile 这个 lua 函数，它对应的是 lbaselib.c 的 luaB_dofile：
+那有没有使用 lua_callk/lua_pcallk 来避免报错的呢？有的，比如这个 lua 函数: dofile，它对应的是 lbaselib.c 的 luaB_dofile，使用了 lua_callk。  
 ```
 static int dofilecont (lua_State *L, int d1, lua_KContext d2) {
   (void)d1;  (void)d2;  /* only to match 'lua_Kfunction' prototype */
@@ -315,7 +302,8 @@ static int luaB_dofile (lua_State *L) {
   lua_callk(L, 0, LUA_MULTRET, 0, dofilecont);
   return dofilecont(L, 0, 0);
 }
-```
+```  
+<br>
 
 
 ## 总结
