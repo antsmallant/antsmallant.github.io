@@ -41,11 +41,17 @@ tags: [lua]
 所以，本文将尝试更深入的剖析这个问题。    
 <br>
 
+<br>
+<br>
+
 ## 环境说明
 以下分析使用的 lua 版本是 5.3.6，下载链接: [https://lua.org/ftp/lua-5.3.6.tar.gz](https://lua.org/ftp/lua-5.3.6.tar.gz)，本人的 github 也有对应源码: [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6) 。    
 <br>
 
 下文展示的 demo 代码都在此：[https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary) 。      
+<br>
+
+<br>
 <br>
 
 ## 问题剖析
@@ -199,6 +205,9 @@ false   attempt to yield across a C-call boundary
 <br>
 
 那如果 lua_call 不报错，允许 co_b 去 yield，当我们再次 resume co_b 的时候，f1 的那句 `printf("leave f1\n");` 会执行吗？不会的，因为栈帧已经完全被破坏了，不会执行 yield 之后的 C 代码了。    
+<br>
+
+<br>
 <br>
 
 ## 深入讨论
@@ -378,13 +387,15 @@ static int luaB_dofile (lua_State *L) {
 ```    
 <br>
 
+<br>
+<br>
 
 ## 总结
 * 一般情况下，lua_call/lua_pcall 之后如果跟着 yield，就会报这个错：attempt to yield across a C-call boundary。问题的根本原因是 lua 协程的 yield 是通过 longjmp 实现的，longjmp 直接回退了 C 栈的指针，使得执行了 yield 的协程的 C 栈被抹掉了，那么执行到一半的 C 逻辑就不会在下次 resume 的时候继续执行。    
 * 要规避这个问题，可以使用 lua_callk/lua_pcallk/lua_yieldk，显式的指定一个函数作为 yield 回来后要执行的内容。
 * lua 提供的函数中，有些使用了 lua_call/lua_pcall，很容易触发这个问题，比如 lua 函数：require，c 函数：luaL_dostring、luaL_dofile；而有些使用了 lua_callk/lua_pcallk 规避这个问题，比如 lua 函数：dofile。  
 * 使用这个网站 [https://www.luac.nl/](https://www.luac.nl/)，或者使用 `luac -l -l -p <文件名>` 可以查看 lua 字节码。  
-<br>
+
 
 <br>
 <br>
