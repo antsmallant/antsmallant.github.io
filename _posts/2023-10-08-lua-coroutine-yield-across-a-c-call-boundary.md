@@ -95,7 +95,7 @@ ok，我们现在知道如果一个协程的调用链中，如果先出现 `lua_
 这个跟 lua 协程的实现有关，它是通过 `setjmp` 和 `longjmp` 实现的，`resume` 对应 `setjmp`，`yield` 对应 `longjmp`。`longjmp` 对于协程内部纯 lua 的栈没啥影响，因为每个协程都有一块内存来保存自己的栈，但对于 C 栈就有影响了，一个线程只有一个 C 栈，`longjmp` 的时候，直接改掉了 C 栈的栈顶指针。如下图所示，`longjmp` 之后，逻辑回到了 A，那么 B 对应的整个栈帧都会被覆盖掉（相当于被抹除了）。     
 <br>
 
-![lua-coroutine-yield](https://blog.antsmallant.top/media/blog/lua-coroutine-yield.png)  
+![lua-coroutine-yield](https://blog.antsmallant.top/media/blog/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/lua-coroutine-yield.png)  
 <center>图1：yield 示意图</center>  
 <br>
 
@@ -194,11 +194,19 @@ true    nil
 为什么不会报错呢？在 co_b 中这样调用 clib.f1()，看起来就是调用一个 c 函数，这个地方难道不是用 lua_call 来调 c 函数的吗？还真的不是，这个我们可以通过生成 lua 的字节码来看一下。  
 <br>
 
-生成 lua 字节码可以使用这样的命令: `luac -l -l -p <文件名>`，对于上文的 test_co_1.lua，命令是这样 `luac -l -l -p test_co_1.lua`。也可以通过这个网站：[https://www.luac.nl/](https://www.luac.nl/)，这个网站厉害的地方在于它有好多个 lua 版本可选，特别方便。  
+生成 lua 字节码可以使用这样的命令: `luac -l -l -p <文件名>`，对于上文的 test_co_1.lua，命令是这样 `luac -l -l -p test_co_1.lua`。也可以通过这个网站  lua bytecode explorer: [https://www.luac.nl/)](https://www.luac.nl/)，这个网站厉害的地方在于它有好多个 lua 版本可选，特别方便。   
 
+上文 test_co_1.lua 用 lua bytecode explorer 生成出来的字节码是这样的：  
+![lua-coroutine-yield-bytecode](https://blog.antsmallant.top/media/blog/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/lua-coroutine-yield-bytecode.png)   
+<center>图2：lua字节码1</center>
+<br>
 
-上方提到 lua_call 之后再有 yield 就会报错，那上面例子中，test_co_1.lua 的 co_b 里面，第一个调用就是 clib.f1()
+关于字节码的具体含义，可以参考这个文章：[Lua 5.3 Bytecode Reference](https://the-ravi-programming-language.readthedocs.io/en/latest/lua_bytecode_reference.html)，或是这个文章：[深入理解 Lua 虚拟机](https://cloud.tencent.com/developer/article/1648925)。     
+<br>  
 
+说回 co_b，调用 clib.f1()，实际上是使用了 lua 的指令 CALL，如下图所示：  
+![lua-coroutine-yield-bytecode-co-func](https://blog.antsmallant.top/media/blog/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/lua-coroutine-yield-bytecode-co-func.png)   
+<center>图3：lua字节码2</center>
 
 <br>
 <br>
