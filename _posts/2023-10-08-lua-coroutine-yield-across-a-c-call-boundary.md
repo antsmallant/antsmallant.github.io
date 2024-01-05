@@ -107,7 +107,7 @@ LUA_API void lua_callk (lua_State *L, int nargs, int nresults,
 ```     
 <br>
 
-lua_callk 在 `L->nny > 0` 或者参数 k 为 NULL 的时候，都会调用 luaD_callnoyield。`L->nny > 0` 的情况不用说了，肯定是要调用 luaD_callnoyield 的。但 k 是什么呢？k 是 continuation function，就是执行完要调用的函数之后，后续要执行的函数。这里 ( [https://lua.org/manual/5.3/manual.html#4.7](https://lua.org/manual/5.3/manual.html#4.7) ) 有解释，后文我们也会解释。  
+lua_callk 在 `L->nny > 0` 或者参数 k 为 NULL 的时候，都会调用 luaD_callnoyield。`L->nny > 0` 的情况不用说了，肯定是要调用 luaD_callnoyield 的。但 k 是什么呢？k 是 continuation function，就是执行完要调用的函数之后，后续要执行的函数。这里 ( [https://lua.org/manual/5.3/manual.html#4.7](https://lua.org/manual/5.3/manual.html#4.7) ) 有解释，后文我们也会解释。    
 <br>
 
 但是我们通常使用的函数是 lua_call/lua_pcall，这两个函数的定义是这样的：
@@ -115,13 +115,13 @@ lua_callk 在 `L->nny > 0` 或者参数 k 为 NULL 的时候，都会调用 luaD
 #define lua_call(L,n,r)		lua_callk(L, (n), (r), 0, NULL)
 #define lua_pcall(L,n,r,f)	lua_pcallk(L, (n), (r), (f), 0, NULL)
 ```  
-它们传递的参数 k 都为 NULL，所以这两个绝对会调用 luaD_callnoyield。
+它们传递的参数 k 都为 NULL，所以这两个绝对会调用 luaD_callnoyield。   
 <br>
 
 ok，我们现在知道如果一个协程的调用链中，如果先出现 lua_call 或 lua_pcall，之后就不能有 yield 了。但为什么要做这样的限制呢？   
 <br>
 
-这个跟 lua 协程的实现有关，它是通过 setjmp 和 longjmp 实现的，resume 对应 setjmp，yield 对应 longjmp。longjmp 对于协程内部纯 lua 的栈没啥影响，因为每个协程都有一块内存来保存自己的栈，但对于 C 栈就有影响了，一个线程只有一个 C 栈，longjmp 的时候，直接改掉了 C 栈的栈顶指针。如下图所示，longjmp 之后，逻辑回到了 A，那么 B 对应的整个栈帧都会被覆盖掉（相当于被抹除了）。     
+这个跟 lua 协程的实现有关，它是通过 setjmp 和 longjmp 实现的，resume 对应 setjmp，yield 对应 longjmp。longjmp 对于协程内部纯 lua 的栈没啥影响，因为每个协程都有一块内存来保存自己的栈，但对于 C 栈就有影响了，一个线程只有一个 C 栈，longjmp 的时候，直接改掉了 C 栈的栈顶指针。如下图所示，longjmp 之后，逻辑回到了 A，那么 B 对应的整个栈帧都会被覆盖掉（相当于被抹除了）。      
 <br>
 
 ![lua-coroutine-yield](https://blog.antsmallant.top/media/blog/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/lua-coroutine-yield.png)  
@@ -206,7 +206,7 @@ false   attempt to yield across a C-call boundary
 <br>
 
 ## 深入讨论
-### lua 调用 C 函数不是使用 lua_call/lua_pcall 吗？    
+### lua 调用 C 函数是使用 lua_call/lua_pcall 吗？    
 答案：不是。   
 上文的例子中，如果把 clib 的 f1 改成这样，还会报错吗？
 ```
@@ -227,10 +227,10 @@ true    nil
 ```    
 <br>
 
-为什么不会报错呢？在 co_b 中调用 clib.f1()，看起来就是在调用一个 c 函数，这个地方难道不是用 lua_call 来调 c 函数的吗？还真不是，这个我们可以通过生成 lua 的字节码来看一下。  
+为什么不会报错呢？在 co_b 中调用 clib.f1()，看起来就是在调用一个 c 函数，这个地方难道不是用 lua_call 来调 c 函数的吗？还真不是，这个我们可以通过生成 lua 的字节码来看一下。   
 <br>
 
-生成 lua 字节码可以使用这样的命令: `luac -l -l -p <文件名>`，对于上文的 test_co_1.lua，命令是这样 `luac -l -l -p test_co_1.lua`。也可以使用这个在线的 lua bytecode explorer: [https://www.luac.nl/](https://www.luac.nl/) 进行查看，这个网站厉害的地方在于它有好多个 lua 版本可选，很方便。   
+生成 lua 字节码可以使用这样的命令: `luac -l -l -p <文件名>`，对于上文的 test_co_1.lua，命令是这样 `luac -l -l -p test_co_1.lua`。也可以使用这个在线的 lua bytecode explorer: [https://www.luac.nl/](https://www.luac.nl/) 进行查看，这个网站厉害的地方在于它有好多个 lua 版本可选，很方便。    
 <br>   
 
 上文 test_co_1.lua 用 lua bytecode explorer 生成出来的字节码是这样的：  
@@ -266,7 +266,7 @@ CALL 指令内部是如何实现的呢？可以看一下源码(lvm.c 的 luaV_ex
 ```   
 <br>
 
-可以看到 OP_CALL 只是调用了 luaD_precall，而 luaD_precall 的内部并没有调用到 lua_call/lua_pcall 或 luaD_callnoyield。（这里就不贴 luaD_precall 的源码了，比较长，感兴趣的可自己去看 https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/lvm.c ）。  
+可以看到 OP_CALL 只是调用了 luaD_precall，而 luaD_precall 的内部并没有调用到 lua_call/lua_pcall 或 luaD_callnoyield。这里就不贴 luaD_precall 的源码了，比较长，感兴趣的可自己去看 [https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/lvm.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/lvm.c) 。    
 <br>
 
 ### 怎么才能随心所欲的 yield ？
