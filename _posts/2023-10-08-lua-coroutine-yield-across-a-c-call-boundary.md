@@ -38,7 +38,8 @@ tags: [lua]
 这个作者大致是理解这个问题的，并且点出了问题的关键: “由于longjmp会使得后面的指令没机会再执行”。但是讲得不够细，对于问题产生的条件没有讲清楚。     
 <br>
 
-所以，本文将尝试更清楚的剖析这个问题。以下分析使用的 lua 版本是 5.3.6。   
+所以，本文将尝试更清楚的剖析这个问题。   
+以下分析使用的 lua 版本是 5.3.6，下载链接是 [https://lua.org/ftp/lua-5.3.6.tar.gz](https://lua.org/ftp/lua-5.3.6.tar.gz)，文档链接是 [https://lua.org/manual/5.3/](https://lua.org/manual/5.3/)。   
 <br>
 
 ## 问题剖析
@@ -139,12 +140,13 @@ function lua_yield()
 end
 
 local co_b = co.create(function()
+    print("enter co_b")
     clib.f1()
+    print("leave co_b")
 end)
 
-local ok, ret = co.resume(co_b)
-print(ok, ret)
-co.resume(co_b)
+local ok, err = co.resume(co_b)
+print(ok, err)
 ```  
 <br>
 
@@ -172,7 +174,30 @@ false   attempt to yield across a C-call boundary
 <br>
 
 ## 深入讨论
+上文的例子中，如果把 clib 的 f1 改成这样，会报错吗？
+```
+static int f1(lua_State* L) {
+    printf("enter f1\n");
+    lua_yield()
+    printf("leave f1\n");
+    return 0;
+}
+```  
 
+不会的，它的输出是这样的：   
+```
+enter co_b
+enter f1_v2
+true    nil
+```
+
+为什么不会报错呢？在 co_b 中这样调用 clib.f1()，看起来就是调用一个 c 函数，这个地方难道不是用 lua_call 来调 c 函数的吗？还真的不是，这个我们可以通过生成 lua 的字节码来看一下。  
+<br>
+
+生成 lua 字节码可以使用这样的命令: `luac -l -l -p <文件名>`，对于上文的 test_co_1.lua，命令是这样 `luac -l -l -p test_co_1.lua`。也可以通过这个网站：[https://www.luac.nl/](https://www.luac.nl/)，这个网站厉害的地方在于它有好多个 lua 版本可选，特别方便。  
+
+
+上方提到 lua_call 之后再有 yield 就会报错，那上面例子中，test_co_1.lua 的 co_b 里面，第一个调用就是 clib.f1()
 
 
 <br>
