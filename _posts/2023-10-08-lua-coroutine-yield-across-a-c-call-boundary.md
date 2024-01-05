@@ -198,7 +198,7 @@ true    nil
 
 上文 test_co_1.lua 用 lua bytecode explorer 生成出来的字节码是这样的：  
 ![lua-coroutine-yield-bytecode](https://blog.antsmallant.top/media/blog/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/lua-coroutine-yield-bytecode.png)   
-<center>图2：lua字节码1</center>
+<center>图2：test_co_1.lua 的字节码</center>
 <br>
 
 关于字节码的具体含义，可以参考这个文章：[Lua 5.3 Bytecode Reference](https://the-ravi-programming-language.readthedocs.io/en/latest/lua_bytecode_reference.html)，或是这个文章：[深入理解 Lua 虚拟机](https://cloud.tencent.com/developer/article/1648925)。     
@@ -206,7 +206,7 @@ true    nil
 
 说回 co_b，调用 clib.f1()，实际上是使用了 lua 的指令 CALL，如下图所示：  
 ![lua-coroutine-yield-bytecode-co-func](https://blog.antsmallant.top/media/blog/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/lua-coroutine-yield-bytecode-co-func.png)   
-<center>图3：lua字节码2</center>
+<center>图3：co_b 的字节码</center>
 
 <br>
 <br>
