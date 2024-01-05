@@ -232,12 +232,12 @@ CALL 指令内部是如何实现的呢？可以看一下源码(lvm.c 的 luaV_ex
 ```   
 <br>
 
-可以看到 OP_CALL 只是调用了 luaD_precall，而 luaD_precall 的内部并没有调用到 lua_call / lua_pcall 或 luaD_callnoyield。（这里就不贴 luaD_precall 的源码了，比较长，感兴趣的可自己去看）。  
+可以看到 OP_CALL 只是调用了 luaD_precall，而 luaD_precall 的内部并没有调用到 lua_call/lua_pcall 或 luaD_callnoyield。（这里就不贴 luaD_precall 的源码了，比较长，感兴趣的可自己去看）。  
 <br>
 
 ## 总结
-* 一般情况下，lua_call / lua_pcall 之后如果跟着 yield，就会报这个错：attempt to yield across a C-call boundary。问题的根本原因是 lua 协程的 yield 是通过 longjmp 实现的，longjmp 直接回退了 C 栈的指针，使得执行了 yield 的协程的 C 栈被抹掉了，那么执行到一半的 C 逻辑就不会在下次 resume 的时候继续执行。  
-* lua 提供的函数中，有些使用 lua_call / lua_pcall，容易触发这个问题，比如 lua 函数：require，c 函数：luaL_dostring、luaL_dofile；而有些使用 lua_callk / lua_pcallk 规避了这个问题，比如 lua 函数：dofile。
+* 一般情况下，lua_call/lua_pcall 之后如果跟着 yield，就会报这个错：attempt to yield across a C-call boundary。问题的根本原因是 lua 协程的 yield 是通过 longjmp 实现的，longjmp 直接回退了 C 栈的指针，使得执行了 yield 的协程的 C 栈被抹掉了，那么执行到一半的 C 逻辑就不会在下次 resume 的时候继续执行。  
+* lua 提供的函数中，有些使用 lua_call/lua_pcall，容易触发这个问题，比如 lua 函数：require，c 函数：luaL_dostring、luaL_dofile；而有些使用 lua_callk/lua_pcallk 规避了这个问题，比如 lua 函数：dofile。
 
 
 <br>
