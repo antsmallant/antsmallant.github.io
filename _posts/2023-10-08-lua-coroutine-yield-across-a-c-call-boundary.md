@@ -58,7 +58,7 @@ tags: [lua]
 那 luaD_callnoyield 具体是如何限制后续逻辑调用 yield 的呢？  
 <br>
 
-先看一下 luaD_callnoyield 的实现：   
+先看一下 luaD_callnoyield ( [ldo.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/ldo.c) ) 的实现：   
 ```
 void luaD_callnoyield (lua_State *L, StkId func, int nResults) {
   L->nny++;
@@ -68,7 +68,7 @@ void luaD_callnoyield (lua_State *L, StkId func, int nResults) {
 ```    
 <br>
 
-再看下 lua_yieldk 的实现:   
+再看下 lua_yieldk ( [ldo.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/ldo.c) ) 的实现:   
 ```
 LUA_API int lua_yieldk (lua_State *L, int nresults, lua_KContext ctx,
                         lua_KFunction k) {
@@ -89,7 +89,7 @@ LUA_API int lua_yieldk (lua_State *L, int nresults, lua_KContext ctx,
 从源码可以看出 luaD_callnoyield 是通过设置 `L->nny` 这个变量来控制的。    
 <br>
 
-那什么情况下会调用 luaD_callnoyield 呢？从源码上看有好几处，但跟我们日常开发关系密切的只有 lua_callk 及 lua_pcallk，这两个函数大同小异，就先看一下 lua_callk 吧。  
+那什么情况下会调用 luaD_callnoyield 呢？从源码上看有好几处，但跟我们日常开发关系密切的只有 lua_callk 及 lua_pcallk，这两个函数大同小异，就先看一下 lua_callk ( [lapi.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/lapi.c) ) 的实现：  
 ```
 LUA_API void lua_callk (lua_State *L, int nargs, int nresults,
                         lua_KContext ctx, lua_KFunction k) {
@@ -227,13 +227,13 @@ true    nil
 ```    
 <br>
 
-为什么不会报错呢？在 co_b 中调用 clib.f1()，看起来就是在调用一个 c 函数，这个地方难道不是用 lua_call 来调 c 函数的吗？还真不是，这个我们可以通过生成 lua 的字节码来看一下。   
+为什么不会报错呢？因为在 co_b 中调用 clib.f1() 并不是使用 lua_call/lua_pcall。那具体是什么呢？我们可以在 test_co_1.lua 对应的 lua 字节码中寻找答案。    
 <br>
 
-生成 lua 字节码可以使用这样的命令: `luac -l -l -p <文件名>`，对于上文的 test_co_1.lua，命令是这样 `luac -l -l -p test_co_1.lua`。也可以使用这个在线的 lua bytecode explorer: [https://www.luac.nl/](https://www.luac.nl/) 进行查看，这个网站厉害的地方在于它有好多个 lua 版本可选，很方便。    
+生成 lua 字节码可以使用这样的命令: `luac -l -l -p <文件名>`，对于上文的 test_co_1.lua，命令是： `luac -l -l -p test_co_1.lua`。也可以使用这个在线的 lua bytecode explorer: [https://www.luac.nl/](https://www.luac.nl/) 进行查看，这个网站厉害的地方在于它有好多个 lua 版本可选，很方便。    
 <br>   
 
-上文 test_co_1.lua 用 lua bytecode explorer 生成出来的字节码是这样的：  
+test_co_1.lua 用 lua bytecode explorer 生成出来的字节码是这样的：  
 ![lua-coroutine-yield-bytecode](https://blog.antsmallant.top/media/blog/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/lua-coroutine-yield-bytecode.png)   
 <center>图2：test_co_1.lua 的字节码</center>   
 <br>
@@ -246,7 +246,7 @@ true    nil
 <center>图3：co_b 的字节码</center>    
 <br>
 
-CALL 指令内部是如何实现的呢？可以看一下源码(lvm.c 的 luaV_execute)：  
+CALL 指令是如何实现的呢？可以看一下源码 ( [lvm.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/lvm.c) 的 luaV_execute ) ：  
 ```
       vmcase(OP_CALL) {
         int b = GETARG_B(i);
@@ -270,11 +270,11 @@ CALL 指令内部是如何实现的呢？可以看一下源码(lvm.c 的 luaV_ex
 <br>
 
 ### 怎么才能随心所欲的 yield ？
-上面的例子中
-
+上面的例子中  
+<br>
 
 ### lua 提供的函数里面，哪些容易导致这个报错？
-skynet ([https://github.com/cloudwu/skynet](https://github.com/cloudwu/skynet)) 里面调用 require 的时候很容易就报这个错 "attempt to yield across a C-call boundary"。我们看一下 require 是不是调用了 lua_call/lua_pcall，它的实现是 loadlib.c 的 ll_require，果然是使用了 lua_call。
+skynet ([https://github.com/cloudwu/skynet](https://github.com/cloudwu/skynet)) 里面调用 require 的时候很容易就报这个错 "attempt to yield across a C-call boundary"。我们看一下 require 是不是调用了 lua_call/lua_pcall，它的实现是 [loadlib.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/loadlib.c) 的 ll_require，果然是使用了 lua_call。
 ```
 static int ll_require (lua_State *L) {
   ...
@@ -285,6 +285,9 @@ static int ll_require (lua_State *L) {
   ...
 }
 ```   
+
+<br>
+
 再翻看其他源码，可以发现，常用的这两个函数：luaL_dostring、luaL_dofile，也都会调用 lua_call/lua_pcall，所以也是容易报错的。  
 <br>
 
