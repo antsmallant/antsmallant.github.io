@@ -42,23 +42,23 @@ tags: [lua]
 <br>
 
 ## 环境说明
-以下分析使用的 lua 版本是 5.3.6，下载链接: [https://lua.org/ftp/lua-5.3.6.tar.gz](https://lua.org/ftp/lua-5.3.6.tar.gz)，本人的 github 也有对应源码: https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6 。    
+以下分析使用的 lua 版本是 5.3.6，下载链接: [https://lua.org/ftp/lua-5.3.6.tar.gz](https://lua.org/ftp/lua-5.3.6.tar.gz)，本人的 github 也有对应源码: [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6) 。    
 <br>
 
-下文展示的 demo 代码都在此：https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary  
+下文展示的 demo 代码都在此：[https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary) 。      
 <br>
 
 ## 问题剖析
 首先，什么情况下才会出现这个错误？上面文章提到的 `C (skynet framework)->lua (skynet service) -> C -> lua` 或 `coroutine --> c --> coroutine --> yield  ===> 报错`，都说得太笼统了，不够精确。    
 <br>
 
-看一下 lua 源码里面的 `lua_yieldk` 函数（在 ldo.c 中）的实现，就可以知道，在一个协程的调用链中，出现一个 `luaD_callnoyield` 调用之后再 yield 就会报错，大致是这样：`... -> luaD_callnoyield -> ... -> yield`。并且，不管这个 yield 是在 c 中调用 `lua_yield` 还是在 lua 中调用 `coroutine.yield`。   
+看一下 lua 源码里面的 lua_yieldk 函数（在 ldo.c 中）的实现，就可以知道，在一个协程的调用链中，出现一个 luaD_callnoyield 调用之后再 yield 就会报错，大致是这样：`... -> luaD_callnoyield -> ... -> yield`。并且，不管这个 yield 是在 c 中调用 `lua_yield` 还是在 lua 中调用 `coroutine.yield`。   
 <br>
 
-那 `luaD_callnoyield` 具体是如何限制后续逻辑调用 `yield` 的呢？  
+那 luaD_callnoyield 具体是如何限制后续逻辑调用 yield 的呢？  
 <br>
 
-先看一下 `luaD_callnoyield` 的实现：   
+先看一下 luaD_callnoyield 的实现：   
 ```
 void luaD_callnoyield (lua_State *L, StkId func, int nResults) {
   L->nny++;
@@ -68,7 +68,7 @@ void luaD_callnoyield (lua_State *L, StkId func, int nResults) {
 ```    
 <br>
 
-再看下 `lua_yieldk` 的实现:   
+再看下 lua_yieldk 的实现:   
 ```
 LUA_API int lua_yieldk (lua_State *L, int nresults, lua_KContext ctx,
                         lua_KFunction k) {
@@ -89,16 +89,16 @@ LUA_API int lua_yieldk (lua_State *L, int nresults, lua_KContext ctx,
 ```   
 <br>
 
-从源码可以看出 `luaD_callnoyield` 是通过设置 `L->nny` 这个变量来控制的。    
+从源码可以看出 luaD_callnoyield 是通过设置 `L->nny` 这个变量来控制的。    
 <br>
 
-那什么情况下会调用 `luaD_callnoyield` 呢？从源码上看有好几处，但跟我们日常开发关系密切的只有 `lua_callk` 及 `lua_pcallk`。而这两个一般就是 c 调用 lua 的时候才会使用。    
+那什么情况下会调用 luaD_callnoyield 呢？从源码上看有好几处，但跟我们日常开发关系密切的只有 lua_callk 及 lua_pcallk。而这两个一般就是 c 调用 lua 的时候才会使用。    
 <br>
 
-ok，我们现在知道如果一个协程的调用链中，如果先出现 `lua_callk` 或 `lua_pcallk`，之后就不能有 `yield` 了。但为什么要做这样的限制呢？   
+ok，我们现在知道如果一个协程的调用链中，如果先出现 lua_callk 或 lua_pcallk，之后就不能有 yield 了。但为什么要做这样的限制呢？   
 <br>
 
-这个跟 lua 协程的实现有关，它是通过 `setjmp` 和 `longjmp` 实现的，`resume` 对应 `setjmp`，`yield` 对应 `longjmp`。`longjmp` 对于协程内部纯 lua 的栈没啥影响，因为每个协程都有一块内存来保存自己的栈，但对于 C 栈就有影响了，一个线程只有一个 C 栈，`longjmp` 的时候，直接改掉了 C 栈的栈顶指针。如下图所示，`longjmp` 之后，逻辑回到了 A，那么 B 对应的整个栈帧都会被覆盖掉（相当于被抹除了）。     
+这个跟 lua 协程的实现有关，它是通过 setjmp 和 longjmp 实现的，resume 对应 setjmp，yield 对应 longjmp。longjmp 对于协程内部纯 lua 的栈没啥影响，因为每个协程都有一块内存来保存自己的栈，但对于 C 栈就有影响了，一个线程只有一个 C 栈，longjmp 的时候，直接改掉了 C 栈的栈顶指针。如下图所示，longjmp 之后，逻辑回到了 A，那么 B 对应的整个栈帧都会被覆盖掉（相当于被抹除了）。     
 <br>
 
 ![lua-coroutine-yield](https://blog.antsmallant.top/media/blog/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/lua-coroutine-yield.png)  
