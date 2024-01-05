@@ -281,10 +281,10 @@ static int f1(lua_State* L) {
 ```    
 <br>  
  
-但是 yield 之后再次 resume，这句 `printf("leave f1\n");` 却没有被执行了。原因在上文也解释了。那要怎么做才能让它在 resume 之后被执行呢？这就得用到 lua_callk/lua_pcallk/lua_yieldk 了，这也是上文中提到的解决方案 [https://lua.org/manual/5.3/manual.html#4.7](https://lua.org/manual/5.3/manual.html#4.7) 。 
+但是 yield 之后再次 resume，这句 `printf("leave f1\n");` 却没有被执行了。原因在上文也解释了。那要怎么做才能让它在 resume 之后被执行呢？这就得用到 lua_callk/lua_pcallk/lua_yieldk 了，这也是上文中提到的解决方案 [https://lua.org/manual/5.3/manual.html#4.7](https://lua.org/manual/5.3/manual.html#4.7) 。    
 <br>
 
-举个例子说明一下怎么使用，我们这里是在 C 代码中直接 yield 的，所以使用 lua_yieldk 就够了。   
+举个例子说明一下怎么使用，我们这里是在 C 代码中直接 yield 的，所以使用 lua_yieldk 就够了。    
 <br>
 
 [clib.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/clib.c)   
@@ -339,12 +339,12 @@ true    nil
 ```  
 <br>
 
-我们通过把 `printf("leave f1_v2\n");` 放到 f1_v2_continue 里面去执行，在第二次 resume 的时候成功输出了 `leave f1_v2`。  
+我们通过把 `printf("leave f1_v2\n");` 放到 f1_v2_continue 里面去执行，在第二次 resume 的时候成功输出了 `leave f1_v2`。    
 <br>
 
 
 ### lua 提供的函数里面，哪些容易导致这个报错？
-skynet ([https://github.com/cloudwu/skynet](https://github.com/cloudwu/skynet)) 里面调用 require 的时候很容易就报这个错 "attempt to yield across a C-call boundary"。我们看一下 require 是不是调用了 lua_call/lua_pcall，它的实现是 [loadlib.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/loadlib.c) 的 ll_require，从源码上看，确实使用了 lua_call。
+skynet ([https://github.com/cloudwu/skynet](https://github.com/cloudwu/skynet)) 里面调用 require 的时候很容易就报这个错： "attempt to yield across a C-call boundary"。我们看一下 require 是不是调用了 lua_call/lua_pcall，它对应的实现是 ll_require ( [loadlib.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/loadlib.c) )，从源码上看，确实使用了 lua_call。
 ```
 static int ll_require (lua_State *L) {
   ...
@@ -375,7 +375,7 @@ static int luaB_dofile (lua_State *L) {
   lua_callk(L, 0, LUA_MULTRET, 0, dofilecont);
   return dofilecont(L, 0, 0);
 }
-```  
+```    
 <br>
 
 
