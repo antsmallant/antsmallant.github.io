@@ -223,7 +223,7 @@ true    nil
 ```    
 <br>
 
-为什么不会报错了呢？因为 co_b 里面调用 clib.f1 并不使用 lua_call/lua_pcall。具体是什么呢？我们可以在 test_co_1.lua 对应的 lua 字节码中寻找答案。    
+为什么不会报错了呢？因为 co_b 里面调用 clib.f1，其底层实现并不是使用 lua_call/lua_pcall。那具体是什么呢？我们可以在 test_co_1.lua 对应的 lua 字节码中寻找答案。    
 <br>
 
 生成 lua 字节码可以使用这样的命令: `luac -l -l -p <文件名>`，对于上文的 test_co_1.lua，命令是： `luac -l -l -p test_co_1.lua`。也可以使用这个在线的 lua bytecode explorer: [https://www.luac.nl/](https://www.luac.nl/) 进行查看，这个网站厉害的地方在于它有好多个 lua 版本可选，很方便。    
@@ -237,7 +237,7 @@ test_co_1.lua 用 lua bytecode explorer 生成出来的字节码是这样的：
 关于字节码的具体含义，可以参考这个文章：[Lua 5.3 Bytecode Reference](https://the-ravi-programming-language.readthedocs.io/en/latest/lua_bytecode_reference.html)，或是这个文章：[深入理解 Lua 虚拟机](https://cloud.tencent.com/developer/article/1648925)。     
 <br>  
 
-说回 co_b，调用 clib.f1() 实际上是使用了 lua 的 CALL 指令，如下图所示：  
+说回 co_b，调用 clib.f1 实际上是使用了 lua 的 CALL 指令，如下图所示：  
 ![lua-coroutine-yield-bytecode-co-func](https://blog.antsmallant.top/media/blog/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/lua-coroutine-yield-bytecode-co-func.png)   
 <center>图3：co_b 的字节码</center>    
 <br>
@@ -266,11 +266,11 @@ void luaV_execute (lua_State *L) {
 ```   
 <br>
 
-可以看到 OP_CALL 只是调用了 luaD_precall，而 luaD_precall 的内部并没有调用到 lua_call/lua_pcall 或 luaD_callnoyield。这里就不贴 luaD_precall 的源码了，比较长，感兴趣的可自己去看 [https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/lvm.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/lvm.c) 。    
+可以看到 OP_CALL 只是调用了 luaD_precall ( [lvm.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/lvm.c) )，而 luaD_precall 的内部并没有调用到 lua_call/lua_pcall 或 luaD_callnoyield 。    
 <br>
 
-### 怎么才能随心所欲的 yield ？
-上面的例子中把 clib 的 f1 改成这样：
+### 怎么才能随心所欲的 yield 呢？
+上面的例子中把 clib 的 f1 改成这样就可以 yield 了：  
 ```
 static int f1(lua_State* L) {
     printf("enter f1\n");
@@ -278,11 +278,13 @@ static int f1(lua_State* L) {
     printf("leave f1\n");
     return 0;
 }
-```      
-就可以 yield 了，但是 yield 之后，再次 resume，这句 `printf("leave f1\n");` 也不会再被执行了。那我们要怎么做才能让它能在 resume 之后执行呢？这就得用到 lua_callk/lua_pcallk/lua_yieldk 了，这也是上文中提到的解决方案 [https://lua.org/manual/5.3/manual.html#4.7](https://lua.org/manual/5.3/manual.html#4.7) 。 
+```    
+<br>  
+ 
+但是 yield 之后再次 resume，这句 `printf("leave f1\n");` 却没有被执行了。原因在上文也解释了。那要怎么做才能让它在 resume 之后被执行呢？这就得用到 lua_callk/lua_pcallk/lua_yieldk 了，这也是上文中提到的解决方案 [https://lua.org/manual/5.3/manual.html#4.7](https://lua.org/manual/5.3/manual.html#4.7) 。 
 <br>
 
-举个例子说明一下怎么使用，我们这里是在 C 代码中直接 yield 的，那使用 lua_yieldk 就行了。   
+举个例子说明一下怎么使用，我们这里是在 C 代码中直接 yield 的，所以使用 lua_yieldk 就够了。   
 <br>
 
 [clib.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/clib.c)   
@@ -337,7 +339,7 @@ true    nil
 ```  
 <br>
 
-我们通过把 `printf("leave f1_v2\n");` 放到 f1_v2_continue 里面去执行，成功输出了 `leave f1_v2`。  
+我们通过把 `printf("leave f1_v2\n");` 放到 f1_v2_continue 里面去执行，在第二次 resume 的时候成功输出了 `leave f1_v2`。  
 <br>
 
 
