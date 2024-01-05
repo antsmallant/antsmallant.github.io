@@ -17,7 +17,7 @@ tags: [lua]
 ## 问题背景
 使用 lua 的时候有时候会遇到这样的报错："attempt to yield across a C-call boundary"。   
 <br>
-比如这个 issue [一个关于 yield across a C-call boundary 的问题](https://github.com/cloudwu/skynet/issues/394)，云风的解释是：
+比如这个 issue：[一个关于 yield across a C-call boundary 的问题](https://github.com/cloudwu/skynet/issues/394)，云风的解释是：
 >`C (skynet framework)->lua (skynet service) -> C -> lua`
 >最后这个 lua 里如果调用了 yield 就会产生。   
 
@@ -173,8 +173,8 @@ false   attempt to yield across a C-call boundary
 那如果 lua_call 不报错，允许 co_b 去 yield，当我们再次 resume co_b 的时候，f1 的那句 `printf("leave f1\n");` 会执行吗？不会的，因为栈帧已经完全被破坏，回不来了。  
 <br>
 
-那这里有什么办法让它能正常工作？  
-
+那这里有什么办法让它能正常工作？    
+<br>
 
 ## 深入讨论
 上文的例子中，如果把 clib 的 f1 改成这样，会报错吗？
@@ -232,13 +232,12 @@ CALL 指令内部是如何实现的呢？可以看一下源码(lvm.c 的 luaV_ex
 ```   
 <br>
 
-可以看到 OP_CALL 只是调用了 luaD_precall，而 luaD_precall 的内部并没有调用到 lua_call / lua_pcall 或 luaD_callnoyield。（这里就不贴 luaD_precall 的源码了，比较长，感兴趣的可自己去看）。
-
+可以看到 OP_CALL 只是调用了 luaD_precall，而 luaD_precall 的内部并没有调用到 lua_call / lua_pcall 或 luaD_callnoyield。（这里就不贴 luaD_precall 的源码了，比较长，感兴趣的可自己去看）。  
+<br>
 
 ## 总结
 * 一般情况下，lua_call / lua_pcall 之后如果跟着 yield，就会报这个错：attempt to yield across a C-call boundary。问题的根本原因是 lua 协程的 yield 是通过 longjmp 实现的，longjmp 直接回退了 C 栈的指针，使得执行了 yield 的协程的 C 栈被抹掉了，那么执行到一半的 C 逻辑就不会在下次 resume 的时候继续执行。  
-* lua 提供的函数中，有些使用 lua_call / lua_pcall，容易触发这个问题，比如 lua 函数：require，c 函数：luaL_dostring、luaL_dofile。
-* lua 提供的函数中，有些使用 lua_callk / lua_pcallk 规避了这个问题，比如 lua 函数：dofile。
+* lua 提供的函数中，有些使用 lua_call / lua_pcall，容易触发这个问题，比如 lua 函数：require，c 函数：luaL_dostring、luaL_dofile；而有些使用 lua_callk / lua_pcallk 规避了这个问题，比如 lua 函数：dofile。
 
 
 <br>
