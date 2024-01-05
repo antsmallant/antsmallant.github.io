@@ -38,8 +38,14 @@ tags: [lua]
 这个作者大致是理解这个问题的，并且点出了问题的关键: “由于longjmp会使得后面的指令没机会再执行”。但是讲得不够细，对于问题产生的条件没有讲清楚。     
 <br>
 
-所以，本文将尝试更清楚的剖析这个问题。   
-以下分析使用的 lua 版本是 5.3.6，下载链接是 [https://lua.org/ftp/lua-5.3.6.tar.gz](https://lua.org/ftp/lua-5.3.6.tar.gz)，文档链接是 [https://lua.org/manual/5.3/](https://lua.org/manual/5.3/)。   
+所以，本文将尝试更清楚的剖析这个问题。    
+<br>
+
+## 环境说明
+以下分析使用的 lua 版本是 5.3.6，下载链接: [https://lua.org/ftp/lua-5.3.6.tar.gz](https://lua.org/ftp/lua-5.3.6.tar.gz)，本人的 github 也有对应源码: https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6 。    
+<br>
+
+下文展示的 demo 代码都在此：https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary  
 <br>
 
 ## 问题剖析
@@ -151,7 +157,7 @@ print(ok, err)
 <br>
 
 编译&执行：    
-（install/include 和 install/lib 是把 lua 源码先 make，然后再 make local 得到的）
+（install/include 和 install/lib 是把 lua 源码先 make，然后 make local 得到的）
 ```
 gcc -fPIC -shared -g -o clib.so clib.c -I "/home/ant/code/lua/lua-5.3.6/install/include" -L "/home/ant/code/lua/lua-5.3.6/install/lib"
 
@@ -235,7 +241,7 @@ CALL 指令内部是如何实现的呢？可以看一下源码(lvm.c 的 luaV_ex
 ```   
 <br>
 
-可以看到 OP_CALL 只是调用了 luaD_precall，而 luaD_precall 的内部并没有调用到 lua_call/lua_pcall 或 luaD_callnoyield。（这里就不贴 luaD_precall 的源码了，比较长，感兴趣的可自己去看）。  
+可以看到 OP_CALL 只是调用了 luaD_precall，而 luaD_precall 的内部并没有调用到 lua_call/lua_pcall 或 luaD_callnoyield。（这里就不贴 luaD_precall 的源码了，比较长，感兴趣的可自己去看 https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/lvm.c ）。  
 <br>
 
 ## 总结
