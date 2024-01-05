@@ -185,19 +185,22 @@ static int f1(lua_State* L) {
     printf("leave f1\n");
     return 0;
 }
-```  
+```      
+<br>
 
 不会的，它的输出是这样的：   
 ```
 enter co_b
 enter f1
 true    nil
-```
+```    
+<br>
 
 为什么不会报错呢？在 co_b 中调用 clib.f1()，看起来就是在调用一个 c 函数，这个地方难道不是用 lua_call 来调 c 函数的吗？还真不是，这个我们可以通过生成 lua 的字节码来看一下。  
 <br>
 
 生成 lua 字节码可以使用这样的命令: `luac -l -l -p <文件名>`，对于上文的 test_co_1.lua，命令是这样 `luac -l -l -p test_co_1.lua`。也可以使用这个在线的 lua bytecode explorer: [https://www.luac.nl/](https://www.luac.nl/) 进行查看，这个网站厉害的地方在于它有好多个 lua 版本可选，很方便。   
+<br>   
 
 上文 test_co_1.lua 用 lua bytecode explorer 生成出来的字节码是这样的：  
 ![lua-coroutine-yield-bytecode](https://blog.antsmallant.top/media/blog/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/lua-coroutine-yield-bytecode.png)   
