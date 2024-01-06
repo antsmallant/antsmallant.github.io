@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "lua 多线程环境下可以使用 print 吗？"
-date:   2023-06-25
+title: "lua 多线程环境下可以使用 print 吗？"
+date: 2023-06-25
 last_modified_at: 2023-06-25
 categories: [lua]
 ---

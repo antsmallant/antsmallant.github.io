@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "linux 性能及负载探究"
-date:   2023-06-27
+title: "linux 性能及负载探究"
+date: 2023-06-27
 last_modified_at: 2023-06-27
 categories: [linux]
 ---

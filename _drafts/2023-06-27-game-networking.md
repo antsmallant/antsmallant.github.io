@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "游戏的网络同步技术基础课"
-date:   2023-06-27
+title: "游戏的网络同步技术基础课"
+date: 2023-06-27
 last_modified_at: 2023-06-27
 categories: [game network]
 ---

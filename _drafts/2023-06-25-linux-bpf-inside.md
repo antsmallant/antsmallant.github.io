@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "linux bpf"
-date:   2023-06-25
+title: "linux bpf"
+date: 2023-06-25
 last_modified_at: 2023-06-25
 categories: [linux]
 ---

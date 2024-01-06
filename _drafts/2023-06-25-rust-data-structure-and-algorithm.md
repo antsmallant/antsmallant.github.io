@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "rust 常见数据结构与算法"
-date:   2023-06-25
+title: "rust 常见数据结构与算法"
+date: 2023-06-25
 last_modified_at: 2023-06-25
 categories: [rust]
 ---

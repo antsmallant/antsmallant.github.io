@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "分区分服场景下的db设计"
-date:   2023-07-11
+title: "分区分服场景下的db设计"
+date: 2023-07-11
 last_modified_at: 2023-07-11
 categories: [gameserver]
 ---

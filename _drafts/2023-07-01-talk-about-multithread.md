@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "谈一谈多线程编程"
-date:   2023-07-01
+title: "谈一谈多线程编程"
+date: 2023-07-01
 last_modified_at: 2023-07-01
 categories: [linux]
 ---

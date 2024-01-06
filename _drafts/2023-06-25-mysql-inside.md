@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "mysql 若干问题探究"
-date:   2023-06-25
+title: "mysql 若干问题探究"
+date: 2023-06-25
 last_modified_at: 2023-06-25
 categories: [mysql]
 ---

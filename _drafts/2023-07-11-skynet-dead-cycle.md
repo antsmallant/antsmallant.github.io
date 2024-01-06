@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "skynet 死循环问题的处理"
-date:   2023-07-11
+title: "skynet 死循环问题的处理"
+date: 2023-07-11
 last_modified_at: 2023-07-11
 categories: [skynet]
 ---
