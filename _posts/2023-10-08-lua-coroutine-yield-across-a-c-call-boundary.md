@@ -11,7 +11,6 @@ tags: [lua]
 {:toc}
 <br/>
 
-
 ## 问题背景
 使用 lua 的时候有时候会遇到这样的报错："attempt to yield across a C-call boundary"。   
 
@@ -329,7 +328,8 @@ static int luaB_dofile (lua_State *L) {
   lua_callk(L, 0, LUA_MULTRET, 0, dofilecont);
   return dofilecont(L, 0, 0);
 }
-```       
+```   
+<br/>     
      
 
 ## 总结
