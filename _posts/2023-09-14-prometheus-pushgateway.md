@@ -72,6 +72,12 @@ prometheus 会从多个 target pull 指标，但它并不是很关心一个指�
 * 具体做法  
 直接在每个物理服上部署一个 pushgateway，服务于本服上的所有游戏服进程；prometheus 修改配置，从多个 pushgateway pull 数据。虽然 pushgateway 数量增加了，但其实没增加多少，以 1000 个游戏服，每个物理服部署 50 个游戏服计算，也才 20 个 pushgateway，对 prometheus 来说压力不大。     
 
+<br/>
+
+以上优化完，整个拓扑大概是这样：  
+![部署结构](https://blog.antsmallant.top/media/blog/2023-09-14-prometheus-pushgateway/prometheus-pushgateway.png)  
+<center>图1：部署结构</center>   
+
 
 ## 优化过程回顾
 在 pushgateway 的 github 主页 ([https://github.com/prometheus/pushgateway](https://github.com/prometheus/pushgateway))，README.md 最开始就写了设计初衷：
