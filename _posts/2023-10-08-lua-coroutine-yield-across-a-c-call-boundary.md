@@ -337,3 +337,7 @@ static int luaB_dofile (lua_State *L) {
 * 要规避这个问题，可以使用 lua_callk/lua_pcallk/lua_yieldk，显式的指定一个函数作为 yield 回来后要执行的内容。
 * lua 提供的函数中，有些使用了 lua_call/lua_pcall，很容易触发这个问题，比如 lua 函数：require，c 函数：luaL_dostring、luaL_dofile；而有些使用了 lua_callk/lua_pcallk 规避这个问题，比如 lua 函数：dofile。  
 * 使用这个网站 [https://www.luac.nl/](https://www.luac.nl/)，或者使用 `luac -l -l -p <文件名>` 可以查看 lua 字节码。  
+
+<br/>
+
+本文首发于我的博客：[https://blog.antsmallant.top/2023/10/08/lua-coroutine-yield-across-a-c-call-boundary](https://blog.antsmallant.top/2023/10/08/lua-coroutine-yield-across-a-c-call-boundary)
