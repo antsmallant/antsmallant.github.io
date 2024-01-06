@@ -26,8 +26,7 @@ obsidian 安装这个插件: Obsidian Git，简单配置一下，就可以自动
 
 #### iOS 同步   
 * 参照这个文章 [42号笔记：iOS上使用iSH的git同步Obsidian](https://zhuanlan.zhihu.com/p/565028534)
-* 下载一个名为 iSH 的 APP，运行之，执行以下命令安装需要的软件
-
+* 下载一个名为 iSH 的 APP，运行之，执行以下命令安装需要的软件    
     ```
     apk update
     apk add git
@@ -36,27 +35,24 @@ obsidian 安装这个插件: Obsidian Git，简单配置一下，就可以自动
     apk add openrc
     ```
 
-* 打开 iSH，创建一个新的目录并执行 mount，执行时 iOS 会以交互的方式让你选择目录，选到 obsidian 这一级即可，脚本如下：
+* 打开 iSH，创建一个新的目录并执行 mount，执行时 iOS 会以交互的方式让你选择目录，选到 obsidian 这一级即可，脚本如下：   
     ```
     cd ~ && mkdir obs
     mount -t ios-unsafe . obs
     ```
 
-* 进入 iSH，git clone 日志仓库
+* 进入 iSH，git clone 日志仓库    
     ```
     cd ~/obs
     git clone git@github.com:xxx/obnote.git
     ```
 
-* 打开 obisidian，选择打开 obnote 这个日志库
+* 打开 obisidian，选择打开 obnote 这个日志库    
 
 * 解决 iOS 上 iSH 执行 git 命令时经常卡住的问题  
-这是一个普遍存在的问题。这个 issue：[Git Commands Stuck Forever #1640](https://github.com/ish-app/ish/issues/1640) 提到 mount 时使用 `ios-unsafe` 参数可以解决，实际使用之后，还是经常会卡住。     
-后来，我在这个 issue [rsyncing into mount point from fileprovider doesn't quite work after iSH restart](https://github.com/ish-app/ish/issues/1581) 中找到一个终极解决办法：即每次 git 操作前都重新 mount。     
-于是直接写了个小脚本放在 iSH 上，脚本里包含 mount + git pull 的逻辑，每次运行它就行。     
-
-```
-cd ~ && mount -t ios-unsafe . obs    
-cd obs/obnote && git pull --rebase
-git add . && git commit -m "sync" && git push
-```
+这是一个普遍存在的问题。这个 issue：[Git Commands Stuck Forever #1640](https://github.com/ish-app/ish/issues/1640) 提到 mount 时使用 `ios-unsafe` 参数可以解决，实际使用之后，还是经常会卡住。后来，我在这个 issue [rsyncing into mount point from fileprovider doesn't quite work after iSH restart](https://github.com/ish-app/ish/issues/1581) 中找到一个终极解决办法：即每次 git 操作前都重新 mount。于是直接写了个小脚本放在 iSH 上，脚本里包含 mount + git pull 的逻辑，每次运行它就行。   
+    ```
+    cd ~ && mount -t ios-unsafe . obs    
+    cd obs/obnote && git pull --rebase
+    git add . && git commit -m "sync" && git push
+    ```
