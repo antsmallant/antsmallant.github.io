@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "prometheus pushgateway 性能差的解决办法"
-date:   2023-09-14
+title: "prometheus pushgateway 性能差的解决办法"
+date: 2023-09-14
 last_modified_at: 2023-09-14
 categories: [后端]
 tags: [server, devops]

@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "obsidian 使用以及 git 多终端同步"
-date:   2023-10-07
+title: "obsidian 使用以及 git 多终端同步"
+date: 2023-10-07
 last_modified_at: 2023-10-07
 categories: [工具]
 tags: [tools]
