@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "lua: attempt to yield across a C-call boundary 的原因分析"
-date:   2023-10-08
+title: "lua: attempt to yield across a C-call boundary 的原因分析"
+date: 2023-10-08
 last_modified_at: 2023-10-08
 categories: [lua]
 tags: [lua]
@@ -14,7 +14,7 @@ tags: [lua]
 ## 问题背景
 使用 lua 的时候有时候会遇到这样的报错："attempt to yield across a C-call boundary"。   
 
-比如这个 issue：[一个关于 yield across a C-call boundary 的问题](https://github.com/cloudwu/skynet/issues/394)，云风的解释是：
+比如这个 issue：[一个关于 yield across a C-call boundary 的问题](https://github.com/cloudwu/skynet/issues/394)，云风的解释是：   
 >`C (skynet framework)->lua (skynet service) -> C -> lua`
 >最后这个 lua 里如果调用了 yield 就会产生。   
 
