@@ -36,7 +36,9 @@ paxos 是 Leslie Lamport 发明的算法，用于实现分布式系统的强一�
 
 
 ## classic paxos
-classic paxos 是最原始的 paxos 算法，它的主要特点是：  
+classic paxos 是最原始的 paxos 算法。  
+
+### 主要特点
 * 使用两轮 rpc (多数派写) 来确定一个值
 * 一个值确定之后就不再修改
 * 算法过程通常划分为 phase_1, phase_2 
@@ -44,6 +46,11 @@ classic paxos 是最原始的 paxos 算法，它的主要特点是：
 * proposer 必须能够生成全局递增的唯一 id (这个是多数派读写的要求)
 * phase_1 用于表明 proposer 即将写入一个值，此阶段可能会运行失败
 * phase_2 是当 phase_1 运行成功的时候，确定的写
+
+### 算法过程
+假设 acceptor 总个数为 n  
+
+phase_1: proposer 获得一个全局递增的 rnd，并向 n 个 acceptor 发送 phase_1 请求 phase_1 {rnd = rnd}，如果获得到超过 1/2*n 个返回，并且这些返回中的 v 与 vrnd 都是相同的，则表示
 
 
 ## multi paxos
@@ -53,7 +60,6 @@ classic paxos 必须使用两轮 rpc 来确定一个值，效率不高。multi p
 
 
 ## fast paxos
-
 
 
 # 参考
