@@ -118,7 +118,7 @@ moba 类型游戏其实是可以使用状态同步的，王者荣耀采用帧同
 
 翻译过来就是使用一系列算法去 extrapolate，是在特定场景下进行 extrapolate，是对 extrapolate 的一种特定应用。extrapolate 就是外插值，在游戏中就是根据已知的离散点，去推测出未来的点，也就是推算出未来的路径。与外插值相对的是内插值(interpolation), 内插在游戏中的应用就是根据已经的离散的点，在此范围内拟合出一条曲线，即移动路径。    
 
-DR 实际上就是对于本玩家之外的其他物体进行预测的一种手段。  
+DR 实际上就是对于本玩家之外的其他物体进行预测的一种手段，本玩家直接使用预测回滚的方式进行预测了。  
 
 #### 区域裁剪
 比如通过 AOI 算法，裁剪需要下发给客户端的消息包。  
@@ -189,10 +189,10 @@ Gabriel Gambetta 这几篇文章关于状态同步相关优化手段的文章写
 [7] Philip Orwig. Replay Technology in 'Overwatch': Kill Cam, Gameplay, and Highlights ( https://gdcvault.com/play/1024053/Replay-Technology-in-Overwatch-Kill ). 2017.       
 [8] kevinan.《守望先锋》回放技术-阵亡镜头、全场最佳和亮眼表现 ( https://www.sohu.com/a/162289484_483399 ). 2017.8.      
 [9] 李清. Cocos 技术派｜实时竞技小游戏技术实现分享 ( https://indienova.com/indie-game-development/real-time-mini-game-explained/ ). 2019.9.   
-[10] 烟雨迷离半世殇. 基于行为树的MOBA技能系统：基于状态帧的战斗，技能编辑器与录像回放系统设计 ( https://www.lfzxb.top/nkgmoba-framestepstate-architecture-battle-design/ ). 2021.11   
+[10] 烟雨迷离半世殇. 基于行为树的MOBA技能系统：基于状态帧的战斗，技能编辑器与录像回放系统设计 ( https://www.lfzxb.top/nkgmoba-framestepstate-architecture-battle-design/ ). 2021.11.   
 [11] 邓君. 王者技术修炼之路 ( https://youxiputao.com/articles/11842 ). 2017.5.  
-[12] Jesse Aronson. Dead Reckoning: Latency Hiding for Networked Games ( https://www.gamedeveloper.com/programming/dead-reckoning-latency-hiding-for-networked-games#close-modal ). 1997.9    
-[13] kevinan. 暴雪Tim Ford：《守望先锋》架构设计与网络同步 ( https://www.sohu.com/a/148848770_466876 ). 2017.6   
+[12] Jesse Aronson. Dead Reckoning: Latency Hiding for Networked Games ( https://www.gamedeveloper.com/programming/dead-reckoning-latency-hiding-for-networked-games#close-modal ). 1997.9.    
+[13] kevinan. 暴雪Tim Ford：《守望先锋》架构设计与网络同步 ( https://www.sohu.com/a/148848770_466876 ). 2017.6.   
 [14] 韦易笑. 帧同步游戏中使用 Run-Ahead 隐藏输入延迟 ( https://www.skywind.me/blog/archives/2746 ). 2023.10.  
 [15] valve. Source Multiplayer Networking ( https://developer.valvesoftware.com/wiki/Source_Multiplayer_Networking ). 
-[16] Gabriel Gambetta. Fast-Paced Multiplayer (Part II): Client-Side Prediction and Server Reconciliation ( https://www.gabrielgambetta.com/client-side-prediction-server-reconciliation.html ).
+[16] Gabriel Gambetta. Fast-Paced Multiplayer (Part II): Client-Side Prediction and Server Reconciliation ( https://www.gabrielgambetta.com/client-side-prediction-server-reconciliation.html ).    
