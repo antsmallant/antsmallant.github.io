@@ -1,8 +1,8 @@
 ---
 layout: post
 title: "游戏中的网络同步技术"
-date: 2023-06-27
-last_modified_at: 2023-06-27
+date: 2023-10-11
+last_modified_at: 2023-10-11
 categories: [game networking]
 ---
 
