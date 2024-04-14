@@ -142,7 +142,7 @@ private void OnOptimisticFrame(Session client, GM_Frame recvData)
 缓冲区的问题在于会增加延迟。  
 
 #### 预测回滚
-不止是状态同步，帧同步也是可以 “预测回滚” 的，但叫法是 timewarp。大体做法都是记录快照，然后出现冲突的时候回滚到快照点。韦易笑的这篇文章《帧同步游戏中使用 Run-Ahead 隐藏输入延迟》[14]介绍过这种做法。这一篇文章《》更为详细的介绍了在具体的帧同步项目中使用预测回滚。 
+不止是状态同步，帧同步也是可以 “预测回滚” 的，但叫法是 timewarp。大体做法都是记录快照，然后出现冲突的时候回滚到快照点。韦易笑的这篇文章《帧同步游戏中使用 Run-Ahead 隐藏输入延迟》[14]介绍过这种做法。
 
 ---
 
@@ -181,7 +181,7 @@ DR 实际上就是对于本玩家之外的其他物体进行预测的一种手�
 #### 具体实现
 预测回滚跟延迟补偿，对于客户端管理数据的能力提出了很高的要求，客户端要能够记录最近n帧的快照（世界状态），然后在检测到自身与服务端数据有冲突时进行和解，所谓和解，即回滚到发生冲突的那一帧，先把状态修改为服务端的权威状态，然后再应用本地的预测 input。   
 
-为了实现对数据的灵活管理，守望先锋团队用上了 ECS 架构。   
+守望先锋团队抱着试一试的心态采用的 ECS 架构，恰好可以很好的 “管理快速增长的代码复杂性” [13]，并且由于数据与逻辑完全分离，对于做数据回滚特别的方便。云风也分析到 ECS 架构对于做预测回滚会有很大帮助 [17]。
 
 有精细的实现，也有粗糙的实现，我在 github 上看过一份源码（[https://github.com/tsymiar/TheLastBattle](https://github.com/tsymiar/TheLastBattle) ），这款 moba 游戏里面也实现了客户端“预测先行”，但它只是把 local player 的朝向修改了，并没有真正的先移动。代码在此：
 [https://github.com/tsymiar/TheLastBattle/blob/main/Client/Assets/Scripts/GameEntity/Iselfplayer.cs](https://github.com/tsymiar/TheLastBattle/blob/main/Client/Assets/Scripts/GameEntity/Iselfplayer.cs):     
@@ -207,7 +207,8 @@ public override void OnExecuteEntityAdMove()
 用 udp 替代 tcp，是一种很有效的优化。可以使用可靠 udp (reliable udp) 比如 kcp，也可以使用带冗余信息的不可靠 udp。也可以把二者结合起来，比如这样的一个方案：kcp+fec。  
 
 #### 逻辑和显示的分离
-这个主要是为了做插值使得视觉平滑，减少抖动感。客户端在实现上区分了“逻辑帧”与“显示帧”，比如玩家的位置会有个逻辑上的位置 position，会有个显示上的位置 view_position，显示帧 tick 的时候，通过插值算法，将 view_position 插值到 position，比如这样：
+这个主要是为了做插值使得视觉平滑，减少抖动感。客户端在实现上区分了“逻辑帧”与“显示帧”，比如玩家的位置会有个逻辑上的位置 position，会有个显示上的位置 view_position，显示帧 tick 的时候，通过插值算法，将 view_position 插值到 position，比如这样：  
+
 ```
 player.view_pos = Vector3.Lerp(player.view_pos, player.pos, 0.5f);
 player.view_rot = Quaternion.Slerp(player.view_rot, player.rot, 0.5f);
@@ -283,3 +284,4 @@ Gabriel Gambetta 这几篇文章关于状态同步相关优化手段的文章写
 [14] 韦易笑. 帧同步游戏中使用 Run-Ahead 隐藏输入延迟 ( https://www.skywind.me/blog/archives/2746 ). 2023.10.  
 [15] valve. Source Multiplayer Networking ( https://developer.valvesoftware.com/wiki/Source_Multiplayer_Networking ). 
 [16] Gabriel Gambetta. Fast-Paced Multiplayer (Part II): Client-Side Prediction and Server Reconciliation ( https://www.gabrielgambetta.com/client-side-prediction-server-reconciliation.html ).    
+[17] 云风. 浅谈《守望先锋》中的 ECS 构架 ( https://blog.codingnow.com/2017/06/overwatch_ecs.html ). 2017.6.26
