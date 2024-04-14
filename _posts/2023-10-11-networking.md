@@ -111,7 +111,7 @@ moba 类型游戏其实是可以使用状态同步的，王者荣耀采用帧同
 ## 状态同步的实现及优化手段
 
 #### 客户端预测回滚 (client-side predition and rollback)
-客户端预测是为了更及时的反馈，如果玩家自己的每一个动作都要等待服务器的回应才执行，那么会严重受到延迟的影响，体验很糟糕，所以一般都会采取客户端预测，即客户端先行，客户端在把 input 发给服务器的同时，自己先执行动作，待等到服务器回包的时候再根据情况，如果状态不一致，则需要回滚（Gabriel Gambetta 的这篇文章里也称为和解），这个过程是这样的，客户端回滚到状态不一致的那一帧，然后再重新应用这一帧之后的所有 inputs，此为最新的预测状态，之后再通过插值平滑的过度到此状态。 
+客户端预测是为了更及时的反馈，如果玩家自己的每一个动作都要等待服务器的回应才执行，那么会严重受到延迟的影响，体验很糟糕，所以一般都会采取客户端预测，即客户端先行，客户端在把 input 发给服务器的同时，自己先执行动作，待等到服务器回包的时候再根据情况，如果状态不一致，则需要回滚（Gabriel Gambetta 的这篇文章里也称为和解），这个过程是这样的，客户端回滚到状态不一致的那一帧，然后再重新应用这一帧之后的所有 inputs，此为最新的预测状态，之后再通过插值平滑的过度到此状态。  
 
 
 #### 延迟补偿 (lag compensation)
@@ -132,6 +132,29 @@ DR 实际上就是对于本玩家之外的其他物体进行预测的一种手�
 #### 区域裁剪
 比如通过 AOI 算法，裁剪需要下发给客户端的消息包。  
 
+
+#### 具体实现
+预测回滚跟延迟补偿，对于客户端管理数据的能力提出了很高的要求，客户端要能够记录最近n帧的快照（世界状态），然后在检测到自身与服务端数据有冲突时进行和解，所谓和解，即回滚到发生冲突的那一帧，先把状态修改为服务端的权威状态，然后再应用本地的预测 input。   
+
+为了实现对数据的灵活管理，守望先锋团队用上了 ECS 架构。   
+
+有精细的实现，也有粗糙的实现，我在 github 上看过一份源码（[https://github.com/tsymiar/TheLastBattle](https://github.com/tsymiar/TheLastBattle) ），这款 moba 游戏里面也实现了客户端“预测先行”，但它只是把 local player 的朝向修改了，并没有真正的先移动。代码在此：
+[https://github.com/tsymiar/TheLastBattle/blob/main/Client/Assets/Scripts/GameEntity/Iselfplayer.cs](https://github.com/tsymiar/TheLastBattle/blob/main/Client/Assets/Scripts/GameEntity/Iselfplayer.cs):     
+
+```
+public override void OnExecuteEntityAdMove()
+{
+    base.OnExecuteEntityAdMove();
+    Quaternion DestQuaternion = Quaternion.LookRotation(EntityFSMDirection);
+    Quaternion sMidQuater = Quaternion.Lerp(RealEntity.GetTransform().rotation, DestQuaternion, 10 * Time.deltaTime);
+    RealEntity.GetTransform().rotation = sMidQuater;
+    this.RealEntity.PlayerRunAnimation();
+}
+```  
+
+这做法算是一种很经济的实现了 ：），应用范围也很广，比如在释放技能的时候，经常会搞一段很长时间的前摇，比如说 100 毫秒，等前摇完的时候，服务器回包也基本上收到了（当然，这里也要求服务端以比较高的帧率运行，否则 100 毫秒还不足以覆盖 RTT + 服务器帧时长），然后就可以播放真正的技能特效了。    
+
+
 ---
 
 ## 通用的优化手段
@@ -139,7 +162,11 @@ DR 实际上就是对于本玩家之外的其他物体进行预测的一种手�
 用 udp 替代 tcp，是一种很有效的优化。可以使用可靠 udp (reliable udp) 比如 kcp，也可以使用带冗余信息的不可靠 udp。也可以把二者结合起来，比如这样的一个方案：kcp+fec。  
 
 #### 逻辑和显示的分离
-这个主要是为了做插值使得视觉平滑，减少抖动感。  
+这个主要是为了做插值使得视觉平滑，减少抖动感。客户端在实现上区分了“逻辑帧”与“显示帧”，比如玩家的位置会有个逻辑上的位置 position，会有个显示上的位置 view_position，显示帧 tick 的时候，通过插值算法，将 view_position 插值到 position，比如这样：
+```
+player.view_pos = Vector3.Lerp(player.view_pos, player.pos, 0.5f);
+player.view_rot = Quaternion.Slerp(player.view_rot, player.rot, 0.5f);
+```
 
 ---
 
@@ -151,7 +178,7 @@ DR 实际上就是对于本玩家之外的其他物体进行预测的一种手�
 
 ## 推荐阅读
 
-韦易笑对网络同步有深入研究，非常有洞察力，他 N 年前的文章放到现在都完全不过时：  
+韦易笑对于网络同步有深入研究，是比较权威的：    
 * [关于 “帧同步” 说法的历史由来](https://zhuanlan.zhihu.com/p/165293116)
 * [再谈网游同步技术](https://www.skywind.me/blog/archives/1343)
 * [服务端十二小时（百度网盘提取码:2j9b）](https://pan.baidu.com/s/1oBvmdQgsUWKrmU8g9o3u5Q)    
@@ -160,13 +187,13 @@ DR 实际上就是对于本玩家之外的其他物体进行预测的一种手�
 * [影子跟随算法（2007年老文一篇）](https://www.skywind.me/blog/archives/1145)
 
 
-Jerish 关于网络同步的发展史，考察得很深入，很不错：   
+Jerish 对于网络同步的发展史考察得很深入，值得仔细阅读：    
 * [细谈网络同步在游戏历史中的发展变化（上）](https://zhuanlan.zhihu.com/p/130702310)
 * [细谈网络同步在游戏历史中的发展变化（中）](https://zhuanlan.zhihu.com/p/164686867)
 * [细谈网络同步在游戏历史中的发展变化（下）](https://zhuanlan.zhihu.com/p/336869551)   
 
 
-Glen Fielder 对于网络同步有特别深入的研究，也在 gdc 上面发表过公开的技术分享，他的这几篇文章写得很不错：   
+Glen Fielder 算是网络同步这块的世界级专家了，也在 gdc 上做过技术分享，这几篇文章写得很不错：   
 * [Introduction to Networked Physics](https://gafferongames.com/post/introduction_to_networked_physics/)
 * [What Every Programmer Needs To Know About Game Networking](https://gafferongames.com/post/what_every_programmer_needs_to_know_about_game_networking/)
 * [Deterministic Lockstep](https://gafferongames.com/post/deterministic_lockstep/)
