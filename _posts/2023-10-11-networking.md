@@ -89,15 +89,60 @@ moba 类型游戏其实是可以使用状态同步的，王者荣耀采用帧同
 可以使用的优化手段包括这些。  
 
 #### 乐观帧
-现在事实意义上的帧同步算法都是用的乐观帧了，即每帧固定时长，超时不等待。
+现在事实意义上的帧同步算法都是用的乐观帧了，即每帧固定时长，超时不等待。  
 
-#### buffering
+但这里有个细节问题，客户端发送给服务端的 input 数据包都是带有客户端帧号的，那么服务端是否要抛弃客户端过时的 input 数据包，即客户端帧号小于当前服务端帧号的数据包？   
+
+比如这个 demo 项目（[https://github.com/JiepengTan/Lockstep-Tutorial](https://github.com/JiepengTan/Lockstep-Tutorial)）就是会抛弃客户端 input 数据包的。 [https://github.com/JiepengTan/Lockstep-Tutorial/blob/master/Server/Src/SimpleServer/Src/Server/Game.cs](https://github.com/JiepengTan/Lockstep-Tutorial/blob/master/Server/Src/SimpleServer/Src/Server/Game.cs):    
+```
+void C2G_PlayerInput(Player player, BaseMsg data){
+    ...
+    if (input.Tick < Tick) {
+        return;
+    }
+    ...
+}
+```
+
+这样抛弃是否会带来问题？似乎是有问题的，即一个延迟高的客户端，它的 input 永远不会被服务端应用。我认为这样是不妥的，那么如何实现才是好的呢？   
+
+参考另一个 demo ( [https://github.com/Enanyy/Frame](https://github.com/Enanyy/Frame) )，这个实现不会抛弃客户端过时的 input 数据包，代码在此（ [https://github.com/Enanyy/Frame/blob/master/FrameServer/FrameServer/Program.cs](https://github.com/Enanyy/Frame/blob/master/FrameServer/FrameServer/Program.cs) ）：
+
+```
+private void OnOptimisticFrame(Session client, GM_Frame recvData)
+{
+
+    int roleId = recvData.roleId;
+
+    long frame = recvData.frame;
+
+    Debug.Log(string.Format("Receive roleid={0} serverframe:{1} clientframe:{2} command:{3}", roleId, mCurrentFrame, frame,recvData.command.Count),ConsoleColor.DarkYellow);
+    
+    if (mFrameDic.ContainsKey(mCurrentFrame) == false)
+    {
+        mFrameDic[mCurrentFrame] = new Dictionary<int, List<Command>>();
+    }
+    for (int i = 0; i < recvData.command.Count; ++i)
+    {
+        //乐观模式以服务器收到的时间为准
+        Command frameData = new Command(recvData.command[i].frame, recvData.command[i].type, recvData.command[i].data, mFrameTime);
+        if (mFrameDic[mCurrentFrame].ContainsKey(roleId) == false)
+        {
+            mFrameDic[mCurrentFrame].Add(roleId, new List<Command>());
+        }
+        mFrameDic[mCurrentFrame][roleId].Add(frameData);
+    }
+}
+```
+
+
+#### 关于 buffering
 针对延迟以及网络抖动，可以通过增加缓冲区的方式来对抗：
 输入 -> 缓冲区 -> 渲染   
 缓冲区的问题在于会增加延迟。  
 
 #### 预测回滚
-不止是状态同步，帧同步也是可以 “预测回滚” 的，但叫法是 time warp。大体做法都是记录快照，然后出现冲突的时候回滚到快照点。韦易笑的这篇文章《帧同步游戏中使用 Run-Ahead 隐藏输入延迟》[14]介绍过这种做法。这一篇文章《》更为详细的介绍了在具体的帧同步项目中使用预测回滚。 
+不止是状态同步，帧同步也是可以 “预测回滚” 的，但叫法是 timewarp。大体做法都是记录快照，然后出现冲突的时候回滚到快照点。韦易笑的这篇文章《帧同步游戏中使用 Run-Ahead 隐藏输入延迟》[14]介绍过这种做法。这一篇文章《》更为详细的介绍了在具体的帧同步项目中使用预测回滚。 
 
 ---
 
@@ -171,6 +216,9 @@ player.view_rot = Quaternion.Slerp(player.view_rot, player.rot, 0.5f);
 ---
 
 ## 一些问题的探讨
+#### 守望先锋的分享里面提到的服务器预测是怎么回事？
+
+
 #### fps 中 Peeker’s advantage
 知乎的这个 answer （https://www.zhihu.com/question/29076648/answer/1946885829）介绍了这个问题，产生的原因，解决办法。 
 
