@@ -3,7 +3,8 @@ layout: post
 title: "现代 C++"
 date: 2024-04-15
 last_modified_at: 2024-04-15
-categories: [lang]
+categories: [c++]
+tags: [c++]
 ---
 
 学习一门语言，我觉得分两方面，一方面是了解如何使用，另一方面是了解内部原理。本文主要讲如何使用，会介绍现代 C++ 的一些最有用的新特性，并尝试筛选出一个适合日常开发的特性子集。  
