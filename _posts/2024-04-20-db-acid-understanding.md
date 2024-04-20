@@ -1,8 +1,8 @@
 ---
 layout: post
 title: "数据库事务之ACID"
-date: 2018-02-11
-last_modified_at: 2018-02-11
+date: 2024-04-20
+last_modified_at: 2024-04-20
 categories: [db]
 tags: [db, acid]
 ---
