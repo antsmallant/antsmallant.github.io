@@ -3,7 +3,7 @@ layout: post
 title: "数据库事务之ACID"
 date: 2024-04-20
 last_modified_at: 2024-04-20
-categories: [db]
+categories: [数据库]
 tags: [db, acid]
 ---
 
