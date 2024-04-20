@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "游戏开发-战斗系统"
+title: "游戏开发之战斗系统"
 date: 2023-06-10
 last_modified_at: 2023-06-10
-categories: [game]
+categories: [游戏开发]
 tags: [game, battle]
 ---
 
