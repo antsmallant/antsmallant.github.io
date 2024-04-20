@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "关系数据库之ACID的理解"
+title: "数据库事务之ACID"
 date: 2018-02-11
 last_modified_at: 2018-02-11
 categories: [db]
