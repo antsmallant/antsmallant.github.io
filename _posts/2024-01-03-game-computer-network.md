@@ -1,10 +1,10 @@
 ---
 layout: post
-title: "关于网络"
+title: "游戏开发之网络常识"
 date: 2024-01-03
 last_modified_at: 2024-01-03
-categories: [计算机理论]
-tags: [network]
+categories: [游戏开发]
+tags: [game, net]
 ---
 
 * 目录  
