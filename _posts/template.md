@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "template"
+title: "文章标题"
 date: 2018-02-11
 last_modified_at: 2018-02-11
-categories: []
+categories: [分类]
 tags: []
 ---
 
