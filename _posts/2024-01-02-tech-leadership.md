@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "游戏开发-技术团队管理"
+title: "游戏开发之技术团队管理"
 date: 2024-01-02
 last_modified_at: 2024-01-02
 categories: [游戏开发]
