@@ -177,28 +177,48 @@ demo 地址： [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/b
 ### LT vs ET
 这是 epoll 的两种工作模式，LT 代表水平触发，ET 代表边缘触发，默认模式是 LT。  
 
-LT 表示 epoll_wait 获得该句柄的事件通知后，可以不处理该事件，下次 epoll_wait 时还能获得该事件通知，直到应用程序处理了该事件。     
+LT 表示 epoll_wait 获得该句柄的事件通知后，可以不处理该事件，下次 epoll_wait 时还能获得该事件通知，直到应用程序处理了该事件。      
 
 ET 表示 epoll_wait 获得该句柄的事件通知后，必须立即处理，下次 epoll_wait 不会再收此事件通知。  
+
+通俗的理解就是：LT 模式下，一个 socket 处于可读或可写时，epoll_wait 都会返回该 socket；ET 模式下，一个 socket 从不可读变为可读或从不可写变为可写时，epoll_wait 才会返回该 socket。  
 
 ET 模式看起来高效一些，但实际上编程复杂度更高很多，容易出现一些错误，所以实现上采用 LT 是一种更稳妥的做法。  
 
 
+### LT 模式下写的问题
+LT 模式下，当 socket 可写，会不停的触发可写事件，应该怎么办?   
+
+这个问题有两种策略：  
+
+策略1：需要写的时候，才注册 socket 的 epollout 事件，等写完的时候，反注册 epollout 事件。    
+
+策略2：先写，遇到 EAGAIN 错误的时候再注册 socket 的 epollout 事件，等写完的时候，反注册 epollout 事件。  
+
+策略2更好一些，可以避免写一点点数据也要注册并等待 epollout 事件。  
+
+
 ## EAGAIN and EWOULDBLOCK 的意义
-epoll 使用 ET 模式处理 EPOLLIN 事件的时候，对于非阻塞 IO，如果返回结果小于 0，则要判断 errno，如果 errno 是 EAGAIN 或 EWOULDBLOCK，则表示此次数据已经读取完毕了，可以放心的结束本次读取，下次 epoll_wait 可以重新获得该事件通知。    
+ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 IO，如果返回结果小于 0，则要判断 errno，如果 errno 是 EAGAIN 或 EWOULDBLOCK，则表示此次数据已经读取完毕了，可以放心的结束本次读取，下次 epoll_wait 可以重新获得该事件通知。     
 
 那么 EAGAIN, EWOULDBLOCK 表示什么意思？  
-
-
+实际上，EWOULDBLOCK 的值与 EAGAIN 相等，EWOULDBLOCK 
 
 
 ---
 
-# 阻塞 vs 非阻塞
+# 一些 socket 错误码的含义
+
+## 对端关闭了 socket，此时 socket read 会怎么样
+
+
+## socket read 返回 0
 
 ---
 
-# 同步 vs 异步
+# 阻塞 vs 非阻塞，同步 vs 异步
+这两个容易搞混的词，其实我在这篇文章已经剖析过了 [几个概念的含义：同步、异步、阻塞、非阻塞](https://blog.antsmallant.top/2024/01/19/synchronous-asynchronous-blocking-nonblocking) 。   
+
 
 ---
 
