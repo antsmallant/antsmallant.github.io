@@ -49,16 +49,13 @@ tcp 为什么需要3次握手才能建立连接呢？为什么刚好 3 次就够
 
 举个例子，A给B发2个消息，第一个消息50个字节长，第二个消息100个字节长，假设初始序列号是 0，那么。  
 
-
-
-
 ## tcp 释放连接
 
 
 ## tcp 和 udp 可以监听同一个端口吗
 可以。  
 
-ipv4 包头有个 8 bit 的 protocol 字段 (ipv6 对应的字段名叫 Next header，大小也是 8 bit)，可以区分更上层的协议。其中 udp 的值是 17，tcp 的值是 6。
+ipv4 包头有个 8 bit 的 protocol 字段 (ipv6 对应的字段名叫 Next header，大小也是 8 bit)，可以区分更上层的协议。其中 udp 的值是 17，tcp 的值是 6。  
 
 ![ipv4-head](https://blog.antsmallant.top/media/blog/2024-01-03-network/ipv4-head.png)
 <center>图2：ipv4包头 [2]</center>  
@@ -68,6 +65,9 @@ ipv4 包头有个 8 bit 的 protocol 字段 (ipv6 对应的字段名叫 Next hea
 在这里（ https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers ）可以看到 100 多个其他的协议。  
 ![ip protocals](https://blog.antsmallant.top/media/blog/2024-01-03-network/ip-protocols.png)
 <center>图3：ip protocals [3]</center>  
+
+
+## tcp 的劣势
 
 
 ## tcp 常用工具
@@ -144,9 +144,6 @@ nc -lu 9999
 三、传输文件    
 
 
-
-
-
 ### tcpdump
 
 
@@ -168,6 +165,40 @@ tcp 状态是一个颇为复杂的知识点，tcp 连接总共有 11 种状态�
 游戏里面经常用到 kcp，下面讲讲它的性能以及工作原理。  
 
 
+---
+
+# epoll
+
+## 一个 demo
+demo 地址： [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/epoll_demo](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/epoll_demo)
+
+## epoll 注意事项
+
+### LT vs ET
+这是 epoll 的两种工作模式，LT 代表水平触发，ET 代表边缘触发，默认模式是 LT。  
+
+LT 表示 epoll_wait 获得该句柄的事件通知后，可以不处理该事件，下次 epoll_wait 时还能获得该事件通知，直到应用程序处理了该事件。     
+
+ET 表示 epoll_wait 获得该句柄的事件通知后，必须立即处理，下次 epoll_wait 不会再收此事件通知。  
+
+ET 模式看起来高效一些，但实际上编程复杂度更高很多，容易出现一些错误，所以实现上采用 LT 是一种更稳妥的做法。  
+
+
+## EAGAIN and EWOULDBLOCK 的意义
+epoll 使用 ET 模式处理 EPOLLIN 事件的时候，对于非阻塞 IO，如果返回结果小于 0，则要判断 errno，如果 errno 是 EAGAIN 或 EWOULDBLOCK，则表示此次数据已经读取完毕了，可以放心的结束本次读取，下次 epoll_wait 可以重新获得该事件通知。    
+
+那么 EAGAIN, EWOULDBLOCK 表示什么意思？  
+
+
+
+
+---
+
+# 阻塞 vs 非阻塞
+
+---
+
+# 同步 vs 异步
 
 ---
 
