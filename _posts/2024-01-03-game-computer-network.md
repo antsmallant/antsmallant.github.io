@@ -167,7 +167,7 @@ tcp 状态是一个颇为复杂的知识点，tcp 连接总共有 11 种状态�
 
 ---
 
-# epoll
+# io模式之 epoll
 
 ## 一个 demo
 demo 地址： [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/epoll_demo](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/epoll_demo)
