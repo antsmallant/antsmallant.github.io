@@ -175,7 +175,7 @@ tcp 状态是一个颇为复杂的知识点，tcp 连接总共有 11 种状态�
 
 ---
 
-# io模式之 epoll
+# io 模型之 epoll
 
 ## 一个 demo
 demo 地址： [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/epoll_demo](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/epoll_demo)
@@ -220,7 +220,7 @@ ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 IO，如果返回�
 
 ---
 
-# 一些 socket 错误码的含义
+# 一些 socket 问题
 
 ## 对端关闭了 socket，此时 socket read 会怎么样
 
