@@ -147,7 +147,6 @@ nc -lu 9999
 ### tcpdump
 
 
-
 ## tcp 问题诊断
 
 ### tcp 状态
@@ -174,6 +173,8 @@ demo 地址： [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/b
 
 ## epoll 注意事项
 
+这篇文章写的不错：[Epoll在LT和ET模式下的读写方式](https://kimi.pub/515.html)
+
 ### LT vs ET
 这是 epoll 的两种工作模式，LT 代表水平触发，ET 代表边缘触发，默认模式是 LT。  
 
@@ -198,11 +199,14 @@ LT 模式下，当 socket 可写，会不停的触发可写事件，应该怎么
 策略2更好一些，可以避免写一点点数据也要注册并等待 epollout 事件。  
 
 
-## EAGAIN and EWOULDBLOCK 的意义
+### EAGAIN and EWOULDBLOCK 的意义
 ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 IO，如果返回结果小于 0，则要判断 errno，如果 errno 是 EAGAIN 或 EWOULDBLOCK，则表示此次数据已经读取完毕了，可以放心的结束本次读取，下次 epoll_wait 可以重新获得该事件通知。     
 
 那么 EAGAIN, EWOULDBLOCK 表示什么意思？  
-实际上，EWOULDBLOCK 的值与 EAGAIN 相等，EWOULDBLOCK 
+实际上，EWOULDBLOCK 的值与 EAGAIN 相等，EAGAIN 表示当前内核没准备好（不可读或不可写），需要等待。  
+
+
+### ET 模式下 accept 的问题
 
 
 ---
