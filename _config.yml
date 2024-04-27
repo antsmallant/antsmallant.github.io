@@ -8,7 +8,7 @@ name: antsmallant
 description: >- # this means to ignore newlines until "baseurl:"
   提问，总结，书写
 keywords: [c++ c golang lua database]
-baseurl:
+baseurl: '' # the subpath of your site, e.g. /`blog
 url: 'https://blog.antsmallant.top' # the base hostname & protocol for your site, e.g. http://example.com
 domain: 'blog.antsmallant.top' # the domain name for your site, e.g. example.com
 author: 'antsmallant'
