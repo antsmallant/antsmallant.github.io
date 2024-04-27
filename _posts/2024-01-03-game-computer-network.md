@@ -54,11 +54,22 @@ tcp 为什么需要3次握手才能建立连接呢？为什么刚好 3 次就够
 
 这个跟 tcp 的目标有关，tcp 是一个保证消息包可靠有序到达的协议，在设计上为了达到这个目标，在包头加了两个字段，一个叫 **序列号码**，另一个叫 **确认号码**，通过这一对数字来实现可靠有序的特性。  
 
+tcp 握手就是为了协商双方的初始序列号码，要完成这个过程，按常识来讲，至少也要两次握手：  
+
+* 第一次握手 A 发送一个携带序列号码的数据包给 B。  
+* 第二次握手 B 收到后回复一个确认包。
+
+以上是最理想的情况，如果
+
 举个例子，A给B发2个消息，第一个消息50个字节长，第二个消息100个字节长，假设初始序列号是 0，那么。  
 
-
+![tcp state machine](https://blog.antsmallant.top/media/blog/2024-01-03-network/tcp-3-handshake.png)
+<center>图2：tcp state machine [5]</center>   
 
 ## tcp 释放连接
+
+
+## tcp 重传、滑动窗口、拥塞控制、流量控制
 
 
 ## tcp 和 udp 可以监听同一个端口吗
@@ -156,14 +167,16 @@ nc -lu 9999
 ### tcpdump
 
 
-## tcp 问题诊断
 
-### tcp 状态
+## tcp 状态
 tcp 状态是一个颇为复杂的知识点，tcp 连接总共有 11 种状态，下面这个图只是对于 tcp 状态机的一种简化，实际上还有很多细节的，具体可以看 rfc9293（ https://www.rfc-editor.org/rfc/rfc9293 ）。   
 
 ![tcp state machine](https://blog.antsmallant.top/media/blog/2024-01-03-network/Tcp_state_diagram.png)
 <center>图4：tcp state machine [4]</center>   
 
+### tcp 之 close_wait
+
+### tcp 之 time_wait
 
 ---
 
@@ -222,11 +235,10 @@ ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 IO，如果返回�
 
 # 一些 socket 问题
 
-## 对端关闭了 socket，此时 socket read 会怎么样
+## socket read 返回 0
+当对端正常的关闭之后，read 就会返回 0。   
 
-
-## socket read 返回 0 的情况
-参考： [socket 中read返回0的情况](https://www.cnblogs.com/kkshaq/p/4456179.html)
+有时候 select 返回可读，但是 read 得到的结果是 0。这并不矛盾，select > 0 表示套接字有东西，read = 0 表示这东西是对方关闭连接。  
 
 ---
 
@@ -253,3 +265,4 @@ ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 IO，如果返回�
 [2] wikipedia. Internet_Protocol_version_4 ( https://en.wikipedia.org/wiki/Internet_Protocol_version_4 ).    
 [3] wikipedia. List_of_IP_protocol_numbers ( https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers ).   
 [4] wikipedia. Tcp_state_diagram ( https://upload.wikimedia.org/wikipedia/en/5/57/Tcp_state_diagram.png ).   
+[5] wikimedia. Tcp-handshake ( https://upload.wikimedia.org/wikipedia/commons/9/98/Tcp-handshake.svg ).
