@@ -71,7 +71,7 @@ tcp 握手就是为了协商双方的初始序列号，要完成这个过程，�
 ![tcp connect handshake](https://blog.antsmallant.top/media/blog/2024-01-03-network/tcp-3-handshake.png)
 <center>图2：tcp connect handshake [5]</center>   
 
-值得注意的是，第三次握手的数据包是可以携带数据的，
+值得注意的是，第三次握手的数据包是可以携带数据的。  
 
 ## tcp 释放连接
 
