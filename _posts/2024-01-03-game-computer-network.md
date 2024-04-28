@@ -47,29 +47,33 @@ tags: [game, net]
 
 
 ## tcp 建立连接
-tcp 为什么需要3次握手才能建立连接呢？为什么刚好 3 次就够了呢？  
+tcp 为什么需要三次握手才能建立连接呢？为什么刚好三次就够了呢？  
+
+先直接说结论：
+* 防止重复历史连接的初始化
+* 确定好双方的初始序列号
+* 
 
 ![tcp-head](https://blog.antsmallant.top/media/blog/2024-01-03-network/tcp-head.png)
 <center>图1：tcp包头 [1]</center>
 
 这个跟 tcp 的目标有关，tcp 是一个保证消息包可靠有序到达的协议，在设计上为了达到这个目标，在包头加了两个字段，一个叫 **序列号码**，另一个叫 **确认号码**，通过这一对数字来实现可靠有序的特性。  
 
-tcp 握手就是为了协商双方的初始序列号码，要完成这个过程，按常识来讲，至少也要两次握手：  
+tcp 握手就是为了协商双方的初始序列号，要完成这个过程，至少也要两次握手：  
 
-* 第一次握手 A 发送一个携带序列号码的数据包给 B。  
-* 第二次握手 B 收到后回复一个确认包。
+* 第一次：A -> B 一个SYN包（seq=a）。  
+* 第二次：B -> A 一个SYN-ACK包（seq=b,ack=a+1）。
 
-以上是最理想的情况，如果
+以上如果网络一切正常，也是能 work 的，双方互相发送了自己的初始 seq 号码。  
 
-举个例子，A给B发2个消息，第一个消息50个字节长，第二个消息100个字节长，假设初始序列号是 0，那么。  
+但如果发生这样的情况，就会出问题了：第一次握手的包隔了好久才到达 B，以至于 A 以为握手不成功，把连接断开了，但 B 不知道连接断开了，它回了一个 SYN-ACK 包之后yi
 
-![tcp state machine](https://blog.antsmallant.top/media/blog/2024-01-03-network/tcp-3-handshake.png)
-<center>图2：tcp state machine [5]</center>   
+![tcp connect handshake](https://blog.antsmallant.top/media/blog/2024-01-03-network/tcp-3-handshake.png)
+<center>图2：tcp connect handshake [5]</center>   
+
+值得注意的是，第三次握手的数据包是可以携带数据的，
 
 ## tcp 释放连接
-
-
-## tcp 重传、滑动窗口、拥塞控制、流量控制
 
 
 ## tcp 和 udp 可以监听同一个端口吗
@@ -87,7 +91,19 @@ ipv4 包头有个 8 bit 的 protocol 字段 (ipv6 对应的字段名叫 Next hea
 <center>图3：ip protocals [3]</center>  
 
 
-## tcp 的劣势
+## tcp 状态
+tcp 状态是一个颇为复杂的知识点，tcp 连接总共有 11 种状态，下面这个图只是对于 tcp 状态机的一种简化，实际上还有很多细节的，具体可以看 rfc9293（ https://www.rfc-editor.org/rfc/rfc9293 ）。   
+
+![tcp state machine](https://blog.antsmallant.top/media/blog/2024-01-03-network/Tcp_state_diagram.png)
+<center>图4：tcp state machine [4]</center>   
+
+### tcp 之 close_wait
+
+### tcp 之 time_wait
+
+
+## tcp 重传、滑动窗口、拥塞控制、流量控制
+
 
 
 ## tcp 常用工具
@@ -165,18 +181,6 @@ nc -lu 9999
 
 
 ### tcpdump
-
-
-
-## tcp 状态
-tcp 状态是一个颇为复杂的知识点，tcp 连接总共有 11 种状态，下面这个图只是对于 tcp 状态机的一种简化，实际上还有很多细节的，具体可以看 rfc9293（ https://www.rfc-editor.org/rfc/rfc9293 ）。   
-
-![tcp state machine](https://blog.antsmallant.top/media/blog/2024-01-03-network/Tcp_state_diagram.png)
-<center>图4：tcp state machine [4]</center>   
-
-### tcp 之 close_wait
-
-### tcp 之 time_wait
 
 ---
 
