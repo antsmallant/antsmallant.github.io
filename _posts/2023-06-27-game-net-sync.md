@@ -250,17 +250,25 @@ public override void OnExecuteEntityAdMove()
 ---
 
 ## 通用的优化手段
-#### udp 代替 tcp
+### udp 代替 tcp
 用 udp 替代 tcp，是一种很有效的优化。可以使用可靠 udp (reliable udp) 比如 kcp，也可以使用带冗余信息的不可靠 udp。也可以把二者结合起来，比如这样的一个方案：kcp+fec。  
 
 
-#### 逻辑和显示的分离
+### 逻辑和显示的分离
 这个主要是为了做插值使得视觉平滑，减少抖动感。客户端在实现上区分了“逻辑帧”与“显示帧”，比如玩家的位置会有个逻辑上的位置 position，会有个显示上的位置 view_position，显示帧 tick 的时候，通过插值算法，将 view_position 插值到 position，比如这样：  
 
 ```
 player.view_pos = Vector3.Lerp(player.view_pos, player.pos, 0.5f);
 player.view_rot = Quaternion.Slerp(player.view_rot, player.rot, 0.5f);
 ```
+
+
+### 障眼法-隐藏延迟的 trick
+通过前摇之类的方式来隐藏网络延迟的做法，我这里统称为障眼法。下面举一些实战的例子
+
+halo 2011 年的这个 GDC 分享，展示一种如何让扔手雷看起来更流畅的做法。  
+
+
 
 ---
 
@@ -374,10 +382,13 @@ Gabriel Gambetta 这几篇文章关于状态同步相关优化手段的文章写
 ---
 
 ## 参考
-[1] Glenn Fiedler. Deterministic Lockstep ( https://gafferongames.com/post/deterministic_lockstep/ ). 2014.11.   
-[2] Glenn Fiedler. Snapshot Interpolation ( https://gafferongames.com/post/snapshot_interpolation/ ). 2014.11.   
+[1] Glenn Fiedler. "Deterministic Lockstep". 2014.11. Available: https://gafferongames.com/post/deterministic_lockstep/   
+
+[2] Glenn Fiedler. "Snapshot Interpolation". 2014.11. Available: https://gafferongames.com/post/snapshot_interpolation/    
+
 [3] Glenn Fiedler. State Synchronization ( https://gafferongames.com/post/state_synchronization/ ). 2015.1.    
-[4] 韦易笑. 关于 “帧同步”说法的历史由来 ( https://zhuanlan.zhihu.com/p/165293116 ). 2020.08.     
+
+[4] 韦易笑. "关于 “帧同步”说法的历史由来". 2020.08.  Available: https://zhuanlan.zhihu.com/p/165293116   
 [5] 韦易笑. 帧锁定同步算法 ( https://www.skywind.me/blog/archives/131 ). 2007.2.     
 [6] Glenn Fiedler. Snapshot Compression ( https://gafferongames.com/post/snapshot_compression/ ). 2015.1.       
 [7] Philip Orwig. Replay Technology in 'Overwatch': Kill Cam, Gameplay, and Highlights ( https://gdcvault.com/play/1024053/Replay-Technology-in-Overwatch-Kill ). 2017.       
@@ -388,9 +399,10 @@ Gabriel Gambetta 这几篇文章关于状态同步相关优化手段的文章写
 [12] Jesse Aronson. Dead Reckoning: Latency Hiding for Networked Games ( https://www.gamedeveloper.com/programming/dead-reckoning-latency-hiding-for-networked-games#close-modal ). 1997.9.    
 [13] kevinan. 暴雪Tim Ford：《守望先锋》架构设计与网络同步 ( https://www.sohu.com/a/148848770_466876 ). 2017.6.   
 [14] 韦易笑. 帧同步游戏中使用 Run-Ahead 隐藏输入延迟 ( https://www.skywind.me/blog/archives/2746 ). 2023.10.  
-[15] valve. Source Multiplayer Networking ( https://developer.valvesoftware.com/wiki/Source_Multiplayer_Networking ). 
+[15] valve. Source Multiplayer Networking ( https://developer.valvesoftware.com/wiki/Source_Multiplayer_Networking ).    
 [16] Gabriel Gambetta. Fast-Paced Multiplayer (Part II): Client-Side Prediction and Server Reconciliation ( https://www.gabrielgambetta.com/client-side-prediction-server-reconciliation.html ).    
-[17] 云风. 浅谈《守望先锋》中的 ECS 构架 ( https://blog.codingnow.com/2017/06/overwatch_ecs.html ). 2017.6.26
-[18] co lin. 深入探索AOI算法 ( https://zhuanlan.zhihu.com/p/201588990 ) . 2020.8.28
-[19] riotgames. PEEKING INTO VALORANT'S NETCODE ( https://technology.riotgames.com/news/peeking-valorants-netcode ). 2020.7.28
-[20] 天美工作室. FPS游戏中，在玩家的延时都不一样的情况下是如何做到游戏的同步性的？ ( https://www.zhihu.com/question/29076648/answer/1946885829 ). 2021.6.18
+[17] 云风. 浅谈《守望先锋》中的 ECS 构架 ( https://blog.codingnow.com/2017/06/overwatch_ecs.html ). 2017.6.26.   
+[18] co lin. 深入探索AOI算法 ( https://zhuanlan.zhihu.com/p/201588990 ) . 2020.8.28.   
+[19] riotgames. PEEKING INTO VALORANT'S NETCODE ( https://technology.riotgames.com/news/peeking-valorants-netcode ). 2020.7.28.   
+[20] 天美工作室. FPS游戏中，在玩家的延时都不一样的情况下是如何做到游戏的同步性的？ ( https://www.zhihu.com/question/29076648/answer/1946885829 ). 2021.6.18.    
+[21] Bungie: David Aldridge. GDC 2011: I Shot You First: Networking the Gameplay of Halo: Reach ( https://www.youtube.com/watch?v=h47zZrqjgLc ). 2011.   
