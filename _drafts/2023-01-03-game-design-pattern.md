@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "文章标题"
-date: 2018-02-11
-last_modified_at: 2018-02-11
-categories: [分类]
+title: "游戏开发之设计模式"
+date: 2024-01-05
+last_modified_at: 2024-01-05
+categories: [游戏开发]
 tags: []
 ---
 
@@ -11,7 +11,3 @@ tags: []
 {:toc}
 <br/>
 
-Content here
-
-## image example
-![lua-coroutine-yield](https://blog.antsmallant.top/media/blog/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/lua-coroutine-yield.png)  
