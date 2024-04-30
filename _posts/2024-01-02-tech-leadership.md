@@ -66,10 +66,31 @@ tags: [game]
 ## 技术上的选择
 经常需要面临一些技术上的选择，这个很考验技术功底，试举几例。  
 
-一、当需要做优化的时候，你会怎么开展？    
-优化是个很危险的东西，正如这个分享[2]里说的： 
-![lua-coroutine-yield](https://blog.antsmallant.top/media/blog/2023-06-27-game-networking/halo-optimize-optimization-is-dangerous.png)  
-<center>图1：halo : optimization-is-dangerous[2]</center>
+### 怎么开展优化？
+
+优化是个很危险的东西，正如这个 halo 在 GDC2011 分享[2]里说的： 
+![halo : optimization-is-dangerous](https://blog.antsmallant.top/media/blog/2023-06-27-game-networking/halo-optimize-optimization-is-dangerous.png)  
+<center>图1：halo : optimization-is-dangerous[2]</center>   
+
+<br/>
+
+既然危险，那要怎么开展呢？分享[2]里面也说了关键的要素：数据支撑。也就是要使用各种工具，对实际的问题进行测量得到数据，再对数据进行分析。不要靠猜测或直觉去做任何优化。否则将可能是获得 1% 的优化效果，但却导致一两个星期的 bug fix。  
+
+![halo-optimize-inspection-tools-are-the-key](https://blog.antsmallant.top/media/blog/2023-06-27-game-networking/halo-optimize-inspection-tools-are-the-key.png)  
+<center>图2：halo : halo-optimize-inspection-tools-are-the-key[2]</center>
+
+<br/>
+
+聊到这个，就不得不提起我做过的数据库优化了。我的第三份工作是在一个规模较小的游戏公司做高级游戏服务端开发，做的是一款 MMOARPG 游戏，老板也是做游戏服务端出身的，他在开会的时候特别会挑战，我第一次参会的时候就见识到他的威力了，我的同事被喷得特别惨，因为他们做的东西没有数据支撑，基本上是靠猜测的。  
+
+而当轮到我对做的数据库优化工作做汇报的时候，我准备得很充足。优化前，我就做了大量的log埋点，进行数据收集、数据分析，精准的定位出数据库性能问题，并且还区分了优先级；优化中，扎扎实实的完成了优化；优化后，对优化结果进行量化，确认优化到位。   
+
+所以，老板对我的工作赞不绝口：）   
+
+
+### 设计模式的必要性
+
+
 
 
 
@@ -82,9 +103,11 @@ tags: [game]
 作为 leader，是不能听任刺头破坏团队纪律，影响 10x 生产力的。我觉得处理步骤可以如下：    
 1、直接面谈，具体指出问题，并且与其探讨具体需要怎么改进，如果对方做出合适的改变，那么刺头改造结束，否则进入第2步；   
 
-2、无法改变刺头，只能解雇，这里要分两种情况，即 2.1 刺头不是关系户，那么直接有请 hr 帮忙，妥善的解雇；2.2 刺头是关系户，就跟更上一层沟通清楚所有的厉害关系，如果最终判定刺头的存在，对于我们实现终极目标是会有正向作用的，那么只能忍着了。   
+2、无法改变刺头，只能解雇，这里要分两种情况，即:   
+  2.1 刺头不是关系户，那么直接有请 hr 帮忙，妥善的解雇；   
+  2.2 刺头是关系户，就跟更上一层沟通清楚所有的厉害关系，如果最终判定刺头的存在，对于我们实现终极目标是会有正向作用的，那么只能忍着了。     
 
-3、如果对于 2.2，自己无法接受，那么找机会跑路就是了：）  
+3、如果对于 2.2，自己无法接受，那么找机会跑路就是了：）   
 
 引出另一个问题，为什么刺头会被招聘进来，是否能在面试环节筛选掉？  
 
