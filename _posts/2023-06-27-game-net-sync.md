@@ -266,9 +266,19 @@ player.view_rot = Quaternion.Slerp(player.view_rot, player.rot, 0.5f);
 ### 障眼法-隐藏延迟的 trick
 通过前摇之类的方式来隐藏网络延迟的做法，我这里统称为障眼法。下面举一些实战的例子
 
-halo 2011 年的这个 GDC 分享，展示一种如何让扔手雷看起来更流畅的做法。  
+halo 2011 年的这个 GDC 分享，展示一种如何让扔手雷看起来更流畅的做法，这里面的关键是：在合适的地方隐藏网络延迟。  
 
+尝试一，按下按键，等待服务器回应之后再播放扔的动画，这种体验非常差：
+![](https://blog.antsmallant.top/media/blog/2023-06-27-game-networking/halo-grenade-throw-attempt-1.png)  
+<center>halo-grenade-throw-attempt-1[21]</center>
 
+尝试二，按下按键，播放扔的动画，同时发消息给服务器，客户端播放完动画不等服务器响应直接扔出手雷，这种做法虽然没有延迟，但是违背了服务器权威的原则：
+![halo-grenade-throw-attempt-2](https://blog.antsmallant.top/media/blog/2023-06-27-game-networking/halo-grenade-throw-attempt-2.png)  
+<center>halo-grenade-throw-attempt-2[21]</center>
+
+尝试三，这也是halo 的最终实现方案，按下按键立即播放扔的动画，同时发消息给服务器，等收到回包再实际扔出手雷：  
+![halo-grenade-throw-attempt-3](https://blog.antsmallant.top/media/blog/2023-06-27-game-networking/halo-grenade-throw-attempt-3.png)  
+<center>halo-grenade-throw-attempt-3[21]</center>
 
 ---
 
