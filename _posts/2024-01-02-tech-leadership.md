@@ -67,7 +67,9 @@ tags: [game]
 经常需要面临一些技术上的选择，这个很考验技术功底，试举几例。  
 
 一、当需要做优化的时候，你会怎么开展？    
-优化是个很危险的东西，
+优化是个很危险的东西，正如这个分享[2]里说的： 
+![lua-coroutine-yield](https://blog.antsmallant.top/media/blog/2023-06-27-game-networking/halo-optimize-optimization-is-dangerous.png)  
+<center>图1：halo : optimization-is-dangerous[2]</center>
 
 
 

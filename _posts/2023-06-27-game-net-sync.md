@@ -389,20 +389,37 @@ Gabriel Gambetta 这几篇文章关于状态同步相关优化手段的文章写
 [3] Glenn Fiedler. State Synchronization ( https://gafferongames.com/post/state_synchronization/ ). 2015.1.    
 
 [4] 韦易笑. "关于 “帧同步”说法的历史由来". 2020.08.  Available: https://zhuanlan.zhihu.com/p/165293116   
+
 [5] 韦易笑. 帧锁定同步算法 ( https://www.skywind.me/blog/archives/131 ). 2007.2.     
+
 [6] Glenn Fiedler. Snapshot Compression ( https://gafferongames.com/post/snapshot_compression/ ). 2015.1.       
+
 [7] Philip Orwig. Replay Technology in 'Overwatch': Kill Cam, Gameplay, and Highlights ( https://gdcvault.com/play/1024053/Replay-Technology-in-Overwatch-Kill ). 2017.       
+
 [8] kevinan.《守望先锋》回放技术-阵亡镜头、全场最佳和亮眼表现 ( https://www.sohu.com/a/162289484_483399 ). 2017.8.      
+
 [9] 李清. Cocos 技术派｜实时竞技小游戏技术实现分享 ( https://indienova.com/indie-game-development/real-time-mini-game-explained/ ). 2019.9.   
+
 [10] 烟雨迷离半世殇. 基于行为树的MOBA技能系统：基于状态帧的战斗，技能编辑器与录像回放系统设计 ( https://www.lfzxb.top/nkgmoba-framestepstate-architecture-battle-design/ ). 2021.11.   
+
 [11] 邓君. 王者技术修炼之路 ( https://youxiputao.com/articles/11842 ). 2017.5.  
+
 [12] Jesse Aronson. Dead Reckoning: Latency Hiding for Networked Games ( https://www.gamedeveloper.com/programming/dead-reckoning-latency-hiding-for-networked-games#close-modal ). 1997.9.    
+
 [13] kevinan. 暴雪Tim Ford：《守望先锋》架构设计与网络同步 ( https://www.sohu.com/a/148848770_466876 ). 2017.6.   
+
 [14] 韦易笑. 帧同步游戏中使用 Run-Ahead 隐藏输入延迟 ( https://www.skywind.me/blog/archives/2746 ). 2023.10.  
+
 [15] valve. Source Multiplayer Networking ( https://developer.valvesoftware.com/wiki/Source_Multiplayer_Networking ).    
+
 [16] Gabriel Gambetta. Fast-Paced Multiplayer (Part II): Client-Side Prediction and Server Reconciliation ( https://www.gabrielgambetta.com/client-side-prediction-server-reconciliation.html ).    
+
 [17] 云风. 浅谈《守望先锋》中的 ECS 构架 ( https://blog.codingnow.com/2017/06/overwatch_ecs.html ). 2017.6.26.   
+
 [18] co lin. 深入探索AOI算法 ( https://zhuanlan.zhihu.com/p/201588990 ) . 2020.8.28.   
+
 [19] riotgames. PEEKING INTO VALORANT'S NETCODE ( https://technology.riotgames.com/news/peeking-valorants-netcode ). 2020.7.28.   
+
 [20] 天美工作室. FPS游戏中，在玩家的延时都不一样的情况下是如何做到游戏的同步性的？ ( https://www.zhihu.com/question/29076648/answer/1946885829 ). 2021.6.18.    
+
 [21] Bungie: David Aldridge. GDC 2011: I Shot You First: Networking the Gameplay of Halo: Reach ( https://www.youtube.com/watch?v=h47zZrqjgLc ). 2011.   
