@@ -282,7 +282,7 @@ halo 2011 年的这个 GDC 分享，展示一种如何让扔手雷看起来更�
 ![halo-grenade-throw-attempt-2](https://blog.antsmallant.top/media/blog/2023-06-27-game-networking/halo-grenade-throw-attempt-2.png)  
 <center>halo-grenade-throw-attempt-2[21]</center>
 
-尝试三，这也是halo 的最终实现方案，按下按键立即播放扔的动画，同时发消息给服务器，等收到回包再实际扔出手雷：  
+尝试三，这也是 halo 的最终实现方案，按下按键立即播放扔的动画，同时发消息给服务器，等收到回包再实际扔出手雷：  
 ![halo-grenade-throw-attempt-3](https://blog.antsmallant.top/media/blog/2023-06-27-game-networking/halo-grenade-throw-attempt-3.png)  
 <center>halo-grenade-throw-attempt-3[21]</center>
 
