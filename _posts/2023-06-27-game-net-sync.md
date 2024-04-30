@@ -179,6 +179,12 @@ private void OnOptimisticFrame(Session client, GM_Frame recvData)
 ![valve-Lag_compensation](https://blog.antsmallant.top/media/blog/2023-06-27-game-networking/valve-Lag_compensation.jpg)  
 <center>图2：延迟补偿[15]</center>
 
+关于延迟补偿，在这本书《网络多人游戏架构与编程》[22] 的第8章第8.4节中有具体的实现指导:  
+>* 远程玩家使用客户端插值，而不是航位推测。  
+>* 使用本地客户端移动预测和移动重放。 
+>* 发送给服务器的每个移动数据包中保存客户端视角。客户端应该在每个发送的数据包中记录客户端当前插值的两个帧的ID，以及插值进度百分比。这给服务器提供了客户端当时所感知世界的精确指示。 
+>* 在服务器端，存储每个相关对象最近几帧的位置。  
+
 
 #### Dead Reckning
 缩写为 DR，中文叫导航预测算法，这篇文章[12]对 DR 下了一个定义：  
@@ -430,6 +436,8 @@ Gabriel Gambetta 这几篇文章关于状态同步相关优化手段的文章写
 
 [19] RiotGames. "PEEKING INTO VALORANT'S NETCODE". 2020.7.28. Available: https://technology.riotgames.com/news/peeking-valorants-netcode      
 
-[20] 天美工作室群. "FPS游戏中，在玩家的延时都不一样的情况下是如何做到游戏的同步性的？". 2021.6.18. Available: https://www.zhihu.com/question/29076648/answer/1946885829     
+[20] 腾讯天美工作室群. "FPS游戏中，在玩家的延时都不一样的情况下是如何做到游戏的同步性的？". 2021.6.18. Available: https://www.zhihu.com/question/29076648/answer/1946885829     
 
 [21] Bungie: David Aldridge. "I Shot You First: Networking the Gameplay of Halo: Reach". 2011. Available: https://www.youtube.com/watch?v=h47zZrqjgLc      
+
+[22] Joshua Glazer. Sanjay Madhav. "网络多人游戏架构与编程". 2017.10    
