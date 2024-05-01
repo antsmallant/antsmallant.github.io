@@ -268,8 +268,12 @@ ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 IO，如果返回�
 ---
 
 # 参考
-[1] wikipedia. Transmission_Control_Protocol ( https://en.wikipedia.org/wiki/Transmission_Control_Protocol ).    
-[2] wikipedia. Internet_Protocol_version_4 ( https://en.wikipedia.org/wiki/Internet_Protocol_version_4 ).    
-[3] wikipedia. List_of_IP_protocol_numbers ( https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers ).   
-[4] wikipedia. Tcp_state_diagram ( https://upload.wikimedia.org/wikipedia/en/5/57/Tcp_state_diagram.png ).   
-[5] wikimedia. Tcp-handshake ( https://upload.wikimedia.org/wikipedia/commons/9/98/Tcp-handshake.svg ).
+[1] Wikipedia. Transmission_Control_Protocol. Available at https://en.wikipedia.org/wiki/Transmission_Control_Protocol.     
+
+[2] Wikipedia. Internet_Protocol_version_4. Available at https://en.wikipedia.org/wiki/Internet_Protocol_version_4.    
+
+[3] Wikipedia. List_of_IP_protocol_numbers. Available at https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers.   
+
+[4] Wikipedia. Tcp_state_diagram. Available at https://upload.wikimedia.org/wikipedia/en/5/57/Tcp_state_diagram.png.       
+
+[5] Wikipedia. Tcp-handshake. Available at https://upload.wikimedia.org/wikipedia/commons/9/98/Tcp-handshake.svg.      
