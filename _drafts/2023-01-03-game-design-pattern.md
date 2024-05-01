@@ -34,5 +34,5 @@ GOF 对它意图的定义是： “定义对象间的一种一对多的依赖关
 ---
 
 # 参考
-[1] [美]Erich Gramma, Richard Helm, Ralph Johnson, John Vlissides. 设计模式: 可复用面向对象软件的基础[M]. 李英军, 马晓星, 蔡敏, 刘建中, 等. 北京: 机械工业出版社, 2010(1).     
+[1] [美]Erich Gramma, Richard Helm, Ralph Johnson, John Vlissides. 设计模式: 可复用面向对象软件的基础[M]. 李英军, 马晓星, 蔡敏, 刘建中, 等. 北京: 机械工业出版社, 2010(1)：194.     
 

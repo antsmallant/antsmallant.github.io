@@ -74,14 +74,16 @@ tags: [game]
 
 <br/>
 
-既然危险，那要怎么开展呢？分享[2]里面也说了关键的要素：数据支撑。也就是要使用各种工具，对实际的问题进行测量得到数据，再对数据进行分析。不要靠猜测或直觉去做任何优化。否则将可能是获得 1% 的优化效果，但却导致一两个星期的 bug fix。  
+既然危险，那要怎么开展呢？这个 GDC2011 Halo 的分享视频[2]里面也说了关键的要素：数据支撑。也就是要使用各种工具，对实际的问题进行测量得到数据，再对数据进行分析。不要靠猜测或直觉去做任何优化。否则将可能是获得 1% 的优化效果，但却导致一两个星期的 bug fix。  
 
 ![halo-optimize-inspection-tools-are-the-key](https://blog.antsmallant.top/media/blog/2023-06-27-game-networking/halo-optimize-inspection-tools-are-the-key.png)  
 <center>图2：halo : halo-optimize-inspection-tools-are-the-key[2]</center>
 
 <br/>
 
-聊到这个，就不得不提起我做过的数据库优化了。我的第三份工作是在一个规模较小的游戏公司做高级游戏服务端开发，做的是一款 MMOARPG 游戏，老板也是做游戏服务端出身的，他在开会的时候特别会挑战，我第一次参会的时候就见识到他的威力了，我的同事被喷得特别惨，因为他们做的东西没有数据支撑，基本上是靠猜测的。  
+
+
+聊到这个，就不得不提起我做过的数据库优化了。我的第三份工作是在一个规模较小的游戏公司做高级游戏服务端开发，做的是一款 MMOARPG 游戏，老板也是做游戏服务端出身的，他在开会的时候特别会挑战。入职后我第一次参会的时候就见识到他的威力了，我的同事被喷得特别惨，因为他们做的东西没有数据支撑，基本上是靠猜测的。   
 
 而当轮到我对做的数据库优化工作做汇报的时候，我准备得很充足。优化前，我就做了大量的log埋点，进行数据收集、数据分析，精准的定位出数据库性能问题，并且还区分了优先级；优化中，扎扎实实的完成了优化；优化后，对优化结果进行量化，确认优化到位。   
 
@@ -126,6 +128,6 @@ tags: [game]
 ---
 
 # 参考
-[1] 安柏霖. "实战型开发1/3--结果&业务导向". 2023-10-08. Available: https://blog.csdn.net/toughbro/article/details/133531099    
+[1] 安柏霖. 实战型开发1/3--结果&业务导向. Available at https://blog.csdn.net/toughbro/article/details/133531099, 2023-10-08.      
 
-[2] David Aldridge. "I Shot You First: Networking the Gameplay of Halo: Reach". 2011. Available: https://www.youtube.com/watch?v=h47zZrqjgLc    
+[2] David Aldridge. I Shot You First: Networking the Gameplay of Halo: Reach. Available at https://www.youtube.com/watch?v=h47zZrqjgLc, 2011.       

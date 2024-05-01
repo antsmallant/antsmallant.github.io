@@ -179,7 +179,7 @@ private void OnOptimisticFrame(Session client, GM_Frame recvData)
 ![valve-Lag_compensation](https://blog.antsmallant.top/media/blog/2023-06-27-game-networking/valve-Lag_compensation.jpg)  
 <center>图2：延迟补偿[15]</center>
 
-关于延迟补偿，在这本书《网络多人游戏架构与编程》[22] 的第8章第8.4节中有具体的实现指导:  
+关于延迟补偿，在《网络多人游戏架构与编程》[22]中有具体的实现指导:  
 >* 远程玩家使用客户端插值，而不是航位推测。  
 >* 使用本地客户端移动预测和移动重放。 
 >* 发送给服务器的每个移动数据包中保存客户端视角。客户端应该在每个发送的数据包中记录客户端当前插值的两个帧的ID，以及插值进度百分比。这给服务器提供了客户端当时所感知世界的精确指示。 
@@ -441,4 +441,4 @@ Gabriel Gambetta 这几篇文章关于状态同步相关优化手段的文章写
 
 [21] David Aldridge. I Shot You First: Networking the Gameplay of Halo: Reach. Available at https://www.youtube.com/watch?v=h47zZrqjgLc, 2011.           
 
-[22] [美]Joshua Glazer, Sanjay Madhav. 网络多人游戏架构与编程. 王晓慧, 张国鑫. 北京: 人民邮电出版社, 2017-10(1).           
+[22] [美]Joshua Glazer, Sanjay Madhav. 网络多人游戏架构与编程. 王晓慧, 张国鑫. 北京: 人民邮电出版社, 2017-10(1): 244-245.           
