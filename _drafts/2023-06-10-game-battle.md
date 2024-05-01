@@ -43,6 +43,4 @@ tags: [game, battle]
 ---
 
 # 参考
-[1] kevinan. "暴雪Tim Ford：《守望先锋》架构设计与网络同步". 2017-06-14. Available: https://www.sohu.com/a/148848770_466876    
-
-
+[1] kevinan. 暴雪Tim Ford：《守望先锋》架构设计与网络同步. Available at https://www.sohu.com/a/148848770_466876, 2017-6.    
