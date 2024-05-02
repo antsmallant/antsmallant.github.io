@@ -31,9 +31,11 @@ tags: [game, battle]
 
 # todo
 * 行为树： https://www.cnblogs.com/KillerAery/p/10007887.html
+* 行为树： https://indienova.com/indie-game-development/ai-behavior-trees-how-they-work/
 * 基于行为树的战斗系统应该是什么样的？
 * nkgmoba 是怎么做战斗系统的？
 * 什么是 timeline
+* unity 的 blackboard 是什么东西？
 * 了解战斗系统的基本逻辑
 * 命中判断什么时候放在前端，什么时候放在后端
 * p7 的技能系统是怎么做的，以及 buf 是怎么实现的？  
