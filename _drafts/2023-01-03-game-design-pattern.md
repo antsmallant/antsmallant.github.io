@@ -81,7 +81,59 @@ GOF 对它意图的定义是： “定义对象间的一种一对多的依赖关
 使用频率：五颗星。  
 是否推荐：是。  
 
-状态机出现很频繁，游戏里面的 AI 大多都是用状态机实现的，计算机网络中的 TCP 协议，也是典型的状态机。  
+状态机出现很频繁，游戏里面的 AI 大多都是用状态机实现的，计算机网络中的 TCP 协议，其实现也是典型的状态机。  
+
+以前我觉得状态机的实现平平无奇，没有什么特别的。直到看到了这本书[1]里介绍的例子，才惊觉，状态机真是化繁为简，help a lot。  
+
+如果不使用状态机，要根据输入控制一个英雄的行为，可能会写出这样复杂的，不好维护的代码： 
+
+```
+    void Heroine::handleInput(Input input)
+    {
+      if (input == PRESS_B)
+      {
+        if (! isJumping_ && ! isDucking_)
+        {
+          // Jump...
+        }
+      }
+      else if (input == PRESS_DOWN)
+      {
+        if (! isJumping_)
+        {
+          isDucking_ = true;
+          setGraphics(IMAGE_DUCK);
+        }
+        else
+        {
+          isJumping_ = false;
+          setGraphics(IMAGE_DIVE);
+        }
+      }
+      else if (input == RELEASE_DOWN)
+      {
+        if (isDucking_)
+        {
+          // Stand...
+        }
+      }
+    }
+```
+
+上面的代码，不单复杂难维护，而且还容易出 bug，比如会有很多这类逻辑约束：“主角在跳跃状态的时候不能再跳，但是在俯冲攻击的时候却可以跳跃”，为了实现这类约束，需要加更多的状态变量，更多的判断。  
+
+但是如果引入状态机，一切都将变得简单有序。首先，要先写出一个状态机，之后，再把它实现出来。状态机，此处指的是有限状态机(FSM)，万万不可写成，它有以下几个特征： 
+* 你拥有一组状态，并且可以在这组状态之间进行切换
+* 状态机同一时刻只能处于一种状态
+* 状态机会接收一组输入或者事件
+* 每一个状态有一组转换，每一个转换都关联着一个输入并指向另一个状态
+
+以上，画出的状态机如下：  
+![gamedesignpattern-hero-state-machine](https://blog.antsmallant.top/media/blog/2023-01-03-game-design-pattern/gamedesignpattern-hero-state-machine.png)  
+<center>图1：状态机</center>
+
+
+
 
 ---
 
