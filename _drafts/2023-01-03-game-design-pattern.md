@@ -122,11 +122,15 @@ GOF 对它意图的定义是： “定义对象间的一种一对多的依赖关
 
 上面的代码，不单复杂难维护，而且还容易出 bug，比如会有很多这类逻辑约束：“主角在跳跃状态的时候不能再跳，但是在俯冲攻击的时候却可以跳跃”，为了实现这类约束，需要加更多的状态变量，更多的判断。  
 
-但是如果引入状态机，一切都将变得简单有序。首先，要先写出一个状态机，之后，再把它实现出来。状态机，此处指的是有限状态机(FSM)，万万不可写成，它有以下几个特征： 
+但是如果引入状态机，一切都将变得简单有序。首先，要先写出一个状态机，之后再把它实现出来。状态机有以下几个特征：  
 * 你拥有一组状态，并且可以在这组状态之间进行切换
 * 状态机同一时刻只能处于一种状态
 * 状态机会接收一组输入或者事件
 * 每一个状态有一组转换，每一个转换都关联着一个输入并指向另一个状态
+
+准确的说，我们这里需要的是 DFA（有限自动机），如果是 NFA，肯定会超过我们脑子负载的：）。有限状态机（FSM）可以分为 DFA 和 NFA[4]：   
+>FSM is further distinguished by Deterministic Finite Automata (DFA) and Nondeterministic Finite Automata (NFA). In DFA, for each pair of state and input symbol there is only one transition to a next state whereas, in NFA, there may be several possible next states. Often NFA refers to NFA‐epsilon which allows a transition to a next state without consuming any input symbol. That is, the transition function of NFA is usually defined as T: Q x (ΣU{ε}) → P(Q) where P means power set.Theoretically, DFA and NFA are equivalent as there is an algorithm to transform NFA into DFA [2].
+
 
 以上，画出的状态机如下：  
 ![gamedesignpattern-hero-state-machine](https://blog.antsmallant.top/media/blog/2023-01-03-game-design-pattern/gamedesignpattern-hero-state-machine.png)  
@@ -192,4 +196,6 @@ ECS 是这三个单词的缩写：Entity, Component, System，典型的结构是
 
 [2] [美]Erich Gramma, Richard Helm, Ralph Johnson, John Vlissides. 设计模式: 可复用面向对象软件的基础[M]. 李英军, 马晓星, 蔡敏, 刘建中, 等. 北京: 机械工业出版社, 2010(1)：194.     
 
-[3] kevinan. 暴雪Tim Ford：《守望先锋》架构设计与网络同步. Available at https://www.sohu.com/a/148848770_466876, 2017-6.        
+[3] kevinan. 暴雪Tim Ford：《守望先锋》架构设计与网络同步. Available at https://www.sohu.com/a/148848770_466876, 2017-6.       
+
+[4] N.R. Satish. Finite State Machine. Available at https://patterns.eecs.berkeley.edu/?page_id=470, 
