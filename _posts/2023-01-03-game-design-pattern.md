@@ -83,9 +83,9 @@ GOF 对它意图的定义是： “定义对象间的一种一对多的依赖关
 
 状态机出现很频繁，游戏里面的 AI 大多都是用状态机实现的，计算机网络中的 TCP 协议，其实现也是典型的状态机。  
 
-以前我觉得状态机的实现平平无奇，没有什么特别的。直到看到了这本书[1]里介绍的例子，才惊觉，状态机真是化繁为简，help a lot。  
+以前我觉得状态机平平无奇，没有什么特别的。直到看到这本书[1]里介绍的例子，才惊觉状态机真是化繁为简，helps a lot。  
 
-如果不使用状态机，要根据输入控制一个英雄的行为，可能会写出这样复杂的，不好维护的代码： 
+如果不使用状态机，要根据输入控制一个英雄的行为，可能会写出这样复杂的，不好维护的代码：  
 
 ```
     void Heroine::handleInput(Input input)
@@ -136,7 +136,54 @@ GOF 对它意图的定义是： “定义对象间的一种一对多的依赖关
 ![gamedesignpattern-hero-state-machine](https://blog.antsmallant.top/media/blog/2023-01-03-game-design-pattern/gamedesignpattern-hero-state-machine.png)  
 <center>图1：状态机</center>
 
+依据状态机，实现的代码如下：  
+```C++
+enum State
+{
+    STATE_STANDING,
+    STATE_JUMPING,
+    STATE_DUCKING,
+    STATE_DIVING
+};
 
+void Heroine::handleInput(Input input)
+{
+    switch (state_)
+    {
+    case STATE_STANDING:
+        if (input == PRESS_B)
+        {
+        state_ = STATE_JUMPING;
+        yVelocity_ = JUMP_VELOCITY;
+        setGraphics(IMAGE_JUMP);
+        }
+        else if (input == PRESS_DOWN)
+        {
+        state_ = STATE_DUCKING;
+        setGraphics(IMAGE_DUCK);
+        }
+        break;
+
+    case STATE_JUMPING:
+        if (input == PRESS_DOWN)
+        {
+        state_ = STATE_DIVING;
+        setGraphics(IMAGE_DIVE);
+        }
+        break;
+
+    case STATE_DUCKING:
+        if (input == RELEASE_DOWN)
+        {
+        state_ = STATE_STANDING;
+        setGraphics(IMAGE_STAND);
+        }
+        break;
+    }
+}
+```
+
+看起来仍然是普普通通的代码，但是却让一切井井有条。这里面最重要的是我们明确了英雄的状态，确定英雄只能处于某种确定的状态，这让逻辑变得有序。   
 
 
 ---
