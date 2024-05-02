@@ -46,6 +46,7 @@ tags: [lua]
 那 luaD_callnoyield 具体是如何限制后续逻辑调用 yield 的呢？  
 
 先看一下 luaD_callnoyield ( [ldo.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/ldo.c) ) 的实现：   
+
 ```
 void luaD_callnoyield (lua_State *L, StkId func, int nResults) {
   L->nny++;
@@ -55,6 +56,7 @@ void luaD_callnoyield (lua_State *L, StkId func, int nResults) {
 ```    
 
 再看下 lua_yieldk ( [ldo.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/ldo.c) ) 的实现:   
+
 ```
 LUA_API int lua_yieldk (lua_State *L, int nresults, lua_KContext ctx,
                         lua_KFunction k) {
@@ -74,6 +76,7 @@ LUA_API int lua_yieldk (lua_State *L, int nresults, lua_KContext ctx,
 从源码可以看出，luaD_callnoyield 是通过设置 `L->nny` 这个变量来控制的。    
 
 那什么情况下会调用 luaD_callnoyield 呢？从源码上看有好几处，但跟我们日常开发关系密切的只有 lua_callk 及 lua_pcallk，这两个函数大同小异，就先看一下 lua_callk ( [lapi.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/lapi.c) ) 的实现：  
+
 ```
 LUA_API void lua_callk (lua_State *L, int nargs, int nresults,
                         lua_KContext ctx, lua_KFunction k) {
@@ -93,6 +96,7 @@ LUA_API void lua_callk (lua_State *L, int nargs, int nresults,
 lua_callk 在 `L->nny > 0` 或者参数 k 为 NULL 的时候，都会调用 luaD_callnoyield。`L->nny > 0` 的情况不用说了，肯定是要调用 luaD_callnoyield 的。但 k 是什么呢？k 是 continuation function，就是执行完要调用的函数之后，后续要执行的函数。这里 ( [https://lua.org/manual/5.3/manual.html#4.7](https://lua.org/manual/5.3/manual.html#4.7) ) 有解释，后文我们也会解释。    
 
 但是我们通常使用的函数是 lua_call/lua_pcall ( [lua.h](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/lua.h) )，这两个函数的定义是这样的：
+
 ```
 #define lua_call(L,n,r)		lua_callk(L, (n), (r), 0, NULL)
 #define lua_pcall(L,n,r,f)	lua_pcallk(L, (n), (r), (f), 0, NULL)
@@ -108,7 +112,8 @@ ok，我们现在知道，一个协程的调用链中如果先出现 lua_call �
 
 解释得七七八八了，但还是有些抽象。先举个简单的例子来验证一下上面的说法吧。以下 demo 代码在这里可以找到： [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary) 。      
 
-[clib.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/clib.c)   
+[clib.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/clib.c)  
+
 ```
 #include <stdlib.h>
 #include <stdio.h>
@@ -134,6 +139,7 @@ LUAMOD_API int luaopen_clib(lua_State* L) {
 ```   
 
 [test_co_1.lua](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/test_co_1.lua)  
+
 ```
 local co = require "coroutine"
 local clib = require "clib"
@@ -155,6 +161,7 @@ print(ok, err)
 ```    
 
 编译&执行：    
+
 ```
 gcc -fPIC -shared -g -o clib.so clib.c -I "../../3rd/lua-5.3.6/install/include" -L "../../3rd/lua-5.3.6/install/lib"
 
@@ -162,6 +169,7 @@ gcc -fPIC -shared -g -o clib.so clib.c -I "../../3rd/lua-5.3.6/install/include" 
 ```      
 
 输出：   
+
 ```
 enter f1
 enter lua_yield
@@ -177,6 +185,7 @@ false   attempt to yield across a C-call boundary
 ### lua 调用 C 函数是使用 lua_call/lua_pcall 吗？    
 答案：不是。   
 上面的例子中，如果把 clib 的 f1 改成这样，还会报错吗？   
+
 ```
 static int f1(lua_State* L) {
     printf("enter f1\n");
@@ -187,6 +196,7 @@ static int f1(lua_State* L) {
 ```      
 
 它的输出是这样的，没有报错了：   
+
 ```
 enter co_b
 enter f1
@@ -208,6 +218,7 @@ test_co_1.lua 用 lua bytecode explorer 生成出来的字节码是这样的：
 <center>图3：co_b 的字节码</center>    
 
 CALL 指令是如何实现的呢？可以看一下源码 ( [lvm.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/lvm.c) 的 luaV_execute ) ：  
+
 ```
 void luaV_execute (lua_State *L) {
     ...
@@ -234,6 +245,7 @@ void luaV_execute (lua_State *L) {
 
 ### 怎么才能随心所欲的 yield 呢？
 上面的例子中把 clib 的 f1 改成这样就可以 yield 了：  
+
 ```
 static int f1(lua_State* L) {
     printf("enter f1\n");
@@ -248,6 +260,7 @@ static int f1(lua_State* L) {
 举个例子说明一下怎么使用，我们这里是在 C 代码中直接 yield 的，所以使用 lua_yieldk 就够了。    
 
 [clib.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/clib.c)   
+
 ```
 static int f1_v2_continue (lua_State *L, int d1, lua_KContext d2) {
   printf("leave f1_v2\n");
@@ -262,6 +275,7 @@ static int f1_v2(lua_State* L) {
 ```  
 
 [test_co_2.lua](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/test_co_2.lua)   
+
 ```
 local co = require "coroutine"
 local clib = require "clib"
@@ -287,6 +301,7 @@ gcc -fPIC -shared -g -o clib.so clib.c -I "../../3rd/lua-5.3.6/install/include" 
 ```       
 
 输出：
+
 ```
 enter co_b
 enter f1_v2
