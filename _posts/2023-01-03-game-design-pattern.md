@@ -129,7 +129,7 @@ GOF 对它意图的定义是： “定义对象间的一种一对多的依赖关
 * 每一个状态有一组转换，每一个转换都关联着一个输入并指向另一个状态
 
 准确的说，我们这里需要的是 DFA（有限自动机），如果是 NFA，肯定会超过我们脑子负载的：）。有限状态机（FSM）可以分为 DFA 和 NFA[4]：   
->FSM is further distinguished by Deterministic Finite Automata (DFA) and Nondeterministic Finite Automata (NFA). In DFA, for each pair of state and input symbol there is only one transition to a next state whereas, in NFA, there may be several possible next states. Often NFA refers to NFA‐epsilon which allows a transition to a next state without consuming any input symbol. That is, the transition function of NFA is usually defined as T: Q x (ΣU{ε}) → P(Q) where P means power set.Theoretically, DFA and NFA are equivalent as there is an algorithm to transform NFA into DFA [2].
+>FSM is further distinguished by Deterministic Finite Automata (DFA) and Nondeterministic Finite Automata (NFA). In DFA, for each pair of state and input symbol there is only one transition to a next state whereas, in NFA, there may be several possible next states. Often NFA refers to NFA‐epsilon which allows a transition to a next state without consuming any input symbol. That is, the transition function of NFA is usually defined as T: Q x (ΣU{ε}) → P(Q) where P means power set.Theoretically, DFA and NFA are equivalent as there is an algorithm to transform NFA into DFA.
 
 
 以上，画出的状态机如下：  
