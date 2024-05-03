@@ -200,10 +200,17 @@ void Heroine::handleInput(Input input)
 ---
 
 # 黑板模式
+使用频率：二颗星。  
+是否推荐：是。  
 
 想不到这也是一种模式吧，unity 直接就有 blackboard 这东西，其实是一回事。  
 
-参考：https://www.cnblogs.com/KillerAery/p/10054558.html
+它本质上就是一个提供数据共享的 key value store，实现了解耦。但也是有缺点[5]，比如：  
+* 读写比较随意，容易造成数据损坏，或子系统竞争。 
+* 可能会产生非法的数据。  
+* 出问题的时候，如果是多个子系统共用，会比较难调试。  
+
+实际开发上，行为树通常结合黑板来实现，黑板实现了行为树的节点间“通信”，就是共享数据而已。  
 
 ---
 
@@ -248,3 +255,5 @@ ECS 是这三个单词的缩写：Entity, Component, System，典型的结构是
 [3] kevinan. 暴雪Tim Ford：《守望先锋》架构设计与网络同步. Available at https://www.sohu.com/a/148848770_466876, 2017-6.        
 
 [4] N.R. Satish. Finite State Machine. Available at https://patterns.eecs.berkeley.edu/?page_id=470.   
+
+[5] KillerAery. 游戏设计模式：黑板模式. Available at https://www.cnblogs.com/KillerAery/p/10054558.html, 2019-01-17.
