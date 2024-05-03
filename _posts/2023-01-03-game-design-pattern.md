@@ -203,14 +203,16 @@ void Heroine::handleInput(Input input)
 使用频率：二颗星。  
 是否推荐：是。  
 
-想不到这也是一种模式吧，unity 直接就有 blackboard 这东西，其实是一回事。  
+想不到这也是一种模式吧，unity 里的行为树，就使用了 blackboard 来记录数据。  
 
 它本质上就是一个提供数据共享的 key value store，实现了解耦。但也是有缺点[5]，比如：  
 * 读写比较随意，容易造成数据损坏，或子系统竞争。 
 * 可能会产生非法的数据。  
 * 出问题的时候，如果是多个子系统共用，会比较难调试。  
 
-实际开发上，行为树通常结合黑板来实现，黑板实现了行为树的节点间“通信”，就是共享数据而已。  
+游戏开发中，行为树通常结合黑板来实现，黑板实现了行为树的节点间“通信”，就是共享数据而已。  
+
+黑板模式在《设计模式: 可复用面向对象软件的基础》[2] 和《游戏编程模式》[1] 都没有介绍，但在《面向模式的软件架构卷1模式系统》[6] 有详细介绍，具体可以看一下。  
 
 ---
 
@@ -231,6 +233,7 @@ ECS 是这三个单词的缩写：Entity, Component, System，典型的结构是
 * lua 相关的设计模式
 * 云风关于 lua 设计模式的表述
 * 状态模式要补充说明一下具体的实现
+* 结合[6]详细说一下黑板模式，以及它属于架构模式
 
 ---
 
@@ -256,4 +259,6 @@ ECS 是这三个单词的缩写：Entity, Component, System，典型的结构是
 
 [4] N.R. Satish. Finite State Machine. Available at https://patterns.eecs.berkeley.edu/?page_id=470.   
 
-[5] KillerAery. 游戏设计模式：黑板模式. Available at https://www.cnblogs.com/KillerAery/p/10054558.html, 2019-01-17.
+[5] KillerAery. 游戏设计模式：黑板模式. Available at https://www.cnblogs.com/KillerAery/p/10054558.html, 2019-01-17.    
+
+[6] [德]Frank Buschmann, Regine Meunier, Hans Rohnert, et al. 面向模式的软件架构卷1模式系统. 袁国忠. 北京: 人民邮件出版社, 2013.11: 46.   
