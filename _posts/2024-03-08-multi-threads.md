@@ -11,7 +11,11 @@ tags: [并发 同步 多线程]
 {:toc}
 <br/>
 
-多线程太难了，有很多问题甚至是都没意识到的。   
+多线程编程的水特别特别深，并且网上充斥着大量陈旧或者错误的文章。     
+
+本文力求观点准确，知识点足够新。  
+
+另，以下讨论大体基于 c or c++，不涉及 java / c# 之类的。  
 
 ---
 
@@ -124,13 +128,60 @@ btw，在数据库里，这种锁很常见，并且会更复杂一些。
 
 ---
 
+# 多线程编程的陷阱
+
+## volatile 的作用
+网络上有大量关于 volatile 的文章，但基本上都是人云亦云，已经是一些陈旧的认识了。  
+
+以下讨论
+例子一：    
+
+```C++
+        x = 0;
+Thread1:     Thread2:
+lock();      lock();
+x++;         x++;
+unlock();    unlock();
+```
+
+这种情况下，Thread1，Thread2 都执行完成后，x 的值是多少？百分百是 2 吗？  
+
+不见得，由于编译器的优化，可能会发生这样的事情：  
+
+Thread1 ：读取 x 的值到某个寄存器 R1 中，此时 R1 = 0.
+Thread1 : R1++，由于之后可能还要访问x，所以暂时不把 R1 写回变量 x.   
+Thread2 : 读取 x 的值到某个寄存器 R2 中，此时 R2 = 0.   
+Thread2 : 将 R2 写回变量 x，此时 x = 1.    
+Thread1 : 干完其他活了，把 R1 写回变量 x，此时 x = 1.   
+
+这种情况，刚好可以使用 volatile。在 C++ 中，volatile 能阻止编译器过度优化，它会给编译器以指示，被它修饰的变量可能随时被改变。对此，编译器就会：  
+* 每次访问 volatile 变量都从内存中读取，如果有修改，则立即写回。  
+* 不调整操作 volatile 变量的指令顺序。  
+
+## cpu 乱序执行之坑，volatile 之无力
+
+
+## 陈硕关于线程同步的建议
+
+---
+
 # 并发
 
-[Real-world Concurrency](https://queue.acm.org/detail.cfm?id=1454462)
+[Real-world Concurrency](https://queue.acm.org/detail.cfm?id=1454462)   
 
 ---
 
 # todo
+* volatile、c++11 volatile、c++11 memory order
+* intel:   Volatile: Almost Useless for Multi-Threaded Programming
+* [Why is volatile not considered useful in multithreaded C or C++ programming?](https://stackoverflow.com/questions/2484980/why-is-volatile-not-considered-useful-in-multithreaded-c-or-c-programming)
+* Since C++11, atomic variables (std::atomic<T>) give us all of the relevant guarantees.
+* https://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf
+That conclusion was accurate at the time the article was written (2004); now C++ is a thread and multiprocessor aware language.  
+See:[http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#DiscussOrder](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#DiscussOrder)
+
+* 重新寻找权威的关于同步原语的描述
+* 补充完整条件变量以及自旋锁
 * 经典问题的论述：哲学家就餐问题、读者-写者问题
 * 补充陈硕关于线程同步的建议
 * 现代 c++ 的一些特性也是在帮助写出工作正常的多线程代码，比如 c++ 新增的特性 memory order。  
@@ -145,6 +196,7 @@ btw，在数据库里，这种锁很常见，并且会更复杂一些。
 ---
 
 # 总结
+* 多线程编程简直是个屎坑，轻易不要挑战它，除非你掌握了足够多并且足够新的知识。  
 
 ---
 
