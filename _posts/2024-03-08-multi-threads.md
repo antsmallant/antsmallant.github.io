@@ -11,11 +11,11 @@ tags: [并发 同步 多线程]
 {:toc}
 <br/>
 
-多线程编程的水特别特别深，并且网上充斥着大量陈旧或者错误的文章。     
+多线程编程的水特别特别深，并且网上充斥着大量陈旧或者错误的文章，于是，我觉得有必要自己好好收集最新的资料，做一次有效的总结，故有本文。本文力求观点准确，知识点足够新。  
 
-本文力求观点准确，知识点足够新。  
+另，以下讨论大体基于 c++，不涉及 java / c#。java / C# 已经有足够可靠的【内存顺序】机制来保障多线程下的变量读写顺序不受编译器优化、指令流水线优化、缓存优化的干扰，而 c++ 是在比较迟的时候（c++11）才加入 memory order 机制，导致如今网上仍然存在大量过时的认知，需要重点厘清。     
 
-另，以下讨论大体基于 c or c++，不涉及 java / c# 之类的。  
+如果不知道内存顺序为何物，以及为何它如此重要，下文将会展开。  
 
 ---
 
@@ -130,7 +130,23 @@ btw，在数据库里，这种锁很常见，并且会更复杂一些。
 
 # 多线程编程的陷阱
 
-## volatile 的作用
+## 从 volatile 说起
+
+* 找不到 intel 论坛上的这篇文章了：  Volatile: Almost Useless for Multi-Threaded Programming
+
+* [Why is volatile not considered useful in multithreaded C or C++ programming?](https://stackoverflow.com/questions/2484980/why-is-volatile-not-considered-useful-in-multithreaded-c-or-c-programming)
+
+Since C++11, atomic variables (std::atomic<T>) give us all of the relevant guarantees.
+
+* https://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf  
+That conclusion was accurate at the time the article was written (2004); now C++ is a thread and multiprocessor aware language.    
+See:[http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#DiscussOrder](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#DiscussOrder)
+
+* 关于 volatile 会插入内存屏障的这个说法是对的吗？ https://www.zhihu.com/question/329746124/answer/718600236
+
+* volatile 只和阻止编译器优化有关：https://www.zhihu.com/question/67231941/answer/2436335772
+
+### volatile 的作用
 网络上有大量关于 volatile 的文章，但基本上都是人云亦云，已经是一些陈旧的认识了。  
 
 以下讨论
@@ -158,6 +174,24 @@ Thread1 : 干完其他活了，把 R1 写回变量 x，此时 x = 1.
 * 每次访问 volatile 变量都从内存中读取，如果有修改，则立即写回。  
 * 不调整操作 volatile 变量的指令顺序。  
 
+### C++ memory order 
+
+[C++11 volatile](https://bajamircea.github.io/coding/cpp/2019/11/05/cpp11-volatile.html)
+在 C++11 中，引入了 memory order 解决多线程环境下，变量读写的原子性问题，但保留了 volatile 用于 memory mapped i/o。 
+
+何谓 memory mapped i/o ? 
+
+c++ memory order 具体是怎么起作用的？ 
+[大白话C++之：一文搞懂C++多线程内存模型(Memory Order)](https://blog.csdn.net/sinat_38293503/article/details/134612152)
+
+
+
+### c++ std::atomic
+具体含义是？ 
+
+### c 没有 memory order，如果解决问题？
+可以使用内存屏障吗？
+
 ## cpu 乱序执行之坑，volatile 之无力
 
 
@@ -172,19 +206,15 @@ Thread1 : 干完其他活了，把 R1 写回变量 x，此时 x = 1.
 ---
 
 # todo
-* volatile、c++11 volatile、c++11 memory order
-* intel:   Volatile: Almost Useless for Multi-Threaded Programming
-* [Why is volatile not considered useful in multithreaded C or C++ programming?](https://stackoverflow.com/questions/2484980/why-is-volatile-not-considered-useful-in-multithreaded-c-or-c-programming)
-* Since C++11, atomic variables (std::atomic<T>) give us all of the relevant guarantees.
-* https://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf
-That conclusion was accurate at the time the article was written (2004); now C++ is a thread and multiprocessor aware language.  
-See:[http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#DiscussOrder](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#DiscussOrder)
-
+* 搞清楚 c++ 的
+* 搞清楚 c++ 的 lvalue 以及 rvalue
 * 重新寻找权威的关于同步原语的描述
 * 补充完整条件变量以及自旋锁
 * 经典问题的论述：哲学家就餐问题、读者-写者问题
 * 补充陈硕关于线程同步的建议
 * 现代 c++ 的一些特性也是在帮助写出工作正常的多线程代码，比如 c++ 新增的特性 memory order。  
+* [CPU memory model](https://bajamircea.github.io/coding/cpp/2019/10/25/cpu-memory-model.html)
+* java 里也有 volatile 关键字，是否类似的作用？ https://www.zhihu.com/question/499586720/answer/2350034212
 
 ---
 
@@ -196,7 +226,7 @@ See:[http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#DiscussO
 ---
 
 # 总结
-* 多线程编程简直是个屎坑，轻易不要挑战它，除非你掌握了足够多并且足够新的知识。  
+* 多线程编程简直是个屎坑，除非你掌握了足够多并且足够新的知识，轻易不要挑战它。   
 
 ---
 
