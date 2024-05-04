@@ -146,7 +146,9 @@ btw，在数据库里，这种锁很常见，并且会更复杂一些。
 要了解清楚 volatile 是如何被误解和滥用的，需要先了解一下它的历史。下文主要参考自这篇文章：《C++11 volatile》[9]。  
 
 #### volatile 的原始用途
-最开始是在 C 语言中使用的，用在 Memory Mapped I/O 中，阻止编译器优化。Memory Mapped I/O 是把 I/O 设备的读写映射到一段内存区域中，假设一个最简单的设备，这个设备只有一个写接口，映射到了内存中的变量 A。每次给变量 B 赋值时，相当于向设备写一次。   
+最开始是 C 语言引入的，用在 Memory Mapped I/O 中，避免编译器优化导致的错误。  
+
+Memory Mapped I/O 是把 I/O 设备的读写映射到一段内存区域中，假设一个最简单的设备，这个设备只有一个写接口，映射到了内存中的变量 A。每次给变量 A 赋值，相当于向设备写一次。   
 
 如果我们想向这个设备分别写两次值，第一次写入 1，第二次写入 1000，将会这样写逻辑：  
 
@@ -157,7 +159,7 @@ B = 1000;
 
 但是，由于编译器优化，可能会把第一句：` B = 1; ` 优化掉，只保留 ` B = 1000; `，这显然不符合我们的意图。  
 
-为了解决这种问题，C 引入了 volatile 关键字，用它修饰变量时，像这样：`volatile int B;`，可以阻止编译器针对此变量的优化，编译器将不会再 “吞掉” `B = 1;` 这句代码了。   
+为了解决这种问题，C 引入了 volatile 关键字，用它这样修饰变量：`volatile int B;`，可以阻止编译器针对此变量的优化，编译器将不会再 “吞掉” `B = 1;` 这句代码了。   
 
 <br/>
 
@@ -175,18 +177,18 @@ bool flag = false;
 
 void producer_thread()
 {
-  // write a and b
+  // 先写 a 和 b
   a = 42;
   b = 43;
-  // set the flag at the end
+  // 最后设置 flag 标志位为 true
   flag = true;
 }
 
 void consumer_thread()
 {
-  // wait for the flag to be set
+  // 等待 flag 被设为 true
   while (!flag) continue;
-  // the flag was set: use a and b
+  // 接着使用 a 和 b
   ...
 }
 ```
@@ -195,11 +197,12 @@ void consumer_thread()
 
 * 问题一：可能会死循环。  
 
-在上一节中，我们已经见识了编译器优化。
+在上一节中，我们已经见识了编译器优化，在 consumer_thread 的代码中，编译器看到 flag 变量只被使用一次，它可能只读一次 flag 到寄存器中，之后就不再重新读了。假如这时 flag 还未被设置为 true，那它就一直等待在 while 循环中了。这看起来挺愚蠢的，但确实可能发生。  
 
-解决了问题一之后，还存在问题二。  
+如果我们用 volatile 修饰 flag 变量，那么编译器就不会对它进行优化了，consumer_thread 的 while 逻辑会每次从内存中把它读出来判断，也就不会死循环了。  
 
 * 问题二：乱序
+虽然我们使用 volatile 解决了问题一，但仍然有其他问题。
 
 <br/>
 
@@ -208,10 +211,11 @@ void consumer_thread()
 * 多线程编程需要解决好内存顺序问题。  
 
 
-### C++11 memory order  
+### C++11 memory order  和 atomic
 上面已经提到，不应该依赖 volatile，那应该依赖什么呢？  
 
-
+[大白话C++之：一文搞懂C++多线程内存模型(Memory Order)](https://blog.csdn.net/sinat_38293503/article/details/134612152)
+[What exactly is std::atomic?](https://stackoverflow.com/questions/31978324/what-exactly-is-stdatomic)
 
 
 
@@ -258,17 +262,6 @@ https://www.zhihu.com/question/67231941/answer/2436335772
 [C++11 volatile](https://bajamircea.github.io/coding/cpp/2019/11/05/cpp11-volatile.html)
 在 C++11 中，引入了 memory order 解决多线程环境下，变量读写的原子性问题，但保留了 volatile 用于 memory mapped i/o。   
 
-
-## C++ memory order 
-
-c++ memory order 具体是怎么起作用的？ 
-[大白话C++之：一文搞懂C++多线程内存模型(Memory Order)](https://blog.csdn.net/sinat_38293503/article/details/134612152)
-
-
-## c++ std::atomic
-具体含义是？ 
-
-[What exactly is std::atomic?](https://stackoverflow.com/questions/31978324/what-exactly-is-stdatomic)
 
 
 ## c 没有 memory order，如果解决问题？
