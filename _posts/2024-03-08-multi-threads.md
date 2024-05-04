@@ -137,9 +137,84 @@ btw，在数据库里，这种锁很常见，并且会更复杂一些。
 
 # 多线程编程的陷阱
 
-## 从 volatile 说起
+## 从 volatile 说到 memory order
+先说一下结论：  
+* volatile 只能阻止编译器优化，应该只把它用于 Memory Mapped I/O 的场景中，不应该将它用于解决多线程下的诸入原子读写之类的问题。    
+* C++11 开始引入的 atomic、memory order 机制，可以很好的解决多线程下的内存顺序问题，应该使用它们。  
 
-### 何为 volatile，以及它的作用
+### volatile 的历史
+要了解清楚 volatile 是如何被误解和滥用的，需要先了解一下它的历史。下文主要参考自这篇文章：《C++11 volatile》[9]。  
+
+#### volatile 的原始用途
+最开始是在 C 语言中使用的，用在 Memory Mapped I/O 中，阻止编译器优化。Memory Mapped I/O 是把 I/O 设备的读写映射到一段内存区域中，假设一个最简单的设备，这个设备只有一个写接口，映射到了内存中的变量 A。每次给变量 B 赋值时，相当于向设备写一次。   
+
+如果我们想向这个设备分别写两次值，第一次写入 1，第二次写入 1000，将会这样写逻辑：  
+
+```
+B = 1;
+B = 1000;
+```
+
+但是，由于编译器优化，可能会把第一句：` B = 1; ` 优化掉，只保留 ` B = 1000; `，这显然不符合我们的意图。  
+
+为了解决这种问题，C 引入了 volatile 关键字，用它修饰变量时，像这样：`volatile int B;`，可以阻止编译器针对此变量的优化，编译器将不会再 “吞掉” `B = 1;` 这句代码了。   
+
+<br/>
+
+小结一下:  
+* C 引入 volatile 是为了解决 Memory Mapped I/O 场景下的编译器错误优化问题。  
+
+
+### volatile 在 C++ 中的使用
+C++ 保留了 volatile 这个关键字，除了继续用于 Memory Mapped I/O 之外，随着多线程的发展，在一些厂商或者书本的鼓励下，volatile 被推荐用于解决一些多线程编程的问题。比如这样的：    
+
+```C++
+int a = 0;
+int b = 0;
+bool flag = false;
+
+void producer_thread()
+{
+  // write a and b
+  a = 42;
+  b = 43;
+  // set the flag at the end
+  flag = true;
+}
+
+void consumer_thread()
+{
+  // wait for the flag to be set
+  while (!flag) continue;
+  // the flag was set: use a and b
+  ...
+}
+```
+
+上面这段代码展示的是生产者/消费者的逻辑：生产者&消费者通过 flag 变量协调工作，当生产者设置 flag 为 true 后，消费者接着工作。这段代码有时候能正常工作，但有时候不行，因为它存在一些问题。  
+
+* 问题一：可能会死循环。  
+
+在上一节中，我们已经见识了编译器优化。
+
+解决了问题一之后，还存在问题二。  
+
+* 问题二：乱序
+
+<br/>
+
+小结一下:  
+* volatile 不能解决多线程编程的问题，多线程编程不应该依赖它。  
+* 多线程编程需要解决好内存顺序问题。  
+
+
+### C++11 memory order  
+上面已经提到，不应该依赖 volatile，那应该依赖什么呢？  
+
+
+
+
+
 
 * intel 论坛上的这篇文章了：  Volatile: Almost Useless for Multi-Threaded Programming
 [Volatile: Almost Useless for Multi-Threaded Programming](https://blog.csdn.net/qianlong4526888/article/details/17551725)
@@ -156,6 +231,7 @@ btw，在数据库里，这种锁很常见，并且会更复杂一些。
 
 pdf: [C++ and the Perils of Double-Checked Locking](https://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf)
 quote: [http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#DiscussOrder](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#DiscussOrder)
+
 
 * Why do we use the volatile keyword?
 [Why do we use the volatile keyword? ](https://stackoverflow.com/questions/4437527/why-do-we-use-the-volatile-keyword)
@@ -181,63 +257,6 @@ https://www.zhihu.com/question/67231941/answer/2436335772
 
 [C++11 volatile](https://bajamircea.github.io/coding/cpp/2019/11/05/cpp11-volatile.html)
 在 C++11 中，引入了 memory order 解决多线程环境下，变量读写的原子性问题，但保留了 volatile 用于 memory mapped i/o。   
-
-
-### volatile 的原始作用
-最开始是在 C 语言中使用的，用在 Memory Mapped I/O 中，阻止编译器优化。 
-
-Memory Mapped I/O 是把 I/O 设备的读写映射到一段内存区域中，我们假设一个最简单的设备，这个设备只有一个写接口，映射到了内存中的变量 A。每次给变量 B 赋值时，相当于向设备写一次。  
-
-如果我们这样赋值：  
-
-```
-B = 1;
-B = 1000;
-```
-
-我们的意图是向这个设备分别写两次值，第一次是写入 1，第二次是写入 1000。但是，由于编译器优化，可能会把第一句：` B = 1; ` 优化掉，只保留 ` B = 1000; `，这显然不符合我们的意图。  
-
-为了解决这种问题，C 就引入了 volatile 关键字，使用 volatile 修饰变量时，可以阻止编译器针对此变量做优化，在这里，当我们使用 volatile 声明 B 来避免编译器优化: `volatile int B;`。
-
-
-### volatile 在 C++ 中的使用
-C++ 也保留了 volatile 这个关键字，
-
-
-### 总结一下 volatile 的作用
-
-
-### C++11 之后应该用什么？
-
-
-### volatile 当下的作用
-
-
-
-以下讨论
-例子一：    
-
-```C++
-        x = 0;
-Thread1:     Thread2:
-lock();      lock();
-x++;         x++;
-unlock();    unlock();
-```
-
-这种情况下，Thread1，Thread2 都执行完成后，x 的值是多少？百分百是 2 吗？  
-
-不见得，由于编译器的优化，可能会发生这样的事情：  
-
-Thread1 ：读取 x 的值到某个寄存器 R1 中，此时 R1 = 0.
-Thread1 : R1++，由于之后可能还要访问x，所以暂时不把 R1 写回变量 x.   
-Thread2 : 读取 x 的值到某个寄存器 R2 中，此时 R2 = 0.   
-Thread2 : 将 R2 写回变量 x，此时 x = 1.    
-Thread1 : 干完其他活了，把 R1 写回变量 x，此时 x = 1.   
-
-这种情况，刚好可以使用 volatile。在 C++ 中，volatile 能阻止编译器过度优化，它会给编译器以指示，被它修饰的变量可能随时被改变。对此，编译器就会：  
-* 每次访问 volatile 变量都从内存中读取，如果有修改，则立即写回。  
-* 不调整操作 volatile 变量的指令顺序。  
 
 
 ## C++ memory order 
@@ -311,6 +330,7 @@ from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.cs
 # 拓展阅读
 * Vincent Gramoli. More than You Ever Wanted to Know about Synchronization
  Synchrobench, Measuring the Impact of the Synchronization on Concurrent Algorithms. Available at https://perso.telecom-paristech.fr/kuznetso/INF346-2015/slides/gramoli-ppopp15.pdf, 2015.  
+
 * Bryan Cantrill, Jeff Bonwick. Real-world Concurrency. Available at https://queue.acm.org/detail.cfm?id=1454462, 2008-10-24.   
 
 ---
@@ -336,3 +356,5 @@ from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.cs
 [7] Martin Kleppmann. Please stop calling databases CP or AP. https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html, 2015-5-11.  
 
 [8] 俞甲子, 石凡, 潘爱民. 程序员的自我修养：链接、装载与库. 北京: 电子工业出版社, 2009-4.    
+
+[9] bajamircea. C++11 volatile. Available at https://bajamircea.github.io/coding/cpp/2019/11/05/cpp11-volatile.html, 2019-11-5.    
