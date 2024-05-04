@@ -203,12 +203,16 @@ void consumer_thread()
 
 * 问题二：不按顺序执行
 虽然我们使用 volatile 解决了问题一，但仍然有其他问题：不按代码顺序执行。这个问题不太容易察觉。 
-程序的意图是： 
 
-大致如下图： 
+程序的意图是：生产者先写 a 和 b，再写 flag；消费者先判断 flag 后，再读 a 和 b。大致如下图：   
 
-![multithread-producer-consumer-order](https://blog.antsmallant.top/media/blog/2024-03-08-multi-threads/multithread-producer-consumer-order.png)   
-<center>图1：生产者消费者期望工作状态 [1]</center>
+![multithread-producer-consumer-expect-order](https://blog.antsmallant.top/media/blog/2024-03-08-multi-threads/multithread-producer-consumer-expect-order.png)   
+<center>图1：生产者消费者期望工作状态</center>
+
+但实际上编译器优化过后，可能是这样的工作过程：生产者先写了 flag，消费者判断到 flag 为 true，开始读 a 和 b，之后生产者才开始写 a 和 b。大致如下图：  
+
+
+问题就出在 volatile 只能控制 flag 不被编译器优化，但我们并没有强制 a 和 b 的写入顺序，所以flag 前后的代码仍然可能被编译器优化，导致执行顺序与我们的意图不一致，这种问题就是内存顺序问题。  
 
 
 <br/>
