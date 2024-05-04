@@ -215,23 +215,30 @@ void consumer_thread()
 ![multithread-producer-consumer-unexpect-order](https://blog.antsmallant.top/media/blog/2024-03-08-multi-threads/multithread-producer-consumer-unexpect-order.png)   
 <center>图2：生产者消费者乱序状态</center>
 
-问题就出在 volatile 只能控制 flag 不被编译器优化，但我们并没有强制 a 和 b 的写入顺序，所以flag 前后的代码仍然可能被编译器优化，导致执行顺序与我们的意图不一致，这种问题就是内存顺序问题。  
+如果按以上顺序执行，消费者可能会读到不正确的 a 和 b 值。  
 
+这个问题出在 volatile 只控制 flag 不被编译器优化，不能约束 a 和 b 的写入顺序，所以编译器优化可能导致执行顺序与意图不一致，这种问题就是内存顺序问题。  
+
+* 问题三：cpu 乱序执行
+问题二讲的是编译器优化导致的执行顺序不按预期进行，但即使编译器生成了按预期顺序生成了代码，cpu 也可能乱序执行。几十年前，cpu 就发展出动态调度，为了提高效率可能在执行过程中交换指令的顺序。所以，cpu 的乱序执行能力也会导致问题二相同的症状。  
 
 <br/>
 
 小结一下:  
 * volatile 不能解决多线程编程的问题，多线程编程不应该依赖它。  
-* 多线程编程需要解决好内存顺序问题。  
+* 内存顺序是多线程编程中难以察觉，但又很致命的问题。  
 
 
 ### C++11 memory order  和 atomic
-上面已经提到，不应该依赖 volatile，那应该依赖什么呢？  
+上文中我们把问题暴露出来了，接下来需要探讨一下解决办法了。  
+
+volatile 实际上只能阻止编译器优化，就不要让它再来帮忙多线程编程了，它应该只做 memory mapped i/o 的工作。  
+
+那么，我们现在需要一套方案：可以阻止编译器优化，可以避免 cpu 乱序执行。   
+
 
 [大白话C++之：一文搞懂C++多线程内存模型(Memory Order)](https://blog.csdn.net/sinat_38293503/article/details/134612152)
 [What exactly is std::atomic?](https://stackoverflow.com/questions/31978324/what-exactly-is-stdatomic)
-
-
 
 
 * intel 论坛上的这篇文章了：  Volatile: Almost Useless for Multi-Threaded Programming
