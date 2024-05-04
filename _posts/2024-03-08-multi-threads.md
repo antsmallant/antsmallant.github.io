@@ -201,6 +201,7 @@ void consumer_thread()
 
 如果我们用 volatile 修饰 flag 变量，那么编译器就不会对它进行优化了，consumer_thread 的 while 逻辑会每次从内存中把它读出来判断，也就不会死循环了。  
 
+
 * 问题二：不按顺序执行
 虽然我们使用 volatile 解决了问题一，但仍然有其他问题：不按代码顺序执行。这个问题不太容易察觉。 
 
@@ -211,6 +212,8 @@ void consumer_thread()
 
 但实际上编译器优化过后，可能是这样的工作过程：生产者先写了 flag，消费者判断到 flag 为 true，开始读 a 和 b，之后生产者才开始写 a 和 b。大致如下图：  
 
+![multithread-producer-consumer-unexpect-order](https://blog.antsmallant.top/media/blog/2024-03-08-multi-threads/multithread-producer-consumer-unexpect-order.png)   
+<center>图2：生产者消费者乱序状态</center>
 
 问题就出在 volatile 只能控制 flag 不被编译器优化，但我们并没有强制 a 和 b 的写入顺序，所以flag 前后的代码仍然可能被编译器优化，导致执行顺序与我们的意图不一致，这种问题就是内存顺序问题。  
 
