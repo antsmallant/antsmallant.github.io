@@ -11,11 +11,9 @@ tags: [并发 同步 多线程]
 {:toc}
 <br/>
 
-多线程编程的水特别特别深，并且网上充斥着大量陈旧或者错误的文章，于是，我觉得有必要自己好好收集最新的资料，做一次有效的总结，故有本文。本文力求观点准确，知识点足够新。  
+多线程编程的水特别特别深，并且网上充斥着大量陈旧或者错误的文章，于是，我觉得有必要自己收集最新资料，做一次总结，故有本文。本文力求观点准确，知识点足够新。   
 
-另，以下讨论大体基于 c++，不涉及 java / c#。java / C# 已经有足够可靠的【内存模型】来保障多线程下的变量读写顺序不受编译器优化、指令流水线优化、缓存优化的干扰，而 c++ 是在比较迟的时候（c++11）才加入 memory order (内存顺序) 机制，导致如今网上仍然存在大量过时的认知，需要重点厘清。     
-
-如果不知道内存模型、内存顺序为何物，以及为何它如此重要，下文将会展开。   
+以下讨论大体基于 c++。java / C# 也有功能类似的机制，此处不作讨论。  
 
 ---
 
@@ -197,13 +195,13 @@ void consumer_thread()
 
 * 问题一：可能会死循环。  
 
-在上一节中，我们已经见识了编译器优化，在 consumer_thread 的代码中，编译器看到 flag 变量只被使用一次，它可能只读一次 flag 到寄存器中，之后就不再重新读了。假如这时 flag 还未被设置为 true，那它就一直等待在 while 循环中了。这看起来挺愚蠢的，但确实可能发生。  
+在上一节中，我们已经见识了编译器优化，在 consumer_thread 的代码中，编译器看到 flag 变量只被使用一次，它可能只读一次 flag 到寄存器中，之后就不再重新读了。假如这时 flag 还未被设置为 true，它会一直等待在 while 循环中。这看起来挺愚蠢的，但确实可能发生。  
 
 如果我们用 volatile 修饰 flag 变量，那么编译器就不会对它进行优化了，consumer_thread 的 while 逻辑会每次从内存中把它读出来判断，也就不会死循环了。  
 
 
 * 问题二：不按顺序执行
-虽然我们使用 volatile 解决了问题一，但仍然有其他问题：不按代码顺序执行。这个问题不太容易察觉。 
+虽然我们使用 volatile 解决了问题一，但仍然有其他问题：不按代码顺序执行。这个问题不太容易察觉。这个问题主要是指令重排（reordering）导致的。
 
 程序的意图是：生产者先写 a 和 b，再写 flag；消费者先判断 flag 后，再读 a 和 b。大致如下图：   
 
@@ -217,10 +215,21 @@ void consumer_thread()
 
 如果按以上顺序执行，消费者可能会读到不正确的 a 和 b 值。  
 
-这个问题出在 volatile 只控制 flag 不被编译器优化，不能约束 a 和 b 的写入顺序，所以编译器优化可能导致执行顺序与意图不一致，这种问题就是内存顺序问题。  
+这个问题出在 volatile 只控制 flag 不被编译器优化，不能约束 a 和 b 的写入顺序，所以编译器优化可能导致执行顺序与意图不一致，这种问题就是内存顺序问题。    
 
-* 问题三：cpu 乱序执行
-问题二讲的是编译器优化导致的执行顺序不按预期进行，但即使编译器生成了按预期顺序生成了代码，cpu 也可能乱序执行。几十年前，cpu 就发展出动态调度，为了提高效率可能在执行过程中交换指令的顺序。所以，cpu 的乱序执行能力也会导致问题二相同的症状。  
+但实际上，除了编译器优化会导致指令重排（compiler reordering），cpu 也可能乱序执行。几十年前，cpu 为了提高效率就发展出动态调度机制，在执行过程中可能交换指令的顺序（cpu reordering）。所以，cpu 的乱序执行能力也会导致相同的问题。   
+
+
+参考：
+* [Memory Model and Synchronization Primitive - Part 1: Memory Barrier](https://www.alibabacloud.com/blog/memory-model-and-synchronization-primitive---part-1-memory-barrier_597460)
+
+* [Memory Model and Synchronization Primitive - Part 2: Memory Model](https://www.alibabacloud.com/blog/memory-model-and-synchronization-primitive---part-2-memory-model_597461)
+
+* [Compiler reordering](https://bajamircea.github.io/coding/cpp/2019/10/23/compiler-reordering.html)
+
+* [CPU流水线与指令重排序](https://cloud.tencent.com/developer/article/2195759)
+
+* [Memory ordering](https://en.wikipedia.org/wiki/Memory_ordering)
 
 <br/>
 
@@ -234,7 +243,26 @@ void consumer_thread()
 
 volatile 实际上只能阻止编译器优化，就不要让它再来帮忙多线程编程了，它应该只做 memory mapped i/o 的工作。  
 
-那么，我们现在需要一套方案：可以阻止编译器优化，可以避免 cpu 乱序执行。   
+那么现在需要一套完善的方案能同时解决问题一和问题二。   
+
+从功能上来分析，我们需要的是某种 barrier 来阻止 cache 以及 reordering。  
+
+c++11 之前，使用的是一些多线程库，比如 wikipedia [11]这里展示了各种库。 
+
+![multithread-wikipedia-list-of-cpp-multi-threading-libraries](https://blog.antsmallant.top/media/blog/2024-03-08-multi-threads/multithread-wikipedia-list-of-cpp-multi-threading-libraries.png)   
+<center>图3：c++线程库列表</center>
+
+
+这些多线程库依赖的是一些编译器扩展，或者具体操作系统提供的底层 api。  
+
+而内存 barrier，linux 有个底层的 api，是：  
+
+
+* Is there any cross-platform threading library in C++?
+[Is there any cross-platform threading library in C++?](https://stackoverflow.com/questions/2561471/is-there-any-cross-platform-threading-library-in-c)
+
+* c++11 之前是如何做多线程编程的？
+[Threading before C++11](https://bajamircea.github.io/coding/cpp/2019/10/29/threading-before-cpp11.html)
 
 
 [大白话C++之：一文搞懂C++多线程内存模型(Memory Order)](https://blog.csdn.net/sinat_38293503/article/details/134612152)
@@ -372,3 +400,5 @@ from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.cs
 [8] 俞甲子, 石凡, 潘爱民. 程序员的自我修养：链接、装载与库. 北京: 电子工业出版社, 2009-4.    
 
 [9] bajamircea. C++11 volatile. Available at https://bajamircea.github.io/coding/cpp/2019/11/05/cpp11-volatile.html, 2019-11-5.    
+
+[10] Wikipedia. List of C++ multi-threading libraries. Available at https://en.wikipedia.org/wiki/List_of_C%2B%2B_multi-threading_libraries.  
