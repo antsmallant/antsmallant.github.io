@@ -5,9 +5,11 @@ permalink: /about/
 ---
 
 ## 个人爱好
-探索游戏开发的各种 best solution   
+* 探索游戏开发的各种 best solution   
 
-研究各种底层技术    
+* 研究各种底层技术    
+
+* 造轮子
 
 <br/>
 
