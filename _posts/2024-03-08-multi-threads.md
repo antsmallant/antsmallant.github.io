@@ -140,10 +140,9 @@ btw，在数据库里，这种锁很常见，并且会更复杂一些。
 * volatile 只能阻止编译器优化，应该只把它用于 Memory Mapped I/O 的场景中，不应该将它用于解决多线程下的诸入原子读写之类的问题。    
 * C++11 开始引入的 atomic、memory order 机制，可以很好的解决多线程下的内存顺序问题，应该使用它们。  
 
-### volatile 的历史
 要了解清楚 volatile 是如何被误解和滥用的，需要先了解一下它的历史。下文主要参考自这篇文章：《C++11 volatile》[9]。  
 
-#### volatile 的原始用途
+### volatile 的原始用途
 最开始是 C 语言引入的，用在 Memory Mapped I/O 中，避免编译器优化导致的错误。  
 
 Memory Mapped I/O 是把 I/O 设备的读写映射到一段内存区域中，假设一个最简单的设备，这个设备只有一个写接口，映射到了内存中的变量 A。每次给变量 A 赋值，相当于向设备写一次。   
@@ -264,7 +263,7 @@ microsoft 在这篇文章《volatile (C++)》[11] 介绍了 volatile 的两个�
 
 
 
-### C++11 memory order  和 atomic
+### C++11 memory order 和 atomic
 上文中我们把问题暴露出来了，接下来需要探讨一下解决办法了。  
 
 volatile 实际上只能阻止编译器优化，就不要让它再来帮忙多线程编程了，它应该只做 memory mapped i/o 的工作。  
