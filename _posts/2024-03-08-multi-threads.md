@@ -218,18 +218,6 @@ void consumer_thread()
 
 但实际上，除了编译器优化会导致指令重排（compiler reordering），cpu 也可能乱序执行。几十年前，cpu 为了提高效率就发展出动态调度机制，在执行过程中可能交换指令的顺序（cpu reordering）。所以，cpu 的乱序执行能力也会导致相同的问题。   
 
-
-参考：
-* [Memory Model and Synchronization Primitive - Part 1: Memory Barrier](https://www.alibabacloud.com/blog/memory-model-and-synchronization-primitive---part-1-memory-barrier_597460)
-
-* [Memory Model and Synchronization Primitive - Part 2: Memory Model](https://www.alibabacloud.com/blog/memory-model-and-synchronization-primitive---part-2-memory-model_597461)
-
-* [Compiler reordering](https://bajamircea.github.io/coding/cpp/2019/10/23/compiler-reordering.html)
-
-* [CPU流水线与指令重排序](https://cloud.tencent.com/developer/article/2195759)
-
-* [Memory ordering](https://en.wikipedia.org/wiki/Memory_ordering)
-
 <br/>
 
 小结一下:  
@@ -241,9 +229,9 @@ void consumer_thread()
 上文提到 volatile 无法阻止 reordering，但并不是所有 volatile 的实现都无法阻止，这取决于不同的编译器实现，有些编译器实现就通过插入屏障（barrier）的方向来阻止 reordering，比如说 Microsoft 的编译器。  
 
 microsoft 在这篇文章《volatile (C++)》[11] 介绍了 volatile 的两个编译器选项：。  
-当使用 `/volatile:iso`选项的时候，volatile 就只能用于硬件访问 (hardware access)，即 memory mapped i/o，不能把它用于跨线程编程。  
+当使用 `/volatile:iso` 选项的时候，volatile 就只能用于硬件访问 (hardware access)，即 memory mapped i/o，不应该把它用于跨线程编程。    
 
-当使用 `/volatile:ms` 选项的时候，正如文章所说的，它能够实现这样的效果：   
+当使用 `/volatile:ms` 选项的时候，正如文章所说的，它能够实现这样的效果：    
 >When the /volatile:ms compiler option is used—by default when architectures other than ARM are targeted—the compiler generates extra code to maintain ordering among references to volatile objects in addition to maintaining ordering to references to other global objects. In particular:  
 > 
 >A write to a volatile object (also known as volatile write) has Release semantics; that is, a reference to a global or static object that occurs before a write to a volatile object in the instruction sequence will occur before that volatile write in the compiled binary.
@@ -257,10 +245,9 @@ microsoft 在这篇文章《volatile (C++)》[11] 介绍了 volatile 的两个�
 写一个 volatile 修饰的变量时，在写之前对其他 global 或 static 变量的访问确保发生在此之前。  
 读一个 volatile 修改的变量时，在读之前对其他 global 或 static 变量的访问确保发生在此之前。  
 
-这样实际上是可以解决上面问题二的，也就是说，微软编译器通过修改 volatile 把问题一、二都解决了。  
+这样一来确实可以解决上面的问题二，也就是说微软编译器通过增强 volatile，把问题一、二都解决了。  
 
-尽管有这种额外实现，我们仍然不应该依赖它，因为这样会严重制约我们代码的可移植性。   
-
+但是，尽管有这种额外实现，我们仍然不应该依赖它，因为这样会严重制约我们代码的可移植性。   
 
 
 ### C++11 memory order 和 atomic
@@ -283,22 +270,30 @@ c++11 之前，使用的是一些多线程库，比如 wikipedia [11]这里展�
 
 这些多线程库依赖的是一些编译器扩展，或者具体操作系统提供的底层 api，如 barrier。
 
-pthread 库 对 barrier 也做了封装，支持 pthread_barrier_t 数据类型，并且提供了pthread_barrier_init, pthread_barrier_destroy, pthread_barrier_wait API, 为了使用 pthread 的 barrier,
+pthread 库 对 barrier 也做了封装，支持 pthread_barrier_t 数据类型，并且提供了pthread_barrier_init, pthread_barrier_destroy, pthread_barrier_wait API, 为了使用 pthread 的 barrier。
+
+参考：[pthread_barrier_wait， 内存屏障](https://www.cnblogs.com/my_life/articles/5310793.html)
+
+* C++11 之前是如何使用多线程编程的？
+    * [Multithreaded programming in C++](https://www.incredibuild.com/blog/multithreaded-programming-in-c)
+    * [Is there any cross-platform threading library in C++?](https://stackoverflow.com/questions/2561471/is-there-any-cross-platform-threading-library-in-c)
+    * [Threading before C++11](https://bajamircea.github.io/coding/cpp/2019/10/29/threading-before-cpp11.html)
 
 
+* 内存模型 & reordering 参考：
+    * [Memory Model and Synchronization Primitive - Part 1: Memory Barrier](https://www.alibabacloud.com/blog/memory-model-and-synchronization-primitive---part-1-memory-barrier_597460)
 
-* [Multithreaded programming in C++](https://www.incredibuild.com/blog/multithreaded-programming-in-c)
+    * [Memory Model and Synchronization Primitive - Part 2: Memory Model](https://www.alibabacloud.com/blog/memory-model-and-synchronization-primitive---part-2-memory-model_597461)
 
-* Is there any cross-platform threading library in C++?
-[Is there any cross-platform threading library in C++?](https://stackoverflow.com/questions/2561471/is-there-any-cross-platform-threading-library-in-c)
+    * [Compiler reordering](https://bajamircea.github.io/coding/cpp/2019/10/23/compiler-reordering.html)
 
-* c++11 之前是如何做多线程编程的？
-[Threading before C++11](https://bajamircea.github.io/coding/cpp/2019/10/29/threading-before-cpp11.html)
+    * [CPU流水线与指令重排序](https://cloud.tencent.com/developer/article/2195759)
+
+    * [Memory ordering](https://en.wikipedia.org/wiki/Memory_ordering)
 
 
 [大白话C++之：一文搞懂C++多线程内存模型(Memory Order)](https://blog.csdn.net/sinat_38293503/article/details/134612152)
 [What exactly is std::atomic?](https://stackoverflow.com/questions/31978324/what-exactly-is-stdatomic)
-
 
 * intel 论坛上的这篇文章了：  Volatile: Almost Useless for Multi-Threaded Programming
 [Volatile: Almost Useless for Multi-Threaded Programming](https://blog.csdn.net/qianlong4526888/article/details/17551725)
@@ -321,27 +316,8 @@ quote: [http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#Discu
 [Why do we use the volatile keyword? ](https://stackoverflow.com/questions/4437527/why-do-we-use-the-volatile-keyword)
 
 
-* 关于 volatile 会插入内存屏障的这个说法是对的吗？ 
-https://www.zhihu.com/question/329746124/answer/718600236
-
-
-* volatile 只和阻止编译器优化有关：
-https://www.zhihu.com/question/67231941/answer/2436335772
-
-
-* 微软的 volatile 文档
-[volatile (C++)](https://learn.microsoft.com/en-us/cpp/cpp/volatile-cpp?view=msvc-170)
-
-
 * wikipedia 的 volatile 定义
 [volatile (computer programming)](https://en.wikipedia.org/wiki/Volatile_(computer_programming)#cite_note-7)
-
-
-网络上有大量关于 volatile 的文章，但基本上都是人云亦云，已经是一些陈旧的认识了。  
-
-[C++11 volatile](https://bajamircea.github.io/coding/cpp/2019/11/05/cpp11-volatile.html)
-在 C++11 中，引入了 memory order 解决多线程环境下，变量读写的原子性问题，但保留了 volatile 用于 memory mapped i/o。   
-
 
 
 ## c 没有 memory order，如果解决问题？
@@ -381,6 +357,16 @@ from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.cs
 
 ---
 
+# 什么时候应该使用多线程编程？
+
+* [CppCon 2017: Ansel Sermersheim “Multithreading is the answer. What is the question? (part 1 of 2)”](https://www.youtube.com/watch?v=GNw3RXr-VJk)
+
+* [CppCon 2017: Ansel Sermersheim “Multithreading is the answer. What is the question? (part 2 of 2)”](https://www.youtube.com/watch?v=sDLQWivf1-I)
+
+* [Multithreading is the answer.What is the question](https://www.copperspice.com/pdf/ACCU-Multi-Threading.pdf)
+
+---
+
 # 并发
 
 [Real-world Concurrency](https://queue.acm.org/detail.cfm?id=1454462)   
@@ -405,6 +391,11 @@ from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.cs
  Synchrobench, Measuring the Impact of the Synchronization on Concurrent Algorithms. Available at https://perso.telecom-paristech.fr/kuznetso/INF346-2015/slides/gramoli-ppopp15.pdf, 2015.  
 
 * Bryan Cantrill, Jeff Bonwick. Real-world Concurrency. Available at https://queue.acm.org/detail.cfm?id=1454462, 2008-10-24.   
+
+* [英]Anthony Williams. C++并发编程实战（第2版）. 吴天明. 北京: 人民邮电出版社, 2021-11-1.  
+ 
+* Mark John Batty, Wolfson College. The C11 and C++11 Concurrency Model. 2014-11-29.  
+
 
 ---
 
