@@ -238,6 +238,32 @@ void consumer_thread()
 * 内存顺序是多线程编程中难以察觉，但又很致命的问题。  
 
 
+### 某些编译器赋予 volatile 额外的能力
+上文提到 volatile 无法阻止 reordering，但并不是所有 volatile 的实现都无法阻止，这取决于不同的编译器实现，有些编译器实现就通过插入屏障（barrier）的方向来阻止 reordering，比如说 Microsoft 的编译器。  
+
+microsoft 在这篇文章《volatile (C++)》[11] 介绍了 volatile 的两个编译器选项：。  
+当使用 `/volatile:iso`选项的时候，volatile 就只能用于硬件访问 (hardware access)，即 memory mapped i/o，不能把它用于跨线程编程。  
+
+当使用 `/volatile:ms` 选项的时候，正如文章所说的，它能够实现这样的效果：   
+>When the /volatile:ms compiler option is used—by default when architectures other than ARM are targeted—the compiler generates extra code to maintain ordering among references to volatile objects in addition to maintaining ordering to references to other global objects. In particular:  
+> 
+>A write to a volatile object (also known as volatile write) has Release semantics; that is, a reference to a global or static object that occurs before a write to a volatile object in the instruction sequence will occur before that volatile write in the compiled binary.
+>
+>A read of a volatile object (also known as volatile read) has Acquire semantics; that is, a reference to a global or static object that occurs after a read of volatile memory in the instruction sequence will occur after that volatile read in the compiled binary.   
+>
+>This enables volatile objects to be used for memory locks and releases in multithreaded applications.
+
+
+翻译过来就是：   
+写一个 volatile 修饰的变量时，在写之前对其他 global 或 static 变量的访问确保发生在此之前。  
+读一个 volatile 修改的变量时，在读之前对其他 global 或 static 变量的访问确保发生在此之前。  
+
+这样实际上是可以解决上面问题二的，也就是说，微软编译器通过修改 volatile 把问题一、二都解决了。  
+
+尽管有这种额外实现，我们仍然不应该依赖它，因为这样会严重制约我们代码的可移植性。   
+
+
+
 ### C++11 memory order  和 atomic
 上文中我们把问题暴露出来了，接下来需要探讨一下解决办法了。  
 
@@ -407,4 +433,6 @@ from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.cs
 
 [9] bajamircea. C++11 volatile. Available at https://bajamircea.github.io/coding/cpp/2019/11/05/cpp11-volatile.html, 2019-11-5.    
 
-[10] Wikipedia. List of C++ multi-threading libraries. Available at https://en.wikipedia.org/wiki/List_of_C%2B%2B_multi-threading_libraries.  
+[10] Wikipedia. List of C++ multi-threading libraries. Available at https://en.wikipedia.org/wiki/List_of_C%2B%2B_multi-threading_libraries.    
+
+[11] Microsoft. volatile (C++). Available at https://learn.microsoft.com/en-us/cpp/cpp/volatile-cpp?view=msvc-170&viewFallbackFrom=vs-2019, 2021-9-21.
