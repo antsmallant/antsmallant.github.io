@@ -90,12 +90,19 @@ C++20 也是一个 major 版本，有很重要的更新，"The Big Four"，即�
 
 ## Pimpl
 
+---
+
+# 若干重要的概念
+
+## 左值和右值
+
+## const_expr
 
 ---
 
 # todo
-* 搞清楚 c++ 的 const / const_expr
 * 搞清楚 c++ 的 lvalue 以及 rvalue
+* 搞清楚 c++ 的 const / const_expr
 
 ---
 

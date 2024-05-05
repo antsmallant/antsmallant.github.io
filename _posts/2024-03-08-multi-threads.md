@@ -75,14 +75,43 @@ NOTE: **还没写完，要处理的信息量太大了。**
 
 不同之处在于，信号量可以在线程1获取但交给线程2去释放；而互斥量则要求哪个线程获取，哪个线程就要负责释放，其他线程不能帮忙。  
 
+不过，pthread 的 mutex 实现是只能单进程的，而 windows 的 mutex 是可以跨进程的
+
 
 ### 临界区 (critical section)
 是比互斥量更严格的同步手段。  
 
 把临界区的锁的获取称为进入临界区，而把锁的释放称为离开临界区。  
 
-临界区与信号量、互斥量的区别在于，信号量、互斥量在系统的任何进程里都是可见的，即一个进程创建了信号量或互斥量，在另一个进程试图去获取是合法的。而临界区的作用范围仅限于本进程，其他进程无法获取。  
+临界区与信号量、互斥量的区别在于：信号量、互斥量在系统的任何进程里都是可见的，即一个进程创建了信号量或互斥量，在另一个进程试图去获取是合法的。而临界区的作用范围仅限于本进程，其他进程无法获取。  
 
+linux 没有提供临界区，可以使用互斥量（pthread_mutex_t）模拟，不过意义不大。   
+
+windows 提供了临界区，大致用法如下：    
+
+```c++
+
+CRITICAL_SECTION  g_cs;
+
+DWORD WINAPI tfunc(PVOID pParam)
+{
+	EnterCriticalSection(&g_cs);
+	// do something
+    // ...
+	LeaveCriticalSection(&g_cs);
+	return 0;
+}
+
+int main()
+{
+	InitializeCriticalSection(&g_cs);
+	HANDLE hTH1 = CreateThread(NULL, 0, tf, NULL, 0, NULL);
+	HANDLE TH[1] = { hTH1 };
+	WaitForMultipleObjects(1, TH, FALSE, INFINITE);
+	DeleteCriticalSection(&g_cs);
+	return 0;
+}
+```
 
 ### 读写锁 (read-write lock)
 用于特定场合的一种同步手段。对于一段数据，多线程同时读取是没问题的，但多线程边读边写可能就会出问题。这种情况虽然用信号量、互斥量、临界区都可以做到同步。但是对于那种读多写少的场景，效率就比较差了，而这种情况，用读写锁就很合适。  
@@ -106,21 +135,61 @@ btw，在数据库里，这种锁很常见，并且会更复杂一些。
 
 
 ### 条件变量 (condition variable)
-首先，这不是一种锁。  
+首先，这不是一种锁，它的作用类似于栅栏。对于条件变量，线程可以有两种操作：  
+* 线程可以等待条件变量，一个条件变量可以被多条线程等待。 
+* 线程可以唤醒条件变量，此时某个或所有等待此条件变量的线程会被唤醒并继续执行。 
 
+在 linux（pthread） 和 windows 都有此实现。  
 
+pthread 的条件变量：  
+* pthread_cond_t 是数据类型
+* pthread_cond_init 负责初始化
+* pthread_cond_destroy 负责销毁（deinitialize）
+* pthread_cond_wait 等待条件变为真
+* pthread_cond_timedwait 等待条件变为真（允许指定等待的时间）
+* pthread_cond_signal 唤醒等待该条件的某个线程
+* pthread_cond_broadcast 唤醒等待该条件的所有线程
 
 
 ### 自旋锁 (spin lock)
+自旋锁用于处理器之间的互斥，适合保护很短的临界区，并且不允许在临界区睡眠。申请自旋锁的时候，如果自旋锁被其他处理器占有，本处理器自旋等待（也称为忙等待）。[11]   
+
+忙等待实际上就是处理器在空跑。为何会需要自旋锁呢？因为与忙等待相比，有时候线程切换的成本更高，让线程短暂的忙等待更有助于提高并发度。  
+
+pthread 提供了自旋锁：    
+
+```c++ 
+// 初始化
+int pthread_spin_init(pthread_spinlock_t *lock, int pshared);
+// 销毁
+int pthread_spin_destroy(pthread_spinlock_t *lock);
+// 申请自旋锁，在获得之前保持自旋状态
+int pthread_spin_lock(pthread_spinlock_t *lock);
+// 尝试申请自旋锁，如果失败立即返回一个错误码，不进入自旋状态
+int pthread_spin_trylock(pthread_spinlock_t *lock);
+// 释放自旋锁
+int pthread_spin_unlock(pthread_spinlock_t *lock);
+```
 
 
-总结一下： 
+### 总结
 
+* windows
 |锁|范围|
 |--|--|
 |信号量|多进程间|
 |互斥量|多进程间|
 |临界区|单进程内|
+|读写锁|单进程内|
+|条件变量|单进程内|
+|自旋锁|单进程内|
+
+* linux (pthread)
+|锁|范围|
+|--|--|
+|信号量|多进程间|
+|互斥量|单进程内|
+|临界区|无对应实现，用互斥量代替|
 |读写锁|单进程内|
 |条件变量|单进程内|
 |自旋锁|单进程内|
@@ -251,8 +320,12 @@ microsoft 在这篇文章《volatile (C++)》[11] 介绍了 volatile 的两个�
 
 但是，尽管有这种额外实现，我们仍然不应该依赖它，因为这样会严重制约我们代码的可移植性。   
 
+除了 Microsoft 的编译器，其他编译器对于 volatile 的处理也有其他问题，比如以下帖子和文章讲的：    
+* [Curious thing about the volatile keyword in C++](https://www.reddit.com/r/cpp/comments/592sui/curious_thing_about_the_volatile_keyword_in_c/)
+* [A note about the volatile keyword in C++](https://componenthouse.com/2016/10/21/a-note-about-the-volatile-keyword-in-cpp/)
 
-### C++11 memory order 和 atomic
+
+### C++11 完善的多线程支持
 上文中我们把问题暴露出来了，接下来需要探讨一下解决办法了。  
 
 volatile 实际上只能阻止编译器优化，就不要让它再来帮忙多线程编程了，它应该只做 memory mapped i/o 的工作。  
@@ -286,6 +359,8 @@ pthread 库 对 barrier 也做了封装，支持 pthread_barrier_t 数据类型�
     * [Memory Model and Synchronization Primitive - Part 1: Memory Barrier](https://www.alibabacloud.com/blog/memory-model-and-synchronization-primitive---part-1-memory-barrier_597460)
 
     * [Memory Model and Synchronization Primitive - Part 2: Memory Model](https://www.alibabacloud.com/blog/memory-model-and-synchronization-primitive---part-2-memory-model_597461)
+
+    * [C++ and Beyond 2012: Herb Sutter - atomic Weapons 1 of 2](https://www.youtube.com/watch?v=A8eCGOqgvH4&t=620s)
 
     * [Compiler reordering](https://bajamircea.github.io/coding/cpp/2019/10/23/compiler-reordering.html)
 
@@ -322,7 +397,7 @@ quote: [http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#Discu
 [volatile (computer programming)](https://en.wikipedia.org/wiki/Volatile_(computer_programming)#cite_note-7)
 
 
-## c 没有 memory order，如果解决问题？
+## c 没有明确规定的内存模型，是如何在多线程下工作的？
 可以使用内存屏障吗？
 
 
@@ -396,7 +471,7 @@ from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.cs
 
 * [英]Anthony Williams. C++并发编程实战（第2版）. 吴天明. 北京: 人民邮电出版社, 2021-11-1.  
  
-* Mark John Batty, Wolfson College. The C11 and C++11 Concurrency Model. 2014-11-29.  
+* Mark John Batty, Wolfson College. The C11 and C++11 Concurrency Model. Available at https://www.cs.kent.ac.uk/people/staff/mjb211/docs/toc.pdf, 2014-11-29.     
 
 
 ---
@@ -427,4 +502,6 @@ from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.cs
 
 [10] Wikipedia. List of C++ multi-threading libraries. Available at https://en.wikipedia.org/wiki/List_of_C%2B%2B_multi-threading_libraries.    
 
-[11] Microsoft. volatile (C++). Available at https://learn.microsoft.com/en-us/cpp/cpp/volatile-cpp?view=msvc-170&viewFallbackFrom=vs-2019, 2021-9-21.
+[11] Microsoft. volatile (C++). Available at https://learn.microsoft.com/en-us/cpp/cpp/volatile-cpp?view=msvc-170&viewFallbackFrom=vs-2019, 2021-9-21.  
+
+[12] 余华兵. Linux内核深度解析. 北京: 人民邮电出版社, 2019-05-01: 
