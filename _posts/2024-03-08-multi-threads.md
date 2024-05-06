@@ -462,6 +462,7 @@ from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.cs
 * 重新寻找权威的关于同步原语的描述
 * 经典问题的论述：哲学家就餐问题、读者-写者问题
 * 补充陈硕关于线程同步的建议
+* 从《modern effective c++》补充一些知识点
 
 ---
 
@@ -508,4 +509,4 @@ from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.cs
 
 [12] 余华兵. Linux内核深度解析. 北京: 人民邮电出版社, 2019-05-01.  
 
-[13] [美]Scott Meyers. Effective Modern C++(中文版). 高博. 北京: 中国电力出版社, 2018-4.  
+[13] [美]Scott Meyers. Effective Modern C++(中文版). 高博. 北京: 中国电力出版社, 2018-4: 254.  
