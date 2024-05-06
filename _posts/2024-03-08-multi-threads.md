@@ -211,6 +211,8 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 * volatile 只能阻止编译器优化，应该只把它用于 Memory Mapped I/O 的场景中，不应该将它用于解决多线程下的诸入原子读写之类的问题。    
 * C++11 开始引入的 atomic、memory order 机制，可以很好的解决多线程下的内存顺序问题，应该使用它们。  
 
+Scott Meyers 在他那本《Effective Modern C++》的条款40[13]说到：“可怜的 volatile。被误解到如此地步。它甚至不应该出现在本章中，因为它与并发程序设计毫无关系。”。
+
 要了解清楚 volatile 是如何被误解和滥用的，需要先了解一下它的历史。下文主要参考自这篇文章：《C++11 volatile》[9]。  
 
 ### volatile 的原始用途
@@ -504,4 +506,6 @@ from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.cs
 
 [11] Microsoft. volatile (C++). Available at https://learn.microsoft.com/en-us/cpp/cpp/volatile-cpp?view=msvc-170&viewFallbackFrom=vs-2019, 2021-9-21.  
 
-[12] 余华兵. Linux内核深度解析. 北京: 人民邮电出版社, 2019-05-01: 
+[12] 余华兵. Linux内核深度解析. 北京: 人民邮电出版社, 2019-05-01.  
+
+[13] [美]Scott Meyers. Effective Modern C++(中文版). 高博. 北京: 中国电力出版社, 2018-4.  
