@@ -314,13 +314,21 @@ int&& x2 = x++;          // 合法，x++ 返回的是右值，虽然可以，但
 下面举个例子：  
 
 ```c++
-Class A {
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class A {
 private:
     vector<int>* p;
 public:
+    A() {
+        cout << "A 构造函数，无参数" << endl;
+        p = new vector<int>();
+    }
     // 构造函数
     A(int cnt, int val) {
-        cout << "A 的构造函数" << endl;
+        cout << "A 构造函数，带参数" << endl;
         p = new vector<int>(cnt, val);
     }
     // 析构函数
@@ -336,40 +344,83 @@ public:
     // 拷贝构造函数
     A(const A& other) {
         cout << "A 拷贝构造函数" << endl;
-        p = new vector<int>(other->p.begin(), other->p.end());
+        p = new vector<int>(other.p->begin(), other.p->end());
     }
     // 拷贝赋值运算符
     A& operator = (const A& other) {
         cout << "A 拷贝赋值运算符" << endl;
-        p = new vector<int>(other->p.begin(), other->p.end());        
+        if (p != nullptr) {
+            cout << "A 拷贝赋值前释放旧内存" << endl;
+            delete p;
+            p = nullptr;
+        }
+        p = new vector<int>(other.p->begin(), other.p->end());       
+        return *this;
     }
     // 移动构造函数
     A(A&& other) noexcept {
         cout << "A 移动构造函数" << endl;
-        this->p = other->p;  // 直接把 other 的 p 拿来用，省掉了 new 以及数据的复制
-        other->p = nullptr;  // 要把 other 的 p 置空，否则 other 析构的时候会把 p 给 delete 掉
+        this->p = other.p;  // 直接把 other 的 p 拿来用，省掉了 new 以及数据的复制
+        other.p = nullptr;  // 要把 other 的 p 置空，否则 other 析构的时候会把 p 给 delete 掉
     }
     // 移动赋值运算符
     A& operator = (A&& other) noexcept {
         cout << "A 移动赋值运算符" << endl;
-        this->p = other->p;  // 直接把 other 的 p 拿来用，省掉了 new 以及数据的复制
-        other->p = nullptr;  // 要把 other 的 p 置空，否则 other 析构的时候会把 p 给 delete 掉        
+        this->p = other.p;  // 直接把 other 的 p 拿来用，省掉了 new 以及数据的复制
+        other.p = nullptr;  // 要把 other 的 p 置空，否则 other 析构的时候会把 p 给 delete 掉       
+        return *this;
     }
 };
 ```
 
-当这样使用的时候，调用的是拷贝函数：  
+当这样使用的时候，调用的是拷贝函数：   
+
 ```c++
 int main() {
     A a(10, 100);
     A b(a);
-    
+
     A c;
     c = a;
     return 0;
 }
 ```
 
+输出：  
+```
+A 构造函数，带参数
+A 拷贝构造函数
+A 构造函数，无参数
+A 拷贝赋值运算符
+A 拷贝赋值前释放旧内存
+A 析构函数，释放 p
+A 析构函数，释放 p
+A 析构函数，释放 p
+```
+
+当这样使用的时候，调用的是移动函数：   
+
+```c++
+A getA(int cnt, int val) {
+    return A(cnt, val);
+}
+
+int main() {
+    A a(getA(10, 200)); // 调用移动构造
+
+    a = getA(20, 300);  // 调用移动赋值运算符
+    return 0;
+}
+```
+
+输出：  
+```
+A 构造函数，带参数
+A 构造函数，带参数
+A 移动赋值运算符
+A 析构函数，不需要释放 p
+A 析构函数，释放 p
+```
 
 
 
