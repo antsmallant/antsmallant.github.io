@@ -371,17 +371,79 @@ public:
         return *this;
     }
 };
+
+void test_copy_constructor() {
+    cout << endl << "测试拷贝构造: " << endl;
+    A a(10, 100);
+    A b(a); // 触发拷贝构造
+}
+
+void test_copy_assign_operator() {
+    cout << endl << "测试拷贝赋值运算符: " << endl;
+    A a(10, 100);
+    A b;
+    b = a; // 触发拷贝赋值
+}
+
+A getA(int cnt, int val) {
+    return A(cnt, val);
+}
+
+void test_move_constructor() {
+    cout << endl << "测试移动构造: " << endl;
+    A a(getA(10, 200)); // 触发移动构造？
+}
+
+void test_move_assign_operator() {
+    cout << endl << "测试移动赋值运算符: " << endl;
+    A a;
+    a = getA(10, 200); // 触发移动赋值
+}
+
+int main() {
+    test_copy_constructor();
+    test_copy_assign_operator();
+    test_move_constructor();
+    test_move_assign_operator();
+
+    return 0;
+}
 ```
 
-当这样使用的时候，调用的是拷贝函数：   
+输出是：  
+```
+测试拷贝构造: 
+A 构造函数，带参数
+A 拷贝构造函数
+A 析构函数，释放 p
+A 析构函数，释放 p
+
+测试拷贝赋值运算符: 
+A 构造函数，带参数
+A 构造函数，无参数
+A 拷贝赋值运算符
+A 拷贝赋值前释放旧内存
+A 析构函数，释放 p
+A 析构函数，释放 p
+
+测试移动构造: 
+A 构造函数，带参数
+A 析构函数，释放 p
+
+测试移动赋值运算符: 
+A 构造函数，无参数
+A 构造函数，带参数
+A 移动赋值运算符
+A 析构函数，不需要释放 p
+A 析构函数，释放 p
+```
+
+当这样使用的时候，调用的是拷贝构造函数：   
 
 ```c++
 int main() {
     A a(10, 100);
     A b(a);
-
-    A c;
-    c = a;
     return 0;
 }
 ```
@@ -390,10 +452,6 @@ int main() {
 ```
 A 构造函数，带参数
 A 拷贝构造函数
-A 构造函数，无参数
-A 拷贝赋值运算符
-A 拷贝赋值前释放旧内存
-A 析构函数，释放 p
 A 析构函数，释放 p
 A 析构函数，释放 p
 ```
@@ -421,6 +479,11 @@ A 移动赋值运算符
 A 析构函数，不需要释放 p
 A 析构函数，释放 p
 ```
+
+注意：当 A 在没定义移动函数的时候，上面的例子只能调用拷贝函数。  
+
+
+编译器只有在这样的条件（）下才会生成默认的移动函数。  
 
 
 
