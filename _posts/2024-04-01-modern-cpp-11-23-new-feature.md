@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "现代 c++ 一、c++11 ~ c++23 新特性汇总"
+title: "现代 c++ 一：c++11 ~ c++23 新特性汇总"
 date: 2024-04-01
 last_modified_at: 2024-04-01
 categories: [c++]
