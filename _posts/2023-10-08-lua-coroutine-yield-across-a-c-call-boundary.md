@@ -11,20 +11,24 @@ tags: [lua]
 {:toc}
 <br/>
 
-## 问题背景
+# 问题背景
+
 使用 lua 的时候有时候会遇到这样的报错："attempt to yield across a C-call boundary"。   
 
 比如这个 issue：[一个关于 yield across a C-call boundary 的问题](https://github.com/cloudwu/skynet/issues/394)，云风的解释是：   
+
 >`C (skynet framework)->lua (skynet service) -> C -> lua`
 >最后这个 lua 里如果调用了 yield 就会产生。   
 
 另一些文章也对这个问题做出解释，比如 [lua中并不能随意yield](https://radiotail.github.io/2016/05/18/lua%E4%B8%AD%E5%B9%B6%E4%B8%8D%E8%83%BD%E9%9A%8F%E6%84%8Fyield/) 提到：    
+
 >流程：`coroutine --> c --> coroutine --> yield  ===> 报错`   
 >为什么这种情况下lua会给出这种报错呢？主要是因为在从c函数调回到coroutine中yield时，coroutine当前的堆栈情况会被保存在lua_State中，因此在调用resume时，lua可以恢复yield时的场景，并继续执行下去。但c函数不会因为coroutine的yield被挂起，它会继续执行下去，函数执行完后堆栈就被销毁了，所以无法再次恢复现场。而且因为c函数不会被yield函数挂起，导致c和lua的行为也不一致了，一个被挂起，一个继续执行完，代码逻辑很可能因此出错。    
 
 读完反而更困惑了。“c函数不会因为 coroutine 的 yield 被挂起，它会继续执行下去，函数执行完后堆栈就被销毁了”，这里的 c 函数是指哪个呢？是调用了含有 yield 的 lua 代码的 testc 函数，还是 main 函数？如果是 testc 函数，那显然是错的。因为 yield 的内部是通过 longjmp 跳回了上一层的 coroutine，testc 的后续是没有继续执行下去的。   
 
-再比如这个 [深入Lua：在C代码中处理协程Yield](https://zhuanlan.zhihu.com/p/337850564) 提到：
+再比如这个 [深入Lua：在C代码中处理协程Yield](https://zhuanlan.zhihu.com/p/337850564) 提到： 
+
 >原因是Lua使用longjmp来实现协程的挂起，longjmp会跳到其他地方去执行，使得后面的C代码被中断。l_foreach函数执行到lua_call，由于longjmp会使得后面的指令没机会再执行，就像这个函数突然消失了一样，这肯定会引起不可预知的后果，所以Lua不允许这种情况发生，它在调用coroutine.yield时抛出上面的错误。    
 
 这个作者大致是理解这个问题的，并且点出了问题的关键: “由于longjmp会使得后面的指令没机会再执行”。但是讲得不够细，对于问题产生的条件没有讲清楚。     
@@ -33,14 +37,16 @@ tags: [lua]
 
 ---
 
-## 环境说明
+# 环境说明
+
 以下分析使用的 lua 版本是 5.3.6，下载链接: [https://lua.org/ftp/lua-5.3.6.tar.gz](https://lua.org/ftp/lua-5.3.6.tar.gz)，本人的 github 也有对应源码: [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6) 。    
 
 下文展示的 demo 代码都在此：[https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary) 。      
 
 ---
 
-## 问题剖析
+# 问题剖析
+
 首先，什么情况下才会出现这个错误？上面文章提到的 `C (skynet framework)->lua (skynet service) -> C -> lua` 或 `coroutine --> c --> coroutine --> yield  ===> 报错`，都说得太笼统了，不够精确。    
 
 看一下 lua 源码里面的 lua_yieldk（ [ldo.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/ldo.c) ）的实现，就可以知道，在一个协程的调用链中，出现一个 luaD_callnoyield 调用之后再 yield 就会报错，大致是这样：`... -> luaD_callnoyield -> ... -> yield`。并且，不管这个 yield 是在 c 中调用 `lua_yield` 还是在 lua 中调用 `coroutine.yield`。   
@@ -185,8 +191,10 @@ false   attempt to yield across a C-call boundary
 
 ---
 
-## 深入讨论
-### lua 调用 C 函数是使用 lua_call/lua_pcall 吗？    
+# 深入讨论
+
+## lua 调用 C 函数是使用 lua_call/lua_pcall 吗？   
+
 答案：不是。   
 上面的例子中，如果把 clib 的 f1 改成这样，还会报错吗？   
 
@@ -247,7 +255,10 @@ void luaV_execute (lua_State *L) {
 
 可以看到 OP_CALL 只是调用了 luaD_precall ( [lvm.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/lvm.c) )，而 luaD_precall 的内部并没有调用到 lua_call/lua_pcall 或 luaD_callnoyield 。    
 
-### 怎么才能随心所欲的 yield 呢？
+---
+
+## 怎么才能随心所欲的 yield 呢？
+
 上面的例子中把 clib 的 f1 改成这样就可以 yield 了：  
 
 ```c
@@ -318,8 +329,10 @@ true    nil
 
 我们通过把 `printf("leave f1_v2\n");` 放到 f1_v2_continue 里面去执行，在第二次 resume 的时候成功输出了 `leave f1_v2`。     
 
+---
 
-### lua 提供的函数里面，哪些容易导致这个报错？
+## lua 提供的函数里面，哪些容易导致这个报错？  
+
 skynet ([https://github.com/cloudwu/skynet](https://github.com/cloudwu/skynet)) 里面调用 require 的时候很容易就报这个错： "attempt to yield across a C-call boundary"。我们看一下 require 是不是调用了 lua_call/lua_pcall，它对应的实现是 ll_require ( [loadlib.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/loadlib.c) )，从源码上看，确实使用了 lua_call。
 
 ```c
@@ -356,12 +369,11 @@ static int luaB_dofile (lua_State *L) {
      
 ---
 
-## 总结
-* 一般情况下，lua_call/lua_pcall 之后如果跟着 yield，就会报这个错：attempt to yield across a C-call boundary。问题的根本原因是 lua 协程的 yield 是通过 longjmp 实现的，longjmp 直接回退了 C 栈的指针，使得执行了 yield 的协程的 C 栈被抹掉了，那么执行到一半的 C 逻辑就不会在下次 resume 的时候继续执行。    
-* 要规避这个问题，可以使用 lua_callk/lua_pcallk/lua_yieldk，显式的指定一个函数作为 yield 回来后要执行的内容。
-* lua 提供的函数中，有些使用了 lua_call/lua_pcall，很容易触发这个问题，比如 lua 函数：require，c 函数：luaL_dostring、luaL_dofile；而有些使用了 lua_callk/lua_pcallk 规避这个问题，比如 lua 函数：dofile。  
-* 使用这个网站 [https://www.luac.nl/](https://www.luac.nl/)，或者使用 `luac -l -l -p <文件名>` 可以查看 lua 字节码。  
+# 总结
+* 一般情况下，lua_call/lua_pcall 之后如果跟着 yield，就会报这个错：attempt to yield across a C-call boundary。问题的根本原因是 lua 协程的 yield 是通过 longjmp 实现的，longjmp 直接回退了 C 栈的指针，使得执行了 yield 的协程的 C 栈被抹掉了，那么执行到一半的 C 逻辑就不会在下次 resume 的时候继续执行。  
 
-<br/>
+* 要规避这个问题，可以使用 lua_callk/lua_pcallk/lua_yieldk，显式的指定一个函数作为 yield 回来后要执行的内容。  
 
-本文首发于我的博客：[https://blog.antsmallant.top/2023/10/08/lua-coroutine-yield-across-a-c-call-boundary](https://blog.antsmallant.top/2023/10/08/lua-coroutine-yield-across-a-c-call-boundary)
+* lua 提供的函数中，有些使用了 lua_call/lua_pcall，很容易触发这个问题，比如 lua 函数：require，c 函数：luaL_dostring、luaL_dofile；而有些使用了 lua_callk/lua_pcallk 规避这个问题，比如 lua 函数：dofile。    
+
+* 使用这个网站 [https://www.luac.nl/](https://www.luac.nl/)，或者使用 `luac -l -l -p <文件名>` 可以查看 lua 字节码。    
