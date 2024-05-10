@@ -616,6 +616,8 @@ void test_move_constructor() {
 ## 返回值优化 RVO、NRVO
 这是一种编译器优化
 
+参考：编译器优化之 Copy Elison、RVO
+
 
 
 ### 编译器默认生成的移动（构造/赋值运算符）函数
