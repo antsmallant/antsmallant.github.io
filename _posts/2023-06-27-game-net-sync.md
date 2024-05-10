@@ -121,7 +121,7 @@ moba 类型游戏其实是可以使用状态同步的，王者荣耀采用帧同
 
 比如这个 demo 项目（[https://github.com/JiepengTan/Lockstep-Tutorial](https://github.com/JiepengTan/Lockstep-Tutorial)）就是会抛弃客户端 input 数据包的。 [https://github.com/JiepengTan/Lockstep-Tutorial/blob/master/Server/Src/SimpleServer/Src/Server/Game.cs](https://github.com/JiepengTan/Lockstep-Tutorial/blob/master/Server/Src/SimpleServer/Src/Server/Game.cs):    
 
-```csharp
+```cs
 void C2G_PlayerInput(Player player, BaseMsg data){
     ...
     if (input.Tick < Tick) {
@@ -135,7 +135,7 @@ void C2G_PlayerInput(Player player, BaseMsg data){
 
 参考另一个 demo ( [https://github.com/Enanyy/Frame](https://github.com/Enanyy/Frame) )，这个实现不会抛弃客户端过时的 input 数据包，代码在此（ [https://github.com/Enanyy/Frame/blob/master/FrameServer/FrameServer/Program.cs](https://github.com/Enanyy/Frame/blob/master/FrameServer/FrameServer/Program.cs) ）：
 
-```csharp
+```cs
 private void OnOptimisticFrame(Session client, GM_Frame recvData)
 {
 
@@ -253,7 +253,7 @@ AOI 算法还可以参考以下两篇文章，写得挺好的：
 有精细的实现，也有粗糙的实现，我在 github 上看过一份源码（ [https://github.com/tsymiar/TheLastBattle](https://github.com/tsymiar/TheLastBattle) ），这款 moba 游戏里面也实现了客户端“预测先行”，但它只是把 local player 的朝向修改了，并没有真正的先移动。代码在此：
 [https://github.com/tsymiar/TheLastBattle/blob/main/Client/Assets/Scripts/GameEntity/Iselfplayer.cs](https://github.com/tsymiar/TheLastBattle/blob/main/Client/Assets/Scripts/GameEntity/Iselfplayer.cs):     
 
-```csharp
+```cs
 public override void OnExecuteEntityAdMove()
 {
     base.OnExecuteEntityAdMove();
@@ -277,7 +277,7 @@ public override void OnExecuteEntityAdMove()
 ### 逻辑和显示的分离
 这个主要是为了做插值使得视觉平滑，减少抖动感。客户端在实现上区分了“逻辑帧”与“显示帧”，比如玩家的位置会有个逻辑上的位置 position，会有个显示上的位置 view_position，显示帧 tick 的时候，通过插值算法，将 view_position 插值到 position，比如这样：  
 
-```csharp
+```cs
 player.view_pos = Vector3.Lerp(player.view_pos, player.pos, 0.5f);
 player.view_rot = Quaternion.Slerp(player.view_rot, player.rot, 0.5f);
 ```

@@ -19,7 +19,8 @@ tags: [performance, c++]
 使用 gcc -S 编译成汇编代码，然后再用 c++filt demangling 里面那些被 mangling 的 C++ 符号。    
 
 假设你的文件叫 abc.cpp   
-```
+
+```cpp
 #include <iostream>
 using namespace std;
 
@@ -42,7 +43,8 @@ int main() {
 ```
 
 运行以下命令   
-```
+
+```bash
 g++ -S abc.cpp -o abc.s
 c++filt<abc.s>abc_demangle.s
 ```
@@ -50,12 +52,14 @@ c++filt<abc.s>abc_demangle.s
 这样看 abc_demangle.s 就顺眼多了。     
 
 也可以这样来使用 c++filt:   
-```
+
+```bash
 cat abc.s | c++filt > abc_demangle.s
 ```
 
 作为对比，abc.s 一般是这样的：    
-```
+
+```assembly
 	.file	"abc.cpp"
 	.text
 	.local	_ZStL8__ioinit
@@ -78,7 +82,8 @@ _ZN2C04c0f1Ev:
 ```
 
 而 abc_demangle.s 是这样的：    
-```
+
+```assembly
 	.file	"abc.cpp"
 	.text
 	.local	std::__ioinit

@@ -162,7 +162,7 @@ print(ok, err)
 
 编译&执行：    
 
-```
+```bash
 gcc -fPIC -shared -g -o clib.so clib.c -I "../../3rd/lua-5.3.6/install/include" -L "../../3rd/lua-5.3.6/install/lib"
 
 ../../3rd/lua-5.3.6/install/bin/lua test_co_1.lua
