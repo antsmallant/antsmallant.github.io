@@ -25,6 +25,20 @@ categories: [游戏开发]
 
 ---
 
+## 同步方式的核心差异
+开门见山，直接把差异写出来，国内有不少文章，会把传输的数据是 “玩家操作” 还是 “状态数据” 作为差异，然而这并不是真正的差异的，而是因为工作方式的不同，导致的一种表象而已。  
+
+|同步方式|国内叫法|核心特点|
+|--|--|--|
+|Deterministic LockStep|帧同步|客户端各自模拟，并且假定在相同初始状态，相同每帧输入的情况下，所有端的每帧模拟结果都相同；客户端画面可以做到每帧完全一致|
+|State Synchronization|状态同步|服务端模拟，客户端也可以模拟（预测先行）；服务端结果是权威结果，服务端在合适时间向各个客户端同步差异化的结果；客户端画面不保证一致|
+|Snapshot Interpolation|快照同步|服务端模拟，客户端（基本）不模拟；服务端固定时间同步完整的结果给每个客户端|
+
+注1：帧同步的时候，服务端也可以运行模拟用于防作弊。  
+注2：状态同步的时候，客户端运行模拟，可以做预测先行。  
+
+---
+
 ## 同步方式的分类
 
 ### Deterministic LockStep
@@ -92,14 +106,13 @@ moba 类型游戏其实是可以使用状态同步的，王者荣耀采用帧同
 帧同步的确定性，要求各种平台之上的客户端计算都是确定的，这些都可能导致不确定计算：浮点数，随机数，执行顺序，调用时序，排序的稳定性，物理引擎。 
 浮点数可以使用定点数替代。  
 随机数可以统一随机数种子。  
-执行顺序，要保持一致，需要所有的逻辑要有一个统一的入口，每次 tick update 进入一个统一的入口，依次调用各个模块的逻辑。 
+执行顺序，要保持一致，需要所有的逻辑要有一个统一的入口，每次 tick update 进入一个统一的入口，依次调用各个模块的逻辑。   
 排序的稳定性，可以指定统一的稳定排序算法。  
-物理引擎，要求确定性的模拟，需要选用保证确定性的物理引擎，比如：
+物理引擎，要求确定性的模拟，需要选用保证确定性的物理引擎。  
 
-帧同步的挑战还是蛮大的，由于误差累积会变大，基本上只要有一次计算不一致，那后续结果就都不一致了，游戏也就玩不下去了，王者荣耀的这个分享[11]就讲了很多这一方面的努力。 
+帧同步的挑战很大，由于误差累积会变大，基本上只要有一次计算不一致，那后续结果就都不一致了，游戏也就玩不下去了，王者荣耀的这个分享[11]就讲了很多这一方面的努力。   
 
-可以使用的优化手段包括以下这些。  
-
+可以使用的优化手段包括以下这些：     
 
 #### 乐观帧
 现在事实意义上的帧同步算法都是用的乐观帧了，即每帧固定时长，超时不等待。  
@@ -107,7 +120,8 @@ moba 类型游戏其实是可以使用状态同步的，王者荣耀采用帧同
 但这里有个细节问题，客户端发送给服务端的 input 数据包都是带有客户端帧号的，那么服务端是否要抛弃客户端过时的 input 数据包，即客户端帧号小于当前服务端帧号的数据包？   
 
 比如这个 demo 项目（[https://github.com/JiepengTan/Lockstep-Tutorial](https://github.com/JiepengTan/Lockstep-Tutorial)）就是会抛弃客户端 input 数据包的。 [https://github.com/JiepengTan/Lockstep-Tutorial/blob/master/Server/Src/SimpleServer/Src/Server/Game.cs](https://github.com/JiepengTan/Lockstep-Tutorial/blob/master/Server/Src/SimpleServer/Src/Server/Game.cs):    
-```
+
+```csharp
 void C2G_PlayerInput(Player player, BaseMsg data){
     ...
     if (input.Tick < Tick) {
@@ -121,7 +135,7 @@ void C2G_PlayerInput(Player player, BaseMsg data){
 
 参考另一个 demo ( [https://github.com/Enanyy/Frame](https://github.com/Enanyy/Frame) )，这个实现不会抛弃客户端过时的 input 数据包，代码在此（ [https://github.com/Enanyy/Frame/blob/master/FrameServer/FrameServer/Program.cs](https://github.com/Enanyy/Frame/blob/master/FrameServer/FrameServer/Program.cs) ）：
 
-```
+```csharp
 private void OnOptimisticFrame(Session client, GM_Frame recvData)
 {
 
@@ -346,13 +360,11 @@ MOBA 对于动作的同步的要求比较高，对于延迟也是相对敏感一
 ---
 
 ## todo
-* 处理过时状态的问题
-* p7 关于同步粒度过于粗糙的问题，同步线段的问题
+* mmo 关于同步粒度过于粗糙的问题，同步线段的问题
 * mmo 中的预测回滚问题
 * mmo 应该采用一个怎么样的相对适中的状态同步策略？
-* kcp 编程
 * 补充关于 buffering 的小节
-* 手写一个“同步化的状态机” [《守望先锋》网络脚本化的武器和技能系统](https://www.lfzxb.top/ow-gdc-weapon-and-skillsystem/) 是怎么回事？
+* 处理过时状态的问题
 
 
 ---
