@@ -13,7 +13,7 @@ tags: [设计模式]
 
 游戏开发是一个快速迭代的过程，代码复杂度也很高，借助于设计模式，可以帮助我们降低复杂度，降低系统间的耦合，从而高效高质的做出交付。  
 
-最近读了这本书：《游戏编程模式》，很受启发，所以结合书本知识，以及自己的理解，写一写游戏中常用的设计模式。   
+最近读了这本书：《游戏编程模式》[1]，很受启发，所以结合书本知识，以及自己的理解，写一写游戏中常用的设计模式。   
 
 ---
 
@@ -33,7 +33,7 @@ tags: [设计模式]
 针对单例模式的两大特性：1）限制全局单一实例；2）便于访问，书中[1]也给出了单例的替代方案：   
 * 将类限制为单一实例，可以实现单例模式的单例特性，比如这样： 
 
-```C++
+```cpp
 class FileSystem
 {
 public:
@@ -87,37 +87,37 @@ GOF 对它意图的定义是： “定义对象间的一种一对多的依赖关
 
 如果不使用状态机，要根据输入控制一个英雄的行为，可能会写出这样复杂的，不好维护的代码：  
 
-```C++
-    void Heroine::handleInput(Input input)
+```cpp
+void Heroine::handleInput(Input input)
+{
+    if (input == PRESS_B)
     {
-      if (input == PRESS_B)
-      {
-        if (! isJumping_ && ! isDucking_)
-        {
-          // Jump...
-        }
-      }
-      else if (input == PRESS_DOWN)
-      {
-        if (! isJumping_)
-        {
-          isDucking_ = true;
-          setGraphics(IMAGE_DUCK);
-        }
-        else
-        {
-          isJumping_ = false;
-          setGraphics(IMAGE_DIVE);
-        }
-      }
-      else if (input == RELEASE_DOWN)
-      {
-        if (isDucking_)
-        {
-          // Stand...
-        }
-      }
+    if (! isJumping_ && ! isDucking_)
+    {
+        // Jump...
     }
+    }
+    else if (input == PRESS_DOWN)
+    {
+    if (! isJumping_)
+    {
+        isDucking_ = true;
+        setGraphics(IMAGE_DUCK);
+    }
+    else
+    {
+        isJumping_ = false;
+        setGraphics(IMAGE_DIVE);
+    }
+    }
+    else if (input == RELEASE_DOWN)
+    {
+    if (isDucking_)
+    {
+        // Stand...
+    }
+    }
+}
 ```
 
 上面的代码，不单复杂难维护，而且还容易出 bug，比如会有很多这类逻辑约束：“主角在跳跃状态的时候不能再跳，但是在俯冲攻击的时候却可以跳跃”，为了实现这类约束，需要加更多的状态变量，更多的判断。  
@@ -138,7 +138,7 @@ GOF 对它意图的定义是： “定义对象间的一种一对多的依赖关
 
 依据状态机，实现的代码如下：  
 
-```C++
+```cpp
 enum State
 {
     STATE_STANDING,
