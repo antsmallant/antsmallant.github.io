@@ -92,30 +92,30 @@ void Heroine::handleInput(Input input)
 {
     if (input == PRESS_B)
     {
-    if (! isJumping_ && ! isDucking_)
-    {
-        // Jump...
-    }
+        if (! isJumping_ && ! isDucking_)
+        {
+            // Jump...
+        }
     }
     else if (input == PRESS_DOWN)
     {
-    if (! isJumping_)
-    {
-        isDucking_ = true;
-        setGraphics(IMAGE_DUCK);
-    }
-    else
-    {
-        isJumping_ = false;
-        setGraphics(IMAGE_DIVE);
-    }
+        if (! isJumping_)
+        {
+            isDucking_ = true;
+            setGraphics(IMAGE_DUCK);
+        }
+        else
+        {
+            isJumping_ = false;
+            setGraphics(IMAGE_DIVE);
+        }
     }
     else if (input == RELEASE_DOWN)
     {
-    if (isDucking_)
-    {
-        // Stand...
-    }
+        if (isDucking_)
+        {
+            // Stand...
+        }
     }
 }
 ```
@@ -154,30 +154,30 @@ void Heroine::handleInput(Input input)
     case STATE_STANDING:
         if (input == PRESS_B)
         {
-        state_ = STATE_JUMPING;
-        yVelocity_ = JUMP_VELOCITY;
-        setGraphics(IMAGE_JUMP);
+            state_ = STATE_JUMPING;
+            yVelocity_ = JUMP_VELOCITY;
+            setGraphics(IMAGE_JUMP);
         }
         else if (input == PRESS_DOWN)
         {
-        state_ = STATE_DUCKING;
-        setGraphics(IMAGE_DUCK);
+            state_ = STATE_DUCKING;
+            setGraphics(IMAGE_DUCK);
         }
         break;
 
     case STATE_JUMPING:
         if (input == PRESS_DOWN)
         {
-        state_ = STATE_DIVING;
-        setGraphics(IMAGE_DIVE);
+            state_ = STATE_DIVING;
+            setGraphics(IMAGE_DIVE);
         }
         break;
 
     case STATE_DUCKING:
         if (input == RELEASE_DOWN)
         {
-        state_ = STATE_STANDING;
-        setGraphics(IMAGE_STAND);
+            state_ = STATE_STANDING;
+            setGraphics(IMAGE_STAND);
         }
         break;
     }
