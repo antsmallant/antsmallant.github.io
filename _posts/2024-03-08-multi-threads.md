@@ -495,6 +495,7 @@ from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.cs
 ---
 
 # 参考
+
 [1] ~青萍之末~. 多线程的同步与互斥（互斥锁、条件变量、读写锁、自旋锁、信号量）. Available at https://blog.csdn.net/daaikuaichuan/article/details/82950711, 2018-10-06.   
 
 [2] [荷]Andrew S. Tanenbaum, Herbert Bos. 现代操作系统(原书第4版). 陈向群, 马洪兵, 等. 北京: 机械工业出版社, 2020-3(1).   
