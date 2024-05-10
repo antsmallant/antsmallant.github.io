@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "现代 C++ 二：若干重要概念"
+title: "现代 c++ 二：若干重要概念"
 date: 2024-04-02
 last_modified_at: 2024-04-02
 categories: [c++]
