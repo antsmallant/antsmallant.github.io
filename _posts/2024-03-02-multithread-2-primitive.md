@@ -1,8 +1,8 @@
 ---
 layout: post
 title: "多线程编程二：同步原语"
-date: 2024-03-01
-last_modified_at: 2024-03-01
+date: 2024-03-02
+last_modified_at: 2024-03-02
 categories: [并发与多线程]
 tags: [并发 同步 多线程]
 ---
