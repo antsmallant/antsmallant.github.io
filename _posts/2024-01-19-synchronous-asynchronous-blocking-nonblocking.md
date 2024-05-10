@@ -101,6 +101,6 @@ I/O 模型中包含同步 I/O 和异步 I/O，区别在于当内核数据准备�
 
 [1] W.Richard Stevens, Bill Fenner, Andrew M. Rudoff. UNIX网络编程 卷1：套接字联网API 第3版. 北京: 人民邮电出版社, 2010-7: 123,124,126,341.      
 
-[2] Daniel Wu. 分布式系统中的网络模型和故障模型. Available ad https://danielw.cn/network-failure-models, 2015-10-5.      
+[2] Daniel Wu. 分布式系统中的网络模型和故障模型. Available at https://danielw.cn/network-failure-models, 2015-10-5.      
 
 [3] Daniel P.Bovet, Marco Cesati. 深入理解 Linux 内核 第三版. 陈莉君, 张琼声, 张宏伟. 北京: 中国电力出版社, 2007-9(1): 135.   
