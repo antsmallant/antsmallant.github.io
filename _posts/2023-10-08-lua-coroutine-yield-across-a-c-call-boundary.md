@@ -198,7 +198,7 @@ false   attempt to yield across a C-call boundary
 答案：不是。   
 上面的例子中，如果把 clib 的 f1 改成这样，还会报错吗？   
 
-```
+```c
 static int f1(lua_State* L) {
     printf("enter f1\n");
     lua_yield(L, 0);
