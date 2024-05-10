@@ -18,7 +18,7 @@ categories: [游戏开发]
 
 这项技术发展至今，大体上可以归类为三种做法，分别是 Deterministic LockStep, Snapshot Interpolation, State Synchronization。   
 
-这个划分参考自 Glenn Fielder[1][2][3]。其实国内的韦易笑、Jerish 在各自文章中的所做的划分也是大同小异，韦易笑老师在他的文章中把网络同步归类为两大种:帧间同步、状态同步。gdc2017 overwatch 的这个分享 Replay-Technology-in-Overwatch-Kill  也引用了 Glenn Fiedler，把主流的网络同步模型分为了以上三类，这个视频的文字翻译版在此[7]。    
+这个划分参考自 Glenn Fielder[1][2][3]。韦易笑、Jerish 在各自文章中的所做的划分也是大同小异，韦易笑老师在他的文章中把网络同步归类为两大种:帧间同步、状态同步。gdc2017 overwatch 的这个分享 Replay-Technology-in-Overwatch-Kill 也引用了 Glenn Fiedler，把主流的网络同步模型分为了以上三类，这个视频的文字翻译版在此[7]。    
 
 ![gdc2017-overwatch-network-synchronization-models](https://blog.antsmallant.top/media/blog/2023-06-27-game-networking/gdc2017-overwatch-network-synchronization-models.png)  
 <center>图1：overwatch 分享中对于网络同步模型的划分</center>
@@ -28,7 +28,7 @@ categories: [游戏开发]
 ## 同步方式的分类
 
 ### Deterministic LockStep
-Deterministic LockStep，对应到国内，勉强对得上的是帧同步，但国内讲的帧同步，如果对应到国内，应该是帧同步。Deterministic lockstep 最重要的是 Deterministic，它的要求是：给定相同的初始状态，加上一系列相同的输入，可以计算得出相同的结果，不是差不多相同，而是完全相同。   
+Deterministic LockStep，对应到国内，勉强对得上的是帧同步。Deterministic lockstep 最重要的是 Deterministic，它的要求是：给定相同的初始状态，加上一系列相同的输入，可以计算得出相同的结果，不是差不多相同，而是完全相同。   
 
 要求很严格，缺点也很明显，即网络卡的玩家会拖累其他玩家。而国内谈论的帧同步，可以说是应该了各种优化手段之后的 lockstep。下面就直接用帧同步来代替了。帧同步按照韦易笑（ 知乎大佬： https://www.zhihu.com/people/skywind3000 ，博客： https://www.skywind.me/blog/ ）的说法，应该叫帧间同步才对，它是一系列算法的集合，其共同特征是 “确保每帧（逻辑帧）输入一致”[4]。     
 
@@ -239,7 +239,7 @@ AOI 算法还可以参考以下两篇文章，写得挺好的：
 有精细的实现，也有粗糙的实现，我在 github 上看过一份源码（ [https://github.com/tsymiar/TheLastBattle](https://github.com/tsymiar/TheLastBattle) ），这款 moba 游戏里面也实现了客户端“预测先行”，但它只是把 local player 的朝向修改了，并没有真正的先移动。代码在此：
 [https://github.com/tsymiar/TheLastBattle/blob/main/Client/Assets/Scripts/GameEntity/Iselfplayer.cs](https://github.com/tsymiar/TheLastBattle/blob/main/Client/Assets/Scripts/GameEntity/Iselfplayer.cs):     
 
-```
+```csharp
 public override void OnExecuteEntityAdMove()
 {
     base.OnExecuteEntityAdMove();
@@ -263,7 +263,7 @@ public override void OnExecuteEntityAdMove()
 ### 逻辑和显示的分离
 这个主要是为了做插值使得视觉平滑，减少抖动感。客户端在实现上区分了“逻辑帧”与“显示帧”，比如玩家的位置会有个逻辑上的位置 position，会有个显示上的位置 view_position，显示帧 tick 的时候，通过插值算法，将 view_position 插值到 position，比如这样：  
 
-```
+```csharp
 player.view_pos = Vector3.Lerp(player.view_pos, player.pos, 0.5f);
 player.view_rot = Quaternion.Slerp(player.view_rot, player.rot, 0.5f);
 ```
@@ -367,13 +367,13 @@ MOBA 对于动作的同步的要求比较高，对于延迟也是相对敏感一
 * [影子跟随算法（2007年老文一篇）](https://www.skywind.me/blog/archives/1145)
 
 
-Jerish 对于网络同步的发展史考察得很深入，值得仔细阅读：    
+Jerish 的这几篇文章对于网络同步的发展史考察得很深入，值得仔细阅读：     
 * [细谈网络同步在游戏历史中的发展变化（上）](https://zhuanlan.zhihu.com/p/130702310)
 * [细谈网络同步在游戏历史中的发展变化（中）](https://zhuanlan.zhihu.com/p/164686867)
 * [细谈网络同步在游戏历史中的发展变化（下）](https://zhuanlan.zhihu.com/p/336869551)   
 
 
-Glen Fielder 算是网络同步这块的世界级专家了，也在 gdc 上做过技术分享，这几篇文章写得很不错：   
+Glen Fielder 是网络同步的世界级专家，在 gdc 上做过多次技术分享，这几篇文章写得很不错：   
 * [Introduction to Networked Physics](https://gafferongames.com/post/introduction_to_networked_physics/)
 * [What Every Programmer Needs To Know About Game Networking](https://gafferongames.com/post/what_every_programmer_needs_to_know_about_game_networking/)
 * [Deterministic Lockstep](https://gafferongames.com/post/deterministic_lockstep/)
@@ -394,7 +394,7 @@ Gabriel Gambetta 这几篇文章关于状态同步相关优化手段的文章写
 ---
 
 ## 总结
-纸上谈兵容易，真做项目很难，会遇到各种各样的细节问题。自己多练手真正写写 demo 才更清楚个中细节。  
+* 纸上谈兵容易，真做项目很难，会遇到各种各样的细节问题。自己多练手真正写写 demo 才更清楚其中的细节。  
 
 ---
 

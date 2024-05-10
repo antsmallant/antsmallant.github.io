@@ -613,7 +613,7 @@ void test_move_constructor() {
 最精准的分析需要看汇编代码，但汇编有点复杂，这里先不看，等下面描述 RVO 的时候再一并用汇编分析。   
 
 
-## 返回值优化 RVO、NRVO
+## copy elision, RVO, NRVO
 这是一种编译器优化
 
 参考：编译器优化之 Copy Elison、RVO
@@ -696,14 +696,11 @@ std::move 只是完成**类型转换**，真正起作用的是移动构造函数
 
 ---
 
-## const
+## const vs constexpr
+
 const 在各个位置的意义？
 成员函数末尾的 const
 开头的 const
-
----
-
-## constexpr
 
 为何 constexpr 重要？ 
 
