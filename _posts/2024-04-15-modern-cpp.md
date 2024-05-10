@@ -25,7 +25,7 @@ tags: [c++]
 
 C++11 是一个 major 版本，现代 C++ 开天辟地的版本，有特别多新东西。     
 
-新的语言特性[4]：  
+新的语言特性[4] ：  
 
 * 内存模型——一个高效的为现代硬件设计的底层抽象，作为描述并发的基础
 * auto 和 decltype——避免类型名称的不必要重复
@@ -223,14 +223,14 @@ C++语言中的大多数语句都以分号结束，一个表达式，比如 ival
 
 空语句是最简单的语句，空语句中只含有一个单独的分号：`;`。空语句的作用是，如果语法上需要一条语句但逻辑上不需要，此时应该使用空语句，比如：  
 
-```c++
+```cpp
 while (cin >> s && s != sought)
     ;
 ```
 
 复合语句（compound statement）是指用花括号括起来的（可能为空的）语句和声明的序列，复合语句也被称作块（block）。复合语句的作用是，如果在程序的某个地方，语法上需要一条件语句，但逻辑上需要多条语句，比如：  
 
-```c++
+```cpp
 while (val <= 10) {
     sum += val;
     ++val;
@@ -249,7 +249,7 @@ while (val <= 10) {
 * 赋值表达式的结果    
 赋值表达式本身是有结果的，它的结果就是 = 号左侧的运算对象，是一个左值。比如 `a = 100`，它的结果就是 a，可以这样验证：   
 
-```c++
+```cpp
 int a;
 printf("%d\n", (a = 5));    // 输出 5
 printf("0x%x\n", &a);       // 在我本机上输出 0x500d58
@@ -264,7 +264,7 @@ printf("0x%x\n", &(a=5));   // 在我本机上输出 0x500d58
 ## 定义时初始化 vs 赋值
 上面讲赋值表达式的时候已经提及了，定义时初始化与赋值是不同的，不能混为一谈。这个很重要，因为不同场景调用的函数是不同的，定义时初始化调用的是拷贝构造函数，而赋值调用的是赋值运算符函数。    
 
-```c++
+```cpp
 class Dt {
 private:
     int a;
@@ -313,7 +313,7 @@ TODO
 ## 实参与形参
 例子：
 
-```c++
+```cpp
 int a = 100;     
 void f(int b);   // b 是形参
 f(a);            // a 是实参
@@ -342,7 +342,7 @@ C++ 的表达式也只有左值和右值，大体也是相似的意思。简单�
 
 解引用运行符就是 * 操作符，用于获得指针所指的对象，比如:   
 
-```c++
+```cpp
 int v = 100;
 int* p = &v;
 *p = 200;
@@ -362,7 +362,7 @@ p 是一个指向了对象的指针，则 *p 就是获得指针 p 所指的对�
 
 它与指针是有显著区别的，指针可以指向 NULL 对象，指针可以只声明不初始化，但左值引用都不行。左值引用必须引用一个已经存在的对象，必须定义时初始化，像这样:  
 
-```c++
+```cpp
 int i = 100;
 int& refi = i;  // 合法
 int& refi2;     // 不合法
@@ -370,7 +370,7 @@ int& refi2;     // 不合法
 
 另外，左值引用不能绑定到临时对象上：        
 
-```c++
+```cpp
 int& i = 100;           // 不合法
 string& s {"hello"};    // 不合法
 ```
@@ -379,14 +379,14 @@ string& s {"hello"};    // 不合法
 ### const 引用
 const 引用是一种特殊的左值引用，与常规左值引用的区别在于，它可以绑定到临时对象：  
 
-```c++
+```cpp
 const int& i1 = 100;        // 合法，相当于：int temp = 100; const int& i1 = temp;
 const string& s1 {"hello"}; // 合法，相当于：string temp {"hello"}; const string& s1 {temp};
 ```
 
 c++ 只会为 const 引用产生临时对象，不会对非 const 引用产生临时对象，这一特性导致了一些容易让人困惑的现象：  
 
-```c++
+```cpp
 void f1(const string& s) {
     cout << s << endl;
 }
@@ -410,7 +410,7 @@ f2(s);         // 正常一个左值可以被 const引用 所引用
 
 右值引用只能绑定到右值上，不能绑定到左值上，举些例子：   
 
-```c++
+```cpp
 int r = 100;
 int&& r1 = r;            // 不合法，r 是一个左值
 int&& r2 = 100;          // 合法，100 是一个右值
@@ -448,7 +448,7 @@ int&& x2 = x++;          // 合法，x++ 返回的是右值，虽然可以，但
 下面举个例子证明以上的说法：   
 源码可在此找到：https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/modern-cpp 。
 
-```c++
+```cpp
 // move_constructor_demo.cpp
 // 编译&执行：g++ -std=c++14 move_constructor_demo.cpp && ./a.out
 // 屏蔽rvo的编译&执行：g++ -std=c++14 -fno-elide-constructors move_constructor_demo.cpp && ./a.out
@@ -597,7 +597,7 @@ A 析构函数，释放 p
 
 虽然如愿输出了 “A 移动构造函数”，但输出有点多。把代码列出来，简单分析一下：  
 
-```c++
+```cpp
 A getA(int cnt, int val) {
     // 1、用带参数的构造函数 A(10, 200) 生成一个局部对象 x
     // 2、return 的时候，用移动构造函数 A(x) 生成一个临时对象 t
@@ -638,7 +638,7 @@ void test_move_constructor() {
 
 接下来介绍的 std::move，即使不屏蔽 RVO，也可以验证移动构造的使用，只需要这样修改 
 
-```c++
+```cpp
 // g++ -std=c++14 move_constructor_demo.cpp && ./a.out
 
 void test_move_constructor_use_stdmove() {
@@ -665,7 +665,7 @@ std::move 把 x 转换成了一个右值类型的变量，所以编译器使用�
 
 特别注意，std::move **并不完成对象的移动**，它的作用只是把传递进去的**实参**转换成一个右值，可以理解它是某种 cast 封装，一种可能的实现如下[2]：   
 
-```c++
+```cpp
 template<typename T>
 typename remove_reference<T>::type&&
 move(T&& param)
@@ -679,7 +679,7 @@ move(T&& param)
 
 **实参**可以是左值，也可以是右值:    
 
-```c++
+```cpp
 int a = 100;
 int&& r1 = std::move(a);    // 合法
 int&& r2 = std::move(200);  // 合法
