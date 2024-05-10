@@ -122,7 +122,7 @@ int main()
 当处于共享状态时，以共享方式获取会成功，以独占方式获取会进入等待。  
 当处于独占状态时，试图以任一种方式获取都会进入等待。  
 
-可总结如下：  
+归类如下：  
 
 |读写锁状态|以共享方式获取|以独占方式获取|
 |---------|-------------|------------|
@@ -131,7 +131,7 @@ int main()
 |  独占   |   等待       |    等待    |
 
 
-btw，在数据库里，这种锁很常见，并且会更复杂一些。  
+btw，在数据库里，这种锁很常见，并且会更复杂一些。   
 
 
 ### 条件变量 (condition variable)
@@ -172,9 +172,10 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 ```
 
 
-### 总结
+### 使用范围小结
 
 * windows
+
 |锁|范围|
 |--|--|
 |信号量|多进程间|
@@ -185,6 +186,7 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 |自旋锁|单进程内|
 
 * linux (pthread)
+
 |锁|范围|
 |--|--|
 |信号量|多进程间|
@@ -370,32 +372,40 @@ pthread 库 对 barrier 也做了封装，支持 pthread_barrier_t 数据类型�
 
     * [Memory ordering](https://en.wikipedia.org/wiki/Memory_ordering)
 
+    * [大白话C++之：一文搞懂C++多线程内存模型(Memory Order)](https://blog.csdn.net/sinat_38293503/article/details/134612152)     
 
-[大白话C++之：一文搞懂C++多线程内存模型(Memory Order)](https://blog.csdn.net/sinat_38293503/article/details/134612152)
-[What exactly is std::atomic?](https://stackoverflow.com/questions/31978324/what-exactly-is-stdatomic)
+* atmoic  
 
-* intel 论坛上的这篇文章了：  Volatile: Almost Useless for Multi-Threaded Programming
+[What exactly is std::atomic?](https://stackoverflow.com/questions/31978324/what-exactly-is-stdatomic)   
+
+* intel 论坛上的这篇文章了：  Volatile: Almost Useless for Multi-Threaded Programming     
+
 [Volatile: Almost Useless for Multi-Threaded Programming](https://blog.csdn.net/qianlong4526888/article/details/17551725)
 
 [Should volatile Acquire Atomicity and Thread Visibility Semantics?](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n2016.html)
 
 
-* Since C++11, atomic variables (std::atomic<T>) give us all of the relevant guarantees.
+* Since C++11, atomic variables (std::atomic<T>) give us all of the relevant guarantees.   
+
 [Why is volatile not considered useful in multithreaded C or C++ programming?](https://stackoverflow.com/questions/2484980/why-is-volatile-not-considered-useful-in-multithreaded-c-or-c-programming)
 
 
-* That conclusion was accurate at the time the article was written (2004); now C++ is a thread and multiprocessor aware language.   
+* That conclusion was accurate at the time the article was written (2004); now C++ is a thread and multiprocessor aware language.    
+
 [volatile keyword and multiprocessors ](https://www.daniweb.com/programming/software-development/threads/389799/volatile-keyword-and-multiprocessors) 
 
-pdf: [C++ and the Perils of Double-Checked Locking](https://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf)
+pdf: [C++ and the Perils of Double-Checked Locking](https://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf)   
+
 quote: [http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#DiscussOrder](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#DiscussOrder)
 
 
-* Why do we use the volatile keyword?
+* Why do we use the volatile keyword?   
+
 [Why do we use the volatile keyword? ](https://stackoverflow.com/questions/4437527/why-do-we-use-the-volatile-keyword)
 
 
-* wikipedia 的 volatile 定义
+* wikipedia 的 volatile 定义   
+
 [volatile (computer programming)](https://en.wikipedia.org/wiki/Volatile_(computer_programming)#cite_note-7)
 
 
