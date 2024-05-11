@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "网络游戏同步技术一：分类及差异"
+title: "网络游戏同步技术二：状态同步的优化与实现"
 date: 2023-07-01
 last_modified_at: 2023-07-01
 categories: [游戏开发]
