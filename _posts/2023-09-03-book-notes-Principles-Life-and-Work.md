@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "《原则》读书笔记"
+title: "读书笔记：《原则》"
 date: 2023-09-03
 last_modified_at: 2023-09-03
 categories: [读书]
