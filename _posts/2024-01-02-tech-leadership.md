@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "技术团队管理"
+title: "技术团队管理一：目标、手段及若干问题"
 date: 2024-01-02
 last_modified_at: 2024-01-02
 categories: [管理与生产力]
