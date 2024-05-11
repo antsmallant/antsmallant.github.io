@@ -68,7 +68,9 @@ git clone git@github.com:xxx/obnote.git
 
 * 打开 obisidian，选择打开 obnote 这个日志库    
 
-* 解决 iOS 上 iSH 执行 git 命令时经常卡住的问题  
+---
+
+# 解决 iOS 上 iSH 执行 git 命令时经常卡住的问题  
 
 这是一个普遍存在的问题。这个 issue：《Git Commands Stuck Forever #1640》[5] 提到 mount 时使用 `ios-unsafe` 参数可以解决，实际使用之后，还是经常会卡住。  
 
