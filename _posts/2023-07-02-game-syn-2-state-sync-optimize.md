@@ -1,8 +1,8 @@
 ---
 layout: post
 title: "网络游戏同步技术二：状态同步的优化与实现"
-date: 2023-07-01
-last_modified_at: 2023-07-01
+date: 2023-07-02
+last_modified_at: 2023-07-02
 categories: [游戏开发]
 ---
 
