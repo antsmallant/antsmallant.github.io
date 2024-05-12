@@ -1,3 +1,17 @@
+---
+layout: post
+title: "数据库事务二：ACID 中的 C"
+date: 2024-04-20
+last_modified_at: 2024-04-20
+categories: [数据库]
+tags: [db, acid]
+---
+
+* 目录  
+{:toc}
+<br/>
+
+
 本文打算探讨 ACID 中的 C，因为它的定位有些模糊。  
 
 ---
