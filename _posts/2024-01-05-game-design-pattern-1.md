@@ -220,7 +220,7 @@ protected:
 发布订阅模式：   
 
 ![publish-subscribe-pattern](https://blog.antsmallant.top/media/blog/design-pattern/publish-subscribe-pattern.png)  
-<center>图3：发布订阅模式</center>
+<center>图3：发布订阅模式[8]</center>
 
 
 ---
@@ -238,6 +238,6 @@ protected:
 
 [6] [德]Frank Buschmann, Regine Meunier, Hans Rohnert, et al. 面向模式的软件架构卷1模式系统. 袁国忠. 北京: 人民邮件出版社, 2013.11: 46.   
 
-[7] Bjarne Stroustrup, Herb Sutter. CppCoreGuidelines. Available at https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Ri-singleton.    
+[7] Bjarne Stroustrup, Herb Sutter. CppCoreGuidelines. Available at https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Ri-singleton.   
 
-[9] Microsoft. Publisher-Subscriber pattern. Available at https://learn.microsoft.com/en-us/azure/architecture/patterns/publisher-subscriber.  
+[8] Microsoft. Publisher-Subscriber pattern. Available at https://learn.microsoft.com/en-us/azure/architecture/patterns/publisher-subscriber.  
