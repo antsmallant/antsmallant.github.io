@@ -1,16 +1,3 @@
----
-layout: post
-title: "游戏中的设计模式一"
-date: 2024-01-05
-last_modified_at: 2024-01-05
-categories: [游戏开发]
-tags: [设计模式]
----
-
-* 目录  
-{:toc}
-<br/>
-
 游戏开发是一个快速迭代的过程，代码复杂度也很高，借助于设计模式，可以帮助我们降低复杂度，降低系统间的耦合，从而高效高质的做出交付。  
 
 最近读了这本书：《游戏编程模式》[1]，很受启发，所以结合书本知识以及自己的理解，写一写游戏中常用的设计模式。   
@@ -96,7 +83,7 @@ void Heroine::handleInput(Input input)
 
 以上英雄行为的例子画出的状态机如下：  
 
-![gamedesignpattern-hero-state-machine](https://blog.antsmallant.top/media/blog/2023-01-03-game-design-pattern/gamedesignpattern-hero-state-machine.png)  
+![gamedesignpattern-hero-state-machine](https://blog.antsmallant.top/media/blog/design-pattern/gamedesignpattern-hero-state-machine.png)  
 <center>图1：英雄行为状态机</center>
 
 依据状态机，实现的代码如下：    
