@@ -95,6 +95,7 @@ void Heroine::handleInput(Input input)
 
 
 以上英雄行为的例子画出的状态机如下：  
+
 ![gamedesignpattern-hero-state-machine](https://blog.antsmallant.top/media/blog/2023-01-03-game-design-pattern/gamedesignpattern-hero-state-machine.png)  
 <center>图1：英雄行为状态机</center>
 
@@ -148,15 +149,6 @@ void Heroine::handleInput(Input input)
 
 看起来仍然是普普通通的代码，但是却让一切井井有条。这里面最重要的是我们明确了英雄的状态，确定英雄只能处于某种确定的状态，这让逻辑变得有序。   
 
-
----
-
-## 更新方法模式
-
-“通过对所有对象实例同时进行帧更新来模拟一系列相互独立的游戏对象。”[1]
-
-这个再平常不过了，主游戏循环里的 update 函数，各个系统里的 update 函数，就是用了这种【更新方法】模式。  
-
 ---
 
 ## 黑板模式
@@ -179,6 +171,58 @@ void Heroine::handleInput(Input input)
 
 GOF 对它意图的定义是： “定义对象间的一种一对多的依赖关系，当一个对象的状态发生状态时，所有依赖于它的对象都得到通知并被自动更新”[2]。  
 
+在游戏中太常见了，对于解耦有特别大的帮助。比如成就系统，如果不使用观察者模式，那么几乎所有的子系统都要直接调用成就系统，这样一来对于业务的侵入性太强了。  
+
+通常的实现是这样的：  
+
+```cpp
+
+// 事件
+class Event {
+    EventType t;
+};
+
+// 观察者基类
+class Observer {
+public:
+    void onNotify(Event e);
+};
+
+// 被观察者基类
+class Subject {
+public:
+    void addObserver(Observer* o);
+    void removeObserver(Observer* o);
+protected:
+    void notify(EventType et);
+};
+
+```
+
+观察者模式的基本实现：   
+1、观察者继承 Observer 类，被观察者继承 Subject 类。   
+2、Subject 类内部会维护一个观察者列表，在事情发生的时候 notify，会直接遍历观察者列表，调用它们的 onNotify 函数。  
+3、通常来说，是一种同步的实现，即被观察者是直接调用观察者的函数的。    
+
+
+需要注意的是，观察者模式跟发布订阅模式是有区别的，虽然它们的思路相似，但也有明显的不同：  
+1、观察者模式中观察者跟被观察者是互相知道彼此存在的；而发布订阅模式中订阅者跟发布者往往是不知道对方存在的，它们通过一个 broker 来通讯。  
+2、观察者模式往往是一对多的，而发布订阅可以是一对多，也可以是多对多。  
+3、观察者模式往往是同步调用，而发布订阅是异步调用。  
+
+直接看图比较容易知道它们的区别。  
+
+观察者模式：  
+
+![observer-pattern](https://blog.antsmallant.top/media/blog/design-pattern/observer-pattern.png)  
+<center>图2：观察者模式</center>
+
+发布订阅模式：   
+
+![publish-subscribe-pattern](https://blog.antsmallant.top/media/blog/design-pattern/publish-subscribe-pattern.png)  
+<center>图3：发布订阅模式</center>
+
+
 ---
 
 # 参考
@@ -195,3 +239,5 @@ GOF 对它意图的定义是： “定义对象间的一种一对多的依赖关
 [6] [德]Frank Buschmann, Regine Meunier, Hans Rohnert, et al. 面向模式的软件架构卷1模式系统. 袁国忠. 北京: 人民邮件出版社, 2013.11: 46.   
 
 [7] Bjarne Stroustrup, Herb Sutter. CppCoreGuidelines. Available at https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Ri-singleton.    
+
+[9] Microsoft. Publisher-Subscriber pattern. Available at https://learn.microsoft.com/en-us/azure/architecture/patterns/publisher-subscriber.  
