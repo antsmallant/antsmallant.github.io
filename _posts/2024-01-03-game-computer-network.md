@@ -11,12 +11,15 @@ tags: [game, net]
 {:toc}
 <br/>
 
+
 作为后端开发，特别是网游后端开发，需要频繁跟网络打交道，写这篇文章主要是记录：网络基础知识，网络问题的诊断思路，网络相关的工具。  
 
 ---
 
 # tcp
+
 日常开发中，连网络库都很少需要自己去调用，更不会裸调 socket api 去 connect、listen。但经常要被问到一些这些问题，比如：   
+
 * tcp 包头各个字段分别有何作用？
 * tcp 建立连接为什么要三次握手？
 * tcp 释放连接为什么要四次握手？
@@ -53,9 +56,9 @@ tags: [game, net]
 tcp 为什么需要三次握手才能建立连接呢？为什么刚好三次就够了呢？  
 
 先直接说结论：
+
 * 防止重复历史连接的初始化
 * 确定好双方的初始序列号
-* 
 
 ![tcp-head](https://blog.antsmallant.top/media/blog/2024-01-03-network/tcp-head.png)
 <center>图1：tcp包头 [1]</center>
@@ -99,6 +102,7 @@ ipv4 包头有个 8 bit 的 protocol 字段 (ipv6 对应的字段名叫 Next hea
 
 
 ## tcp 状态
+
 tcp 状态是一个颇为复杂的知识点，tcp 连接总共有 11 种状态，下面这个图只是对于 tcp 状态机的一种简化，实际上还有很多细节的，具体可以看 rfc9293（ https://www.rfc-editor.org/rfc/rfc9293 ）。   
 
 ![tcp state machine](https://blog.antsmallant.top/media/blog/2024-01-03-network/Tcp_state_diagram.png)
@@ -149,10 +153,12 @@ netstat -ano | find "LISTEN"
 
 
 ### lsof
+
 lsof 是个更强大的工具，它不止可以查看网络状态。  
 
 
 ### nc
+
 nc 即 netcat，nc 太有用了，它支持 tcp、udp，它可以作为客户端，也可以作为服务端，非常全能。下面举一些使用场景。  
 
 一、测试端口是否可以连通   
@@ -205,6 +211,7 @@ nc -lu 9999
 # io 模型之 epoll
 
 ## 一个 demo
+
 demo 地址： [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/epoll_demo](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/epoll_demo)
 
 ## epoll 注意事项
