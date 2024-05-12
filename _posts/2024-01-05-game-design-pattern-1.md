@@ -194,4 +194,4 @@ GOF 对它意图的定义是： “定义对象间的一种一对多的依赖关
 
 [6] [德]Frank Buschmann, Regine Meunier, Hans Rohnert, et al. 面向模式的软件架构卷1模式系统. 袁国忠. 北京: 人民邮件出版社, 2013.11: 46.   
 
-[7] isocpp. CppCoreGuidelines. Available at https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Ri-singleton.  
+[7] Bjarne Stroustrup, Herb Sutter. CppCoreGuidelines. Available at https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Ri-singleton.    
