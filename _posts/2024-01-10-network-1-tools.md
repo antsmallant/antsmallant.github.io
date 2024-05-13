@@ -109,16 +109,28 @@ lsof -i [46][protocol][@hostname|hostaddr][:service|port]
 |`lsof -i udp`|仅显示所有 udp 连接|
 |`lsof -i :9999`|仅显示端口为 9999 的连接|
 |`lsof -i 4tcp@127.0.0.1:9999`|显示ipv4，tcp协议，连接信息为 127.0.0.1 9999 的连接|
+|`lsof -i -s tcp:established`|显示已经建立的 tcp 连接|
+|`lsof -i -s tcp:listen`|显示等待连接 (listen) 的 tcp 端口|
 
 
-### lsof 根据文件反查
+### lsof 文件和目录
+
+查看正在使用指定文件和目录的用户或进程。  
+
+`lsof 文件路径` 可以找出打开这个文件的资源信息，比如 `lsof /root/a.txt`。  
+
+特别的，如果是用 vim 打开了文件，比如：root/a.txt，则通过 `lsof /root/.a.txt.swp` 可以找出来。通过 a.txt 是找不到的，因为 vim 打开的是一个 .swp 后缀的临时文件。  
 
 
+### lsof 命令、进程、用户
 
+通过 `-c` 选项可以找出使用指定命令的进程，比如：`lsof -c 'sshd'` 找出命令为 sshd 的进程打开的所有文件。   
 
-### lsof 获取进程信息
+如果要配合其实工具使用，可以指定 `-t` 选项，只打印进程 id 出来。      
 
+通过 `-p` 选项可以找出指定 pid 的进程，比如 `lsof -p 2341` 找出 pid 为 2341 的进程打开的所有文件。   
 
+通过 `-u` 选项可以找出指定用户打开的文件，比如 `lsof -u root` 可以找出 root 用户打开的所有文件。  
 
 
 ### lsof 各列的意义
@@ -202,7 +214,6 @@ space：if there is no lock.
 ```
 
 
-
 ---
 
 ## nc
@@ -267,7 +278,9 @@ nc 127.0.0.1 9999 < send.txt
 
 # 工具的数据来源
 
-netstat、nstat、ifconfig、ethtool 的数据来源[1]:   
+## netstat、nstat、ifconfig、ethtool 
+
+数据来源[1]:   
 
 >netstat、nstat 是来自 /proc/net/netstat 和 /proc/net/snmp 的数据；   
 >ifconfig 是读取 /proc/net/dev 下的数据，而后者的数据是从设备在内核的数据结构 net_device 里的结构 rtnl_link_stats64 中获取的；    
