@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "几个概念的含义：同步、异步、阻塞、非阻塞"
-date: 2024-01-19
-last_modified_at: 2024-01-19
+title: "网络常识二：：同步、异步、阻塞、非阻塞"
+date: 2024-01-11
+last_modified_at: 2024-01-11
 categories: [网络]
 tags: [网络 同步 异步 阻塞 非阻塞]
 ---
