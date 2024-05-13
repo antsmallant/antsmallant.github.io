@@ -3,7 +3,7 @@ layout: post
 title: "几个概念的含义：同步、异步、阻塞、非阻塞"
 date: 2024-01-19
 last_modified_at: 2024-01-19
-categories: [计算机理论]
+categories: [网络]
 tags: [网络 同步 异步 阻塞 非阻塞]
 ---
 
