@@ -185,18 +185,6 @@ ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 IO，如果返回�
 
 ---
 
-# 阻塞 vs 非阻塞，同步 vs 异步
-
-在 I/O 场景下：  
-* 阻塞和非阻塞，区别在于内核还没准备好（比如内核缓冲区可读或缓冲区可写）时，阻塞 I/O 会导致线程挂起，非阻塞则不会。   
-
-* 同步和异步，区别在于内核准备好时，同步 I/O 需要主动调用函数完成操作，异步则不需要。    
-
-
-我在这篇文章 ( [几个概念的含义：同步、异步、阻塞、非阻塞](https://blog.antsmallant.top/2024/01/19/synchronous-asynchronous-blocking-nonblocking) ) 有详细剖析  。   
-
----
-
 # IO 复用
 
 ## reactor 和 proactor
