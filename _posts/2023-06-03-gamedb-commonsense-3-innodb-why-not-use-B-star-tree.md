@@ -22,6 +22,18 @@ tags: [game, db, mysql]
 实际上还有一种树，叫 `B*+Tree`[1]。
 
 
+这篇文章 ( https://www.quora.com/What-are-B*trees ) 讲了
+>B*trees are a special case (of mostly historical interest) of B+trees which guarantee that nodes are at least 2/3 full.
+
+>They do this by requiring the root node to be 2 disk pages in size, and by using a node splitting algorithm that splits two full nodes into three nodes 2/3 full, and a node merging algorithm that combines three nodes 2/3 full into two full nodes. The splitting algorithm also shifts items to adjacent nodes when a node is full but its neighbors aren’t. The merging algorithm borrows items from neighboring nodes when it is less than 2/3 full but its neighbors aren’t. The extra work involved in these algorithms means that they have not been implemented in practice.
+
+>B+trees are still the most relevant secondary storage tree structure, so they are worth knowing about in more detail. They guarantee that nodes are at least 1/2 full, and that all data is stored in a sequential linked set of leaf nodes that can be accessed without traversing the tree structure, so sequential access is very efficient. The deletion algorithm also borrows data from neighbor nodes when the node that deleted an item is less than half full, but this is rarely properly implemented, despite only incurring a modest performance penalty.
+
+>B trees don’t have the efficient sequential access or node content guarantees, so in the pathological case you will access as many nodes as data items.
+
+>TL;DR B*trees are a special case of B+trees which were interesting to consider when disk storage was at a great premium, but have performance and synchronization penalties that limit their practical implementation.
+
+
 ---
 
 # 参考
