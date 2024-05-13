@@ -12,33 +12,33 @@ tags: [tools]
 <br/>
 
 
-# why
+# 1. why
 
 使用印象笔记（evernote 的中国版）已经好多年了，对它的持续可用性一直不放心，所以会定期手动对日志做备份。但最近我厌倦这么做了，于是打算试一下这两位老师提到的 obsidian，阮一峰：《最适合程序员的笔记软件》[1]，老C：《周刊（第18期）：网状的思考，线性的写作》[2]。      
 
 ---
 
-# 关于 obsidian
+# 2. 关于 obsidian
 
 obsidian 的核心功能体验，可以参考这个：《玩转 Obsidian 01：打造知识循环利器》[3]。   
 
 ---
 
-# 安装步骤
+# 3. 安装步骤
 
-## 创建日志仓库   
+## 3.1 创建日志仓库   
 
 在 github 或 gitee 创建私有仓库，比如命名为 obnote。    
 
 ---
 
-## PC 同步
+## 3.2 PC 同步
 
 obsidian 安装这个插件: Obsidian Git，简单配置一下，就可以自动的进行 git 同步了。    
 
 ---
 
-## iOS 同步   
+## 3.3 iOS 同步   
 
 * 参照这个文章 《42号笔记：iOS上使用iSH的git同步Obsidian》[4]
 
@@ -70,7 +70,7 @@ git clone git@github.com:xxx/obnote.git
 
 ---
 
-# 解决 iOS 上 iSH 执行 git 命令时经常卡住的问题  
+# 4. 解决 iOS 上 iSH 执行 git 命令时经常卡住的问题  
 
 这是一个普遍存在的问题。这个 issue：《Git Commands Stuck Forever #1640》[5] 提到 mount 时使用 `ios-unsafe` 参数可以解决，实际使用之后，还是经常会卡住。  
 
@@ -84,7 +84,7 @@ git add . && git commit -m "sync" && git push
 
 ---
 
-# 参考
+# 5. 参考
 
 [1] 阮一峰. 最适合程序员的笔记软件. Available at https://www.ruanyifeng.com/blog/2021/08/best-note-taking-software-for-programmers.html, 2021-08.   
 
