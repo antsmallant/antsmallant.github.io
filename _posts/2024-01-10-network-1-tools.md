@@ -17,7 +17,11 @@ tags: [game, net]
 
 ---
 
-# netstat
+# 工具
+
+---
+
+## netstat
 
 netstat 可以说是最常用的网络工具了，它的作用就是查看网络状态，tcp、udp、unix socket 都可以。一般是结合 grep 命令来筛选结果。具体如何使用，可以 man 一下： `man netstat`。  
 
@@ -49,16 +53,18 @@ netstat -ano | find "LISTEN"
 
 ---
 
-# lsof
+## lsof
 
 lsof 意为 list open files，可以显示被打开的文件以及打开这些文件的进程。unix 一切皆文件，包括 socket 也是文件，所以通过显示文件信息，也足以窥探系统的一些运行状态。  
 
 如果足够熟练，lsof 可以替代 netstat 和 ps 这两个工具。  
 
 
+
+
 ---
 
-# nc
+## nc
 
 nc 即 netcat，nc 太有用了，它支持 tcp、udp，它可以作为客户端，也可以作为服务端，非常全能。下面举一些使用场景。  
 
@@ -72,8 +78,8 @@ nc -v 127.0.0.1 9999
 
 -v 可以打印出连接的详情。  
 
-连接得上是类似这样提示：“Connection to 127.0.0.1 9999 port [tcp/*] succeeded!”   
-连接不上是这样提示：“nc: connect to 127.0.0.1 port 9999 (tcp) failed: Connection refused”    
+连接得上是类似这样提示：“Connection to 127.0.0.1 9999 port [tcp/*] succeeded!”。     
+连接不上是这样提示：“nc: connect to 127.0.0.1 port 9999 (tcp) failed: Connection refused”。        
 
 如果是 udp，则加上 -u 参数：   
 
@@ -113,8 +119,23 @@ nc 127.0.0.1 9999 < send.txt
 
 ---
 
-# tcpdump
+## tcpdump
+
+---
+
+# 工具的数据来源
+
+netstat、nstat、ifconfig、ethtool 的数据来源[1]:   
+
+>netstat、nstat 是来自 /proc/net/netstat 和 /proc/net/snmp 的数据；   
+>ifconfig 是读取 /proc/net/dev 下的数据，而后者的数据是从设备在内核的数据结构 net_device 里的结构 rtnl_link_stats64 中获取的；    
+>ethtool 是直接通过 ioctl 下放的方式从同样的结构（net_device 中的 rtnl_link_stats64 ）中获取数据；    
+>因此可以认为 ifconfig 和 ethtool 两者看到的网卡相关数据来源是一样的，但是 /proc/net/dev 进行了一定程度的归档，因此 ifconfig 中的 RX dropped = rx_dropped + rx_missed_errors，RX errors = rx_errors。    
+
+
 
 ---
 
 # 参考
+
+[1] johnazhang. 关于以ethtool为主的网络指标统计工具之间统计数据关系的研究原创. Available at https://cloud.tencent.com/developer/article/2050526,  2022-07-18.   
