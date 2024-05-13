@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "网络常识二：：同步、异步、阻塞、非阻塞"
+title: "网络常识二：同步、异步、阻塞、非阻塞"
 date: 2024-01-11
 last_modified_at: 2024-01-11
 categories: [网络]
