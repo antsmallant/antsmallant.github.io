@@ -25,31 +25,49 @@ tags: [game, net]
 
 netstat 可以说是最常用的网络工具了，它的作用就是查看网络状态，tcp、udp、unix socket 都可以。一般是结合 grep 命令来筛选结果。具体如何使用，可以 man 一下： `man netstat`。  
 
-比如查看 9999 这个端口的信息：  
+linux 下的基础语法是： 
 
-```bash
-netstat -anp | grep 9999
+```
+usage: netstat [-vWeenNcCF] [<Af>] -r         netstat {-V|--version|-h|--help}
+       netstat [-vWnNcaeol] [<Socket> ...]
+       netstat { [-vWeenNac] -i | [-cnNe] -M | -s [-6tuw] }
+
+        -n, --numeric            don't resolve names
+        -l, --listening          display listening server sockets
+        -a, --all                display all sockets (default: connected)
+        -p, --programs           display PID/Program name for sockets        
+
+  <Socket>={-t|--tcp} {-u|--udp} {-U|--udplite} {-S|--sctp} {-w|--raw}
+           {-x|--unix} --ax25 --ipx --netrom
+  <AF>=Use '-6|-4' or '-A <af>' or '--<af>'; default: inet
 ```
 
-比如查看所有的 listen:   
+经常会用的选项：   
 
-```bash
-netstat -l
-```
+* `-a` 指定所有类型的连接，`-t` 指定 tcp 连接，`-u` 指定 udp 连接。  
+* `-n` 禁用解析，这个选项通常要带上，否则会把 ip 地址解析成主机名，反而看不到什么有用的
+* `-p` 显示进程信息，这个选项通常也要带上
+* `-l` 只显示 listen 的信息，如果只能查看监听信息，就用这个
 
-netstat 在 windows 下也有相应的实现，不过命令参数与 linux 下略有不同，而且过滤结果也不能使用 grep，得使用 find。  
 
-比如查看 9999 这个端口的相关信息：  
+linux 例子：  
 
-```bash
-netstat -ano | find "9999"
-```
+|命令|作用|
+|---|---|
+|`netstat -anp \| grep 80`|查看端口号为 80 的所有连接信息|
+|`netstat -tnp \| grep 80`|查看端口号为 80 的 tcp 连接信息|
+|`netstat -l`|查看所有的 listen|
 
-或者查看所有的监听信息：   
 
-```bash
-netstat -ano | find "LISTEN"
-```
+netstat 在 windows 下也有相应的实现，不过命令参数与 linux 下略有不同，而且过滤结果也不能使用 grep，得使用 find。    
+
+windows 例子：  
+
+|命令|作用|
+|---|---|
+|`netstat -ano \| find "80"`|查看端口号为 80 的所有连接信息|
+|`netstat -ano \| find "LISTEN"`|查看所有的 listen|
+
 
 ---
 
