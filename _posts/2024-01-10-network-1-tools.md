@@ -55,11 +55,35 @@ netstat -ano | find "LISTEN"
 
 ## lsof
 
-lsof 意为 list open files，可以显示被打开的文件以及打开这些文件的进程。unix 一切皆文件，包括 socket 也是文件，所以通过显示文件信息，也足以窥探系统的一些运行状态。  
+lsof 意为 list open files，可以显示被打开的文件以及打开这些文件的进程。unix 一切皆文件，socket 也是文件，所以通过显示文件信息，足以窥探系统的一些运行状态。  
 
 如果足够熟练，lsof 可以替代 netstat 和 ps 这两个工具。  
 
+### lsof 基本要点
 
+
+
+### lsof 获取网络信息
+
+先列举一些网络相关的用法，基础语法是：  
+
+```bash
+lsof -i [46][protocol][@hostname|hostaddr][:service|port]
+```
+
+要注意，这串东西 `[46][protocol][@hostname|hostaddr][:service|port]` 是根据需要填的，但要挨在一起，中间不要有空格。 比如 `4tcp:9999` 或者 `tcp@127.0.0.1` 或者 `4tcp@127.0.0.1:9999`。 
+
+
+一些例子：  
+
+|命令|作用|
+|---|---|
+|`lsof -i`|显示所有网络连接|
+|`lsof -i 6`|仅显示 ipv6 连接|
+|`lsof -i tcp`|仅显示所有 tcp 连接|
+|`lsof -i udp`|仅显示所有 udp 连接|
+|`lsof -i :9999`|仅显示端口为 9999 的连接|
+|`lsof -i 4tcp@127.0.0.1:9999`|显示ipv4，tcp协议，连接信息为 127.0.0.1 9999 的连接|
 
 
 ---
@@ -120,6 +144,7 @@ nc 127.0.0.1 9999 < send.txt
 ---
 
 ## tcpdump
+
 
 ---
 
