@@ -17,11 +17,11 @@ tags: [game, net]
 
 ---
 
-# 工具
+# 1. 工具
 
 ---
 
-## netstat
+## 1.1 netstat
 
 netstat 可以说是最常用的网络工具了，它的作用就是查看网络状态，tcp、udp、unix socket 都可以。一般是结合 grep 命令来筛选结果。具体如何使用，可以 man 一下： `man netstat`。  
 
@@ -71,13 +71,13 @@ windows 例子：
 
 ---
 
-## lsof
+## 1.2 lsof
 
 lsof 意为 list open files，可以显示被打开的文件以及打开这些文件的进程。unix 一切皆文件，socket 也是文件，所以通过显示文件信息，足以窥探系统的一些运行状态。  
 
 如果足够熟练，lsof 可以替代 netstat 和 ps 这两个工具。   
 
-### lsof 基本要点
+### 1.2.1 lsof 基本要点
 
 * 没有任何选项时，lsof 会列出所有活跃进程的所有打开文件。  
 
@@ -88,7 +88,7 @@ lsof 意为 list open files，可以显示被打开的文件以及打开这些�
 关于 “或” 和 “与”，举个例子，想要获得进程 pid 为 191812 的 tcp 连接信息，需要这样写：`lsof -p 191812 -i tcp -a`，不能只写成 `lsof -p 191812 -i tcp`。如果没加 '-a'，结果将变成进程 pid 为 191812 的所有打开文件以及所有 tcp 连接信息的总和。 
 
 
-### lsof 获取网络信息
+### 1.2.2 lsof 获取网络信息
 
 先列举一些网络相关的用法，基础语法是：  
 
@@ -115,7 +115,7 @@ lsof -i [46][protocol][@hostname|hostaddr][:service|port]
 |`lsof -i -s tcp:listen`|显示等待连接 (listen) 的 tcp 端口|
 
 
-### lsof 文件和目录
+### 1.2.3 lsof 文件和目录
 
 查看正在使用指定文件和目录的用户或进程。  
 
@@ -124,7 +124,7 @@ lsof -i [46][protocol][@hostname|hostaddr][:service|port]
 特别的，如果是用 vim 打开了文件，比如：root/a.txt，则通过 `lsof /root/.a.txt.swp` 可以找出来。通过 a.txt 是找不到的，因为 vim 打开的是一个 .swp 后缀的临时文件。  
 
 
-### lsof 命令、进程、用户
+### 1.2.4 lsof 命令、进程、用户
 
 通过 `-c` 选项可以找出使用指定命令的进程，比如：`lsof -c 'sshd'` 找出命令为 sshd 的进程打开的所有文件。   
 
@@ -135,7 +135,7 @@ lsof -i [46][protocol][@hostname|hostaddr][:service|port]
 通过 `-u` 选项可以找出指定用户打开的文件，比如 `lsof -u root` 可以找出 root 用户打开的所有文件。  
 
 
-### lsof 各列的意义
+### 1.2.5 lsof 各列的意义
 
 各列的意义[2]，如下：  
 
@@ -218,7 +218,7 @@ space：if there is no lock.
 
 ---
 
-## nc
+## 1.3 nc
 
 nc 即 netcat，nc 太有用了，它支持 tcp、udp，它可以作为客户端，也可以作为服务端，非常全能。下面举一些使用场景。  
 
@@ -273,14 +273,9 @@ nc 127.0.0.1 9999 < send.txt
 
 ---
 
-## tcpdump
+# 2. 工具的数据来源
 
-
----
-
-# 工具的数据来源
-
-## netstat、nstat、ifconfig、ethtool 
+## 2.1 netstat、nstat、ifconfig、ethtool 
 
 数据来源[1]:   
 
@@ -293,7 +288,7 @@ nc 127.0.0.1 9999 < send.txt
 
 ---
 
-# 参考
+# 3. 参考
 
 [1] johnazhang. 关于以ethtool为主的网络指标统计工具之间统计数据关系的研究原创. Available at https://cloud.tencent.com/developer/article/2050526,  2022-07-18.   
 
