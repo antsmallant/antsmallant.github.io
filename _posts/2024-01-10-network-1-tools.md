@@ -111,6 +111,11 @@ lsof -i [46][protocol][@hostname|hostaddr][:service|port]
 |`lsof -i 4tcp@127.0.0.1:9999`|显示ipv4，tcp协议，连接信息为 127.0.0.1 9999 的连接|
 
 
+### lsof 根据文件反查
+
+
+
+
 ### lsof 获取进程信息
 
 
@@ -118,7 +123,7 @@ lsof -i [46][protocol][@hostname|hostaddr][:service|port]
 
 ### lsof 各列的意义
 
-参考自[2]:  
+各列的意义[2]，如下：  
 
 ```
 COMMAND：进程的名称
@@ -131,89 +136,17 @@ USER：进程所有者
 
 PGID：进程所属组
 
-FD：文件描述符，应用程序通过文件描述符识别该文件。如cwd、txt等
-
-（1）cwd：表示current work dirctory，即：应用程序的当前工作目录，这是该应用程序启动的目录，除非它本身对这个目录进行更改
-
-（2）txt ：该类型的文件是程序代码，如应用程序二进制文件本身或共享库，如上列表中显示的 /sbin/init 程序
-
-（3）lnn：library references (AIX);
-
-（4）er：FD information error (see NAME column);
-
-（5）jld：jail directory (FreeBSD);
-
-（6）ltx：shared library text (code and data);
-
-（7）mxx ：hex memory-mapped type number xx.
-
-（8）m86：DOS Merge mapped file;
-
-（9）mem：memory-mapped file;
-
-（10）mmap：memory-mapped device;
-
-（11）pd：parent directory;
-
-（12）rtd：root directory;
-
-（13）tr：kernel trace file (OpenBSD);
-
-（14）v86  VP/ix mapped file;
-
-（15）0：表示标准输出
-
-（16）1：表示标准输入
-
-（17）2：表示标准错误
-
-一般在标准输出、标准错误、标准输入后还跟着文件状态模式：r、w、u等
-
-（1）u：表示该文件被打开并处于读取/写入模式
-
-（2）r：表示该文件被打开并处于只读模式
-
-（3）w：表示该文件被打开并处于
-
-（4）空格：表示该文件的状态模式为unknow，且没有锁定
-
-（5）-：表示该文件的状态模式为unknow，且被锁定
-
-同时在文件状态模式后面，还跟着相关的锁
-
-（1）N：for a Solaris NFS lock of unknown type;
-
-（2）r：for read lock on part of the file;
-
-（3）R：for a read lock on the entire file;
-
-（4）w：for a write lock on part of the file;（文件的部分写锁）
-
-（5）W：for a write lock on the entire file;（整个文件的写锁）
-
-（6）u：for a read and write lock of any length;
-
-（7）U：for a lock of unknown type;
-
-（8）x：for an SCO OpenServer Xenix lock on part      of the file;
-
-（9）X：for an SCO OpenServer Xenix lock on the      entire file;
-
-（10）space：if there is no lock.
+FD：文件描述符，应用程序通过文件描述符识别该文件。如 cwd、txt 等
 
 TYPE：文件类型，如DIR、REG等，常见的文件类型
 
-（1）DIR：表示目录
-
-（2）CHR：表示字符类型
-
-（3）BLK：块设备类型
-
-（4）UNIX： UNIX 域套接字
-
-（5）FIFO：先进先出 (FIFO) 队列
-
-（6）IPv4：网际协议 (IP) 套接字
+    REG ：常规文件，即普通文件
+    DIR ：目录
+    CHR ：字符类型
+    BLK ：块设备类型
+    UNIX：UNIX 域套接字
+    FIFO：先进先出 (FIFO) 队列
+    IPv4：网际协议 (IP) 套接字
 
 DEVICE：指定磁盘的名称
 
@@ -223,6 +156,51 @@ NODE：索引节点（文件在磁盘上的标识）
 
 NAME：打开文件的确切名称
 ```
+
+FD 的详细信息[2][3]，如下：  
+
+```
+数字：文件的描述符 id，其中有3个是特别的：0 表示标准输出，1 表示标准输入，2 表示标准错误
+cwd ：current work dirctory，即应用程序的当前工作目录
+txt ：program text (code and data)，即程序代码
+lnn ：library references (AIX)
+er  ：FD information error (see NAME column)
+jld ：jail directory (FreeBSD)
+ltx ：shared library text (code and data)
+mxx ：hex memory-mapped type number xx
+m86 ：DOS Merge mapped file
+mem ：memory-mapped file
+mmap：memory-mapped device
+pd  ：parent directory
+rtd ：root directory
+tr  ：kernel trace file (OpenBSD)
+v86 ：VP/ix mapped file
+
+
+一般在标准输出、标准错误、标准输入后还跟着文件状态模式：r、w、u等，如下： 
+
+u    ：表示该文件被打开并处于读取/写入模式
+r    ：表示该文件被打开并处于只读模式
+w    ：表示该文件被打开并处于
+space：表示该文件的状态模式为unknow，且没有锁定
+-    ：表示该文件的状态模式为unknow，且被锁定
+
+
+同时在文件状态模式后面，还跟着相关的锁，如下：  
+
+N    ：for a Solaris NFS lock of unknown type;
+r    ：for read lock on part of the file;
+R    ：for a read lock on the entire file;
+w    ：for a write lock on part of the file;（文件的部分写锁）
+W    ：for a write lock on the entire file;（整个文件的写锁）
+u    ：for a read and write lock of any length;
+U    ：for a lock of unknown type;
+x    ：for an SCO OpenServer Xenix lock on part of the file;
+X    ：for an SCO OpenServer Xenix lock on the entire file;
+space：if there is no lock.
+
+```
+
 
 
 ---
@@ -305,3 +283,5 @@ netstat、nstat、ifconfig、ethtool 的数据来源[1]:
 [1] johnazhang. 关于以ethtool为主的网络指标统计工具之间统计数据关系的研究原创. Available at https://cloud.tencent.com/developer/article/2050526,  2022-07-18.   
 
 [2] 琦彦. lsof：获取网络信息、用户操作、进程信息、文件信息. Available at https://blog.csdn.net/fly910905/article/details/88551497, 2019-03-14.  
+
+[3] man7. lsof. Available at https://man7.org/linux/man-pages/man8/lsof.8.html.   
