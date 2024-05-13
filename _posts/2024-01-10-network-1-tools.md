@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "游戏服务器网络常识一：工具"
+title: "游戏服务器网络常识一：常用工具"
 date: 2024-01-10
 last_modified_at: 2024-01-10
 categories: [游戏开发]
