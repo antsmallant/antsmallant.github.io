@@ -11,6 +11,8 @@ tags: [game 管理 生产力]
 {:toc}
 <br/>
 
+参考：https://glory.blog.csdn.net/article/details/120474635#comments_32580678
+
 员工思维
 别人不会自己上
 出问题责怪、惩罚、抱怨
