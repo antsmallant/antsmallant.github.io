@@ -37,6 +37,9 @@ https://dl.acm.org/doi/pdf/10.1145/356770.356776
 >重要的改动是条件(ii),它断言,我们至少利用了每个节点中三分之二的可用空间。这个改动不仅更有效地使用了空间,而且也使查找过程加快,因为在(6)和(7)中我们可以用[(2m-1)/3]代替[m/2]。然而插入过程就变慢了,因为随着节点变满它们要更加注意;关于个中涉及的折衷的分析,请参见张斌和许玖君, Acta Informatica 26(1989),421--438
 
 
+* QA
+b+树实际的插入或删除中，会不会向兄弟节点移动数据？
+
 * Zhang, B., Hsu, M. Unsafe operations in B-trees. Acta Informatica 26, 421–438 (1989). https://doi.org/10.1007/BF00289145
 https://link.springer.com/article/10.1007/BF00289145
 Bin Zhang & Meichun Hsu
