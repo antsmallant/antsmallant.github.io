@@ -22,7 +22,17 @@ tags: [game, db, mysql]
 实际上还有一种树，叫 `B*+Tree`[1]。
 
 
-这篇文章 ( https://www.quora.com/What-are-B*trees ) 讲了
+# 收集
+
+* 《万字详解常用存储结构：B+树、B-Link树、LSM树一网打尽》
+https://it.sohu.com/a/616437236_411876
+
+
+* 论文：《The Ubiquitous B-Tree》by DOUGLAS COMER 
+https://dl.acm.org/doi/pdf/10.1145/356770.356776
+
+
+* 这篇文章 ( https://www.quora.com/What-are-B*trees ) 讲了
 >B*trees are a special case (of mostly historical interest) of B+trees which guarantee that nodes are at least 2/3 full.
 
 >They do this by requiring the root node to be 2 disk pages in size, and by using a node splitting algorithm that splits two full nodes into three nodes 2/3 full, and a node merging algorithm that combines three nodes 2/3 full into two full nodes. The splitting algorithm also shifts items to adjacent nodes when a node is full but its neighbors aren’t. The merging algorithm borrows items from neighboring nodes when it is less than 2/3 full but its neighbors aren’t. The extra work involved in these algorithms means that they have not been implemented in practice.
@@ -33,6 +43,41 @@ tags: [game, db, mysql]
 
 >TL;DR B*trees are a special case of B+trees which were interesting to consider when disk storage was at a great premium, but have performance and synchronization penalties that limit their practical implementation.
 
+
+* 论文：关于 B*+tree《SQLite RDBMS Extension for Data Indexing Using B-tree Modifications》
+https://ispranproceedings.elpub.ru/jour/article/view/1188/948
+
+
+* innodb 大神 Jeremy Cole 的博客
+https://blog.jcole.us/
+
+
+* wikipedia B-tree
+https://en.wikipedia.org/wiki/B-tree
+
+
+* wikipedia B+ tree
+https://en.wikipedia.org/wiki/B%2B_tree
+
+
+* 百度百科 B*树
+https://baike.baidu.com/item/B*%E6%A0%91/2684963
+
+
+* MySQL十五：InnoDB为什么不使用跳表而是B+Tree
+https://www.modb.pro/db/411170
+
+
+* B*-Trees implementation in C++
+https://www.geeksforgeeks.org/b-trees-implementation-in-c/
+
+
+* 扇出
+扇出：是每个索引节点（non-leafPage）指向每个叶子节点（LeafPage）的指针
+扇出数 = 索引节点（Non-LeafPage）可存储的最大关键字个数+1
+
+
+* M-ary 类似于 binary，用 M 代替了 bin，表示 M 路
 
 ---
 
