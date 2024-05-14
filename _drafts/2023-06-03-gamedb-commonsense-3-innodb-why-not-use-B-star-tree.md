@@ -33,6 +33,15 @@ https://dl.acm.org/doi/pdf/10.1145/356770.356776
 
 
 * taocp vol3 p451 (6.2.4多路树)
+讲到 b* 树的时候说
+>重要的改动是条件(ii),它断言,我们至少利用了每个节点中三分之二的可用空间。这个改动不仅更有效地使用了空间,而且也使查找过程加快,因为在(6)和(7)中我们可以用[(2m-1)/3]代替[m/2]。然而插入过程就变慢了,因为随着节点变满它们要更加注意;关于个中涉及的折衷的分析,请参见张斌和许玖君, Acta Informatica 26(1989),421--438
+
+
+* Zhang, B., Hsu, M. Unsafe operations in B-trees. Acta Informatica 26, 421–438 (1989). https://doi.org/10.1007/BF00289145
+https://link.springer.com/article/10.1007/BF00289145
+Bin Zhang & Meichun Hsu
+
+>AB  - A simple mathematical model for analyzing the dynamics of a B-tree node is presented. From the solution of the model, it is shown that the simple technique of allowing a B-tree node to be slightly less than half full can significantly reduce the rate of split, merge and borrow operations. We call split, merge, borrow and balance operations unsafe operations in this paper. In a multi-user environment, a lower unsafe operation rate implies less blocking and higher throughput, even when tailored concurrency control algorithms (e.g., that proposed by Lehman and Yao [10]) are used. A lower unsafe operation rate also means a longer life time of an optimally initialized B-tree (e.g., compact B-tree). It is in general useful to have an analytical model which can predict the rate of unsafe operations in a dynamic data structure, not only for comparing the behavior of variations of B-trees, but also for characterizing workload for performance evaluation of different concurrency control algorithms for such data structures. The model presented in this paper represents a starting point in this direction.
 
 
 * 这篇文章 ( https://www.quora.com/What-are-B*trees ) 讲了
