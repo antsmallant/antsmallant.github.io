@@ -40,7 +40,7 @@ tags: [game, db, mysql, mongodb, redis]
 
 * tps 通常是低于 qps 的，因为一个事务往往是包含好几条 sql 语句的。   
 
-* sql 语句不止 select/insert/delete/update 这些，像 `set autocommit = 1;` 这种也会统计到 qps 中。  
+* sql 语句不止 select/insert/delete/update 这些，像 `set autocommit = 1;` 这种语句也会统计到 qps 中。  
 
 * 下面都用 qps 描述 mysql / mongodb / redis 的性能，意为每秒执行的读写命令次数。  
 
@@ -58,13 +58,15 @@ tags: [game, db, mysql, mongodb, redis]
 
 基本上都是用 innodb 引擎的，所以下面论述都是使用 innodb 来讲。  
 
-innodb 的读写 qps 差异很大。如果内存足够大，数据局部性足够好，那么读基本上都会命中 cache，基本不读磁盘，读 qps 会特别高。而写的话，如果按默认设置（innodb_flush_log_at_trx_commit 设为 1），则每次写，都是要至少刷一次磁盘的（fsync），那么写 qps 就跟磁盘的 iops 强相关了。   
+innodb 的读写 qps 差异很大。如果内存足够大，数据局部性足够好，那么读基本上都会命中 cache，读磁盘比较少，读 qps 会特别高。而写的话，如果按默认设置（innodb_flush_log_at_trx_commit 设为 1），则每次写，都是要至少刷一次磁盘的（fsync），那么写 qps 就跟磁盘的 iops 强相关了。   
 
 
 **阿里云**
 
 从阿里云的这份性能白皮书《MySQL 8.0测试结果》[4] 来看（要注意，表格展示的读写次数是 60 秒的总值，要除以 60 才能得到 qps），读 qps 确实很难跟磁盘 iops 计算出某种比例关系，但是写 qps 跟磁盘 iops 的关系很显著，按阿里云的测试，基本上写 qps 约为 iops 的 95% 左右。
 
+![aliyun-mysql8-qps](https://blog.antsmallant.top/media/blog/2023-06-11-game-db/aliyun-mysql8-qps.jpeg)  
+<center>图 aliyun-mysql8.0-qps</center>
 
 **腾讯云**
 
@@ -96,6 +98,11 @@ innodb 的读写 qps 差异很大。如果内存足够大，数据局部性足�
 
 从阿里云的这份《Redis社区版性能白皮书》[3]来看，redis（6.0）的读写性能在 10 万 ~ 20 万之间，大致在 10 万左右。如果 value 比较大（超过 2KB）或者一些特别的命令如 MSET，可能性能会打折扣，比如降到 5~6 万左右。  
 
+![aliyun redis6 qps](https://blog.antsmallant.top/media/blog/2023-06-11-game-db/aliyun-redis6-qps.jpeg)  
+<center>图 aliyun redis6 qps</center>
+
+从 redis 官网的 benchmark [6] 来看，redis 的读写 qps 大致也是在 10 万这个量级的。  
+
 小结：  
 
 * redis 单机读写 qps 大致均在 10 万左右。   
@@ -116,7 +123,7 @@ innodb 的读写 qps 差异很大。如果内存足够大，数据局部性足�
 
 ## 全区全服的游戏
 
-在数据库造型的时候就要特别小心了，这个量可能会很巨，跟大的互联网应用相当。不说 1 亿注册量，就 1000 万好了，平均每人 10 个道具，那么道具表就上亿条数据了。数据量只是一方面，更重要的是 qps，这里不谈 TPS，因为游戏服务器对数据库的使用是偏简单的，基本不会使用复杂事务，就是些基本的 SQL 语句，所以用 qps 考量就行了。  
+在数据库造型的时候就要特别小心了，这个量可能会很巨，跟大的互联网应用相当。不说 1 亿注册量，就 1000 万好了，平均每人 10 个道具，那么道具表就上亿条数据了。数据量只是一方面，更重要的是 qps，这里不谈 tps，因为游戏服务器对数据库的使用是偏简单的，基本不会使用复杂事务，就是些基本的 SQL 语句，所以用 qps 考量就行了。  
 
 做架构设计的时候，需要仔细估算，要精细到每个玩家在每个场景会有多少次数据库读写，比如：账号注册，创角，登录验证，加载角色数据，回写数据 ...
 
@@ -154,17 +161,15 @@ innodb 的读写 qps 差异很大。如果内存足够大，数据局部性足�
 
 # 参考
 
-[1] 阿里云. 云数据库 RDS: 主实例规格列表#FAQ. Available at https://help.aliyun.com/zh/rds/product-overview/primary-apsaradb-rds-instance-types, 2023-05-22.   
-
 [2] 李俊飞. 数据库性能评测：整体性能对比. https://cloud.tencent.com/developer/article/1005399, 2017-07-04.   
 
 [3] 阿里云. Redis社区版性能白皮书. Available at https://www.alibabacloud.com/help/zh/redis/support/performance-whitepaper-of-community-edition-instances, 2023-10-20.  
 
-[4] 阿里云. MySQL 8.0测试结果. Available at https://www.alibabacloud.com/help/zh/rds/apsaradb-rds-for-mysql/test-results-of-apsaradb-rds-instances-that-run-mysql-8, 2023-11-24.  
+[4] 阿里云. MySQL 8.0测试结果. Available at https://help.aliyun.com/zh/rds/apsaradb-rds-for-mysql/test-results-of-apsaradb-rds-instances-that-run-mysql-8, 2023-11-24.  
 
 [5] 华为云. RDS for MySQL 8.0测试数据 独享型测试数据. Available at https://support.huaweicloud.com/pwp-rds/rds_swp_mysql_12.html, 2022-12-22.  
 
-
+[6] redis. Redis benchmark. Available at https://redis.io/docs/latest/operate/oss_and_stack/management/optimization/benchmarks/.
 
 ---
 
