@@ -37,13 +37,21 @@ https://www.mysql.com/cn/why-mysql/benchmarks/mysql/
 
 ## mysql 参考
 
+* 阿里云官方 rds MySQL版 性能白皮书 
+https://www.alibabacloud.com/help/zh/rds/apsaradb-rds-for-mysql/rds-for-mysql/
+[阿里云官方：MySQL 8.0测试结果](https://help.aliyun.com/zh/rds/support/test-results-of-apsaradb-rds-instances-that-run-mysql-8?spm=a2c4g.11186623.0.0.218c4450qJquTB)
+
+从这个测试结果来看，写 QPS 与 IOPS 的相关性很大，如果是纯写，那写 QPS 大致相当于 IOPS，而读 QPS 很难计算与 IOPS 的关系，因为它与 cache 有很大关系，如果 cache 命中率高（要么就是内存很大，要么就是数据局部性很好，索引建得很合理），那么读 QPS 要远远大于 IOPS，甚至几乎就是内存读。  
+
+* 腾讯云官方 云数据库 MySQL 性能白皮书 性能测试报告 
+
+https://cloud.tencent.com/document/product/236/68808
+
+
 * [实测：云RDS MySQL性能是自建的1.6倍](https://www.cnblogs.com/zhoujinyi/p/16392223.html)
 
 * [云厂商 RDS MySQL 怎么选](https://mp.weixin.qq.com/s?__biz=MzkxODMzMjk1Ng==&mid=2247483961&idx=1&sn=272534340ba46ddf4171611129c2b5f8&chksm=c1b3b14af6c4385c9c835d5a3de9cfe93ba8d2c95664f06404e6a91bcdc76efb20c3ef4c51ac&scene=21#wechat_redirect)
 
-* [阿里云官方：MySQL 8.0测试结果](https://help.aliyun.com/zh/rds/support/test-results-of-apsaradb-rds-instances-that-run-mysql-8?spm=a2c4g.11186623.0.0.218c4450qJquTB)
-
-从这个测试结果来看，写 QPS 与 IOPS 的相关性很大，如果是纯写，那写 QPS 大致相当于 IOPS，而读 QPS 很难计算与 IOPS 的关系，因为它与 cache 有很大关系，如果 cache 命中率高（要么就是内存很大，要么就是数据局部性很好，索引建得很合理），那么读 QPS 要远远大于 IOPS，甚至几乎就是内存读。  
 
 * [mysql QPS 过高问题处理](https://www.modb.pro/db/31741) 
 
@@ -77,6 +85,9 @@ TPS：(Com_commit + Com_rollback) Seconds
 ---
 
 ## redis
+
+* 阿里云 Redis社区版性能白皮书
+https://www.alibabacloud.com/help/zh/redis/support/performance-whitepaper-of-community-edition-instances?spm=a2c63.p38356.0.0.60ef2601Y0TNXQ
 
 
 
