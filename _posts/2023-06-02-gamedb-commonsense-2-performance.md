@@ -34,6 +34,7 @@ tags: [game, db, mysql, mongodb, redis]
 |qps|Queries Per Second|数据库指标，每秒执行的查询数（即 SQL 语句条数）|
 |iops|Input/Output Operations Per Second|磁盘指标，每秒执行的 io 读写次数|
 
+
 说明：  
 
 * tps 跟 qps 这两个指标没有一个很明确的标准，跟测试数据集、测试方式有巨大的关系。   
@@ -151,7 +152,7 @@ innodb 的读写 qps 差异很大。如果内存足够大，数据局部性足�
 
 |数据库|读qps上限|写qps上限|说明|
 |:---|:---|:---|:---|
-|mysql5.7|25万|5万|写与iops强相关，约为80%~95%左右；读与内存关系更大，cache命中差时才与iops强相关|
+|mysql5.7|10万|5万|写与iops强相关，约为80%~95%左右；读与内存关系更大，cache命中差时才与iops强相关|
 |mongodb||||
 |redis6.0|10万|10万|get相对高些，在value小的时候可以达到20万，但普遍来看，大都在10万左右，一些特别的命令如mset，在5万左右|
 
@@ -163,11 +164,11 @@ innodb 的读写 qps 差异很大。如果内存足够大，数据局部性足�
 
 [2] 李俊飞. 数据库性能评测：整体性能对比. https://cloud.tencent.com/developer/article/1005399, 2017-07-04.   
 
-[3] 阿里云. Redis社区版性能白皮书. Available at https://www.alibabacloud.com/help/zh/redis/support/performance-whitepaper-of-community-edition-instances, 2023-10-20.  
+[3] 阿里云. Redis社区版性能白皮书. Available at https://help.aliyun.com/zh/redis/support/performance-whitepaper-of-community-edition-instances, 2023-10-20.  
 
 [4] 阿里云. MySQL 8.0测试结果. Available at https://help.aliyun.com/zh/rds/apsaradb-rds-for-mysql/test-results-of-apsaradb-rds-instances-that-run-mysql-8, 2023-11-24.  
 
-[5] 华为云. RDS for MySQL 8.0测试数据 独享型测试数据. Available at https://support.huaweicloud.com/pwp-rds/rds_swp_mysql_12.html, 2022-12-22.  
+[5] 华为云. RDS for MySQL 8.0测试数据：独享型测试数据. Available at https://support.huaweicloud.com/pwp-rds/rds_swp_mysql_12.html, 2022-12-22.  
 
 [6] redis. Redis benchmark. Available at https://redis.io/docs/latest/operate/oss_and_stack/management/optimization/benchmarks/.
 
