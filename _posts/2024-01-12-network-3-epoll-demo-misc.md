@@ -1,3 +1,16 @@
+---
+layout: post
+title: "网络常识三：epoll demo、概念及注意事项"
+date: 2024-01-11
+last_modified_at: 2024-01-11
+categories: [网络]
+tags: [网络 epoll]
+---
+
+* 目录  
+{:toc}
+<br/>
+
 
 这是一篇关于 epoll 的文章，包含一个展示 et 模式和 lt 模式的 demo，以及一些注意事项。   
 
