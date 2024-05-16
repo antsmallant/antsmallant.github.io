@@ -64,6 +64,8 @@ epoll 是一种同步阻塞的 I/O 复用模型：
 
 代码验证： [https://github.com/antsmallant/antsmallant_blog_demo/blob/main/blog_demo/epoll_blocking_demo/epoll_blocking_demo.cpp](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/blog_demo/epoll_blocking_demo/epoll_blocking_demo.cpp)  
 
+代码里，我在 recv 线程里做了 sleep 1 秒，否则 epoll_wait 很慢捕捉到读就绪通知。因为 epoll_wait 的内部实现是醒一下睡一下（schedule_timeout），直到获取到就绪事件，而线程阻塞在 recv 时，只要有数据可读就会立即被唤醒，所以它的反应往往是比 epoll_wait 快一点点。   
+
 ---
 
 ## LT vs ET
@@ -113,7 +115,7 @@ ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 I/O，如果返回�
 
 要解决这个问题，很简单，老老实实把 listen 的 fd 设置为非阻塞模式就好了。  
 
-至于在 epoll 的 ET 模式，还需要做的就是，每次收到有连接就绪的通知，就 while 循环 accept，直到 accept 不到新连接再收手就 ok 了。  
+至于在 epoll 的 ET 模式，还需要做的就是，每次收到有连接就绪的通知，就 while 循环 accept，直到 accept 不到新连接再收手就 ok 了[2]。  
 
 ---
 
@@ -123,11 +125,19 @@ ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 I/O，如果返回�
 
 * 调用方式上，select 跟 poll 每次都需要把所有的 FD 集合传给内核去设置事件状态，返回后，再一个个 FD 去判断有没有事件发生；而 epoll 已经通过 epoll_ctl 把所有 FD 都注册到内核了，每次 epoll_wait 会获得一份只有事件发生的 FD 集合。  
 
-* 调用限制上，select 有 FD_SETSIZE 个数限制，每次轮循只能传 FD_SETSIZE 个 FD 进去，在 linux 下，这个值一般为 1024 [3]；poll 和 epoll 都没限制，这两个的上限是系统的最大文件描述符，等于是没啥上限。  
+* 调用限制上，select 有 FD_SETSIZE 个数限制，每次轮循只能传 FD_SETSIZE 个 FD 进去，在多数系统，这个值是 1024，至于为啥是 1024，可以参照这篇文章《A history of the fd_set, FD_SETSIZE, and how it relates to WinSock》[3]；poll 和 epoll 约等于没限制，它们的上限是系统的最大文件描述符，可通过 `cat /proc/sys/fs/file-max` 查看。  
 
 * 实现方式上，select 跟 poll 每次都需要把 FD 
 
 无论从调用方式还是实现方式上看，epoll 都比 select 和 poll 要高效很多。   
+
+
+拓展阅读：  
+
+* [图解 | 深入揭秘 epoll 是如何实现 IO 多路复用的！](https://mp.weixin.qq.com/s?__biz=MjM5Njg5NDgwNA==&mid=2247484905&idx=1&sn=a74ed5d7551c4fb80a8abe057405ea5e&scene=21#wechat_redirect)  
+
+* [深入学习IO多路复用 select/poll/epoll 实现原理](https://mp.weixin.qq.com/s?__biz=MjM5ODYwMjI2MA==&mid=2649774761&idx=1&sn=cd93afad37fecb2071d72d7e0dfebf5e&chksm=beccc9d289bb40c4117cdee70f647c72f1f0bf84c71735a5b72f513d6d36a0c427a6070a047d&token=789039961&lang=zh_CN#rd)
+
 
 ---
 
