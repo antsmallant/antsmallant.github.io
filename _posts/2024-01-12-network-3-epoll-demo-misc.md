@@ -119,18 +119,15 @@ ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 I/O，如果返回�
 
 ## epoll 与 select、poll 的区别
 
-可以说，有两大区别：   
+可以说，有三大区别：   
 
 * 调用方式上，select 跟 poll 每次都需要把所有的 FD 集合传给内核去设置事件状态，返回后，再一个个 FD 去判断有没有事件发生；而 epoll 已经通过 epoll_ctl 把所有 FD 都注册到内核了，每次 epoll_wait 会获得一份只有事件发生的 FD 集合。  
 
-* 调用限制上，select 有 FD_SETSIZE 个数限制，每次轮循只能传 FD_SETSIZE 个 FD 进去，在 linux 下，这个值一般为 1024；poll 和 epoll 都没限制，这两个的上限是系统的最大文件描述符，等于是没啥上限。  
+* 调用限制上，select 有 FD_SETSIZE 个数限制，每次轮循只能传 FD_SETSIZE 个 FD 进去，在 linux 下，这个值一般为 1024 [3]；poll 和 epoll 都没限制，这两个的上限是系统的最大文件描述符，等于是没啥上限。  
 
 * 实现方式上，select 跟 poll 每次都需要把 FD 
 
-
-
-
-无论从调用方式还是实现方式上看，epoll 都比 select 和 poll 要高明很多。  
+无论从调用方式还是实现方式上看，epoll 都比 select 和 poll 要高效很多。   
 
 ---
 
@@ -139,3 +136,5 @@ ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 I/O，如果返回�
 [1] 游双. Linux高性能服务器编程. 北京: 机械工业出版社, 2013-5.   
 
 [2] Kimi. Epoll在LT和ET模式下的读写方式. Available at https://kimi.pub/515.html, 2012-7-10.   
+
+[3] Raymond Chen. A history of the fd_set, FD_SETSIZE, and how it relates to WinSock. Available at https://devblogs.microsoft.com/oldnewthing/20221102-00/?p=107343, 2022-11-2.  
