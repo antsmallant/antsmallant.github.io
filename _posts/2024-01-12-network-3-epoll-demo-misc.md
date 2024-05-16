@@ -1,22 +1,9 @@
----
-layout: post
-title: "网络常识三：epoll demo、概念及注意事项"
-date: 2024-01-11
-last_modified_at: 2024-01-11
-categories: [网络]
-tags: [网络 epoll]
----
-
-* 目录  
-{:toc}
-<br/>
-
 
 这是一篇关于 epoll 的文章，包含一个展示 et 模式和 lt 模式的 demo，以及一些注意事项。   
 
 ---
 
-# epoll demo
+# 1. epoll demo
 
 demo 参考自《Linux高性能服务器编程》[1]，这个 demo 分别展示了 et 模式以及 lt 模式的用法。  
 
@@ -24,11 +11,11 @@ demo 地址： [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/b
 
 ---
 
-# epoll 概念及注意事项
+# 2. epoll 概念及注意事项
 
 ---
 
-## 阻塞vs非阻塞、同步vs异步
+## 2.1 阻塞vs非阻塞、同步vs异步
 
 这里再明确一下这几个概念的本质区别：     
 
@@ -38,7 +25,7 @@ demo 地址： [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/b
 
 另外有一点要注意的，阻塞与非阻塞是设置在文件描述符上的属性，而不是 api (比如 accept, read, write) 本身，api 本身没分阻塞与非阻塞，当 api 操作的是阻塞的文件描述符，那它就以阻塞的方式工作。   
 
-## epoll 的本质
+## 2.2 epoll 的本质
 
 epoll 是一种同步阻塞的 I/O 复用模型：  
 
@@ -52,7 +39,7 @@ epoll 是一种同步阻塞的 I/O 复用模型：
 
 --- 
 
-## epoll 与阻塞
+## 2.3 epoll 与阻塞
 
 既然 epoll 可以帮 socket 等待是否就绪的通知，socket 可以以非阻塞的方式工作。那反过来想一下，socket 偏偏要用阻塞的方式工作，可以吗？  
 
@@ -68,7 +55,7 @@ epoll 是一种同步阻塞的 I/O 复用模型：
 
 ---
 
-## LT vs ET
+## 2.4 LT vs ET
 
 这是 epoll 的两种工作模式，LT 代表水平触发，ET 代表边缘触发，默认模式是 LT。  
 
@@ -82,7 +69,7 @@ ET 模式看起来高效一些，但实际上编程复杂度更高很多，容�
 
 ---
 
-## LT 模式下写的问题
+## 2.5 LT 模式下写的问题
 
 LT 模式下，当 socket 可写，会不停的触发可写事件，应该怎么办?   
 
@@ -96,7 +83,7 @@ LT 模式下，当 socket 可写，会不停的触发可写事件，应该怎么
 
 ---
 
-## EAGAIN and EWOULDBLOCK 的意义
+## 2.6 EAGAIN and EWOULDBLOCK 的意义
 
 ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 I/O，如果返回结果小于 0，则要判断 errno，如果 errno 是 EAGAIN 或 EWOULDBLOCK，则表示此次数据已经读取完毕了，可以放心的结束本次读取，下次 epoll_wait 可以重新获得该事件通知。     
 
@@ -105,7 +92,7 @@ ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 I/O，如果返回�
 
 ---
 
-## accept 的问题
+## 2.7 accept 的问题
 
 这个问题其实不是 epoll 特定问题，在其他情况下 (比如 select, poll) 也都可能发生。  
 
@@ -119,7 +106,7 @@ ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 I/O，如果返回�
 
 ---
 
-## epoll 与 select、poll 的区别
+## 2.8 epoll 与 select、poll 的区别
 
 可以说，有三大区别：   
 
@@ -136,7 +123,7 @@ ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 I/O，如果返回�
 
 ---
 
-# 参考
+# 3. 参考
 
 [1] 游双. Linux高性能服务器编程. 北京: 机械工业出版社, 2013-5.   
 
