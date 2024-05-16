@@ -127,16 +127,11 @@ ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 I/O，如果返回�
 
 * 调用限制上，select 有 FD_SETSIZE 个数限制，每次轮循只能传 FD_SETSIZE 个 FD 进去，在多数系统，这个值是 1024，至于为啥是 1024，可以参照这篇文章《A history of the fd_set, FD_SETSIZE, and how it relates to WinSock》[3]；poll 和 epoll 约等于没限制，它们的上限是系统的最大文件描述符，可通过 `cat /proc/sys/fs/file-max` 查看。  
 
-* 实现方式上，select 跟 poll 每次都需要把 FD 
+* 实现方式上，select 跟 poll 每次都需要把重新把进程挂到文件描述符的等待队列上，而 epoll 在 epoll_ctl 的时候就一次性挂好了。   
 
 无论从调用方式还是实现方式上看，epoll 都比 select 和 poll 要高效很多。   
 
-
-拓展阅读：  
-
-* [图解 | 深入揭秘 epoll 是如何实现 IO 多路复用的！](https://mp.weixin.qq.com/s?__biz=MjM5Njg5NDgwNA==&mid=2247484905&idx=1&sn=a74ed5d7551c4fb80a8abe057405ea5e&scene=21#wechat_redirect)  
-
-* [深入学习IO多路复用 select/poll/epoll 实现原理](https://mp.weixin.qq.com/s?__biz=MjM5ODYwMjI2MA==&mid=2649774761&idx=1&sn=cd93afad37fecb2071d72d7e0dfebf5e&chksm=beccc9d289bb40c4117cdee70f647c72f1f0bf84c71735a5b72f513d6d36a0c427a6070a047d&token=789039961&lang=zh_CN#rd)
+具体的关于 select 和 epoll 的实现，可以参考这两篇文章，分析得很深入：《图解 | 深入揭秘 epoll 是如何实现 IO 多路复用的》[4]，《深入学习IO多路复用 select/poll/epoll 实现原理》[5]。  
 
 
 ---
@@ -148,3 +143,7 @@ ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 I/O，如果返回�
 [2] Kimi. Epoll在LT和ET模式下的读写方式. Available at https://kimi.pub/515.html, 2012-7-10.   
 
 [3] Raymond Chen. A history of the fd_set, FD_SETSIZE, and how it relates to WinSock. Available at https://devblogs.microsoft.com/oldnewthing/20221102-00/?p=107343, 2022-11-2.  
+
+[4] 张彦飞. 图解 | 深入揭秘 epoll 是如何实现 IO 多路复用的！. Available at https://mp.weixin.qq.com/s?__biz=MjM5Njg5NDgwNA==&mid=2247484905&idx=1&sn=a74ed5d7551c4fb80a8abe057405ea5e&scene=21#wechat_redirect, 2021-03-17.   
+
+[5] mingguangtu. 深入学习IO多路复用 select/poll/epoll 实现原理. Available at https://mp.weixin.qq.com/s?__biz=MjM5ODYwMjI2MA==&mid=2649774761&idx=1&sn=cd93afad37fecb2071d72d7e0dfebf5e&chksm=beccc9d289bb40c4117cdee70f647c72f1f0bf84c71735a5b72f513d6d36a0c427a6070a047d&token=789039961&lang=zh_CN#rd, 2022-12-07.   
