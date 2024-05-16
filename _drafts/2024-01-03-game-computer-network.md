@@ -153,13 +153,13 @@ ET 模式看起来高效一些，但实际上编程复杂度更高很多，容�
 
 LT 模式下，当 socket 可写，会不停的触发可写事件，应该怎么办?   
 
-这个问题有两种策略：  
+这个问题有两种策略：    
 
-策略1：需要写的时候，才注册 socket 的 epollout 事件，等写完的时候，反注册 epollout 事件。    
+* 策略 1：需要写的时候，才注册 socket 的 epollout 事件，等写完的时候，反注册 epollout 事件。    
 
-策略2：先写，遇到 EAGAIN 错误的时候再注册 socket 的 epollout 事件，等写完的时候，反注册 epollout 事件。  
+* 策略 2：先写，遇到 EAGAIN 错误的时候再注册 socket 的 epollout 事件，等写完的时候，反注册 epollout 事件。  
 
-策略2更好一些，可以避免写一点点数据也要注册并等待 epollout 事件。  
+策略 2 更好一些，可以避免写一点点数据也要注册并等待 epollout 事件。  
 
 
 ### EAGAIN and EWOULDBLOCK 的意义
