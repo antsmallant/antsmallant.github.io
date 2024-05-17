@@ -20,16 +20,72 @@ tags: [c++]
 
 # 1. 先不看汇编
 
-汇编的可读性还是挺差的，如果有得选，还是先用 cpp insights，看一看编译器角度生成的源码。cpp insights 的地址是 https://cppinsights.io/ ，官网对它的介绍[2]：  
+汇编的可读性挺差的，如果有得选，还是先用 cpp insights，看一看编译器角度生成的源码。cpp insights 的地址是 https://cppinsights.io/ ，官网对它的介绍[2]：  
 
 >C++ Insights is a clang-based tool which does a source to source transformation. Its goal is to make things visible, which normally and intentionally happen behind the scenes. It's about the magic the compiler does for us to make things work.   
 
 翻译过来就是：c++ insights 是一个基于 clang 的工具，用于执行源码到源码的转换。它的目标是让幕后的事情变得可见。关于编译器为了使事情正常工作所做的魔术。   
 
-直接看一下它能帮你洞察什么，是不是很强大？   
+直接看一下它能帮你洞察什么。 
 
 ![cpp-insights-cpp-lambda](https://blog.antsmallant.top/media/blog/modern-cpp/cpp-insights-cpp-lambda.png)   
 <center>图0：cpp-insights-cpp-lambda</center>
+
+上面写了一小段 lambda 代码，c++ insights 帮忙生成出来了编译器视角的源码，从中我们可以清晰的看到 c++ 内部是如何实现 lambda 的。    
+
+用户的源码：   
+
+```cpp
+#include <iostream>
+
+int main() {
+  	auto x = [](int a, int b) { return a + b; };
+  	int a = x(10, 20);
+    return 0;
+}
+```
+
+<br/>
+
+cpp insights 翻译的源码：  
+
+```cpp
+#include <iostream>
+
+int main()
+{
+    
+  class __lambda_4_13
+  {
+    public: 
+    inline /*constexpr */ int operator()(int a, int b) const
+    {
+      return a + b;
+    }
+    
+    using retType_4_13 = int (*)(int, int);
+    inline constexpr operator retType_4_13 () const noexcept
+    {
+      return __invoke;
+    };
+    
+    private: 
+    static inline /*constexpr */ int __invoke(int a, int b)
+    {
+      return __lambda_4_13{}.operator()(a, b);
+    }
+    
+    
+    public:
+    // /*constexpr */ __lambda_4_13() = default;
+    
+  };
+  
+  __lambda_4_13 x = __lambda_4_13{};
+  int a = x.operator()(10, 20);
+  return 0;
+}
+```
 
 
 ---
