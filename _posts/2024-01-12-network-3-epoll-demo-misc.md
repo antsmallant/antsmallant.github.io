@@ -127,7 +127,7 @@ ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 I/O，如果返回�
 
 * 调用限制上，select 有 FD_SETSIZE 个数限制，每次轮循只能传 FD_SETSIZE 个 FD 进去，在多数系统，这个值是 1024，至于为啥是 1024，可以参照这篇文章《A history of the fd_set, FD_SETSIZE, and how it relates to WinSock》[3]；poll 和 epoll 约等于没限制，它们的上限是系统的最大文件描述符，可通过 `cat /proc/sys/fs/file-max` 查看。  
 
-* 实现方式上，select 跟 poll 每次调用都需要重新把当前进程挂到文件描述符的等待队列上，而 epoll 在 epoll_ctl 的时候就一次性挂好了。     
+* 实现方式上，select 跟 poll 每次都需要重新把当前进程挂到各个文件描述符的等待队列上，而 epoll 在 epoll_ctl 的时候就一次性挂好了。     
 
 无论从调用方式还是实现方式上看，epoll 都比 select 和 poll 要高效很多。   
 
