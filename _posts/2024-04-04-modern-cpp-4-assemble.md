@@ -1,3 +1,16 @@
+---
+layout: post
+title: "现代 c++ 四：查看汇编代码、看懂汇编代码"
+date: 2024-04-04
+last_modified_at: 2024-04-04
+categories: [c++]
+tags: [c++]
+---
+
+* 目录  
+{:toc}
+<br/>
+
 
 很多时候，要真正理解 c++ 一些特性的实现原理，最快的方式是自己亲自查看 c++ 代码对应的汇编代码。  
 
@@ -299,7 +312,7 @@ x86-64 架构共有用于参数传递的 16 个寄存器，用途大致如下：
 
 ## 3.4 牢记操作数格式
 
-以下图片取自《深入理解计算机系统》[1]
+以下图片取自《深入理解计算机系统》[1]。 
 
 ![assemble-operand-format](https://blog.antsmallant.top/media/blog/modern-cpp/assemble-operand-format.png)   
 <center>图6：操作数格式</center>
