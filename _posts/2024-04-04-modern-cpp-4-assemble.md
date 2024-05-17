@@ -103,6 +103,8 @@ compiler explorer 是一个网站，地址是： https://gcc.godbolt.org/ 。它
 * 支持分享代码片段，可以生成一条短链接，比如我写的 hello world 代码： https://gcc.godbolt.org/z/87xT8scqn  
 * 除了 c++，还支持另外几十种语言，比如 c, c#, python, golang, java, erlang 等等，要么生成汇编代码，要么生成字节码   
 
+<br/>
+
 c++ 的 hello world，代码链接： https://gcc.godbolt.org/z/87xT8scqn 。    
 
 ![compiler-explorer-cpp-helloworld](https://blog.antsmallant.top/media/blog/modern-cpp/compiler-explorer-cpp-helloworld.png)   
@@ -113,6 +115,7 @@ python 的 hello world，代码链接：https://gcc.godbolt.org/z/8jM3d37dE 。
 ![compiler-explorer-python3-helloworld](https://blog.antsmallant.top/media/blog/modern-cpp/compiler-explorer-python3-helloworld.png)   
 <center>图2：compiler explorer python hello world</center>
 
+<br/>
 
 遗憾的是，compiler explorer 不支持 lua。不过，这个网站【lua Bytecode Explorer】支持，地址是：https://www.luac.nl/ 。功能很强大，支持从 lua4.0 到 lua5.4 的各个版本。  
 
@@ -231,7 +234,7 @@ C0::c0f1():
 
 ---
 
-## 看 ATT 风格的汇编，不要看 intel 风格的
+## 3.1 看 ATT 风格的汇编，不要看 intel 风格的
 
 因为 intel 风格的可读性不强。ATT 即 AT&T，gcc、objdump 和其他的一些工具，生成的汇编都是 ATT 风格，intel 风格的多见于 intel 和微软。如果想让 gcc 生成 intel 风格的汇编，可以这样：`gcc -Og -S -masm=intel 源文件名` 。    
 
@@ -243,7 +246,7 @@ ATT 和 intel 的区别是[1]：
 * 在带有多个操作数的指令情况下，列出操作数的顺序相反，比如 ATT 中 `moveq %rbx, %rax`，在 intel 是写成 `mov rax, rbx`
 
 
-## 牢记寄存器用途
+## 3.2 牢记寄存器用途
 
 x86-64 架构共有用于参数传递的 16 个寄存器，用途大致如下：   
 
@@ -276,7 +279,9 @@ x86-64 架构共有用于参数传递的 16 个寄存器，用途大致如下：
 |`%r15`|`%r15d`|`%r15w`|`%r15b`|被调用者保存|
 
 
-## 牢记栈帧结构
+## 3.3 牢记栈帧结构
+
+TODO linux 的栈大小，以及 leet 计算栈是否会溢出。  
 
 下图参照自《深入理解计算机系统》[1]。  
 
@@ -284,7 +289,7 @@ x86-64 架构共有用于参数传递的 16 个寄存器，用途大致如下：
 <center>图4：stack frame</center>
 
 
-## 一些常见做法
+## 3.4 一些常见做法
 
 
 ---
