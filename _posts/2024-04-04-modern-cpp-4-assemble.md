@@ -184,18 +184,20 @@ _ZN2C04c0f1Ev:
 
 读起来有点费劲，因为它把我们的函数名都 mangling 了，比如 C0::c0f1 被编成这样了：_ZN2C04c0f1Ev，为了好看一些，需要 demangling，可以使用 c++filt 这个工具来做。它有两种用法，都是一样的效果。  
 
-* c++filt 用法一：  
-（要注意，不要有空格！ ）
+c++filt 用法一：   
+（要注意，不要有空格！）
 
 ```bash
 c++filt<abc.s>abc_demangle.s
 ```
 
-* c++filt 用法二：  
+c++filt 用法二：   
 
 ```bash
 cat abc.s | c++filt > abc_demangle.s
 ```
+
+<br/>
 
 c++filt demangling 之后生成出来的汇编代码 abc_demangle.s 是这样的：    
 
@@ -225,8 +227,30 @@ C0::c0f1():
 
 大学的时候多少都学一点汇编，但估计都忘得差不多了，这种情况下，可以看这本《深入理解计算机系统（原书第3版）》[1] 的第 3 章 【程序的机器级表示】。  
 
+关于汇编，我有以下几点心得。 
+
+---
+
+## 看 ATT 风格的汇编，不要看 intel 风格的
+
+因为 intel 风格的可读性不强。ATT 即 AT&T，gcc、objdump 和其他的一些工具，生成的汇编都是 ATT 风格，intel 风格的多见于 intel 和微软。如果想让 gcc 生成 intel 风格的汇编，可以这样：`gcc -Og -S -masm=intel 源文件名` 。    
+
+ATT 和 intel 的区别是： 
+
+* intel 省略了指示大小的后缀，ATT 中的 pushq 和 movq，在 intel 中是 push 和 mov。
+* intel 省略了寄存器名字前面的 '%' 符号，用的是 rbx，而不是 %rbx。  
+* intel 用不同的方式描述内存中的变量，例如：`QWORD PTR [rbx]` 而不是 `(%rbx)`
+* 在带有多个操作数的指令情况下，列出操作数的顺序相反，比如 ATT 中 moveq %rbx, %rax，在 intel 是写成 mov rax, rbx
 
 
+## 牢记寄存器的用途
+
+用于传参的6个：  
+调用者保存：  
+被调用者保存：  
+
+
+## 汇编的一些常见做法
 
 
 ---
