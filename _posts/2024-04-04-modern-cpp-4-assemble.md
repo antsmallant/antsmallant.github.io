@@ -46,7 +46,7 @@ compiler explorer 是一个网站，地址是： https://gcc.godbolt.org/ 。它
 
 ## 1.2 使用 gcc 生成汇编代码
 
-使用 gcc -S 编译成汇编代码，然后再用 c++filt demangling 里面那些被 mangling 的 C++ 符号。    
+使用 `gcc -S` 编译成汇编代码，然后再用 c++filt demangling 里面那些被 mangling 的 C++ 符号。    
 
 假设你的文件叫 abc.cpp   
 
@@ -76,20 +76,11 @@ int main() {
 
 ```bash
 g++ -S abc.cpp -o abc.s
-c++filt<abc.s>abc_demangle.s
 ```
 
-这样看 abc_demangle.s 就顺眼多了。     
+生成出来的汇编代码 abc.s 是这样的:   
 
-也可以这样来使用 c++filt:   
-
-```bash
-cat abc.s | c++filt > abc_demangle.s
 ```
-
-作为对比，abc.s 一般是这样的：    
-
-```assembly
 	.file	"abc.cpp"
 	.text
 	.local	_ZStL8__ioinit
@@ -111,9 +102,23 @@ _ZN2C04c0f1Ev:
     ...
 ```
 
-而 abc_demangle.s 是这样的：    
+读起来有点费劲，因为它把我们的函数名都 mangling 了，比如 C0::c0f1 被编成这样了：_ZN2C04c0f1Ev，为了好看一些，需要 demangling，可以使用 c++filt 这个工具来做。它有两种用法，都是一样的效果。  
 
-```assembly
+c++filt 用法一：  
+
+```bash
+c++filt<abc.s>abc_demangle.s
+```
+
+c++filt 用法二：  
+
+```bash
+cat abc.s | c++filt > abc_demangle.s
+```
+
+c++filt demangling 之后生成出来的汇编代码 abc_demangle.s 是这样的：    
+
+```
 	.file	"abc.cpp"
 	.text
 	.local	std::__ioinit
