@@ -105,6 +105,7 @@ _ZN2C04c0f1Ev:
 读起来有点费劲，因为它把我们的函数名都 mangling 了，比如 C0::c0f1 被编成这样了：_ZN2C04c0f1Ev，为了好看一些，需要 demangling，可以使用 c++filt 这个工具来做。它有两种用法，都是一样的效果。  
 
 c++filt 用法一：  
+（要注意，不要有空格！ ）
 
 ```bash
 c++filt<abc.s>abc_demangle.s
