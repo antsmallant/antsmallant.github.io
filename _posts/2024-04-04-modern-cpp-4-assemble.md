@@ -14,7 +14,7 @@ tags: [c++]
 
 很多时候，要真正理解 c++ 一些特性的实现原理，最快的方式是自己亲自查看 c++ 代码对应的汇编代码。  
 
-本文记录一下 c++ 如何查看生成出来的汇编代码，以及如何看懂代码。   
+本文记录一下 c++ 如何查看生成出来的汇编代码，以及如何看懂代码，部分内容参考自《深入理解计算机系统》[1]。  
 
 ---
 
@@ -29,7 +29,7 @@ tags: [c++]
 直接看一下它能帮你洞察什么。 
 
 ![cpp-insights-cpp-lambda](https://blog.antsmallant.top/media/blog/modern-cpp/cpp-insights-cpp-lambda.png)   
-<center>图0：cpp-insights-cpp-lambda</center>
+<center>图1：cpp-insights-cpp-lambda</center>
 
 上面写了一小段 lambda 代码，c++ insights 帮忙生成出来了编译器视角的源码，从中我们可以清晰的看到 c++ 内部是如何实现 lambda 的。    
 
@@ -108,19 +108,19 @@ compiler explorer 是一个网站，地址是： https://gcc.godbolt.org/ 。它
 c++ 的 hello world，代码链接： https://gcc.godbolt.org/z/87xT8scqn 。    
 
 ![compiler-explorer-cpp-helloworld](https://blog.antsmallant.top/media/blog/modern-cpp/compiler-explorer-cpp-helloworld.png)   
-<center>图1：compiler explorer c++ hello world</center>
+<center>图2：compiler explorer c++ hello world</center>
 
 python 的 hello world，代码链接：https://gcc.godbolt.org/z/8jM3d37dE 。  
 
 ![compiler-explorer-python3-helloworld](https://blog.antsmallant.top/media/blog/modern-cpp/compiler-explorer-python3-helloworld.png)   
-<center>图2：compiler explorer python hello world</center>
+<center>图3：compiler explorer python hello world</center>
 
 <br/>
 
 遗憾的是，compiler explorer 不支持 lua。不过，这个网站【lua Bytecode Explorer】支持，地址是：https://www.luac.nl/ 。功能很强大，支持从 lua4.0 到 lua5.4 的各个版本。  
 
 ![luac-lua-helloworld](https://blog.antsmallant.top/media/blog/modern-cpp/luac-lua-helloworld.png)   
-<center>图3：luac lua hello world</center>
+<center>图4：luac lua hello world</center>
 
 
 ---
@@ -232,7 +232,7 @@ C0::c0f1():
 
 大学的时候多少都学一点汇编，但估计都忘得差不多了。要重拾汇编，可以看一下《深入理解计算机系统（原书第3版）》[1] 的第 3 章：程序的机器级表示，写得非常好。    
 
-虽然要看懂汇编，系统的看一看上面说的书就够了。但我还是有几个心得可以分享一下。   
+要看懂汇编，系统的看一看上面说的书就够了，以下是一些我觉得比较重要的东西。    
 
 ---
 
@@ -286,7 +286,7 @@ x86-64 架构共有用于参数传递的 16 个寄存器，用途大致如下：
 下图参照自《深入理解计算机系统》[1]。  
 
 ![stack-frame](https://blog.antsmallant.top/media/blog/modern-cpp/stack-frame.png)   
-<center>图4：stack frame</center>
+<center>图5：stack frame</center>
 
 <br/>
 
@@ -307,28 +307,32 @@ x86-64 架构共有用于参数传递的 16 个寄存器，用途大致如下：
 那么实际上一个栈帧的大小就是 (48 + 16 + 8 + x) Bytes，即 (72 + x) Bytes，其中 x 代表参数构造和局部变量的可能占用。  
 
 
-## 3.5 牢记操作数格式
+## 3.4 牢记操作数格式
+
+以下图片取自《深入理解计算机系统》
+
+![assemble-operand-format](https://blog.antsmallant.top/media/blog/modern-cpp/assemble-operand-format.png)   
+<center>图6：操作数格式</center>
 
 
+## 3.5 一些常见概念
 
-## 3.4 一些常见概念
-
-### 3.4.1 栈指针与帧指针
+### 3.5.1 栈指针与帧指针
 
 `%rsp` 通常用作栈指针，而 %rbp 通常用作帧指针，在函数一开始，通常是这样 `pushq %rbp ;  mov %rsp, %rbp; `，也就是先保存 `%rbp` 的值，再把 `%rsp` 保存到 `%rbp` 中，之后，`%rbp` 这个的值就不变了，而 `%rsp` 会一直变的，所以通过 `%rbp` 去访问参数是很方便的。  
 
 
-### 3.4.2 leave 的作用
+### 3.5.2 leave 的作用
 
 64 位下相当于：`mov %rbp, %rsp ; popq %rbp`， 是恢复栈帧的一种做法。通常在函数的开头是这样：`pushq %rbp ; mov %rsp, %rbp;`。即先把 `%rbp` 入栈，再用 `%rbp` 来保存 `%rsp` 的值。  
 
 
-### 3.4.3 push / pop / call
+### 3.5.3 push / pop / call
 
 push / pop / call 这几个命令都会自己改变 `%rsp` 的值。64位系统下，`pushq / call` 都会 `%rsp = %rsp - 8`，然后把 8 字节写入 `%rsp` 处，`popq` 正相反，会把 `%rsp` 的 8 字节取出，然后 `%rsp = %rsp+8`
 
 
-### 3.4.4 `%fs:0x28` 的作用
+### 3.5.4 `%fs:0x28` 的作用
 
 有时候会看到这样的 `mov  %fs:0x28, %rax`，它的作用是什么呢？ 
 
@@ -336,11 +340,10 @@ push / pop / call 这几个命令都会自己改变 `%rsp` 的值。64位系统�
 * fs 寄存器的值本身指向当前线程结构。   
 
 
-
 ---
 
 # 4. 参考
 
-[1] [美]Randal E. Bryant, David R. O'Hallaron. 深入理解计算机系统(原书第3版). 龚奕利, 贺莲. 北京: 机械工业出版社, 2022-6(1): 164.   
+[1] [美]Randal E. Bryant, David R. O'Hallaron. 深入理解计算机系统(原书第3版). 龚奕利, 贺莲. 北京: 机械工业出版社, 2022-6(1): 121, 164.   
 
 [2] cppinsights. About. https://cppinsights.io/about.html.   
