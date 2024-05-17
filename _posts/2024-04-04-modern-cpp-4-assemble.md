@@ -29,8 +29,12 @@ compiler explorer 是一个网站，地址是： https://gcc.godbolt.org/ 。它
 * 支持分享代码片段，可以生成一条短链接，比如我写的 hello world 代码： https://gcc.godbolt.org/z/87xT8scqn  
 * 除了 c++，还支持另外几十种语言，比如 c, c#, python, golang, java, erlang 等等，要么生成汇编代码，要么生成字节码   
 
+c++ 的 hello world，代码链接： https://gcc.godbolt.org/z/87xT8scqn 。    
+
 ![compiler-explorer-cpp-helloworld](https://blog.antsmallant.top/media/blog/modern-cpp/compiler-explorer-cpp-helloworld.png)   
 <center>图1：compiler explorer c++ hello world</center>
+
+python 的 hello world，代码链接：https://gcc.godbolt.org/z/8jM3d37dE 。  
 
 ![compiler-explorer-python3-helloworld](https://blog.antsmallant.top/media/blog/modern-cpp/compiler-explorer-python3-helloworld.png)   
 <center>图2：compiler explorer python hello world</center>
@@ -46,7 +50,7 @@ compiler explorer 是一个网站，地址是： https://gcc.godbolt.org/ 。它
 
 ## 1.2 使用 gcc 生成汇编代码
 
-使用 `gcc -S` 编译成汇编代码，然后再用 c++filt demangling 里面那些被 mangling 的 C++ 符号。    
+使用 `gcc -S` 编译成汇编代码，然后再用 c++filt demangling 里面那些被 mangling 的 c++ 符号。    
 
 假设你的文件叫 abc.cpp   
 
@@ -143,7 +147,7 @@ C0::c0f1():
 
 # 看懂汇编代码
 
-大学的时候多少都学一点汇编，但估计都忘得差不多了。
+大学的时候多少都学一点汇编，但估计都忘得差不多了，这种情况下，可以看这本《》的第二章，
 
 ---
 
