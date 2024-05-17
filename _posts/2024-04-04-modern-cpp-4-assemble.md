@@ -20,19 +20,16 @@ tags: [c++]
 
 # 1. 先不看汇编
 
-汇编的可读性还是挺差的，如果有得选，还是先用 cpp insights，来看一看编译器角度生成的代码吧。官网对它的介绍[2]：  
+汇编的可读性还是挺差的，如果有得选，还是先用 cpp insights，看一看编译器角度生成的源码。cpp insights 的地址是 https://cppinsights.io/ ，官网对它的介绍[2]：  
 
->C++ Insights is a clang-based tool which does a source to source transformation. Its goal is to make things visible, which normally and intentionally happen behind the scenes. It's about the magic the compiler does for us to make things work. Or looking through the classes of a compiler.
+>C++ Insights is a clang-based tool which does a source to source transformation. Its goal is to make things visible, which normally and intentionally happen behind the scenes. It's about the magic the compiler does for us to make things work.   
 
-翻译过来就是：c++ insights 是一个基于 clang 的工具，用于执行源码到源码的转换。它的目标是让事情变得可见，这通常是在幕后发生的。这是关于编译器为了使事情正常工作所做的魔术。或者浏览编译器的类。     
+翻译过来就是：c++ insights 是一个基于 clang 的工具，用于执行源码到源码的转换。它的目标是让幕后的事情变得可见。关于编译器为了使事情正常工作所做的魔术。   
 
-cpp insights 地址：https://cppinsights.io/ 。  
-
-直接看一下它能帮你洞察什么，是不是很强大：  
+直接看一下它能帮你洞察什么，是不是很强大？   
 
 ![cpp-insights-cpp-lambda](https://blog.antsmallant.top/media/blog/modern-cpp/cpp-insights-cpp-lambda.png)   
 <center>图0：cpp-insights-cpp-lambda</center>
-
 
 
 ---
