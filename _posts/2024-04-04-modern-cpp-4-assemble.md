@@ -125,9 +125,9 @@ python 的 hello world，代码链接：https://gcc.godbolt.org/z/8jM3d37dE 。
 
 ---
 
-## 2.2 使用 gcc 生成汇编代码
+## 2.2 使用 g++ 生成汇编代码
 
-使用 `gcc -S` 编译成汇编代码，然后再用 c++filt demangling 里面那些被 mangling 的 c++ 符号。    
+使用 `g++ -S` 编译成汇编代码，然后再用 c++filt demangling 里面那些被 mangling 的 c++ 符号。    
 
 假设你的文件叫 abc.cpp   
 
@@ -343,6 +343,8 @@ ATT 和 intel 的区别是[1]：
 |`%r14`|`%r14d`|`%r14w`|`%r14b`|被调用者保存|
 |`%r15`|`%r15d`|`%r15w`|`%r15b`|被调用者保存|
 
+更多关于 x86-64 寄存器的知识，可以参考这个网站： https://wiki.osdev.org/CPU_Registers_x86-64 。 
+
 ---
 
 ## 3.3 牢记栈帧结构
@@ -403,13 +405,37 @@ push / pop / call 这几个命令都会自己改变 `%rsp` 的值。64位系统�
 
 ---
 
-### 3.5.4 `%fs:0x28` 的作用
+### 3.5.4 `%fs:40` 的作用
 
-有时候会看到这样的 `mov  %fs:0x28, %rax`，它的作用是什么呢？ 
+有时候用 gcc 生成出来的汇编代码里，在函数的开头有这样的代码：  
 
-* 栈保护功能，将一个特殊值（fs:0x28）存在栈的底部，函数运行结束后再取出这个值和 fs:0x28 做比较，如果有改变就说明栈被破坏，调用 `__stack_chk_fail@plt` 。  
-* fs 寄存器的值本身指向当前线程结构。   
+```nasm
+	movq	%fs:40, %rax
+	movq	%rax, -8(%rbp)
+```
 
+而在函数的结尾，有这样的代码：   
+
+```nasm
+	movq	-8(%rbp), %rax
+	subq	%fs:40, %rax
+	je	.L4
+	call	__stack_chk_fail@PLT
+```
+
+它的作用是什么呢？ 
+
+* 栈保护功能，将这个内存位置 `%fs:0x28` 存储的值写到栈底 `-8(%rbp)`，函数运行结束时，再把取出栈底 `-8(%rbp)` 保存的值和内存位置 `%fs:0x28` 的值作比较，如果有改变就说明栈被破坏了，调用函数 `__stack_chk_fail@plt` 来处理。   
+
+* `%fs` 寄存器的值本身指向当前线程结构。   
+
+* 有时候 `%fs:40` 会显示成 `%fs:0x28`，其实是一样的，`0x28` 的十进制即是 40。   
+
+* gcc 可以通过设置 `-fno-stack-protector` 选项来禁用编译器生成栈保护代码。  
+
+
+可参考文章： 
+《解读Linux安全机制之栈溢出保护》，https://www.cnblogs.com/pengdonglin137/articles/17821763.html
 
 ---
 
