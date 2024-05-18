@@ -34,7 +34,7 @@ tags: [并发 同步 多线程]
 
 实际上，我翻遍了涉及线程同步的几本书：《现代操作系统》[2]、《深入理解计算机系统》[3]，《UNIX环境高级编程》[4] 都找不到有任何地方，会像上面提到的文章[1]那样去解释 “同步” 和 “互斥”，所以我很想知道那些文章的作者是从哪里看到的，亦或者是人云亦云？    
 
-同步这个词在很多场合都有用到，表达的意思各不相同，我在另一篇文章《几个概念的含义：同步、异步、阻塞、非阻塞》[5] 已经做了一些介绍。  
+同步这个词在很多场合都有用到，表达的意思各不相同，我在另一篇文章《网络常识二：同步、异步、阻塞、非阻塞》[5] 已经做了一些介绍。  
 
 回到这个词本身，在 Wikipedia[6]里，是这么介绍它的：   
 >Thread synchronization is defined as a mechanism which ensures that two or more concurrent processes or threads do not simultaneously execute some particular program segment known as critical section. Processes' access to critical section is controlled by using synchronization techniques.   
@@ -55,7 +55,7 @@ tags: [并发 同步 多线程]
 
 [4] [美]W. Richard Stevens, Stephen A. Rago. UNIX环境高级编程(第2版). 尤晋元, 张亚英, 戚正伟. 北京: 人民邮电出版社, 2006-5(1).  
 
-[5] antsmallant. 几个概念的含义：同步、异步、阻塞、非阻塞. Available at https://blog.antsmallant.top/2024/01/19/synchronous-asynchronous-blocking-nonblocking, 2024-01-19.    
+[5] antsmallant. 网络常识二：同步、异步、阻塞、非阻塞. Available at https://blog.antsmallant.top/2024/01/19/synchronous-asynchronous-blocking-nonblocking, 2024-01-19.    
 
 [6] Wikipedia. Synchronization (computer science). Available at https://en.wikipedia.org/wiki/Synchronization_(computer_science).   
 
