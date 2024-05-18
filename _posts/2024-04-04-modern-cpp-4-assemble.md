@@ -355,4 +355,4 @@ push / pop / call 这几个命令都会自己改变 `%rsp` 的值。64位系统�
 
 [1] [美]Randal E. Bryant, David R. O'Hallaron. 深入理解计算机系统(原书第3版). 龚奕利, 贺莲. 北京: 机械工业出版社, 2022-6(1): 121, 164.   
 
-[2] cppinsights. About. https://cppinsights.io/about.html.   
+[2] cppinsights. About. Available at https://cppinsights.io/about.html.   
