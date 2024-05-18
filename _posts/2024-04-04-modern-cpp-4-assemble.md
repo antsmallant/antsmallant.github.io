@@ -179,8 +179,38 @@ _ZN2C04c0f1Ev:
 	endbr64
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	subq	$16, %rsp
+	movq	%rdi, -8(%rbp)
+	leaq	.LC0(%rip), %rax
+	movq	%rax, %rsi
+	leaq	_ZSt4cout(%rip), %rax
+	movq	%rax, %rdi
+	call	_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@PLT
+	movq	_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_@GOTPCREL(%rip), %rdx
+	movq	%rdx, %rsi
+	movq	%rax, %rdi
+	call	_ZNSolsEPFRSoS_E@PLT
+	nop
+	leave
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE1731:
+	.size	_ZN2C04c0f1Ev, .-_ZN2C04c0f1Ev
+	.section	.rodata
+.LC1:
+	.string	"c0 c0f2"
+	.section	.text._ZN2C04c0f2Ev,"axG",@progbits,_ZN2C04c0f2Ev,comdat
+	.align 2
+	.weak	_ZN2C04c0f2Ev
+	.type	_ZN2C04c0f2Ev, @function
 
-    ...
+
+; 以下省略 ...
+
 ```
 
 <br/>
@@ -224,6 +254,38 @@ C0::c0f1():
 	endbr64
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	subq	$16, %rsp
+	movq	%rdi, -8(%rbp)
+	leaq	.LC0(%rip), %rax
+	movq	%rax, %rsi
+	leaq	std::cout(%rip), %rax
+	movq	%rax, %rdi
+	call	std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*)@PLT
+	movq	std::basic_ostream<char, std::char_traits<char> >& std::endl<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&)@GOTPCREL(%rip), %rdx
+	movq	%rdx, %rsi
+	movq	%rax, %rdi
+	call	std::basic_ostream<char, std::char_traits<char> >::operator<<(std::basic_ostream<char, std::char_traits<char> >& (*)(std::basic_ostream<char, std::char_traits<char> >&))@PLT
+	nop
+	leave
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE1731:
+	.size	C0::c0f1(), .-C0::c0f1()
+	.section	.rodata
+.LC1:
+	.string	"c0 c0f2"
+	.section	.text._ZN2C04c0f2Ev,"axG",@progbits,C0::c0f2(),comdat
+	.align 2
+	.weak	C0::c0f2()
+	.type	C0::c0f2(), @function
+
+
+; 以下省略 ...
+
 ```
 
 ---
