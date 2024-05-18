@@ -343,7 +343,16 @@ ATT 和 intel 的区别是[1]：
 |`%r14`|`%r14d`|`%r14w`|`%r14b`|被调用者保存|
 |`%r15`|`%r15d`|`%r15w`|`%r15b`|被调用者保存|
 
-更多关于 x86-64 寄存器的知识，可以参考这个网站： https://wiki.osdev.org/CPU_Registers_x86-64 。 
+<br/>
+
+除了上面讲的通用目的寄存器，x86-64 架构还有好几种寄存器，具体可以参考以下这几篇文章：   
+
+* 《CPU_Registers_x86-64#Segment_Registers》：[https://wiki.osdev.org/CPU_Registers_x86-64#Segment_Registers](https://wiki.osdev.org/CPU_Registers_x86-64#Segment_Registers)
+
+* 《how many registers does an x86-64 CPU have?》: [https://blog.yossarian.net/2020/11/30/How-many-registers-does-an-x86-64-cpu-have](https://blog.yossarian.net/2020/11/30/How-many-registers-does-an-x86-64-cpu-have)
+
+* 《X86_64 机器上一共有多少个寄存器》: [https://www.owalle.com/2021/12/26/all-registers-x86-64/](https://www.owalle.com/2021/12/26/all-registers-x86-64/)
+ 
 
 ---
 
@@ -427,7 +436,7 @@ push / pop / call 这几个命令都会自己改变 `%rsp` 的值。64位系统�
 
 * 栈保护功能，将这个内存位置 `%fs:0x28` 存储的值写到栈底 `-8(%rbp)`，函数运行结束时，再把取出栈底 `-8(%rbp)` 保存的值和内存位置 `%fs:0x28` 的值作比较，如果有改变就说明栈被破坏了，调用函数 `__stack_chk_fail@plt` 来处理。   
 
-* `%fs` 寄存器的值本身指向当前线程结构。   
+* `fs` 是段寄存器之一。  
 
 * 有时候 `%fs:40` 会显示成 `%fs:0x28`，其实是一样的，`0x28` 的十进制即是 40。   
 
@@ -435,7 +444,8 @@ push / pop / call 这几个命令都会自己改变 `%rsp` 的值。64位系统�
 
 
 可参考文章： 
-《解读Linux安全机制之栈溢出保护》，https://www.cnblogs.com/pengdonglin137/articles/17821763.html
+
+* 《解读Linux安全机制之栈溢出保护》 ： [https://www.cnblogs.com/pengdonglin137/articles/17821763.html](https://www.cnblogs.com/pengdonglin137/articles/17821763.html)  
 
 ---
 
