@@ -21,6 +21,14 @@ tags: [game, db, mysql]
 
 实际上还有一种树，叫 `B*+Tree`[1]。
 
+---
+
+# 参考
+
+[1] Wikipedia. B-tree. Available at https://en.wikipedia.org/wiki/B-tree.   
+
+
+---
 
 # 收集
 
@@ -86,9 +94,3 @@ https://www.geeksforgeeks.org/b-trees-implementation-in-c/
 
 
 * M-ary 类似于 binary，用 M 代替了 bin，表示 M 路
-
----
-
-# 参考
-
-[1] Wikipedia. B-tree. Available at https://en.wikipedia.org/wiki/B-tree.   
