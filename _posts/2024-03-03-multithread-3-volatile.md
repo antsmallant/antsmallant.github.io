@@ -92,12 +92,12 @@ void consumer_thread()
 
 程序的意图是：生产者先写 a 和 b，再写 flag；消费者先判断 flag 后，再读 a 和 b。大致如下图：   
 
-![multithread-producer-consumer-expect-order](https://blog.antsmallant.top/media/blog/2024-03-08-multi-threads/multithread-producer-consumer-expect-order.png)   
+![multithread-producer-consumer-expect-order](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2024-03-08-multi-threads/multithread-producer-consumer-expect-order.png)   
 <center>图1：生产者消费者期望工作状态</center>
 
 但实际上编译器优化过后，可能是这样的工作过程：生产者先写了 flag，消费者判断到 flag 为 true，开始读 a 和 b，之后生产者才开始写 a 和 b。大致如下图：  
 
-![multithread-producer-consumer-unexpect-order](https://blog.antsmallant.top/media/blog/2024-03-08-multi-threads/multithread-producer-consumer-unexpect-order.png)   
+![multithread-producer-consumer-unexpect-order](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2024-03-08-multi-threads/multithread-producer-consumer-unexpect-order.png)   
 <center>图2：生产者消费者乱序状态</center>
 
 如果按以上顺序执行，消费者可能会读到不正确的 a 和 b 值。  

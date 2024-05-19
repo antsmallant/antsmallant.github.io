@@ -60,7 +60,7 @@ tcp 为什么需要三次握手才能建立连接呢？为什么刚好三次就�
 * 防止重复历史连接的初始化
 * 确定好双方的初始序列号
 
-![tcp-head](https://blog.antsmallant.top/media/blog/2024-01-03-network/tcp-head.png)
+![tcp-head](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2024-01-03-network/tcp-head.png)
 <center>图1：tcp包头 [1]</center>
 
 这个跟 tcp 的目标有关，tcp 是一个保证消息包可靠有序到达的协议，在设计上为了达到这个目标，在包头加了两个字段，一个叫 **序列号码**，另一个叫 **确认号码**，通过这一对数字来实现可靠有序的特性。  
@@ -74,7 +74,7 @@ tcp 握手就是为了协商双方的初始序列号，要完成这个过程，�
 
 但如果发生这样的情况，就会出问题了：第一次握手的包隔了好久才到达 B，以至于 A 以为握手不成功，把连接断开了，但 B 不知道连接断开了，它回了一个 SYN-ACK 包之后yi
 
-![tcp connect handshake](https://blog.antsmallant.top/media/blog/2024-01-03-network/tcp-3-handshake.png)
+![tcp connect handshake](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2024-01-03-network/tcp-3-handshake.png)
 <center>图2：tcp connect handshake [5]</center>   
 
 值得注意的是，第三次握手的数据包是可以携带数据的。  
@@ -91,13 +91,13 @@ tcp 握手就是为了协商双方的初始序列号，要完成这个过程，�
 
 ipv4 包头有个 8 bit 的 protocol 字段 (ipv6 对应的字段名叫 Next header，大小也是 8 bit)，可以区分更上层的协议。其中 udp 的值是 17，tcp 的值是 6。  
 
-![ipv4-head](https://blog.antsmallant.top/media/blog/2024-01-03-network/ipv4-head.png)
+![ipv4-head](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2024-01-03-network/ipv4-head.png)
 <center>图2：ipv4包头 [2]</center>  
 
 <br/>
 
 在这里（ https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers ）可以看到 100 多个其他的协议。  
-![ip protocals](https://blog.antsmallant.top/media/blog/2024-01-03-network/ip-protocols.png)
+![ip protocals](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2024-01-03-network/ip-protocols.png)
 <center>图3：ip protocals [3]</center>  
 
 
@@ -105,7 +105,7 @@ ipv4 包头有个 8 bit 的 protocol 字段 (ipv6 对应的字段名叫 Next hea
 
 tcp 状态是一个颇为复杂的知识点，tcp 连接总共有 11 种状态，下面这个图只是对于 tcp 状态机的一种简化，实际上还有很多细节的，具体可以看 rfc9293（ https://www.rfc-editor.org/rfc/rfc9293 ）。   
 
-![tcp state machine](https://blog.antsmallant.top/media/blog/2024-01-03-network/Tcp_state_diagram.png)
+![tcp state machine](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2024-01-03-network/Tcp_state_diagram.png)
 <center>图4：tcp state machine [4]</center>   
 
 ### tcp 之 close_wait

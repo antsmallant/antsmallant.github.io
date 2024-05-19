@@ -83,14 +83,14 @@ tags: [game 管理 生产力]
 ### 2.7.1 怎么开展优化？
 
 优化是个很危险的东西，正如这个 halo 在 GDC2011 分享[2]里说的： 
-![halo : optimization-is-dangerous](https://blog.antsmallant.top/media/blog/2023-06-27-game-networking/halo-optimize-optimization-is-dangerous.png)  
+![halo : optimization-is-dangerous](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2023-06-27-game-networking/halo-optimize-optimization-is-dangerous.png)  
 <center>图1：halo : optimization-is-dangerous[2]</center>   
 
 <br/>
 
 既然危险，那要怎么开展呢？GDC2011 Halo 的这个分享视频[2]里面也强调了优化的关键在于实测数据，要使用各种工具进行测量得到数据，再对数据进行分析。不要靠猜测或直觉去做任何优化。否则将可能是获得 1% 的优化效果，但却导致一两个星期的 bug fix。  
 
-![halo-optimize-inspection-tools-are-the-key](https://blog.antsmallant.top/media/blog/2023-06-27-game-networking/halo-optimize-inspection-tools-are-the-key.png)  
+![halo-optimize-inspection-tools-are-the-key](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2023-06-27-game-networking/halo-optimize-inspection-tools-are-the-key.png)  
 <center>图2：halo : halo-optimize-inspection-tools-are-the-key[2]</center>
 
 <br/>

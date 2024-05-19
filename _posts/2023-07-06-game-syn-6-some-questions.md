@@ -46,7 +46,7 @@ categories: [游戏开发]
 
 玩家在转角处来回晃悠可以获得先手优势，这种优势是由于网络延迟造成的。静止不动的玩家，它在世界上的位置是相对不变的，而移动的玩家要被静止的玩家看到，至少要经历 RTT + 服务器缓存延迟 + 客户端缓存延迟，所以留给静止玩家的反应时间就要少得多。下面这张图很好的说明了问题。  
 
-![valorant peeker's advantage](https://blog.antsmallant.top/media/blog/2023-06-27-game-networking/valorant-peeker-advantage.png)  
+![valorant peeker's advantage](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2023-06-27-game-networking/valorant-peeker-advantage.png)  
 <center>图1：valorant peeker's advantage[1]</center>
 
 ---

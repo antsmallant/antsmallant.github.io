@@ -19,7 +19,7 @@ categories: [游戏开发]
 
 这个划分参考自 Glenn Fielder[1][2][3]。韦易笑、Jerish 在各自文章中的所做的划分也是大同小异，韦易笑老师在他的文章中把网络同步归类为两大种:帧间同步、状态同步。gdc2017 overwatch 的这个分享 Replay-Technology-in-Overwatch-Kill 也引用了 Glenn Fiedler，把主流的网络同步模型分为了以上三类，这个视频的文字翻译版在此[4]。    
 
-![gdc2017-overwatch-network-synchronization-models](https://blog.antsmallant.top/media/blog/2023-06-27-game-networking/gdc2017-overwatch-network-synchronization-models.png)  
+![gdc2017-overwatch-network-synchronization-models](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2023-06-27-game-networking/gdc2017-overwatch-network-synchronization-models.png)  
 <center>图1：overwatch 分享中对于网络同步模型的划分</center>
 
 ---

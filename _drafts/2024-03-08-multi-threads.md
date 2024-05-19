@@ -47,7 +47,7 @@ volatile 实际上只能阻止编译器优化，就不要让它再来帮忙多�
 
 c++11 之前，使用的是一些多线程库，比如 wikipedia [11]这里展示了各种库：    
 
-![multithread-wikipedia-list-of-cpp-multi-threading-libraries](https://blog.antsmallant.top/media/blog/2024-03-08-multi-threads/multithread-wikipedia-list-of-cpp-multi-threading-libraries.png)   
+![multithread-wikipedia-list-of-cpp-multi-threading-libraries](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2024-03-08-multi-threads/multithread-wikipedia-list-of-cpp-multi-threading-libraries.png)   
 <center>图3：c++线程库列表</center>
 
 这些多线程库依赖的是一些编译器扩展，或者具体操作系统提供的底层 api，如 barrier。
