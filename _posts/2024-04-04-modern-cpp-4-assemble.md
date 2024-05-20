@@ -117,7 +117,7 @@ python 的 hello world，代码链接：https://gcc.godbolt.org/z/8jM3d37dE 。
 
 <br/>
 
-遗憾的是，compiler explorer 不支持 lua。不过，这个网站【lua Bytecode Explorer】支持，地址是：https://www.luac.nl/ 。功能很强大，支持从 lua4.0 到 lua5.4 的各个版本。  
+遗憾的是，compiler explorer 不支持 lua。不过，这个网站【lua Bytecode Explorer】支持，地址是：https://www.luac.nl/ 。功能很强大，支持从 lua4.0 到 lua5.4 的各个版本。并且，它也支持分享代码片段，在页面底下有个 "generate link" 的按钮，比较不显眼。    
 
 ![luac-lua-helloworld](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp/luac-lua-helloworld.png)   
 <center>图4：luac lua hello world</center>
