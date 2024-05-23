@@ -404,13 +404,21 @@ ATT 和 intel 的区别是[1]：
 
 ### 3.5.2 leave 的作用
 
-64 位下相当于：`mov %rbp, %rsp ; popq %rbp`， 是恢复栈帧的一种做法。通常在函数的开头是这样：`pushq %rbp ; mov %rsp, %rbp;`。即先把 `%rbp` 入栈，再用 `%rbp` 来保存 `%rsp` 的值。  
+64 位下相当于：`movq %rbp, %rsp ; popq %rbp`， 是恢复栈帧的一种做法。通常在函数的开头是这样：`pushq %rbp ; mov %rsp, %rbp;`。即先把 `%rbp` 入栈，再用 `%rbp` 来保存 `%rsp` 的值。  
+
+所以，恢复栈帧实际上就是恢复 `%rsp` 寄存器的值而已。  
+
+还有另一种做法，比如一开始先分配 32 bytes 的栈帧，这么写： `subq $32, %rsp`，如果中间不修改 `%rsp`，那在最后 ret 之前可以直接把 `%rsp` 加回去：`addq $32, $rsp`，这样也是达到了恢复 `%rsp` 寄存器的目的。   
 
 ---
 
 ### 3.5.3 push / pop / call
 
-push / pop / call 这几个命令都会自己改变 `%rsp` 的值。64位系统下，`pushq / call` 都会 `%rsp = %rsp - 8`，然后把 8 字节写入 `%rsp` 处，`popq` 正相反，会把 `%rsp` 的 8 字节取出，然后 `%rsp = %rsp+8`
+push / pop / call 这几个命令都会自己改变 `%rsp` 的值。64位系统下，`pushq / call` 都会 `%rsp = %rsp - 8`，然后把 8 字节写入 `%rsp` 处，`popq` 正相反，会把 `%rsp` 的 8 字节取出，然后 `%rsp = %rsp+8`。  
+
+call 指令更特殊一点，它的语法是这样：`call Label` 或者 `call *Operand`，无论哪个形式，实际上就 call 后面跟一个跳转地址。它会做两件事情：  
+1、返回地址入栈： 把 call 指令之下的一条指令的地址写入 `$rsp - 8` 的位置，并把 $rsp 设置为 `$rsp-8`。  
+2、改变程序程序计数器 `%rip`： 把寄存器 `$rip` 的值设置为跳转地址值。   
 
 ---
 
