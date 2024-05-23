@@ -161,7 +161,7 @@ g++ -S abc.cpp -o abc.s
 
 生成出来的汇编代码 abc.s 是这样的:    
 
-```
+```nasm
 	.file	"abc.cpp"
 	.text
 	.local	_ZStL8__ioinit
@@ -236,7 +236,7 @@ cat abc.s | c++filt > abc_demangle.s
 
 c++filt 转换过后的汇编代码 abc_demangle.s 是这样的：    
 
-```
+```nasm
 	.file	"abc.cpp"
 	.text
 	.local	std::__ioinit
