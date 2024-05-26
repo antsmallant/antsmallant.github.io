@@ -11,27 +11,29 @@ tags: [c++]
 {:toc}
 <br/>
 
-移动语义很简单，但它相关联的术语很复杂。  
+移动语义很简单，但它相关联的术语很复杂。本文尝试从历史的角度解释清楚这些乱七八糟的术语及其关联：  
 
-本文尝试从历史的角度解释清楚这些乱七八糟的术语：   
-表达式 (expression)、类型（type）、值类别 (value categories)；    
-左值 (lvalue)、右值 (rvalue)、广义左值 (glvalue aka "generalized" lvalue)、纯右值 (prvalue aka "pure" rvalue)、将亡值 (xvalue aka "eXpiring" value)；    
-左值引用 (lvalue reference)、右值引用 (rvalue reference)；    
-移动构造 (move constructor)、移动赋值 (move assignment)；    
+* 表达式 (expression)、类型（type）、值类别 (value categories)；    
+
+* 左值 (lvalue)、右值 (rvalue)、广义左值 (glvalue aka "generalized" lvalue)、纯右值 (prvalue aka "pure" rvalue)、将亡值 (xvalue aka "eXpiring" value)；    
+
+* 左值引用 (lvalue reference)、右值引用 (rvalue reference)、const 引用；    
+
+* 移动构造 (move constructor)、移动赋值 (move assignment)；    
 
 <br/>
 
 关键在于搞清楚：    
 
-1、为了实现移动语义，需要付出什么努力？   
+* 为了实现移动语义，需要付出什么努力？   
 
-2、表达式有两个独立的属性：类型 (type)、值类别 (value categories)。注意：变量和字面量是最简单的表达式。  
+* 表达式有两个独立的属性：类型 (type)、值类别 (value categories)。（注意：变量和字面量是最简单的表达式。）  
 
-  类型 (type)，包括基本类型 （int, float，void, null 等），复合类型（class，union，引用 等）等，具体参见 cppreference 的 specification[6]。  
+  * 类型 (type)，包括基本类型 （int, float，void, null 等），复合类型（class，union，引用 等）等，具体参见 cppreference 的 specification[6]。  
 
-  值类别 (value categories)，包括广义左值、右值、左值、将亡值、纯右值，具体参见 cppreference 的 specification[7]。   
+  * 值类别 (value categories)，包括广义左值、右值、左值、将亡值、纯右值，具体参见 cppreference 的 specification[7]。   
 
-3、c++11 的值类别实际上并不复杂，只是为了明确定义哪些表达式可以应用于移动语义。    
+* c++11 的值类别实际上并不复杂，只是为了明确定义哪些表达式可以应用于移动语义。    
 
 <br/>
 
@@ -39,7 +41,7 @@ tags: [c++]
 
 ---
 
-# 移动语义
+# 1. 移动语义
 
 c++11 为了提高效率，引入了移动语义，移动语义很简单，它是相对于 “复制” 而言的，把一个对象里面的资源 “移动” 到另一个对象中，就是移动语义里了。  
 
@@ -56,7 +58,8 @@ struct S {
 S a(S());
 ```
 
-但在 c++11 后，不用拷贝数据了，可以增加一个移动拷贝函数 S(S&& other)，复制指针 p，置对方的指针 p 为 null，不用拷贝 (memcpy) 数据。 
+但在 c++11 后，不用拷贝数据了，可以增加一个移动拷贝构造函数 S(S&& other)，直接拿对方的指针来用，不用拷贝 (memcpy) 数据。   
+
 ```cpp
 struct S {
     char* p;
@@ -71,13 +74,13 @@ struct S {
 
 # 什么时候能移动数据？
 
-上面的例子看到了，移动语义是有破坏性的，被应用过的对象就废掉了，不应该再被使用了。  
-
-所以，从安全的角度讲，当一个对象不会再被使用到的时候，就可以 “移动” 它。   
+上面的例子看到了，移动语义是有破坏性的，被 “移动” 过的对象就废掉了，不应该再被使用。所以，从安全的角度讲，当一个对象不会再被使用到的时候，才可以被 “移动” 。     
 
 ---
 
-# Bjarne Stroustrup 和委员会的讨论
+# Bjarne Stroustrup 和委员会的讨论 《“New” Value Terminology》
+
+所以，实现移动语义的关键就在于明确 c++ 里面哪些表达式是可以被移动的，为了搞清楚这个问题，Bjarne Stroustrup 和委员会的人仔细的开会讨论，
 
 
 ---
@@ -512,12 +515,11 @@ std::move 只是完成**类型转换**，真正起作用的是移动构造函数
 
 [6] cppreference. Type. Available at https://en.cppreference.com/w/cpp/language/type.    
 
-[7] cppreference. 
+[7] cppreference. Value categories. Available at https://en.cppreference.com/w/cpp/language/value_category.   
 
 
 ---
 
 其实资料：
-[c++ value_category](https://en.cppreference.com/w/cpp/language/value_category)   
 
 [C++ value categories and decltype demystified](https://www.scs.stanford.edu/~dm/blog/decltype.html)     
