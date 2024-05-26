@@ -91,11 +91,11 @@ tags: [lua]
       栈底
     |     |
     |     |
-    |-----| co1 setjmp (resume) <-
-    |     |                      | 
-    |     |                      |
-    |     |                      |
-    |-----| co2 longjmp (yield) ->
+    |-----| co1 resume (setjmp) <-
+    | co2 |                      | 
+    |  的 |                      |
+    |  栈 |                      |
+    |-----| co2 yield (longjmp) ->
       栈顶
 ```
 
