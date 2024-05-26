@@ -62,49 +62,54 @@ tags: [lua]
 
 ---
 
-# 2. 简单分析
+# 2. 问题分析
+
+---
+
+# 2.1 简单概括
 
 实际上问题的关键在于：  
 
-* 一条系统线程只有一个栈（这里称为 c 栈）；   
+* 一条系统线程只有一个公共的栈（这里称 c 栈）；   
 
-* 每个 lua 协程都有一个独立的 lua 栈；   
+* 每个 lua 协程都有一个独立的 lua 栈；    
 
-* 在一个 lua 协程中调用一个函数，如果是 lua 函数，则只操作和影响 lua 栈数据；如果是 c 函数，则会操作和影响 lua 栈数据以及 c 栈数据；   
+* 在 lua 协程中调用一个函数，如果是 lua 函数，则只操作和影响 lua 栈数据；如果是 c 函数，则会操作和影响 lua 栈数据以及 c 栈数据；   
 
-* resume 对应 setjmp，yield 对应 longjmp；
+* resume 对应 setjmp，yield 对应 longjmp；   
 
-* 如下图，co2 longjmp 之后 c 栈指针回退 co1 setjmp 之处；而 yield 出去的协程 co2 的 c 函数就是依赖着 setjmp 到 longjmp 之间的这段 c 栈空间的；既然 c 栈指针被回退了，那么
+* 如下图，co2 longjmp 之后 c 栈指针回退到 co1 setjmp 之处；而 yield 出去的协程 co2 的 c 函数就是依赖着 setjmp 到 longjmp 之间的这段 c 栈空间的；既然 c 栈指针被回退了，那么随着 co1 恢复执行，它就会把这段 c 栈空间覆盖掉，所以 co2 里的 c 函数是无法恢复执行的；   
 
-  c 栈
-|     |
-|     |
-|-----| co1 setjmp 的地方(resume)
-|     |                      ^ 
-|     |                      |
-|     |                      |
-|-----| co2 longjmp(yield) -->
+```
+      c 栈
+      栈底
+    |     |
+    |     |
+    |-----| co1 setjmp (resume) <-
+    |     |                      | 
+    |     |                      |
+    |     |                      |
+    |-----| co2 longjmp (yield) ->
+      栈顶
+```
+
+
+
+![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-co-yield-across-c-call-boundary.png)  
 
 ---
 
-# 2. 环境说明
+# 3. 代码解析
+
+---
+
+## 3.1 环境说明
 
 以下分析使用的 lua 版本是 5.3.6，下载链接: [https://lua.org/ftp/lua-5.3.6.tar.gz](https://lua.org/ftp/lua-5.3.6.tar.gz)，本人的 github 也有对应源码: [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6) 。    
 
-下文展示的 demo 代码都在此：[https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary) 。      
+下文展示的 demo 代码都在此：[https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary) 。 
 
----
-
-# 3. 问题剖析
-
-## 3.1 发生的原因
-
-这里直接就说原因好了，有相关背景的一看就明白是咋回事了。  
-
-
-
-
-## 3.2 
+## 3.2 源码上分析
 
 首先，什么情况下才会出现这个错误？上面文章提到的 `C (skynet framework)->lua (skynet service) -> C -> lua` 或 `coroutine --> c --> coroutine --> yield  ===> 报错`，都说得太笼统了，不够精确。    
 
@@ -250,9 +255,9 @@ false   attempt to yield across a C-call boundary
 
 ---
 
-# 深入讨论
+# 4. 深入讨论
 
-## lua 调用 C 函数是使用 lua_call/lua_pcall 吗？   
+## 4.1 lua 调用 C 函数是使用 lua_call/lua_pcall 吗？   
 
 答案：不是。   
 上面的例子中，如果把 clib 的 f1 改成这样，还会报错吗？   
@@ -316,7 +321,7 @@ void luaV_execute (lua_State *L) {
 
 ---
 
-## 怎么才能随心所欲的 yield 呢？
+## 4.2 怎么才能随心所欲的 yield 呢？
 
 上面的例子中把 clib 的 f1 改成这样就可以 yield 了：  
 
@@ -390,7 +395,7 @@ true    nil
 
 ---
 
-## lua 提供的函数里面，哪些容易导致这个报错？  
+## 4.3 lua 提供的函数里面，哪些容易导致这个报错？  
 
 skynet ([https://github.com/cloudwu/skynet](https://github.com/cloudwu/skynet)) 里面调用 require 的时候很容易就报这个错： "attempt to yield across a C-call boundary"。看一下 require 是不是调用了 lua_call/lua_pcall，它对应的实现是 ll_require ( [loadlib.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/loadlib.c) )，从源码上看，确实使用了 lua_call。
 
@@ -428,7 +433,7 @@ static int luaB_dofile (lua_State *L) {
      
 ---
 
-# 总结
+# 5. 总结
 * 一般情况下，lua_call/lua_pcall 之后如果跟着 yield，就会报这个错：attempt to yield across a C-call boundary。问题的根本原因是 lua 协程的 yield 是通过 longjmp 实现的，longjmp 直接回退了 C 栈的指针，使得执行了 yield 的协程的 C 栈被抹掉了，那么执行到一半的 C 逻辑就不会在下次 resume 的时候继续执行。  
 
 * 要规避这个问题，可以使用 lua_callk/lua_pcallk/lua_yieldk，显式的指定一个函数作为 yield 回来后要执行的内容。  

@@ -85,8 +85,7 @@ struct S {
 
 # 值类别（value categories） 详解
 
-![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/expression-value-categories.png)
-
+![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-expression-value-categories.png)
 <center>图1：c++ value categories[1]</center>    
 
 <br/>
