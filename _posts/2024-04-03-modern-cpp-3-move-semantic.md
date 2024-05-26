@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "现代 c++ 三：右值引用与移动语义"
+title: "现代 c++ 三：移动语义与右值引用"
 date: 2024-04-03
 last_modified_at: 2024-04-03
 categories: [c++]
@@ -11,8 +11,113 @@ tags: [c++]
 {:toc}
 <br/>
 
+移动语义很简单，但它相关联的术语很复杂。  
 
-c++11 为了提高效率，引入了右值引用及移动语义，这个概念不太好理解，需要仔细研究一下，下文会一并讲讲左值、右值、左值引用、右值引用、const 引用、移动构造、移动赋值运行符 .. 这些概念。      
+本文尝试从历史的角度解释清楚这些乱七八糟的术语：   
+表达式 (expression)、类型（type）、值类别 (value categories)；    
+左值 (lvalue)、右值 (rvalue)、广义左值 (glvalue aka "generalized" lvalue)、纯右值 (prvalue aka "pure" rvalue)、将亡值 (xvalue aka "eXpiring" value)；    
+左值引用 (lvalue reference)、右值引用 (rvalue reference)；    
+移动构造 (move constructor)、移动赋值 (move assignment)；    
+
+<br/>
+
+关键在于搞清楚：    
+
+1、为了实现移动语义，需要付出什么努力？   
+
+2、表达式有两个独立的属性：类型 (type)、值类别 (value categories)。注意：变量和字面量是最简单的表达式。  
+
+  类型 (type)，包括基本类型 （int, float，void, null 等），复合类型（class，union，引用 等）等，具体参见 cppreference 的 specification[6]。  
+
+  值类别 (value categories)，包括广义左值、右值、左值、将亡值、纯右值，具体参见 cppreference 的 specification[7]。   
+
+3、c++11 的值类别实际上并不复杂，只是为了明确定义哪些表达式可以应用于移动语义。    
+
+<br/>
+
+实际上，读过 Bjarne Stroustrup 的这篇文章 《“New” Value Terminology》[5]，就会知道 B. Stroustrup 和 c++ 委员会的人，是怎么一步步折腾出这么复杂的值类别的。  
+
+---
+
+# 移动语义
+
+c++11 为了提高效率，引入了移动语义，移动语义很简单，它是相对于 “复制” 而言的，把一个对象里面的资源 “移动” 到另一个对象中，就是移动语义里了。  
+
+比如下面这样，用临时变量构造变量 a，在 c++11 之前，会触发拷贝构造 S(S& other) 拷贝 (memcpy) 数据。   
+
+```cpp
+struct S {
+    char* p;
+    int len;
+    S(int _len) {len = _len; p = new char[len];}
+    S(S& other) {len = other.len; p = new char[len]; memcpy(p, other.p, len);}
+};
+
+S a(S());
+```
+
+但在 c++11 后，不用拷贝数据了，可以增加一个移动拷贝函数 S(S&& other)，复制指针 p，置对方的指针 p 为 null，不用拷贝 (memcpy) 数据。 
+```cpp
+struct S {
+    char* p;
+    int len;
+    S(int _len) {len = _len; p = new char[len];}
+    S(S& other) {len = other.len; p = new char[len]; memcpy(p, other.p, len);}
+    S(S&& other) {len = other.len; p = other.p; other.p = nullptr; }
+};
+```
+
+---
+
+# 什么时候能移动数据？
+
+上面的例子看到了，移动语义是有破坏性的，被应用过的对象就废掉了，不应该再被使用了。  
+
+所以，从安全的角度讲，当一个对象不会再被使用到的时候，就可以 “移动” 它。   
+
+---
+
+# Bjarne Stroustrup 和委员会的讨论
+
+
+---
+
+# 值类别（value categories） 详解
+
+![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/expression-value-categories.png)
+
+<center>图1：c++ value categories[1]</center>    
+
+<br/>
+
+上图就是当前 c++ specification 对于值类别的精确分类。这实际上与 Bjarne Stroustrup 在讨论会上画的图是一致的，只不过是倒了过来。  
+
+
+---
+
+# c++98 之前的左值和右值
+
+在 c++11 引入右值引用这个术语之前，估计在 c++98 时代，也很少人会去关注左值、右值这两个术语，因为太简单了，简单到不需要管它。  
+
+---
+
+# 移动语义
+
+要把事情说清楚，必须从什么是移动语义，以及为什么需要移动语义说起。   
+
+移动是相对于复制说的，通常来说，移动比复制要廉价，比如这样一个结构体：  
+
+```cpp
+struct S {
+    char* p;
+    int sz;
+    S(int _sz) {sz = _sz; p = new char[sz];}
+    S(S& other) {sz = other.sz; p = new char[sz]; memcpy(p, other.p, sz);}
+};
+
+S a(100);
+S b(a);
+```
 
 ---
 
@@ -24,6 +129,7 @@ c++ 的表达式也只有左值和右值，大体也是相似的意思。简单�
 
 所以，可以简单的归纳一下：当一个对象被用作右值时，用的是对象的值（内容）；当对象被用作左值时，用的是对象的地址（内存位置）。[1]  
 
+---
 
 # 运算符的运算对象和运算结果
 
@@ -36,7 +142,7 @@ c++ 的表达式也只有左值和右值，大体也是相似的意思。简单�
 * 内置类型和迭代器的递增递减运算符：运算对象是左值，运算结果，前置版本是左值，后置版本是右值。  
 
 
-解引用运行符就是 * 操作符，用于获得指针所指的对象，比如:   
+解引用运算符就是 * 操作符，用于获得指针所指的对象，比如:   
 
 ```cpp
 int v = 100;
@@ -386,6 +492,12 @@ std::move 只是完成**类型转换**，真正起作用的是移动构造函数
 
 ---
 
+# 拓展阅读
+
+* [C++的复杂，C是原罪：从值类别说开去](https://cloud.tencent.com/developer/article/2352089)  这篇文章从 C 语言、汇编和 C++ 设计发展的角度，分析了为什么 c++ 搞了这么复杂的值类别：左值、右值、纯右值、广义左值、将亡值。  
+
+---
+
 # 参考
 
 [1] [美] Stanley B. Lippman, Josée Lajoie, Barbara E. Moo. C++ Primer 中文版（第 5 版）. 王刚, 杨巨峰. 北京: 电子工业出版社, 2013-9: 120, 154, 182.   
@@ -393,6 +505,14 @@ std::move 只是完成**类型转换**，真正起作用的是移动构造函数
 [2] 王健伟. C++新经典. 北京: 清华大学出版社, 2020-08-01.   
 
 [3] [美]Scott Meyers. Effective Modern C++(中文版). 高博. 北京: 中国电力出版社, 2018-4: 149, 151.  
+
+[4] wg21. Working Draft, Standard for Programming Language C++ (N4878). Available at https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4878.pdf, 2020-12-15: 91.    
+
+[5] Bjarne Stroustrup. “New” Value Terminology. Available at https://www.stroustrup.com/terminology.pdf.    
+
+[6] cppreference. Type. Available at https://en.cppreference.com/w/cpp/language/type.    
+
+[7] cppreference. 
 
 
 ---

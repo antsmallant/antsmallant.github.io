@@ -123,6 +123,19 @@ f(a);            // a 是实参
 
 ---
 
+# trivial
+
+---
+
+# non-trivail
+
+---
+
+# POD
+
+
+---
+
 # 参考
 
 [1] [美] Stanley B. Lippman, Josée Lajoie, Barbara E. Moo. C++ Primer 中文版（第 5 版）. 王刚, 杨巨峰. 北京: 电子工业出版社, 2013-9: 120, 154, 182.   
