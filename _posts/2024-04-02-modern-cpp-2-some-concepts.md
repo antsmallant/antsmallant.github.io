@@ -13,6 +13,13 @@ tags: [c++]
 
 可能有多年 c++ 编程经验，但回过头来发现，对一些基础概念却并不怎么熟悉，比如表达式、语句这些。   
 
+要精确的掌握 c++ 的概念：  
+* 最好是直接看 specification，比如 cppreference：[https://en.cppreference.com/w/](https://en.cppreference.com/w/) ；    
+* 其次是 c++ 标准委员会接近定稿的 working draft: [https://www.open-std.org/jtc1/sc22/wg21/docs/standards](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) ；    
+* 再次是看一些权威的书。      
+
+最不推荐的是看博客文章。本文除外，笔者是比较认真的考究之后才写出来的，当然由于个人认知有限，出错在所难免，敬请指正。   
+
 ---
 
 # 表达式 (expression)
