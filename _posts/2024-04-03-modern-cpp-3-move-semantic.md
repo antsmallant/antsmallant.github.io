@@ -202,8 +202,9 @@ Bjarne Stroustrup 觉得上面的分类很混乱，自己尝试对表达式的�
 
 关于值类别 (value categories) 的精确分类可以在这个 specification 找到：[cppreference value_category](https://en.cppreference.com/w/cpp/language/value_category) [3]，非常琐碎。  
 
-但是作为一个语言学习者，就应该直接看 specification，去看吧。  
+但是作为一个语言学习者，就应该直接看 specification，快去看吧。  
 
+---
 
 ## 2.5 右值引用的例子
 
