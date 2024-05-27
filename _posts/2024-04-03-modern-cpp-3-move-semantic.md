@@ -75,7 +75,7 @@ struct S {
 
 <br/>
 
-变量(variable)和字面量(literal)是最简单的表达式。另外，对于 c++ 程序员来说，变量(variable)和对象(object)这两个术语基本互换使用。   
+变量(variable)和字面量(literal)是最简单的表达式。另外，对于 c++ 程序员来说，变量(variable)和对象(object)这两个术语基本可以互换使用。   
 
 可能大部分人对于类型 (type) 有概念，但对于值类别 (value categories) 没啥概念，这并不是一个新术语，而是从 c 语言时代就已经存在了的。  
 
@@ -83,7 +83,7 @@ struct S {
 
 ## 2.1 c 语言的左值 (lvalue)
 
-c 语言的表达式如果按值类别来划分为左值 (lvalue) 和非左值(non-lvalue)。"lvalue" means an expression that identifies an object, a "locator value"[8]。从方便记忆的角度上讲，左值就是可以出现在赋值语句左边的表达式。  
+c 语言的表达式按值类别划分为左值 (lvalue) 和非左值 (non-lvalue)。"lvalue" means an expression that identifies an object, a "locator value"[8]。从方便记忆的角度上讲，左值就是可以出现在赋值语句左边的表达式。  
 
 更精确的定义可以参考 cppreference 上面关于 c value categories 的描述[8]: [https://en.cppreference.com/w/c/language/value_category](https://en.cppreference.com/w/c/language/value_category) 。  
 
@@ -94,36 +94,37 @@ c 语言的表达式如果按值类别来划分为左值 (lvalue) 和非左值(n
 c++11 之前的 c++ 继承了 c 的值类别定义，只做了一些小调整[7]：  
 
 * 用右值(rvalue) 指代 non-lvalue 
+
 * 函数归为左值(lvalue)
+
 * 引用只能绑定到左值(lvalue)
+
 * const 引用可以绑定到右值(rvalue)
+
 * 其他几个在 c 中是 non-lvalue 的在 c++ 中划分到 lvalue
 
 ---
 
 ## 2.3 c++11 的左值和右值
 
-c++11 引入了移动语义和完美转发，而这两个机制与左值右值的术语强相关。CWG (c++ 标准委员会下的 core working group) 的大部分人认为需要修正左值右值这两个术语的定义，才能 c++ 规范保持一致[5]： 
+c++11 引入了移动语义和完美转发，而这两个机制与左值右值这两个术语强相关。CWG (c++ 标准委员会下的 core working group) 的大部分人认为需要修正这两个术语的定义，才能使 c++ 规范保持一致[5]： 
 
 >However, the majority of the CWG disagreed and insisted that some changed and/or novel terminology 
 was necessary to address known problems and to get the specification consistent.   
 
 <br/>
 
-能够知道的是，c++11 明确下来的值类别(value categories)是这样的：
+c++11 最终确定下来的值类别 (value categories) 是这样的：  
 ![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-expression-value-categories.png)
 <center>图1：c++ value categories[4]</center>    
 
 <br/>
 
-看起来很复杂，但如果了解这样划分的依据和思考过程，就不会觉得复杂了。Bjarne Stroustrup 的这篇文章 《“New” Value Terminology》[5] 详细的记录了 CWG 开会讨论的过程。    
+看起来有些复杂，但如果了解这样划分的依据和思考过程，就不会觉得复杂了。Bjarne Stroustrup 的这篇文章 《“New” Value Terminology》[5] 详细的记录了 CWG 开会讨论的过程。    
 
 
 
-
-
-
-## 2.4 c++11 值分类详解
+## 2.4 c++11 值类别详解
 
 ```
      expression
