@@ -133,10 +133,10 @@ Bjarne Stroustrup 觉得上面的分类很混乱，自己尝试对表达式的�
 >• iM: has identity and cannot be moved from     
 >• im: has identity and can be moved from (e.g. the result of casting an lvalue to a rvalue reference)     
 >• Im: does not have identity and can be moved from     
->
->The fourth possibility (“IM”: doesn’t have identity and cannot be moved) is not useful in C++ (or, I think) in any other language.      
->
->In addition to these three fundamental classifications of values, we have two obvious generalizations that correspond to the two independent properties:     
+>     
+>The fourth possibility (“IM”: doesn’t have identity and cannot be moved) is not useful in C++ (or, I think) in any other language.        
+>     
+>In addition to these three fundamental classifications of values, we have two obvious generalizations that correspond to the two independent properties:       
 >• i: has identity     
 >• m: can be moved from
 
