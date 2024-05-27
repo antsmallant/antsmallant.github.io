@@ -75,7 +75,7 @@ struct S {
 
 <br/>
 
-变量(variable)和字面量(literal)是最简单的表达式。另外，对于 c++ 程序员来说，变量(variable)和对象(object)这两个术语基本可以互换使用。   
+变量 (variable) 和字面量 (literal) 是最简单的表达式。另外，对于 c++ 程序员来说，变量 (variable) 和对象 (object) 这两个术语基本可以互换使用。   
 
 可能大部分人对于类型 (type) 有概念，但对于值类别 (value categories) 没啥概念，这并不是一个新术语，而是从 c 语言时代就已经存在了的。  
 
@@ -93,13 +93,13 @@ c 语言的表达式按值类别划分为左值 (lvalue) 和非左值 (non-lvalu
 
 c++11 之前的 c++ 继承了 c 的值类别定义，只做了一些小调整[7]：  
 
-* 用右值(rvalue) 指代 non-lvalue 
+* 用右值 (rvalue) 指代 non-lvalue 
 
-* 函数归为左值(lvalue)
+* 函数归为左值 (lvalue)
 
-* 引用只能绑定到左值(lvalue)
+* 引用只能绑定到左值 (lvalue)
 
-* const 引用可以绑定到右值(rvalue)
+* const 引用可以绑定到右值 (rvalue)
 
 * 其他几个在 c 中是 non-lvalue 的在 c++ 中划分到 lvalue
 
@@ -114,13 +114,7 @@ was necessary to address known problems and to get the specification consistent.
 
 <br/>
 
-c++11 最终确定下来的值类别 (value categories) 是这样的：  
-![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-expression-value-categories.png)
-<center>图1：c++ value categories[4]</center>    
-
-<br/>
-
-看起来有些复杂，但如果了解这样划分的依据和思考过程，就不会觉得复杂了。Bjarne Stroustrup 的这篇文章 《“New” Value Terminology》[5] 详细的记录了 CWG 开会讨论的过程。   
+Bjarne Stroustrup 的这篇文章 《“New” Value Terminology》[5] 详细的记录了 CWG 开会讨论的过程。   
 
 ![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cwg-ravlue-terminology-1.png)
 <center>图2：CWG meeting 讨论过程的一个混乱的分类[5]</center>    
@@ -154,7 +148,7 @@ Bjarne Stroustrup 觉得上面的分类很混乱，自己尝试对表达式的�
 
 而第四种 IM（无身份且不可被移动的）在 C++ 中是不存在的。  
 
-据此，他画出了分类的草图，这个倒过来其实就是 c++11 的最终规范：  
+据此，他画出了分类的草图：  
 
 ![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cwg-ravlue-terminology-2.png)
 <center>图3：CWG meeting Bjarne Stroustrup 的值类别初步草图[5]</center>   
@@ -168,8 +162,18 @@ Bjarne Stroustrup 觉得上面的分类很混乱，自己尝试对表达式的�
 
 <br/>
 
-这实际
+上图倒过来看就是 c++11 的最终规范了:   
 
+![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-expression-value-categories.png)   
+图1：c++11 value categories[4]    
+
+<br/>
+
+了解完历史，总结一下，就是对表达式做了精确的分类，有了精确分类之后，编译器就可以确定哪些表达式可以用于移动语义。  
+
+下面具体讲一下各个分类的精确描述。  
+
+---
 
 ## 2.4 c++11 值类别详解
 
@@ -182,6 +186,23 @@ Bjarne Stroustrup 觉得上面的分类很混乱，自己尝试对表达式的�
 ```
 
 
+概括一下： 
+
+* 主要的值类别就三种：lvalue，xvalue，prvalue，每个表达式只属于其中之一。  
+
+* glvalue，即 "generalized" lvalue，译做 “广义左值”，是标识了一个对象或函数的表达式，差不多就是原始的左值的定义。  
+
+* xvalue ，即 "eXpiring" value，译做 “将亡值”，是一种 glvalue，只不过它要 “消亡了”，资源将可以被复用（即被移动）。   
+
+* lvalue，译做 “左值”，是一种 glvalue，但不是 xvalue。   
+
+* prvalue，即 “pure” rvalue，译做 “纯右值”，这其实就是 c++98 中的右值，包括临时变量或者一些不跟对象关联的量，比如返回值是非引用的函数的返回值，比如字面量：30，100，'c'。 
+
+* rvalue，包含 xvalue 和 prvalue，资源可以被移动的表达式。  
+
+关于值类别 (value categories) 的精确分类可以在这个 specification 找到：[cppreference value_category](https://en.cppreference.com/w/cpp/language/value_category) [7]，非常琐碎。  
+
+但是作为一个语言学习者，就应该直接看 specification，去看吧。  
 
 
 ## 2.5 右值引用的例子
@@ -200,10 +221,9 @@ int&& x2 = x++;          // 合法，x++ 返回的是右值，虽然可以，但
 
 上面例子中，要特别注意的情况是：`string&& s1 {"hello"};`，在这里，s1 是一个类型为 "string 右值引用" 的左值，当把 右值引用 当成一种类型之后，就比较好理解 s1 是一个左值的事实了。再举一个例子：`void f(int&& p1);`，在这个函数声明中，p1 是一个类型为 `int 右值引用` 的左值。
 
-
 ---
 
-# 左值引用
+# 3. 左值引用
 
 左值引用就是绑定到左值上的引用，用 `&` 表示。c++11 之前，引用都是左值引用。左值引用就相当于给一个左值（对象）取一个别名。  
 
@@ -224,7 +244,7 @@ string& s {"hello"};    // 不合法
 
 ---
 
-# const 引用
+# 4. const 引用
 
 const 引用是一种特殊的左值引用，与常规左值引用的区别在于，它可以绑定到临时对象：  
 
@@ -250,12 +270,12 @@ f2("hello");   // 编译报错，"hello" 转换成 string 类型的临时对象�
 
 string s = "hello";
 f1(s);         // 正常，一个左值可以被 左值引用 所引用
-f2(s);         // 正常一个左值可以被 const引用 所引用
+f2(s);         // 正常，一个左值可以被 const引用 所引用
 ```
 
 ---
 
-# 移动构造函数、移动赋值运算符函数
+# 5. 移动构造函数和移动赋值运算符函数
 
 对象的移动是如何发生的？在 c++11 中，是通过移动构造函数和移动赋值运算符来实现的，这两个函数与拷贝构造函数和拷贝赋值运算符是相对的。前者的参数是右值引用，而后者的参数是左值引用。  
 
@@ -434,7 +454,7 @@ void test_move_constructor() {
 
 ---
 
-# 编译器默认生成的移动（构造/赋值运算符）函数
+# 6. 编译器默认生成的移动（构造/赋值运算符）函数
 
 如果没有自己写拷贝构造函数或拷贝赋值运算符，那么编译器会帮生成默认的。   
 
@@ -449,7 +469,7 @@ void test_move_constructor() {
 
 ---
 
-# std::move
+# 7. std::move
 
 上面讲移动构造和移动赋值运算符的时候，发现由于编译器的 RVO 优化，导致即使构造了合适的场景，也没能验证移动构造的使用。    
 
@@ -510,7 +530,7 @@ int&& r2 = std::move(200);  // 合法
 
 ---
 
-# 运算符的运算对象和运算结果
+# 8. 运算符的运算对象和运算结果
 
 * 赋值运算符：运算对象是左值，运算结果也是左值。  
 
@@ -541,13 +561,13 @@ p 是一个指向了对象的指针，则 *p 就是获得指针 p 所指的对�
 
 ---
 
-# 拓展阅读
+# 9. 拓展阅读
 
-* [C++的复杂，C是原罪：从值类别说开去](https://cloud.tencent.com/developer/article/2352089)  这篇文章从 C 语言、汇编和 C++ 设计发展的角度，分析了为什么 c++ 搞了这么复杂的值类别：左值、右值、纯右值、广义左值、将亡值。  
+* [C++的复杂，C是原罪：从值类别说开去](https://cloud.tencent.com/developer/article/2352089) ：这篇文章从 C 语言、汇编和 C++ 设计发展的角度，分析了为什么 c++ 搞了这么复杂的值类别：左值、右值、纯右值、广义左值、将亡值。  
 
 ---
 
-# 参考
+# 10. 参考
 
 [1] [美] Stanley B. Lippman, Josée Lajoie, Barbara E. Moo. C++ Primer 中文版（第 5 版）. 王刚, 杨巨峰. 北京: 电子工业出版社, 2013-9: 120, 154, 182.   
 
