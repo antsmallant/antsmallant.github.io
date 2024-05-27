@@ -60,7 +60,7 @@ mysql 可能是用得最多的吧，无论是分区分服游戏，或是全区�
 
 其次，B+ 树适合做范围搜索，B+ 树最底层的叶子节点有指针相连，可以在指定的范围内按索引顺序遍历数据。  
 
-![Bplustree](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2023-06-11-game-db/Bplustree.png)  
+![Bplustree](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/game-db-Bplustree.png)  
 <center>图1：B+树[1]</center>
 
 ---

@@ -66,7 +66,7 @@ innodb 的读写 qps 差异很大。如果内存足够大，数据局部性足�
 
 从阿里云的这份性能白皮书《MySQL 8.0测试结果》[4] 来看（要注意，表格展示的读写次数是 60 秒的总值，要除以 60 才能得到 qps），读 qps 确实很难跟磁盘 iops 计算出某种比例关系，但是写 qps 跟磁盘 iops 的关系很显著，按阿里云的测试，基本上写 qps 约为 iops 的 95% 左右。
 
-![aliyun-mysql8-qps](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2023-06-11-game-db/aliyun-mysql8-qps.jpeg)  
+![aliyun-mysql8-qps](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/game-db-aliyun-mysql8-qps.jpeg)  
 <center>图 aliyun-mysql8.0-qps</center>
 
 **腾讯云**
@@ -99,7 +99,7 @@ innodb 的读写 qps 差异很大。如果内存足够大，数据局部性足�
 
 从阿里云的这份《Redis社区版性能白皮书》[3]来看，redis（6.0）的读写性能在 10 万 ~ 20 万之间，大致在 10 万左右。如果 value 比较大（超过 2KB）或者一些特别的命令如 MSET，可能性能会打折扣，比如降到 5~6 万左右。  
 
-![aliyun redis6 qps](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2023-06-11-game-db/aliyun-redis6-qps.jpeg)  
+![aliyun redis6 qps](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/game-db-aliyun-redis6-qps.jpeg)  
 <center>图 aliyun redis6 qps</center>
 
 从 redis 官网的 benchmark [6] 来看，redis 的读写 qps 大致也是在 10 万这个量级的。  
