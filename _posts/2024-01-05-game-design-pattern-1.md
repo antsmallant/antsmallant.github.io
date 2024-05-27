@@ -96,7 +96,7 @@ void Heroine::handleInput(Input input)
 
 以上英雄行为的例子画出的状态机如下：  
 
-![gamedesignpattern-hero-state-machine](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/design-pattern/gamedesignpattern-hero-state-machine.png)  
+![gamedesignpattern-hero-state-machine](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/design-pattern-gamedesignpattern-hero-state-machine.png)  
 <center>图1：英雄行为状态机</center>
 
 依据状态机，实现的代码如下：    
@@ -214,12 +214,12 @@ protected:
 
 观察者模式：  
 
-![observer-pattern](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/design-pattern/observer-pattern.png)  
+![observer-pattern](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/design-pattern-observer-pattern.png)  
 <center>图2：观察者模式</center>
 
 发布订阅模式：   
 
-![publish-subscribe-pattern](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/design-pattern/publish-subscribe-pattern.png)  
+![publish-subscribe-pattern](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/design-pattern-publish-subscribe-pattern.png)  
 <center>图3：发布订阅模式[8]</center>
 
 
