@@ -23,19 +23,7 @@ tags: [c++]
 
 <br/>
 
-关键在于搞清楚：    
-
-* 为了实现移动语义，必须明确定义出哪些表达式是可以移动的。  
-
-* 表达式有两个独立的属性：类型 (type)、值类别 (value categories)。（注意：变量和字面量是最简单的表达式。）  
-
-  * 类型 (type)，包括基本类型 （int, float，void, null 等），复合类型（class，union，引用 等）等，具体参见 cppreference 的 specification[6]。  
-
-  * 值类别 (value categories)，包括广义左值、右值、左值、将亡值、纯右值，具体参见 cppreference 的 specification[7]。   
-
-<br/>
-
-实际上，读过 Bjarne Stroustrup 的这篇文章 《“New” Value Terminology》[5]，就会知道 B. Stroustrup 和 c++ 委员会的人是怎么一步步折腾出这么复杂的值类别的。   
+实际上，如果读过 Bjarne Stroustrup 的这篇文章 《“New” Value Terminology》[5]，就能够清楚的知道 c++ 委员会是怎么一步步折腾出这么复杂的值类别的。   
 
 ---
 
@@ -47,10 +35,10 @@ c++11 为了提高效率，引入了移动语义，移动语义很简单，它�
 
 ```cpp
 struct S {
-    char* p;
+    int* p_array;
     int len;
-    S(int _len) {len = _len; p = new char[len];}
-    S(S& other) {len = other.len; p = new char[len]; memcpy(p, other.p, len);}
+    S(int _len) {len = _len; p_array = new int[len];}
+    S(S& other) {len = other.len; p_array = new int[len]; memcpy(p_array, other.p_array, len);}
 };
 
 S a(S());
@@ -60,19 +48,46 @@ S a(S());
 
 ```cpp
 struct S {
-    char* p;
+    int* p_array;
     int len;
-    S(int _len) {len = _len; p = new char[len];}
-    S(S& other) {len = other.len; p = new char[len]; memcpy(p, other.p, len);}
-    S(S&& other) {len = other.len; p = other.p; other.p = nullptr; }
+    S(int _len) {len = _len; p_array = new int[len];}
+    S(S& other) {len = other.len; p_array = new int[len]; memcpy(p_array, other.p_array, len);}
+    S(S&& other) {len = other.len; p_array = other.p_array; other.p_array = nullptr; }
 };
 ```
 
+像这样写的 `S&&`，表示 S 的一个右值引用，下面具体讲讲右值引用，以及 c++11 对于值类别的扩充。  
+
 ---
 
-# 什么表达式可以被移动？  
+# 2. 右值引用
 
-上面的例子看到了，移动语义是有破坏性的，被 “移动” 过的对象就废掉了，不应该再被使用。所以，从安全的角度讲，只有当一个对象不会再被使用到的时候，才可以被 “移动” 。     
+右值引用是 c++11 引用的新概念，除了引入右值引用，还扩充了值类别。要理解这些概念并不容易，需要从历史发展的角度来看。   
+
+在展开之前，需要先记住，c++ 表达式有两个独立的属性：类型 (type)、值类别 (value categories)：     
+
+* 类型 (type)，包括基本类型 （int, float，void, null 等），复合类型（class，union，引用 等）等，具体参见 cppreference 的 specification[6]。  
+
+* 值类别 (value categories)，包括广义左值、右值、左值、将亡值、纯右值，具体参见 cppreference 的 specification[7]。   
+
+<br/>
+
+变量和字面量是最简单的表达式。  
+
+可能大部分人对于类型 (type) 有概念，但对于值类别 (value categories) 没啥概念，这并不是一个新术语，而是从 c 语言时代就已经存在了的。  
+
+---
+
+## 2.1 c 语言的左值 (lvalue)
+
+c++ 是从 c 语言发展来的，c 语言的表达式如果按值类别来划分为左值 (lvalue) 和非左值(non-lvalue)，从方便记忆的角度上讲，左值就是可以出现在赋值语句左边的值。  
+
+更精确的定义可以参考 cppreference 的 c value categories[8]: [https://en.cppreference.com/w/c/language/value_category](https://en.cppreference.com/w/c/language/value_category) 。  
+
+---
+
+## 2.2 c++98 以前的左值和右值
+
 
 ---
 
@@ -393,7 +408,7 @@ A 析构函数，释放 p
 A 析构函数，不需要释放 p
 ```
 
-std::move 强制产生一个绑定到左值（即x）的右值引用，所以编译器匹配到右值引用，就相对应的调用移动构造函数。   
+std::move 能够强制产生一个右值引用，当编译器匹配到右值引用，就会调用移动构造函数。   
 
 特别注意，std::move **并不完成对象的移动**，它的作用只是强制产生一个右值引用，真正起移动作用的是移动构造函数或移动赋值运算符函数，要在这两个函数中写移动逻辑。   
 
@@ -476,11 +491,23 @@ p 是一个指向了对象的指针，则 *p 就是获得指针 p 所指的对�
 
 [6] cppreference. Type. Available at https://en.cppreference.com/w/cpp/language/type.    
 
-[7] cppreference. Value categories. Available at https://en.cppreference.com/w/cpp/language/value_category.   
+[7] cppreference. cpp Value categories. Available at https://en.cppreference.com/w/cpp/language/value_category.   
 
+[8] cppreference. c value categories. Available at https://en.cppreference.com/w/c/language/value_category.   
 
 ---
 
 其实资料：
 
 [C++ value categories and decltype demystified](https://www.scs.stanford.edu/~dm/blog/decltype.html)     
+
+
+----
+
+大纲
+
+移动语义
+
+值类别的扩充
+
+
