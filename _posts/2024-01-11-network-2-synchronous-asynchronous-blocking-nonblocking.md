@@ -38,12 +38,12 @@ tags: [网络 同步 异步 阻塞 非阻塞]
 >进程把一个套接字设置成非阻塞是在通知内核：当所请求的I/O操作非得把本进程投入睡眠才能完成时，不要把要进程投入睡眠，而是返回一个错误。[1]    
 
 
-![blocking io model](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2024-01-19-synchronous-asynchronous-blocking-nonblocking/blocking-io-model.png)   
+![blocking io model](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/network-blocking-io-model.png)   
 <center>图1：阻塞式I/O模型 [1]</center>
 
 图1是阻塞型 I/O 的工作过程，“一个不能立即完成的套接字调用” 的意思就是数据还没有准备好从内核复制到用户空间，需要 “等待数据”，比如 socket read，就需要先等待网络数据从对端发到我端。   
 
-![non blocking io model](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2024-01-19-synchronous-asynchronous-blocking-nonblocking/non-blocking-io-model.png)   
+![non blocking io model](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/network-non-blocking-io-model.png)   
 <center>图2：非阻塞式I/O模型 [1]</center>  
 
 图2是非阻塞型 I/O 的工作过程，它跟阻塞型的区别在于如果需要等待内核准备数据，则立即返回一个错误码，不挂起线程。实际上它应该是 “部分阻塞”，“将数据从内核复制到用户空间” 也算是一个阻塞的过程。   
@@ -67,7 +67,7 @@ I/O 模型中包含同步 I/O 和异步 I/O，区别在于当内核数据准备�
 
 但同步也可以分同步阻塞I/O和同步非阻塞I/O，前者是检查数据是否准备好&完成数据拷贝都要阻塞，而后者只是完成数据拷贝需要阻塞。        
 
-![5种I/O模型的比较](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2024-01-19-synchronous-asynchronous-blocking-nonblocking/comparison-of-5-io-model.png)  
+![5种I/O模型的比较](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/network-comparison-of-5-io-model.png)  
 <center>图3：5种I/O模型的比较 [1]</center>
 
 >根据上述定义，我们的前4种模型--阻塞式I/O模型、非阻塞式I/O模型、I/O复用模型和信号驱动式I/O模型都是同步I/O模型，因为其中真正的I/O操作（recvfrom）将阻塞进程。只有异步I/O模型与POSIX定义的异步I/O相匹配。[1]  
