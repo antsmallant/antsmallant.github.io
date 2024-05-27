@@ -25,7 +25,7 @@ tags: [c++]
 
 <br/>
 
-实际上，如果读过 Bjarne Stroustrup 的这篇文章 《“New” Value Terminology》[5]，基本就知道 c++ 委员会为什么在 c++11 引入这么复杂的值类别。   
+实际上，如果读过 Bjarne Stroustrup 的这篇文章 《“New” Value Terminology》[1]，基本就知道 c++ 委员会为什么在 c++11 引入这么复杂的值类别。   
 
 ---
 
@@ -69,9 +69,9 @@ struct S {
 
 在展开之前，需要先记住，c++ 表达式有两个独立的属性：类型 (type)、值类别 (value categories)：     
 
-* 类型 (type)，包括基本类型 （int, float，void, null 等），复合类型（class，union，引用 等），具体参见 cppreference 的 specification[6]。  
+* 类型 (type)，包括基本类型 （int, float，void, null 等），复合类型（class，union，引用 等），具体参见 cppreference 的 specification[2]。  
 
-* 值类别 (value categories)，包括广义左值、右值、左值、将亡值、纯右值，具体参见 cppreference 的 specification[7]。   
+* 值类别 (value categories)，包括广义左值、右值、左值、将亡值、纯右值，具体参见 cppreference 的 specification[3]。   
 
 <br/>
 
@@ -83,15 +83,15 @@ struct S {
 
 ## 2.1 c 语言的左值 (lvalue)
 
-c 语言的表达式按值类别划分为左值 (lvalue) 和非左值 (non-lvalue)。"lvalue" means an expression that identifies an object, a "locator value"[8]。从方便记忆的角度上讲，左值就是可以出现在赋值语句左边的表达式。  
+c 语言的表达式按值类别划分为左值 (lvalue) 和非左值 (non-lvalue)。"lvalue" means an expression that identifies an object, a "locator value"[4]。从方便记忆的角度上讲，左值就是可以出现在赋值语句左边的表达式。  
 
-更精确的定义可以参考 cppreference 上面关于 c value categories 的描述[8]: [https://en.cppreference.com/w/c/language/value_category](https://en.cppreference.com/w/c/language/value_category) 。  
+更精确的定义可以参考 cppreference 上面关于 c value categories 的描述[4]: [https://en.cppreference.com/w/c/language/value_category](https://en.cppreference.com/w/c/language/value_category) 。  
 
 ---
 
 ## 2.2 c++11 以前的左值和右值
 
-c++11 之前的 c++ 继承了 c 的值类别定义，只做了一些小调整[7]：  
+c++11 之前的 c++ 继承了 c 的值类别定义，只做了一些小调整[3]：  
 
 * 用右值 (rvalue) 指代 non-lvalue 
 
@@ -107,17 +107,17 @@ c++11 之前的 c++ 继承了 c 的值类别定义，只做了一些小调整[7]
 
 ## 2.3 c++11 的左值和右值
 
-c++11 引入了移动语义和完美转发，而这两个机制与左值右值这两个术语强相关。CWG (c++ 标准委员会下的 core working group) 的大部分人认为需要修正这两个术语的定义，才能使 c++ 规范保持一致[5]： 
+c++11 引入了移动语义和完美转发，而这两个机制与左值右值这两个术语强相关。CWG (c++ 标准委员会下的 core working group) 的大部分人认为需要修正这两个术语的定义，才能使 c++ 规范保持一致[1]： 
 
 >However, the majority of the CWG disagreed and insisted that some changed and/or novel terminology 
 was necessary to address known problems and to get the specification consistent.   
 
 <br/>
 
-Bjarne Stroustrup 的这篇文章 《“New” Value Terminology》[5] 详细的记录了 CWG 开会讨论的过程。   
+Bjarne Stroustrup 的这篇文章 《“New” Value Terminology》[1] 详细的记录了 CWG 开会讨论的过程。   
 
 ![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cwg-ravlue-terminology-1.png)
-<center>图2：CWG meeting 讨论过程的一个混乱的分类[5]</center>    
+<center>图1：CWG meeting 讨论过程的一个混乱的分类[1]</center>    
 
 <br/>
 
@@ -151,21 +151,21 @@ Bjarne Stroustrup 觉得上面的分类很混乱，自己尝试对表达式的�
 据此，他画出了分类的草图：  
 
 ![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cwg-ravlue-terminology-2.png)
-<center>图3：CWG meeting Bjarne Stroustrup 的值类别初步草图[5]</center>   
+<center>图2：CWG meeting Bjarne Stroustrup 的值类别初步草图[1]</center>   
 
 <br/>
 
 经过更细致的讨论，最终确定的分类图是这样的：   
 
 ![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cwg-ravlue-terminology-3.png)
-<center>图4：CWG meeting 最终确定的值类别草图[6]</center>   
+<center>图3：CWG meeting 最终确定的值类别草图[2]</center>   
 
 <br/>
 
 上图倒过来看就是 c++11 的最终规范了:   
 
 ![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-expression-value-categories.png)   
-图1：c++11 value categories[4]    
+图4：c++11 value categories[5]    
 
 <br/>
 
@@ -200,7 +200,7 @@ Bjarne Stroustrup 觉得上面的分类很混乱，自己尝试对表达式的�
 
 * rvalue，包含 xvalue 和 prvalue，资源可以被移动的表达式。  
 
-关于值类别 (value categories) 的精确分类可以在这个 specification 找到：[cppreference value_category](https://en.cppreference.com/w/cpp/language/value_category) [7]，非常琐碎。  
+关于值类别 (value categories) 的精确分类可以在这个 specification 找到：[cppreference value_category](https://en.cppreference.com/w/cpp/language/value_category) [3]，非常琐碎。  
 
 但是作为一个语言学习者，就应该直接看 specification，去看吧。  
 
@@ -266,7 +266,7 @@ void f2(string& s) {
 
 f1("hello");   // 正常，"hello" 转换成 string 类型的临时对象，临时对象可以被 const 引用 引用
 f2("hello");   // 编译报错，"hello" 转换成 string 类型的临时对象，临时对象不可以被 左值引用 引用
-               // 会报类似这样的编译错误：no known conversion from 'const char[6]' to 'string &'
+               // 会报类似这样的编译错误：no known conversion from 'const char[2]' to 'string &'
 
 string s = "hello";
 f1(s);         // 正常，一个左值可以被 左值引用 所引用
@@ -458,7 +458,7 @@ void test_move_constructor() {
 
 如果没有自己写拷贝构造函数或拷贝赋值运算符，那么编译器会帮生成默认的。   
 
-编译器在特定条件下，也会帮生成默认的移动函数[2]：
+编译器在特定条件下，也会帮生成默认的移动函数[6]：
 1. 一个类没有定义任何版本的拷贝构造函数、拷贝赋值运算符、析构函数；
 2. 类的每个非静态成员都可以移动
     * 内置类型（如整型、浮点型）
@@ -502,7 +502,7 @@ std::move 能够强制产生一个右值引用，当编译器匹配到右值引�
 
 特别注意，std::move **并不完成对象的移动**，它的作用只是强制产生一个右值引用，真正起移动作用的是移动构造函数或移动赋值运算符函数，要在这两个函数中写移动逻辑。   
 
-std::move 的一种可能实现如下[3]：   
+std::move 的一种可能实现如下[7]：   
 
 ```cpp
 template<typename T>
@@ -569,20 +569,16 @@ p 是一个指向了对象的指针，则 *p 就是获得指针 p 所指的对�
 
 # 10. 参考
 
-[1] [美] Stanley B. Lippman, Josée Lajoie, Barbara E. Moo. C++ Primer 中文版（第 5 版）. 王刚, 杨巨峰. 北京: 电子工业出版社, 2013-9: 120, 154, 182.   
+[1] Bjarne Stroustrup. “New” Value Terminology. Available at https://www.stroustrup.com/terminology.pdf.    
 
-[2] 王健伟. C++新经典. 北京: 清华大学出版社, 2020-08-01.   
+[2] cppreference. Type. Available at https://en.cppreference.com/w/cpp/language/type.    
 
-[3] [美]Scott Meyers. Effective Modern C++(中文版). 高博. 北京: 中国电力出版社, 2018-4: 149, 151.  
+[3] cppreference. cpp Value categories. Available at https://en.cppreference.com/w/cpp/language/value_category.   
 
-[4] wg21. Working Draft, Standard for Programming Language C++ (N4878). Available at https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4878.pdf, 2020-12-15: 91.    
+[4] cppreference. c value categories. Available at https://en.cppreference.com/w/c/language/value_category.    
 
-[5] Bjarne Stroustrup. “New” Value Terminology. Available at https://www.stroustrup.com/terminology.pdf.    
+[5] wg21. Working Draft, Standard for Programming Language C++ (N4878). Available at https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4878.pdf, 2020-12-15: 91.   
 
-[6] cppreference. Type. Available at https://en.cppreference.com/w/cpp/language/type.    
+[6] 王健伟. C++新经典. 北京: 清华大学出版社, 2020-08-01.   
 
-[7] cppreference. cpp Value categories. Available at https://en.cppreference.com/w/cpp/language/value_category.   
-
-[8] cppreference. c value categories. Available at https://en.cppreference.com/w/c/language/value_category.   
-
-
+[7] [美]Scott Meyers. Effective Modern C++(中文版). 高博. 北京: 中国电力出版社, 2018-4: 149, 151.    
