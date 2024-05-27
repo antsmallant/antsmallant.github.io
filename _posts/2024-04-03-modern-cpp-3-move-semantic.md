@@ -48,7 +48,7 @@ struct S {
 S a(S());
 ```
 
-但在 c++11 后，不用拷贝数据了，可以增加一个移动拷贝构造函数 S(S&& other)，直接拿对方的指针来用，不用拷贝 (memcpy) 数据。   
+但在 c++11 后，不用拷贝数据了，可以增加一个移动拷贝构造函数 `S(S&& other)`，直接拿对方的指针来用，不用拷贝 (memcpy) 数据。   
 
 ```cpp
 struct S {
@@ -91,7 +91,7 @@ c 语言的表达式如果按值类别来划分为左值 (lvalue) 和非左值(n
 
 ## 2.2 c++11 以前的左值和右值
 
-c++11 之前的 c++ 继承了 c 的值类别定义，只做了一些小调整：  
+c++11 之前的 c++ 继承了 c 的值类别定义，只做了一些小调整[7]：  
 
 * 用右值(rvalue) 指代 non-lvalue 
 * 函数归为左值(lvalue)
@@ -101,24 +101,39 @@ c++11 之前的 c++ 继承了 c 的值类别定义，只做了一些小调整：
 
 ---
 
-## 2.3 c++11 开始的左值和右值
+## 2.3 c++11 的左值和右值
 
 c++11 引入了移动语义和完美转发，而这两个机制与左值右值的术语强相关。CWG (c++ 标准委员会下的 core working group) 的大部分人认为需要修正左值右值这两个术语的定义，才能 c++ 规范保持一致[5]： 
 
 >However, the majority of the CWG disagreed and insisted that some changed and/or novel terminology 
 was necessary to address known problems and to get the specification consistent.   
 
+<br/>
 
-
-所以，实现移动语义的关键就在于明确 c++ 哪些表达式是可以被移动的。为了搞清楚这个问题，就需要对表达式做出明确的、规范的分类。对此，Bjarne Stroustrup 和 c++ 委员会的人开会进行了仔细的讨论，讨论的内容被详细记录在这篇文章 《“New” Value Terminology》[5] 里。   
-
-最终，表达式的值分类是这样的：
-
+能够知道的是，c++11 明确下来的值类别(value categories)是这样的：
 ![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-expression-value-categories.png)
-<center>图1：c++ value categories[1]</center>    
+<center>图1：c++ value categories[4]</center>    
+
+<br/>
+
+看起来很复杂，但如果了解这样划分的依据和思考过程，就不会觉得复杂了。Bjarne Stroustrup 的这篇文章 《“New” Value Terminology》[5] 详细的记录了 CWG 开会讨论的过程。    
 
 
-## 2.4 值分类详解
+
+
+
+
+## 2.4 c++11 值分类详解
+
+```
+     expression
+       /    \
+   glvalue  rvalue
+    /   \    /  \
+ lvalue xvalue  prvalue
+```
+
+
 
 
 ## 2.5 右值引用的例子
