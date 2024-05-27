@@ -33,7 +33,7 @@ tags: [c++]
 
 c++11 为了提高效率，引入了移动语义。移动语义很简单，它是相对于 “复制” 而言的，把一个对象里面的资源 “移动” 到另一个对象中，就是移动语义了。  
 
-比如下面这样，用临时变量构造变量 a，在 c++11 之前，会触发拷贝构造 S(S& other) 拷贝 (memcpy) 数据。   
+比如下面这样，用临时变量构造变量 a，在 c++11 之前，会触发拷贝构造函数 S(S& other)，进行数据的拷贝 (memcpy) 。   
 
 ```cpp
 struct S {
@@ -120,8 +120,55 @@ c++11 最终确定下来的值类别 (value categories) 是这样的：
 
 <br/>
 
-看起来有些复杂，但如果了解这样划分的依据和思考过程，就不会觉得复杂了。Bjarne Stroustrup 的这篇文章 《“New” Value Terminology》[5] 详细的记录了 CWG 开会讨论的过程。    
+看起来有些复杂，但如果了解这样划分的依据和思考过程，就不会觉得复杂了。Bjarne Stroustrup 的这篇文章 《“New” Value Terminology》[5] 详细的记录了 CWG 开会讨论的过程。   
 
+![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cwg-ravlue-terminology-1.png)
+<center>图2：CWG meeting 讨论过程的一个混乱的分类[5]</center>    
+
+<br/>
+
+Bjarne Stroustrup 觉得上面的分类很混乱，自己尝试对表达式的属性进行分类：   
+
+>Clearly we were headed for an impasse or a mess or both. I spent the lunchtime doing an analysis to see which of the properties (of values) were independent. There were only two independent properties:    
+>• “has identity” – i.e. and address, a pointer, the user can determine whether two copies are identical, etc.   
+>• “can be moved from” – i.e. we are allowed to leave to source of a “copy” in some indeterminate, but valid state    
+
+他 (Bjarne Stroustrup) 分析出表达式实际上有两个独立的属性：有身份的 (has identity) 、可以被移动的 (can be moved from)。基于这两个属性，他组合出三种表达式分类：   
+
+>This led me to the conclusion that there are exactly three kinds of values (using the regex notational trick of using a capital letter to indicate a negative – I was in a hurry):     
+>• iM: has identity and cannot be moved from     
+>• im: has identity and can be moved from (e.g. the result of casting an lvalue to a rvalue reference)     
+>• Im: does not have identity and can be moved from     
+>
+>The fourth possibility (“IM”: doesn’t have identity and cannot be moved) is not useful in C++ (or, I think) in any other language.      
+>
+>In addition to these three fundamental classifications of values, we have two obvious generalizations that correspond to the two independent properties:     
+>• i: has identity     
+>• m: can be moved from
+
+他用 i 表示有身份的 (has identity)，I 表示无身份的；m 表示可以被移动的 (can be moved from)，M 表示不可移动的，组合起来就是：  
+
+* iM: 有身份并且不可被移动的  
+* im: 有身份但可以被移动的 (比如强制把一个左值转换成右值引用)
+* Im: 无身份且可以被移动的
+
+而第四种 IM（无身份且不可被移动的）在 C++ 中是不存在的。  
+
+据此，他画出了分类的草图，这个倒过来其实就是 c++11 的最终规范：  
+
+![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cwg-ravlue-terminology-2.png)
+<center>图3：CWG meeting Bjarne Stroustrup 的值类别初步草图[5]</center>   
+
+<br/>
+
+经过更细致的讨论，最终确定的分类图是这样的：   
+
+![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cwg-ravlue-terminology-3.png)
+<center>图4：CWG meeting 最终确定的值类别草图[6]</center>   
+
+<br/>
+
+这实际
 
 
 ## 2.4 c++11 值类别详解
