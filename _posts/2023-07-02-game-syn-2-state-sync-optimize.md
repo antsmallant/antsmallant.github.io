@@ -27,7 +27,7 @@ categories: [游戏开发]
 
 这个是针对命中判断来说的，比如说 fps 类型的游戏，由于网络延迟以及一些优化手段，导致你在画面上看到的景象实际上是几帧之前发生的事情，这时候你进行射击，此刻出现在你画面中的玩家在服务器处可能已经跑远了，当你的射击指令到达服务器时，是不会被判断命中的，这时候服务器需要把画面回滚（rewind）到你射击时候播放的那一帧，然后再进行判断。用这张经典的图片来展示一下：  
 
-![valve-Lag_compensation](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2023-06-27-game-networking/valve-Lag_compensation.jpg)  
+![valve-Lag_compensation](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/game-networking-valve-Lag_compensation.jpg)  
 <center>图1：延迟补偿[1]</center>
 
 关于延迟补偿，在《网络多人游戏架构与编程》[2]中有具体的实现指导:  
@@ -68,7 +68,7 @@ AOI 是 area of interest 的缩写，它代表的是游戏单位的视野，可�
     * 如果没跨越，则只给周围9个格子的单位广播 move 消息；
     * 如果跨越了，则需要：1、给旧9格与新9格的差集广播 leave 消息；2、给新9格与旧9格的差集广播 enter 消息；3、给旧9格与新9格的交集广播 move 消息；
 
-![aoi-九宫格](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2023-06-27-game-networking/aoi-9-grid.webp)
+![aoi-九宫格](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/game-networking-aoi-9-grid.webp)
 <center>图2：aoi-九宫格算法[4] </center>
 
 九宫格相当于在场景中创建了一个全局变量来记录每个格子中的单位，这样一来每个单位就不需要自己维护一个观察者列表或被观察者列表了。九宫格实现起来很简单，但是如果想要做到不同单位可变视野，就会很费劲了，需要很多额外的遍历，这时候可以考虑使用十字链表法。  
@@ -99,15 +99,15 @@ AOI 算法还可以参考以下两篇文章，写得挺好的：
 halo 2011 年的这个 GDC 分享，展示一种如何让扔手雷看起来更流畅的做法，这里面的关键是：在合适的地方隐藏网络延迟。  
 
 尝试一，按下按键，等待服务器回应之后再播放扔的动画，这种体验非常差：
-![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2023-06-27-game-networking/halo-grenade-throw-attempt-1.png)  
+![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/game-networking-halo-grenade-throw-attempt-1.png)  
 <center>图3：halo-grenade-throw-attempt-1[5]</center>
 
 尝试二，按下按键，播放扔的动画，同时发消息给服务器，客户端播放完动画不等服务器响应直接扔出手雷，这种做法虽然没有延迟，但是违背了服务器权威的原则：
-![halo-grenade-throw-attempt-2](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2023-06-27-game-networking/halo-grenade-throw-attempt-2.png)  
+![halo-grenade-throw-attempt-2](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/game-networking-halo-grenade-throw-attempt-2.png)  
 <center>图4：halo-grenade-throw-attempt-2[5]</center>
 
 尝试三，这也是 halo 的最终实现方案，按下按键立即播放扔的动画，同时发消息给服务器，等收到回包再实际扔出手雷：  
-![halo-grenade-throw-attempt-3](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2023-06-27-game-networking/halo-grenade-throw-attempt-3.png)  
+![halo-grenade-throw-attempt-3](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/game-networking-halo-grenade-throw-attempt-3.png)  
 <center>图5：halo-grenade-throw-attempt-3[5]</center>
 
 ---
