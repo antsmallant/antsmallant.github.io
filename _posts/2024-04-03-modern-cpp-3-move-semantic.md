@@ -11,6 +11,8 @@ tags: [c++]
 {:toc}
 <br/>
 
+---
+
 移动语义很简单，但它相关联的术语很复杂。本文尝试从历史的角度解释清楚这些乱七八糟的术语及其关联：  
 
 * 表达式 (expression)、类型（type）、值类别 (value categories)；    
@@ -29,7 +31,7 @@ tags: [c++]
 
 # 1. 移动语义
 
-c++11 为了提高效率，引入了移动语义，移动语义很简单，它是相对于 “复制” 而言的，把一个对象里面的资源 “移动” 到另一个对象中，就是移动语义了。  
+c++11 为了提高效率，引入了移动语义。移动语义很简单，它是相对于 “复制” 而言的，把一个对象里面的资源 “移动” 到另一个对象中，就是移动语义了。  
 
 比如下面这样，用临时变量构造变量 a，在 c++11 之前，会触发拷贝构造 S(S& other) 拷贝 (memcpy) 数据。   
 
@@ -37,7 +39,9 @@ c++11 为了提高效率，引入了移动语义，移动语义很简单，它�
 struct S {
     int* p_array;
     int len;
+    // 构造函数
     S(int _len) {len = _len; p_array = new int[len];}
+    // 拷贝构造函数
     S(S& other) {len = other.len; p_array = new int[len]; memcpy(p_array, other.p_array, len);}
 };
 
@@ -48,15 +52,14 @@ S a(S());
 
 ```cpp
 struct S {
-    int* p_array;
-    int len;
-    S(int _len) {len = _len; p_array = new int[len];}
-    S(S& other) {len = other.len; p_array = new int[len]; memcpy(p_array, other.p_array, len);}
+    // 定义同上，此处省略
+
+    // 移动构造函数
     S(S&& other) {len = other.len; p_array = other.p_array; other.p_array = nullptr; }
 };
 ```
 
-像这样写的 `S&&`，表示 S 的一个右值引用，下面具体讲讲右值引用，以及 c++11 对于值类别的扩充。  
+`S&&` 表示 S 的右值引用，下面具体讲讲右值引用，以及 c++11 对于值类别的扩充。  
 
 ---
 
@@ -80,40 +83,64 @@ struct S {
 
 ## 2.1 c 语言的左值 (lvalue)
 
-c++ 是从 c 语言发展来的，c 语言的表达式如果按值类别来划分为左值 (lvalue) 和非左值(non-lvalue)，从方便记忆的角度上讲，左值就是可以出现在赋值语句左边的值。  
+c 语言的表达式如果按值类别来划分为左值 (lvalue) 和非左值(non-lvalue)。"lvalue" means an expression that identifies an object, a "locator value"[8]。从方便记忆的角度上讲，左值就是可以出现在赋值语句左边的表达式。  
 
 更精确的定义可以参考 cppreference 上面关于 c value categories 的描述[8]: [https://en.cppreference.com/w/c/language/value_category](https://en.cppreference.com/w/c/language/value_category) 。  
 
 ---
 
-## 2.2 c++98 以前的左值和右值
+## 2.2 c++11 以前的左值和右值
 
+c++11 之前的 c++ 继承了 c 的值类别定义，只做了一些小调整：  
+
+* 用右值(rvalue) 指代 non-lvalue 
+* 函数归为左值(lvalue)
+* 引用只能绑定到左值(lvalue)
+* const 引用可以绑定到右值(rvalue)
+* 其他几个在 c 中是 non-lvalue 的在 c++ 中划分到 lvalue
 
 ---
 
-# 关于表达式分类的讨论
+## 2.3 c++11 开始的左值和右值
+
+c++11 引入了移动语义和完美转发，而这两个机制与左值右值的术语强相关。CWG (c++ 标准委员会下的 core working group) 的大部分人认为需要修正左值右值这两个术语的定义，才能 c++ 规范保持一致[5]： 
+
+>However, the majority of the CWG disagreed and insisted that some changed and/or novel terminology 
+was necessary to address known problems and to get the specification consistent.   
+
+
 
 所以，实现移动语义的关键就在于明确 c++ 哪些表达式是可以被移动的。为了搞清楚这个问题，就需要对表达式做出明确的、规范的分类。对此，Bjarne Stroustrup 和 c++ 委员会的人开会进行了仔细的讨论，讨论的内容被详细记录在这篇文章 《“New” Value Terminology》[5] 里。   
 
-
----
-
-# 值类别（value categories） 详解
+最终，表达式的值分类是这样的：
 
 ![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-expression-value-categories.png)
 <center>图1：c++ value categories[1]</center>    
 
-<br/>
 
-上图就是当前 c++ specification 对于值类别的精确分类。这实际上与 Bjarne Stroustrup 在讨论会上画的图是一致的，只不过是倒了过来。  
+## 2.4 值分类详解
+
+
+## 2.5 右值引用的例子
+
+```cpp
+int r = 100;
+int&& r1 = r;            // 不合法，r 是一个左值
+int&& r2 = 100;          // 合法，100 是一个右值
+string&& s1 {"hello"};   // 合法，"hello" 是一个右值
+string&& s2 {s1};        // 不合法，s1 是一个左值，"string 右值引用" 只是它的类型，它本质是上一个左值，它是有地址（内存位置）的，这点很容易犯错
+
+int x = 100;
+int&& x1 = ++x;          // 不合法，++x 返回的是左值
+int&& x2 = x++;          // 合法，x++ 返回的是右值，虽然可以，但项目中不要这么写
+```
+
+上面例子中，要特别注意的情况是：`string&& s1 {"hello"};`，在这里，s1 是一个类型为 "string 右值引用" 的左值，当把 右值引用 当成一种类型之后，就比较好理解 s1 是一个左值的事实了。再举一个例子：`void f(int&& p1);`，在这个函数声明中，p1 是一个类型为 `int 右值引用` 的左值。
+
 
 ---
 
-# 引用的分类
-
----
-
-## 左值引用
+# 左值引用
 
 左值引用就是绑定到左值上的引用，用 `&` 表示。c++11 之前，引用都是左值引用。左值引用就相当于给一个左值（对象）取一个别名。  
 
@@ -134,7 +161,7 @@ string& s {"hello"};    // 不合法
 
 ---
 
-## const 引用
+# const 引用
 
 const 引用是一种特殊的左值引用，与常规左值引用的区别在于，它可以绑定到临时对象：  
 
@@ -162,26 +189,6 @@ string s = "hello";
 f1(s);         // 正常，一个左值可以被 左值引用 所引用
 f2(s);         // 正常一个左值可以被 const引用 所引用
 ```
-
----
-
-## 右值引用
-
-右值引用是 c++11 引入的新概念，就是绑定到右值上的引用，用 `&&` 表示，右值引用只能绑定到右值上，不能绑定到左值上，举些例子：   
-
-```cpp
-int r = 100;
-int&& r1 = r;            // 不合法，r 是一个左值
-int&& r2 = 100;          // 合法，100 是一个右值
-string&& s1 {"hello"};   // 合法，"hello" 是一个右值
-string&& s2 {s1};        // 不合法，s1 是一个左值，"string 右值引用" 只是它的类型，它本质是上一个左值，它是有地址（内存位置）的，这点很容易犯错
-
-int x = 100;
-int&& x1 = ++x;          // 不合法，++x 返回的是左值
-int&& x2 = x++;          // 合法，x++ 返回的是右值，虽然可以，但项目中不要这么写
-```
-
-上面例子中，要特别注意的情况是：`string&& s1 {"hello"};`，在这里，s1 是一个类型为 "string 右值引用" 的左值，当把 右值引用 当成一种类型之后，就比较好理解 s1 是一个左值的事实了。再举一个例子：`void f(int&& p1);`，在这个函数声明中，p1 是一个类型为 `int 右值引用` 的左值。
 
 ---
 
@@ -494,20 +501,5 @@ p 是一个指向了对象的指针，则 *p 就是获得指针 p 所指的对�
 [7] cppreference. cpp Value categories. Available at https://en.cppreference.com/w/cpp/language/value_category.   
 
 [8] cppreference. c value categories. Available at https://en.cppreference.com/w/c/language/value_category.   
-
----
-
-其实资料：
-
-[C++ value categories and decltype demystified](https://www.scs.stanford.edu/~dm/blog/decltype.html)     
-
-
-----
-
-大纲
-
-移动语义
-
-值类别的扩充
 
 
