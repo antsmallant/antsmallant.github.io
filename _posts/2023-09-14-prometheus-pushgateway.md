@@ -86,7 +86,7 @@ prometheus 会从多个 target pull 指标，但它并不是很关心一个指�
 <br/>
 
 以上优化完，整个拓扑大概是这样：  
-![部署结构](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2023-09-14-prometheus-pushgateway/prometheus-pushgateway.png)  
+![部署结构](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/prometheus-pushgateway.png)  
 <center>图1：部署结构</center>   
 
 
