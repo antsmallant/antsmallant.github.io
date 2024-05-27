@@ -23,7 +23,7 @@ tags: [c++]
 
 <br/>
 
-实际上，如果读过 Bjarne Stroustrup 的这篇文章 《“New” Value Terminology》[5]，就能够清楚的知道 c++ 委员会是怎么一步步折腾出这么复杂的值类别的。   
+实际上，如果读过 Bjarne Stroustrup 的这篇文章 《“New” Value Terminology》[5]，基本就知道 c++ 委员会为什么在 c++11 引入这么复杂的值类别。   
 
 ---
 
@@ -66,13 +66,13 @@ struct S {
 
 在展开之前，需要先记住，c++ 表达式有两个独立的属性：类型 (type)、值类别 (value categories)：     
 
-* 类型 (type)，包括基本类型 （int, float，void, null 等），复合类型（class，union，引用 等）等，具体参见 cppreference 的 specification[6]。  
+* 类型 (type)，包括基本类型 （int, float，void, null 等），复合类型（class，union，引用 等），具体参见 cppreference 的 specification[6]。  
 
 * 值类别 (value categories)，包括广义左值、右值、左值、将亡值、纯右值，具体参见 cppreference 的 specification[7]。   
 
 <br/>
 
-变量和字面量是最简单的表达式。  
+变量(variable)和字面量(literal)是最简单的表达式。另外，对于 c++ 程序员来说，变量(variable)和对象(object)这两个术语基本互换使用。   
 
 可能大部分人对于类型 (type) 有概念，但对于值类别 (value categories) 没啥概念，这并不是一个新术语，而是从 c 语言时代就已经存在了的。  
 
@@ -82,7 +82,7 @@ struct S {
 
 c++ 是从 c 语言发展来的，c 语言的表达式如果按值类别来划分为左值 (lvalue) 和非左值(non-lvalue)，从方便记忆的角度上讲，左值就是可以出现在赋值语句左边的值。  
 
-更精确的定义可以参考 cppreference 的 c value categories[8]: [https://en.cppreference.com/w/c/language/value_category](https://en.cppreference.com/w/c/language/value_category) 。  
+更精确的定义可以参考 cppreference 上面关于 c value categories 的描述[8]: [https://en.cppreference.com/w/c/language/value_category](https://en.cppreference.com/w/c/language/value_category) 。  
 
 ---
 
