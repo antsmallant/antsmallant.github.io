@@ -66,11 +66,23 @@ tags: [lua]
 
 ---
 
-# 2. 问题分析
+# 2. 从原理上分析问题
 
-问题的关键就在于： lua 函数只操作 lua 数据栈，而 c 函数不止操作 lua 数据栈，还会操作 c 栈（即操作系统线程的栈），所以协程的函数调用链中，如果出现了 c 函数，那么接下来如果有 yield，不管这个 yield 是什么函数调用的，在底层都会通过 longjmp 回到 resume (setjmp) 之处，从而导致 c 函数依赖的 c 栈被后续的执行覆盖。  
+问题的关键就在于： 
+
+* lua 是通过 setjmp/longjmp 实现 resume/yield 的。  
+
+* lua 函数只操作 lua 数据栈，而 c 函数不止操作 lua 数据栈，还会操作 c 栈（即操作系统线程的栈）。   
+
+* 每个 lua 协程都有一个独立的 lua 数据栈，但每个系统线程只有一个公共的 c 栈。  
+
+* 在协程的函数调用链中如果有 c 函数，并且在后续的调用中出现 yield，就会 longjmp 回到 resume (setjmp) 之处，从而导致 c 函数依赖的 c 栈被其他协程的 c 函数调用给覆盖掉。  
+
+setjmp/longjmp 示意图：  
 
 ```
+c 栈从栈底向栈顶生长 
+
       c 栈
       栈底
     |     |
@@ -84,8 +96,6 @@ tags: [lua]
 ```    
 
 
-看图：  
-
 <br/>
 
 <div align="center">
@@ -96,10 +106,16 @@ tags: [lua]
 <br/>
 
 上图中：   
-1、co1 resume 了 co2，co2 开始执行，co2 的 callinfo 调用链中有 lua 也有 c 函数，其中的 c 函数会操作 lua 数据栈和 c 栈，c 栈在图中就是 "co2 c stack" 那一块内存。   
-2、co2 yield 的时候，执行流回到 co1。   
-3、co1 又继续执行，就会把 "co2 c stack" 这一块内存覆盖掉，这意味着 co2 那些还没执行完成的 c 函数的 c 栈被破坏了，即使 co2 再次被 resume，也无法正常运行了。   
 
+1、co1 resume 了 co2，co2 开始执行，co2 的 callinfo 调用链中有 lua 也有 c 函数，其中的 c 函数会操作 lua 数据栈和 c 栈，c 栈在图中就是 "co2 c stack" 那一块内存。   
+
+2、co2 yield 的时候，co2 停目执行，co1 从上次 resume 处恢复。 
+
+3、co1 继续往下执行，必然会有 c 函数调用，co1 的 c 函数会把 "co2 c stack" 这块内存覆盖掉，这意味着 co2 那些还没执行完成的 c 函数的 c 栈被破坏了，即使 co2 再次被 resume，也无法正常运行了。   
+
+---
+
+# 3. 从代码上分析问题
 
 
 
