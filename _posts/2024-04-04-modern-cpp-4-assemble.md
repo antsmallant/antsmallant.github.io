@@ -28,8 +28,16 @@ tags: [c++]
 
 直接看一下它能帮你洞察什么。 
 
-![cpp-insights-cpp-lambda](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cpp-insights-cpp-lambda.png)   
-<center>图1：cpp-insights-cpp-lambda</center>
+<br/>
+
+<center>
+
+![cpp-insights-cpp-lambda](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cpp-insights-cpp-lambda.png)      
+图1：cpp-insights-cpp-lambda
+
+</center>
+
+<br/>
 
 上面写了一小段 lambda 代码，c++ insights 帮忙生成出来了编译器视角的源码，从中我们可以清晰的看到 c++ 内部是如何实现 lambda 的。    
 
@@ -107,21 +115,42 @@ compiler explorer 是一个网站，地址是： https://gcc.godbolt.org/ 。它
 
 c++ 的 hello world，代码链接： https://gcc.godbolt.org/z/87xT8scqn 。    
 
-![compiler-explorer-cpp-helloworld](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-compiler-explorer-cpp-helloworld.png)   
-<center>图2：compiler explorer c++ hello world</center>
+<br/>
+
+<center>
+
+![compiler-explorer-cpp-helloworld](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-compiler-explorer-cpp-helloworld.png)      
+图2：compiler explorer c++ hello world
+
+</center>
+
+<br/>
 
 python 的 hello world，代码链接：https://gcc.godbolt.org/z/8jM3d37dE 。  
 
-![compiler-explorer-python3-helloworld](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-compiler-explorer-python3-helloworld.png)   
-<center>图3：compiler explorer python hello world</center>
+<br/>
+
+<center>
+
+![compiler-explorer-python3-helloworld](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-compiler-explorer-python3-helloworld.png)    
+图3：compiler explorer python hello world
+
+</center>
 
 <br/>
 
 遗憾的是，compiler explorer 不支持 lua。不过，这个网站【lua Bytecode Explorer】支持，地址是：https://www.luac.nl/ 。功能很强大，支持从 lua4.0 到 lua5.4 的各个版本。并且，它也支持分享代码片段，在页面底下有个 "generate link" 的按钮，比较不显眼。    
 
-![luac-lua-helloworld](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-luac-lua-helloworld.png)   
-<center>图4：luac lua hello world</center>
+<br/>
 
+<center>
+
+![luac-lua-helloworld](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-luac-lua-helloworld.png)     
+图4：luac lua hello world
+
+</center>
+
+<br/>
 
 ---
 
@@ -360,8 +389,14 @@ ATT 和 intel 的区别是[1]：
 
 下图参照自《深入理解计算机系统》[1]。  
 
-![stack-frame](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-stack-frame.png)   
-<center>图5：stack frame</center>
+<br/>
+
+<center>
+
+![stack-frame](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-stack-frame.png)     
+图5：stack frame
+
+</center>
 
 <br/>
 
@@ -387,8 +422,16 @@ ATT 和 intel 的区别是[1]：
 
 以下图片取自《深入理解计算机系统》[1]。 
 
-![assemble-operand-format](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-assemble-operand-format.png)   
-<center>图6：操作数格式</center>
+<br/>
+
+<center>
+
+![assemble-operand-format](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-assemble-operand-format.png)     
+图6：操作数格式
+
+</center>
+
+<br/>
 
 ---
 
