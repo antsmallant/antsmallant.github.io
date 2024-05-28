@@ -184,12 +184,11 @@ Bjarne Stroustrup 觉得上面的分类很混乱，自己尝试对表达式的�
 
 <br/>
 
-
 <div align="center">
-<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-expression-value-categories.png" />
-</div>
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-expression-value-categories.png" />   
 
-<center>图4：c++11 value categories[5]</center>   
+图4：c++11 value categories[5]
+</div>
 
 <br/>
 
