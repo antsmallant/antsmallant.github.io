@@ -56,7 +56,7 @@ tags: [lua]
 
 <br/>
 
-作者大致是理解这个问题的，并且点出了问题的关键: “由于longjmp会使得后面的指令没机会再执行”。但讲得不够细，对于问题产生的条件没有讲清楚。     
+作者点出了问题的关键: “由于longjmp会使得后面的指令没机会再执行”，但讲得不够细，对于问题产生的条件没有讲清楚。     
 
 ---
 
@@ -76,7 +76,7 @@ tags: [lua]
 
 * 每个 lua 协程都有一个独立的 lua 数据栈，但每个系统线程只有一个公共的 c 栈。  
 
-* 在协程的函数调用链中如果有 c 函数，并且在后续的调用中出现 yield，就会 longjmp 回到 resume (setjmp) 之处，从而导致 c 函数依赖的 c 栈被其他协程的 c 函数调用给覆盖掉。  
+* 在协程的函数调用链中，会有 lua 函数也会有 c 函数，如果调用链中有 c 函数，并且在更后续的调用中出现 yield，就会 longjmp 回到 resume (setjmp) 之处，从而导致 c 函数依赖的 c 栈被其他协程的 c 函数调用给覆盖掉。  
 
 setjmp/longjmp 示意图：  
 
@@ -95,6 +95,8 @@ c 栈从栈底向栈顶生长
       栈顶
 ```    
 
+不懂 setjmp / longjmp 怎么工作的，可以参考这篇文章，讲得很细了： [setjmp是怎么工作的](https://zhuanlan.zhihu.com/p/82492121) 。  
+
 
 <br/>
 
@@ -109,7 +111,7 @@ c 栈从栈底向栈顶生长
 
 1、co1 resume 了 co2，co2 开始执行，co2 的 callinfo 调用链中有 lua 也有 c 函数，其中的 c 函数会操作 lua 数据栈和 c 栈，c 栈在图中就是 "co2 c stack" 那一块内存。   
 
-2、co2 yield 的时候，co2 停目执行，co1 从上次 resume 处恢复。 
+2、co2 yield 的时候，co2 停止执行，co1 从上次 resume 处恢复。 
 
 3、co1 继续往下执行，必然会有 c 函数调用，co1 的 c 函数会把 "co2 c stack" 这块内存覆盖掉，这意味着 co2 那些还没执行完成的 c 函数的 c 栈被破坏了，即使 co2 再次被 resume，也无法正常运行了。   
 
@@ -117,81 +119,121 @@ c 栈从栈底向栈顶生长
 
 # 3. 从代码上分析问题
 
+其实讲完原理就够了，但是 lua 在 yield 这个问题上会选择性不报错，所以还是有必要从源码上讲一讲。  
+
+以下分析使用的 lua 版本是 5.3.6，下载链接: [https://lua.org/ftp/lua-5.3.6.tar.gz](https://lua.org/ftp/lua-5.3.6.tar.gz)，本人的 github 也有对应源码: [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6) 。     
+  
+下文展示的 demo 代码都在此，有 makefile，可以直接跑起来：[https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary) 。   
+
+---
+
+## 3.1 情况一：lua 调用 c，在 c 中直接 yield
+
+结果：这种情况不会报错，但实际上也没能正常工作。   
+
+不报错的原因：lua 官方自己设定的，这种情况就是不报错，但也不能正常工作。  
+
+没能正常工作的原因：lua 调用 c 函数或者其他什么函数，都是被编译成 OP_CALL 指令，而 OP_CALL 并不会设一个标志位导致后面有 yield 的时候报错；而 c 调用 lua 是用 lua_call 这个 api 的，这个 api 会设置一个标志位，当后面有 yield 的时候就会因为这个标志位导致这个报错： "attempt to yield across a C-call boundary" 。    
+
+上代码吧。  
+
+```lua
+-- test_co_1.lua
+
+local co = require "coroutine"
+local clib = require "clib"
+
+local co2 = co.create(function()
+    clib.f1()
+end)
+
+-- 第一次 resume
+local ok1, ret1 = co.resume(co2)
+print("in lua:", ok1, ret1)
+
+-- 第二次 resume
+local ok2, ret2 = co.resume(co2)
+print("in lua:", ok2, ret2)
+```
+
+```c
+// clib.c
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <lua.h>
+#include <lauxlib.h>
+
+static int f1(lua_State* L) {
+    printf("clib.f1: before yield\n");
+
+    lua_pushstring(L, "yield from clib.f1");
+    lua_yield(L, 1);
+    
+    printf("clib.f1: after yield\n");
+
+    return 0;
+}
+
+LUAMOD_API int luaopen_clib(lua_State* L) {
+    luaL_Reg funcs[] = {
+        {"f1", f1},
+        {NULL, NULL}
+    };
+    luaL_newlib(L, funcs);
+    return 1;
+}
+```
+
+输出是：   
+
+```
+clib.f1: before yield
+first time return:      true    yield from clib.f1
+second time return:     true    nil
+```
+
+clib.f1 的这句代码 `printf("clib.f1: after yield\n");` 在第二次 resume 的时候没有执行，但代码也没报错，跟开头说的结果一样。lua 大概是认为没有人会这样写代码吧。   
+
+这种情况，如果要让 clib.f1 能执行 yield 之后的，需要把 lua_yield 换成 lua_yieldk，然后把 yield 之后要执行的逻辑放到另一个函数里，类似这样：   
+
+```c
+
+int f2_after_yield(lua_State* L, int status, lua_KContext ctx) {
+    printf("clib.f2: after yield\n");
+    return 0;
+}
+
+static int f2(lua_State* L) {
+    printf("clib.f2: before yield\n");
+
+    lua_pushstring(L, "yield from clib.f2");
+    lua_yieldk(L, 1, 0, f2_after_yield);
+    
+    return 0;
+}
+
+```
+
+---
+
+## 3.2 情况二：c 调用 lua，lua 后续调用出现 yield
+
+结果：yield 时会报错 "attempt to yield across a C-call boundary"。   
+
+原因：上面原理的时候分析过了，而源码实现上，c 调用 lua 是用的 lua_call 这个 api，这个 api 里面会设置一个标志位，在后续调用链中，无论隔了多少层，无论是 c 还是 lua，只要执行了 yield，就会导致报错。  
+
+上代码吧：  
+
+
+
+
 
 
 
 
 ---
 
-## 2.1 简单分析
-
-实际上问题的关键在于：  
-
-* 一条系统线程只有一个公共的栈（这里称 c 栈）；   
-
-* 每个 lua 协程都有一个独立的 lua 栈；    
-
-* 在 lua 协程中调用一个函数，如果是 lua 函数，则只操作和影响 lua 栈数据；如果是 c 函数，则会操作和影响 lua 栈数据以及 c 栈数据；   
-
-* resume 对应 setjmp，yield 对应 longjmp；   
-
-* 如下图，co2 longjmp 之后 c 栈指针回退到 co1 setjmp 之处；而 yield 出去的协程 co2 的 c 函数就是依赖着 setjmp 到 longjmp 之间的这段 c 栈空间的；既然 c 栈指针被回退了，那么随着 co1 恢复执行，它就会把这段 c 栈空间覆盖掉，所以 co2 里的 c 函数是无法恢复执行的；   
-
-
-
-以上，对于理解了 lua vm 的人，大致就知道是怎么回事了。  
-
----
-
-## 2.2 详细分析
-
-大部分人对于 lua vm，lua 协程是怎么工作的，还不是很清晰，所以这小节就详细的说一说。  
-
----
-
-### 2.2.1 setjmp/longjmp 的工作原理
-
-
----
-
-### 2.2.2 lua vm 的工作原理
-
-这里其实讲一下函数调用链以及函数操作的数据就行了。lua vm 运行的时候，可以包含多条线程 (thread)，这些线程就是协程。用结构体 lua_State 来表示一条线程，线程实际上就是一个函数执行流，跟进程很像，就是一个函数调用另一个函数。   
-
-在 x86-64 上，进程中的函数调用是这样组织的：   
-
-1、硬件寄存器 %rip 存储下一条要执行的指令的地址；   
-
-2、内存上一块栈空间一层层的存储函数调用的信息以及函数调用时操作的局部变量；   
-
-
-
-从上图可以看到，x86-64 用 寄存器传递参数一块内存空间同时存储了函数调用信息（寄存器保存、无法用寄存器传递的函数参数、返回地址）+局部变量。
-
-（补充说明：x86-64，如果函数参数是 6 个以内的整型或指针，可以使用 6 个通用寄存器来传递参数，不过这个对于我们的分析影响不大。）   
-
-
-lua vm 也是相似的模拟，但组织上有些不同：   
-
-1、用一个 CallInfo 链表存储函数调用信息；  
-
-2、用一个数据栈（数组）存储 函数+参数构造+局部变量
-
-
-
-
-
----
-
-# 3. 代码解析
-
----
-
-## 3.1 环境说明
-
-以下分析使用的 lua 版本是 5.3.6，下载链接: [https://lua.org/ftp/lua-5.3.6.tar.gz](https://lua.org/ftp/lua-5.3.6.tar.gz)，本人的 github 也有对应源码: [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6) 。    
-
-下文展示的 demo 代码都在此：[https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary) 。 
 
 ## 3.2 源码上分析
 
