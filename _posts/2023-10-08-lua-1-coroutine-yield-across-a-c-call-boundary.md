@@ -111,9 +111,35 @@ tags: [lua]
 
 ### 2.2.1 setjmp/longjmp 的工作原理
 
+
 ---
 
 ### 2.2.2 lua vm 的工作原理
+
+这里其实讲一下函数调用链以及函数操作的数据就行了。lua vm 运行的时候，可以包含多条线程 (thread)，这些线程就是协程。用结构体 lua_State 来表示一条线程，线程实际上就是一个函数执行流，跟进程很像，就是一个函数调用另一个函数。   
+
+在 x86-64 上，进程中的函数调用是这样组织的：   
+
+1、硬件寄存器 %rip 存储下一条要执行的指令的地址；   
+
+2、内存上一块栈空间一层层的存储函数调用的信息以及函数调用时操作的局部变量；   
+
+
+
+从上图可以看到，x86-64 用 寄存器传递参数一块内存空间同时存储了函数调用信息（寄存器保存、无法用寄存器传递的函数参数、返回地址）+局部变量。
+
+（补充说明：x86-64，如果函数参数是 6 个以内的整型或指针，可以使用 6 个通用寄存器来传递参数，不过这个对于我们的分析影响不大。）   
+
+
+lua vm 也是相似的模拟，但组织上有些不同：   
+
+1、用一个 CallInfo 链表存储函数调用信息；  
+
+2、用一个数据栈（数组）存储 函数+参数构造+局部变量
+
+
+
+
 
 ---
 
@@ -196,8 +222,16 @@ ok，现在知道，一个协程的调用链中如果先出现 lua_call 或 lua_
 
 这个跟 lua 协程的实现有关，它是通过 setjmp 和 longjmp 实现的，resume 对应 setjmp，yield 对应 longjmp。longjmp 对于协程内部纯 lua 的栈没啥影响，因为每个协程都有一块内存来保存自己的栈，但对于 C 栈就有影响了，一个线程只有一个 C 栈，longjmp 的时候，直接改掉了 C 栈的栈顶指针。如下图所示，longjmp 之后，逻辑回到了 A，那么 B 对应的整个栈帧都会被覆盖掉（相当于被抹除了）。即 B 协程 yield 之后需要执行的 C 代码就不执行了。           
 
-![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-co-yield-across-c-call-boundary.png)  
-<center>图1：yield 示意图</center>  
+<br/>
+
+<center>
+
+![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-co-yield-across-c-call-boundary.png)     
+图1：yield 示意图
+
+</center>  
+
+<br/>
 
 解释得七七八八了，但还是有些抽象。先举个简单的例子来验证一下上面的说法吧。以下 demo 代码在这里可以找到： [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary) 。      
 
@@ -300,14 +334,32 @@ true    nil
 生成 lua 字节码可以使用这样的命令: `luac -l -l -p <文件名>`，对于上文的 test_co_1.lua，命令是： `luac -l -l -p test_co_1.lua`。也可以使用这个在线的 lua bytecode explorer: [https://www.luac.nl/](https://www.luac.nl/) 进行查看，这个网站厉害的地方在于它有好多个 lua 版本可选，很方便。       
 
 test_co_1.lua 用 lua bytecode explorer 生成出来的字节码是这样的：  
-![lua-coroutine-yield-bytecode](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-coroutine-yield-bytecode.png)   
-<center>图2：test_co_1.lua 的字节码</center>    
+
+<br/>
+
+<center>
+
+![lua-coroutine-yield-bytecode](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-coroutine-yield-bytecode.png)    
+图2：test_co_1.lua 的字节码
+
+</center>  
+
+<br/>
 
 关于字节码的具体含义，可以参考这个文章：[Lua 5.3 Bytecode Reference](https://the-ravi-programming-language.readthedocs.io/en/latest/lua_bytecode_reference.html)，或是这个文章：[深入理解 Lua 虚拟机](https://cloud.tencent.com/developer/article/1648925)。       
 
 说回 co_b，调用 clib.f1 实际上是使用了 lua 的 CALL 指令，如下图所示：  
-![lua-coroutine-yield-bytecode-co-func](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-coroutine-yield-bytecode-co-func.png)   
-<center>图3：co_b 的字节码</center>    
+
+<br/>
+
+<center>
+
+![lua-coroutine-yield-bytecode-co-func](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-coroutine-yield-bytecode-co-func.png)     
+图3：co_b 的字节码
+
+</center>   
+
+<br/>
 
 CALL 指令是如何实现的呢？可以看一下源码 ( [lvm.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/lvm.c) 的 luaV_execute ) ：  
 
