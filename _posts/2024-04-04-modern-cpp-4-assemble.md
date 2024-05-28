@@ -32,9 +32,8 @@ tags: [c++]
 
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cpp-insights-cpp-lambda.png" />
-
-图1：cpp-insights-cpp-lambda
 </div>
+<center>图1：cpp-insights-cpp-lambda</center>
 
 <br/>
 
@@ -118,9 +117,8 @@ c++ 的 hello world，代码链接： https://gcc.godbolt.org/z/87xT8scqn 。
 
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-compiler-explorer-cpp-helloworld.png" />
-
-图2：compiler explorer c++ hello world
 </div>
+<center>图2：compiler explorer c++ hello world</center>
 
 <br/>
 
@@ -130,9 +128,8 @@ python 的 hello world，代码链接：https://gcc.godbolt.org/z/8jM3d37dE 。
 
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-compiler-explorer-python3-helloworld.png" />
-
-图3：compiler explorer python hello world
 </div>
+<center>图3：compiler explorer python hello world</center>
 
 <br/>
 
@@ -142,9 +139,8 @@ python 的 hello world，代码链接：https://gcc.godbolt.org/z/8jM3d37dE 。
 
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-luac-lua-helloworld.png" />
-
-图4：luac lua hello world
 </div>
+<center>图4：luac lua hello world</center>
 
 <br/>
 
@@ -389,9 +385,8 @@ ATT 和 intel 的区别是[1]：
 
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-stack-frame.png" />
-
-图5：stack frame
 </div>
+<center>图5：stack frame</center>
 
 <br/>
 
@@ -421,9 +416,8 @@ ATT 和 intel 的区别是[1]：
 
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-assemble-operand-format.png" />
-
-图6：操作数格式
 </div>
+<center>图6：操作数格式</center>
 
 <br/>
 
