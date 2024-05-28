@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "lua常识一: attempt to yield across a C-call boundary 的原因分析"
+title: "lua 常识一: attempt to yield across a C-call boundary 的原因分析"
 date: 2023-10-08
 last_modified_at: 2023-10-08
 categories: [lua]

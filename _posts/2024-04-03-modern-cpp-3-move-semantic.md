@@ -116,8 +116,14 @@ was necessary to address known problems and to get the specification consistent.
 
 Bjarne Stroustrup 的这篇文章 《“New” Value Terminology》[1] 详细的记录了 CWG 开会讨论的过程。   
 
-![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cwg-ravlue-terminology-1.png)
-<center>图1：CWG meeting 讨论过程的一个混乱的分类[1]</center>    
+<br/>
+
+<center>
+
+![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cwg-ravlue-terminology-1.png)    
+图1：CWG meeting 讨论过程的一个混乱的分类[1]
+
+</center>    
 
 <br/>
 
@@ -150,22 +156,40 @@ Bjarne Stroustrup 觉得上面的分类很混乱，自己尝试对表达式的�
 
 据此，他画出了分类的草图：  
 
-![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cwg-ravlue-terminology-2.png)
-<center>图2：CWG meeting Bjarne Stroustrup 的值类别初步草图[1]</center>   
+<br/>
+
+<center>
+
+![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cwg-ravlue-terminology-2.png)    
+图2：CWG meeting Bjarne Stroustrup 的值类别初步草图[1]
+
+</center>   
 
 <br/>
 
 经过更细致的讨论，最终确定的分类图是这样的：   
 
-![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cwg-ravlue-terminology-3.png)
-<center>图3：CWG meeting 最终确定的值类别草图[2]</center>   
+<br/>
+
+<center>
+
+![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cwg-ravlue-terminology-3.png)      
+图3：CWG meeting 最终确定的值类别草图[2]
+
+</center>   
 
 <br/>
 
 上图倒过来看就是 c++11 的最终规范了:   
 
+<br/>
+
+<center>
+
 ![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-expression-value-categories.png)   
 图4：c++11 value categories[5]    
+
+</center>   
 
 <br/>
 
