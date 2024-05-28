@@ -76,9 +76,9 @@ tags: [lua]
     |     |
     |     |
     |-----| co1 resume (setjmp) <-
-    | co2 |                      | 
-    |  的 |                      |
-    |  栈 |                      |
+    |     |                      | 
+    | co2 |                      |
+    |stack|                      |
     |-----| co2 yield (longjmp) ->
       栈顶
 ```    
@@ -88,13 +88,20 @@ tags: [lua]
 
 <br/>
 
-
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-co-yield-across-c-call-boundary.png" />
 </div>
 <center>图1：lua yield 示意图</center>  
 
 <br/>
+
+上图中：   
+1、co1 resume 了 co2，co2 开始执行，co2 的 callinfo 调用链中有 lua 也有 c 函数，其中的 c 函数会操作 lua 数据栈和 c 栈，c 栈在图中就是 "co2 c stack" 那一块内存。   
+2、co2 yield 的时候，执行流回到 co1。   
+3、co1 又继续执行，就会把 "co2 c stack" 这一块内存覆盖掉，这意味着 co2 那些还没执行完成的 c 函数的 c 栈被破坏了，即使 co2 再次被 resume，也无法正常运行了。   
+
+
+
 
 
 
