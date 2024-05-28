@@ -88,12 +88,11 @@ tags: [lua]
 
 <br/>
 
-<center>
 
-![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-co-yield-across-c-call-boundary.png)       
-图1：lua yield 示意图   
-
-</center>  
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-co-yield-across-c-call-boundary.png" />
+</div>
+<center>图1：lua yield 示意图</center>  
 
 <br/>
 
@@ -240,17 +239,6 @@ ok，现在知道，一个协程的调用链中如果先出现 lua_call 或 lua_
 
 这个跟 lua 协程的实现有关，它是通过 setjmp 和 longjmp 实现的，resume 对应 setjmp，yield 对应 longjmp。longjmp 对于协程内部纯 lua 的栈没啥影响，因为每个协程都有一块内存来保存自己的栈，但对于 C 栈就有影响了，一个线程只有一个 C 栈，longjmp 的时候，直接改掉了 C 栈的栈顶指针。如下图所示，longjmp 之后，逻辑回到了 A，那么 B 对应的整个栈帧都会被覆盖掉（相当于被抹除了）。即 B 协程 yield 之后需要执行的 C 代码就不执行了。           
 
-<br/>
-
-<center>
-
-![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-co-yield-across-c-call-boundary.png)     
-图1：yield 示意图
-
-</center>  
-
-<br/>
-
 解释得七七八八了，但还是有些抽象。先举个简单的例子来验证一下上面的说法吧。以下 demo 代码在这里可以找到： [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary) 。      
 
 [clib.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/clib.c)  
@@ -355,12 +343,10 @@ test_co_1.lua 用 lua bytecode explorer 生成出来的字节码是这样的：
 
 <br/>
 
-<center>
-
-![lua-coroutine-yield-bytecode](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-coroutine-yield-bytecode.png)    
-图2：test_co_1.lua 的字节码
-
-</center>  
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-coroutine-yield-bytecode.png" />
+</div>
+<center>图2：test_co_1.lua 的字节码</center>  
 
 <br/>
 
@@ -370,12 +356,10 @@ test_co_1.lua 用 lua bytecode explorer 生成出来的字节码是这样的：
 
 <br/>
 
-<center>
-
-![lua-coroutine-yield-bytecode-co-func](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-coroutine-yield-bytecode-co-func.png)     
-图3：co_b 的字节码
-
-</center>   
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-coroutine-yield-bytecode-co-func.png" />
+</div>
+<center>图3：co_b 的字节码</center>   
 
 <br/>
 
