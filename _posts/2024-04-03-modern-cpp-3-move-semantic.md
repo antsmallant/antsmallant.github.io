@@ -118,12 +118,13 @@ Bjarne Stroustrup 的这篇文章 《“New” Value Terminology》[1] 详细的
 
 <br/>
 
-<center>
+<div align="center">
 
-![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cwg-ravlue-terminology-1.png)    
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cwg-ravlue-terminology-1.png" />
+
 图1：CWG meeting 讨论过程的一个混乱的分类[1]
 
-</center>    
+</div>
 
 <br/>
 
@@ -158,12 +159,11 @@ Bjarne Stroustrup 觉得上面的分类很混乱，自己尝试对表达式的�
 
 <br/>
 
-<center>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cwg-ravlue-terminology-2.png" />   
 
-![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cwg-ravlue-terminology-2.png)    
 图2：CWG meeting Bjarne Stroustrup 的值类别初步草图[1]
-
-</center>   
+</div>   
 
 <br/>
 
@@ -171,12 +171,13 @@ Bjarne Stroustrup 觉得上面的分类很混乱，自己尝试对表达式的�
 
 <br/>
 
-<center>
+<div align="center">
 
 ![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cwg-ravlue-terminology-3.png)      
+
 图3：CWG meeting 最终确定的值类别草图[2]
 
-</center>   
+</div>   
 
 <br/>
 
