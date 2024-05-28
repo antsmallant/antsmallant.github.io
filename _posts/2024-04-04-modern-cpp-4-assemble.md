@@ -30,12 +30,11 @@ tags: [c++]
 
 <br/>
 
-<center>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cpp-insights-cpp-lambda.png" />
 
-![cpp-insights-cpp-lambda](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-cpp-insights-cpp-lambda.png)      
 图1：cpp-insights-cpp-lambda
-
-</center>
+</div>
 
 <br/>
 
@@ -117,12 +116,11 @@ c++ 的 hello world，代码链接： https://gcc.godbolt.org/z/87xT8scqn 。
 
 <br/>
 
-<center>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-compiler-explorer-cpp-helloworld.png" />
 
-![compiler-explorer-cpp-helloworld](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-compiler-explorer-cpp-helloworld.png)      
 图2：compiler explorer c++ hello world
-
-</center>
+</div>
 
 <br/>
 
@@ -130,12 +128,11 @@ python 的 hello world，代码链接：https://gcc.godbolt.org/z/8jM3d37dE 。
 
 <br/>
 
-<center>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-compiler-explorer-python3-helloworld.png" />
 
-![compiler-explorer-python3-helloworld](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-compiler-explorer-python3-helloworld.png)    
 图3：compiler explorer python hello world
-
-</center>
+</div>
 
 <br/>
 
@@ -143,12 +140,11 @@ python 的 hello world，代码链接：https://gcc.godbolt.org/z/8jM3d37dE 。
 
 <br/>
 
-<center>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-luac-lua-helloworld.png" />
 
-![luac-lua-helloworld](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-luac-lua-helloworld.png)     
 图4：luac lua hello world
-
-</center>
+</div>
 
 <br/>
 
@@ -391,12 +387,11 @@ ATT 和 intel 的区别是[1]：
 
 <br/>
 
-<center>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-stack-frame.png" />
 
-![stack-frame](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-stack-frame.png)     
 图5：stack frame
-
-</center>
+</div>
 
 <br/>
 
@@ -424,12 +419,11 @@ ATT 和 intel 的区别是[1]：
 
 <br/>
 
-<center>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-assemble-operand-format.png" />
 
-![assemble-operand-format](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/modern-cpp-assemble-operand-format.png)     
 图6：操作数格式
-
-</center>
+</div>
 
 <br/>
 
