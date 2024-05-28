@@ -90,14 +90,12 @@ tags: [lua]
 
 <center>
 
-![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-co-yield-across-c-call-boundary.png)     
-图1：lua yield 示意图
+![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-co-yield-across-c-call-boundary.png)       
+图1：lua yield 示意图   
 
 </center>  
 
 <br/>
-
-上图
 
 
 
