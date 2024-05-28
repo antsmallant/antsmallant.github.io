@@ -26,7 +26,7 @@ tags: [lua]
 
 这个 issue：[一个关于 yield across a C-call boundary 的问题](https://github.com/cloudwu/skynet/issues/394)，云风的解释是：   
 
->`C (skynet framework)->lua (skynet service) -> C -> lua`
+>`C (skynet framework)->lua (skynet service) -> C -> lua`    
 >最后这个 lua 里如果调用了 yield 就会产生。   
 
 <br/>
@@ -64,11 +64,42 @@ tags: [lua]
 
 以上解释，感觉都没有把这个问题说清楚，所以有了这篇文章。  
 
-这个问题其实并不复杂，但要理解问题发生的机制，需要具备这些常识：c 代码是如何运行的，函数调用时栈帧是如何变化的，lua vm 是如何工作的，setjmp/longjmp 是怎么工作的。    
-
 ---
 
 # 2. 问题分析
+
+问题的关键就在于： lua 函数只操作 lua 数据栈，而 c 函数不止操作 lua 数据栈，还会操作 c 栈（即操作系统线程的栈），所以协程的函数调用链中，如果出现了 c 函数，那么接下来如果有 yield，不管这个 yield 是什么函数调用的，在底层都会通过 longjmp 回到 resume (setjmp) 之处，从而导致 c 函数依赖的 c 栈被后续的执行覆盖。  
+
+```
+      c 栈
+      栈底
+    |     |
+    |     |
+    |-----| co1 resume (setjmp) <-
+    | co2 |                      | 
+    |  的 |                      |
+    |  栈 |                      |
+    |-----| co2 yield (longjmp) ->
+      栈顶
+```    
+
+
+看图：  
+
+<br/>
+
+<center>
+
+![](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-co-yield-across-c-call-boundary.png)     
+图1：lua yield 示意图
+
+</center>  
+
+<br/>
+
+上图
+
+
 
 ---
 
@@ -86,18 +117,7 @@ tags: [lua]
 
 * 如下图，co2 longjmp 之后 c 栈指针回退到 co1 setjmp 之处；而 yield 出去的协程 co2 的 c 函数就是依赖着 setjmp 到 longjmp 之间的这段 c 栈空间的；既然 c 栈指针被回退了，那么随着 co1 恢复执行，它就会把这段 c 栈空间覆盖掉，所以 co2 里的 c 函数是无法恢复执行的；   
 
-```
-      c 栈
-      栈底
-    |     |
-    |     |
-    |-----| co1 resume (setjmp) <-
-    | co2 |                      | 
-    |  的 |                      |
-    |  栈 |                      |
-    |-----| co2 yield (longjmp) ->
-      栈顶
-```
+
 
 以上，对于理解了 lua vm 的人，大致就知道是怎么回事了。  
 
