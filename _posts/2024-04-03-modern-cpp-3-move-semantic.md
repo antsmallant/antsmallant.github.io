@@ -197,16 +197,7 @@ Bjarne Stroustrup 觉得上面的分类很混乱，自己尝试对表达式的�
 
 ## 2.4 c++11 值类别详解
 
-```
-     expression
-       /    \
-   glvalue  rvalue
-    /   \    /  \
- lvalue xvalue  prvalue
-```
-
-
-概括一下： 
+根据图4概括一下： 
 
 * 主要的值类别就三种：lvalue，xvalue，prvalue，每个表达式只属于其中之一。  
 
