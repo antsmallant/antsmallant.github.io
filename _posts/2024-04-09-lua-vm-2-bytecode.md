@@ -47,6 +47,15 @@ upvalues (1) for 0x55a732d64cc0:
         0       _ENV    1       0
 ```
 
+<br/>
+
+如果是对于一份经过 luac 编译的字节码文件，则直接 `luac -l <文件名>` 或 `luac -l -l <文件名>` 就行了，直接显示。比如这样： 
+
+```bash
+luac -o a.lua.out a.lua
+luac -l -l a.lua.out
+```
+
 ---
 
 ## 1.2 方法二：使用在线工具：luac.nl - Lua Bytecode Explorer
@@ -92,7 +101,28 @@ lua5.4 :  https://zhuanlan.zhihu.com/p/277452733
 
 ---
 
-## 2.2 指令集的基本格式
+## 2.2 指令的基本格式
+
+lua5.4 指令的基本信息：  
+
+* 使用一个 32 位的无符整数来表示一个指令，包含两大部分：指令码和操作数
+
+* 其中前 7 位用于表示指令码，其余的根据指令码使用不同的编码格式去解析
+
+* 有 5 种格式编码格式：iABC, iABx, iAsBx, iAx, isJ，每个指令只属于其中之一   
+
+下图取自 lua 源码中的 lopcode.h，它精确的标明了不同编码格式用到了哪些 bit 位。  
+
+<br/>
+
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-lua5.4-opcode.png"/>
+</div>
+<center>图2：lua5.4 opcode 格式</center>
+
+<br/>
+
+举例说明一下，
 
 ---
 
