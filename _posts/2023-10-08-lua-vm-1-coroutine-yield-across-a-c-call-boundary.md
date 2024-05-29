@@ -80,19 +80,12 @@ tags: [lua]
 
 setjmp/longjmp 示意图：  
 
-```
-c 栈从栈底向栈顶生长 
+<br/>
 
-      栈底
-    |     |
-    |     |
-    |-----| co1 resume (setjmp) <-
-    |     |                      | 
-    | co2 |                      |
-    |stack|                      |
-    |-----| co2 yield (longjmp) ->
-      栈顶
-```    
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-co-yield-setjmp-and-longjmp.png" />
+</div>
+<center>图1：setjmp and longjmp</center>  
 
 <br/>
 
@@ -103,7 +96,7 @@ c 栈从栈底向栈顶生长
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-co-yield-across-c-call-boundary.png" />
 </div>
-<center>图1：lua yield 示意图</center>  
+<center>图2：lua yield 示意图</center>  
 
 <br/>
 
