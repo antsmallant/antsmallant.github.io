@@ -239,7 +239,67 @@ static int f2(lua_State* L) {
 
 上代码吧：    
 
+```lua
+-- test_co_3.lua
 
+local co = require "coroutine"
+local clib = require "clib"
+
+function lua_func_for_c()
+    print("enter lua_func_for_c")
+    co.yield()
+    print("leave lua_func_for_c")
+end
+
+local co2 = co.create(function()
+    print("enter co2")
+    clib.f3()
+    print("leave co2")
+end)
+
+local ok, err = co.resume(co2)
+print(ok, err)
+
+```
+
+```c
+
+// clib.c
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <lua.h>
+#include <lauxlib.h>
+
+static int f3(lua_State* L) {
+    printf("enter f3\n");
+    lua_getglobal(L, "lua_func_for_c");  
+    lua_call(L, 0, 0); // 调用 lua 脚本里定义的 lua 函数： lua_func_for_c
+    printf("leave f3\n");
+    return 0;
+}
+
+LUAMOD_API int luaopen_clib(lua_State* L) {
+    luaL_Reg funcs[] = {
+        {"f3", f3},
+        {NULL, NULL}
+    };
+    luaL_newlib(L, funcs);
+    return 1;
+}
+
+```   
+
+输出是：   
+
+```
+enter co2
+enter f3
+enter lua_func_for_c
+false   attempt to yield across a C-call boundary
+```
+
+结果符合我们的预期，报错了。  
 
 
 ---
@@ -324,11 +384,13 @@ coco 库能做到从 c 调用中恢复，是因为它为每个协程准备了专
 
 * lua 官方实现的 vm 不是 "fully Resumable" 的，原因在于多个协程共用 c 栈，会导致协程的函数调用链中有 c 函数的情况下，yield 报错或工作不正常。   
 
-* lua 提供的函数中，有些使用了 lua_call/lua_pcall，很容易触发这个问题，比如 lua 函数：require，c 函数：luaL_dostring、luaL_dofile；而有些使用了 lua_callk/lua_pcallk 规避这个问题，比如 lua 函数：dofile。    
+* lua 提供的函数中，有些使用了 lua_call/lua_pcall，容易导致 yield 报错，比如 lua 函数：require，c 函数：luaL_dostring、luaL_dofile。   
 
-* lua-5.2 及以上的，可以使用 lua_callk / lua_pcallk / lua_yieldk 来规避 yield 报错问题。   
+* lua 提供的函数中，有些使用了 lua_callk/lua_pcallk 规避  yield 报错，比如 lua 函数：dofile。     
 
-* lua-5.1 可以使用 luajit 或 lua-5.1.5+coco库的方法解决 yield 报错。  
+* lua-5.2 及以上的，可以使用 lua_callk / lua_pcallk / lua_yieldk 来规避 yield 报错问题。     
+
+* lua-5.1 可以使用 luajit 或 lua-5.1.5官方版本+coco库的方法来解决 yield 报错问题。    
 
 ---
 
