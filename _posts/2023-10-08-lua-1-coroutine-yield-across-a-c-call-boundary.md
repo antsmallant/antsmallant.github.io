@@ -363,13 +363,15 @@ lua 对于此问题的解决方案是引入 lua_callk / lua_pcallk / lua_yieldk�
 
 lua-5.1 有两个办法，都与 luajit 相关。  
 
+<br/>
+
 **方法一：使用 luajit**
 
 直接使用 luajit ( [https://luajit.org/luajit.html](https://luajit.org/luajit.html) )，luajit 支持 "Fully Resumable VM"[1]:   
 
 >The LuaJIT VM is fully resumable. This means you can yield from a coroutine even across contexts, where this would not possible with the standard Lua 5.1 VM: e.g. you can yield across pcall() and xpcall(), across iterators and across metamethods.    
 
-
+<br/>
 
 **方法二：使用 lua-5.1.5 + coco 库**
 
