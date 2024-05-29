@@ -231,9 +231,11 @@ static int f2(lua_State* L) {
 
 ## 3.2 情况二：c 调用 lua，lua 后续调用出现 yield
 
-结果：yield 时会报错 "attempt to yield across a C-call boundary"。   
+**结果**   
+yield 时会报错 "attempt to yield across a C-call boundary"。   
 
-原因：上面原理的时候分析过了，源码实现上，c 调用 lua 是用的 lua_call 这个 api，它会设置一个标志位，在后续调用链中（无论隔了多少层，无论是 c 还是 lua）只要执行了 yield，都会判断标志位，然后触发报错。   
+**原因**  
+上面原理的时候分析过了，源码实现上，c 调用 lua 是用的 lua_call 这个 api，它会设置一个标志位，在后续调用链中（无论隔了多少层，无论是 c 还是 lua）只要执行了 yield，都会判断标志位，然后触发报错。    
 
 <br/>   
 
@@ -299,8 +301,9 @@ enter lua_func_for_c
 false   attempt to yield across a C-call boundary
 ```
 
-结果符合我们的预期，报错了。  
+<br/>
 
+clib 里的 c 函数 f3，通过 lua_call 调用 lua 脚本里面定义的 lua 函数 lua_func_for_c，而 lua_func_for_c 里面会 yield，所以这种情况下 yield 就直接报错了。  
 
 ---
 
@@ -327,6 +330,8 @@ L->nny++;
 
 # 4. 问题总结 & 解决办法
 
+---
+
 ## 4.1 问题总结
 
 经过上面分析，可以看到，问题的核心在于 lua 的多个协程共用一个 c 栈，而协程里面 c 函数调用又会依赖 c 栈，如果在它返回之前就 yield 了，则它依赖的 c 栈会被其他协程覆盖掉，也就无法恢复运行了。按照 luajit 的说法，lua 官方实现不是一种 "fully resumable vm"。   
@@ -341,6 +346,8 @@ L->nny++;
 ---
 
 ## 4.2 解决办法
+
+---
 
 ## 4.2.1 lua-5.2 及以上
 
