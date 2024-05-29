@@ -149,6 +149,10 @@ yield 时不会报错，但实际上也没能正常工作。
 
 上代码吧。  
 
+<br/>
+
+lua 代码：test_co_1.lua    
+
 ```lua
 -- test_co_1.lua
 
@@ -167,6 +171,10 @@ print("in lua:", ok1, ret1)
 local ok2, ret2 = co.resume(co2)
 print("in lua:", ok2, ret2)
 ```
+
+<br/>
+
+c代码：clib.c   
 
 ```c
 // clib.c
@@ -196,6 +204,8 @@ LUAMOD_API int luaopen_clib(lua_State* L) {
     return 1;
 }
 ```
+
+<br/>
 
 输出是：   
 
