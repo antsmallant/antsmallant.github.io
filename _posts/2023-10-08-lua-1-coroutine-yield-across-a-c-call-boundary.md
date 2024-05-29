@@ -147,7 +147,7 @@ yield 时不会报错，但实际上也没能正常工作。
 
 <br/>
 
-上代码吧。  
+上代码吧。   
 
 <br/>
 
@@ -207,7 +207,7 @@ LUAMOD_API int luaopen_clib(lua_State* L) {
 
 <br/>
 
-输出是：   
+输出：   
 
 ```
 clib.f1: before yield
@@ -215,9 +215,13 @@ first time return:      true    yield from clib.f1
 second time return:     true    nil
 ```
 
+<br/>
+
 clib.f1 的这句代码 `printf("clib.f1: after yield\n");` 在第二次 resume 的时候没有被执行，但代码也没报错，跟开头说的结果一样。lua 大概是认为没有人会这样写代码吧。   
 
 这种情况，如果要让 clib.f1 能执行 yield 之后的，需要把 lua_yield 换成 lua_yieldk，然后把 yield 之后要执行的逻辑放到另一个函数里，类似这样：   
+
+<br>
 
 ```c
 
@@ -249,7 +253,11 @@ yield 时会报错 "attempt to yield across a C-call boundary"。
 
 <br/>   
 
-上代码吧：    
+上代码吧。   
+
+<br/>  
+
+lua 代码： test_co_3.lua   
 
 ```lua
 -- test_co_3.lua
@@ -273,6 +281,10 @@ local ok, err = co.resume(co2)
 print(ok, err)
 
 ```
+
+<br/>
+
+c 代码：clib.c    
 
 ```c
 
@@ -302,7 +314,9 @@ LUAMOD_API int luaopen_clib(lua_State* L) {
 
 ```   
 
-输出是：   
+<br/>
+
+输出：   
 
 ```
 enter co2
