@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "lua 常识一: attempt to yield across a C-call boundary 的原因分析"
+title: "lua vm 常识一: attempt to yield across a C-call boundary 的原因分析"
 date: 2023-10-08
 last_modified_at: 2023-10-08
 categories: [lua]
@@ -62,7 +62,7 @@ tags: [lua]
 
 ## 1.4 小结
 
-以上解释，感觉都没有把这个问题说清楚，所以有了这篇文章。  
+以上解释，感觉都没有把这个问题说清楚，需要深入到 lua vm 的工作机制才能解释清楚，所以有了这篇文章。   
 
 ---
 
@@ -119,21 +119,29 @@ c 栈从栈底向栈顶生长
 
 # 3. 从代码上分析问题
 
-其实讲完原理就够了，但是 lua 在 yield 这个问题上会选择性不报错，所以还是有必要从源码上讲一讲。  
+其实讲完原理就够了，但是 lua 在 yield 这个问题上会选择性不报错，所以还是有必要从源码上讲一讲。   
 
-以下分析使用的 lua 版本是 5.3.6，下载链接: [https://lua.org/ftp/lua-5.3.6.tar.gz](https://lua.org/ftp/lua-5.3.6.tar.gz)，本人的 github 也有对应源码: [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6) 。     
+以下分析使用的 lua 版本是 5.3.6（lua-5.2 跟 lua-5.4 也是差不多的）。    
+
+lua-5.3.6 下载链接: [https://lua.org/ftp/lua-5.3.6.tar.gz](https://lua.org/ftp/lua-5.3.6.tar.gz)。本人的 github 也有对应源码: [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6) 。     
   
 下文展示的 demo 代码都在此，有 makefile，可以直接跑起来：[https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary) 。   
+
 
 ---
 
 ## 3.1 情况一：lua 调用 c，在 c 中直接 yield
 
-结果：这种情况不会报错，但实际上也没能正常工作。   
+**结果**   
+yield 时不会报错，但实际上也没能正常工作。   
 
-不报错的原因：lua 官方自己设定的，这种情况就是不报错，但也不能正常工作。  
+**不报错的原因**   
+这是 lua 官方的设定，lua 调用 c 函数或者其他什么函数，都是被编译成 OP_CALL 指令，而 OP_CALL 并不会设一个标志位导致后面有 yield 的时候报错；而 c 调用 lua 是用 lua_call 这个 api，它会设置一个标志位，后面 yield 时判断到标志位就报错： "attempt to yield across a C-call boundary"。   
 
-没能正常工作的原因：lua 调用 c 函数或者其他什么函数，都是被编译成 OP_CALL 指令，而 OP_CALL 并不会设一个标志位导致后面有 yield 的时候报错；而 c 调用 lua 是用 lua_call 这个 api 的，这个 api 会设置一个标志位，当后面有 yield 的时候就会因为这个标志位导致这个报错： "attempt to yield across a C-call boundary" 。    
+**没能正常工作的原因**  
+上面分析过了，yield 之后，协程的 c 栈被恢复执行的协程覆盖掉了。       
+
+<br/>
 
 上代码吧。  
 
@@ -193,7 +201,7 @@ first time return:      true    yield from clib.f1
 second time return:     true    nil
 ```
 
-clib.f1 的这句代码 `printf("clib.f1: after yield\n");` 在第二次 resume 的时候没有执行，但代码也没报错，跟开头说的结果一样。lua 大概是认为没有人会这样写代码吧。   
+clib.f1 的这句代码 `printf("clib.f1: after yield\n");` 在第二次 resume 的时候没有被执行，但代码也没报错，跟开头说的结果一样。lua 大概是认为没有人会这样写代码吧。   
 
 这种情况，如果要让 clib.f1 能执行 yield 之后的，需要把 lua_yield 换成 lua_yieldk，然后把 yield 之后要执行的逻辑放到另一个函数里，类似这样：   
 
@@ -221,358 +229,94 @@ static int f2(lua_State* L) {
 
 结果：yield 时会报错 "attempt to yield across a C-call boundary"。   
 
-原因：上面原理的时候分析过了，而源码实现上，c 调用 lua 是用的 lua_call 这个 api，这个 api 里面会设置一个标志位，在后续调用链中，无论隔了多少层，无论是 c 还是 lua，只要执行了 yield，就会导致报错。  
+原因：上面原理的时候分析过了，源码实现上，c 调用 lua 是用的 lua_call 这个 api，它会设置一个标志位，在后续调用链中（无论隔了多少层，无论是 c 还是 lua）只要执行了 yield，都会判断标志位，然后触发报错。   
 
-上代码吧：  
+<br/>   
 
-
-
-
+上代码吧：    
 
 
 
 
 ---
 
+## 3.3 lua_call 是如何阻止后续 yield 的？
 
-## 3.2 源码上分析
-
-首先，什么情况下才会出现这个错误？看一下 lua 源码里面的 lua_yieldk（ [ldo.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/ldo.c) ）的实现，就可以知道，在一个协程的调用链中，出现一个 luaD_callnoyield 调用之后再 yield 就会报错，大致是这样：`... -> luaD_callnoyield -> ... -> yield`。并且，不管这个 yield 是在 c 中调用 `lua_yield` 还是在 lua 中调用 `coroutine.yield`。   
-
-那 luaD_callnoyield 具体是如何限制后续逻辑调用 yield 的呢？  
-
-先看一下 luaD_callnoyield ( [ldo.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/ldo.c) ) 的实现：   
+直接看 lua 源码，lua_callk 会调用到 luaD_callnoyield，而 luaD_callnoyield 设置了标志位：  
 
 ```c
-void luaD_callnoyield (lua_State *L, StkId func, int nResults) {
-  L->nny++;
-  luaD_call(L, func, nResults);
-  L->nny--;
-}
-```    
+L->nny++;
+```
 
-再看下 lua_yieldk ( [ldo.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/ldo.c) ) 的实现:   
+而在 lua_yieldk 中，判断了标志位：  
 
 ```c
-LUA_API int lua_yieldk (lua_State *L, int nresults, lua_KContext ctx,
-                        lua_KFunction k) {
-  ...
   if (L->nny > 0) {
     if (L != G(L)->mainthread)
       luaG_runerror(L, "attempt to yield across a C-call boundary");
     else
       luaG_runerror(L, "attempt to yield from outside a coroutine");
   }
-  L->status = LUA_YIELD;
-  ci->extra = savestack(L, ci->func);  /* save current 'func' */
-  ...
-}
-```     
-
-从源码可以看出，luaD_callnoyield 是通过设置 `L->nny` 这个变量来控制的。    
-
-那什么情况下会调用 luaD_callnoyield 呢？从源码上看有好几处，但跟日常开发关系密切的只有 lua_callk 及 lua_pcallk，这两个函数大同小异，就先看一下 lua_callk ( [lapi.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/lapi.c) ) 的实现：  
-
-```c
-LUA_API void lua_callk (lua_State *L, int nargs, int nresults,
-                        lua_KContext ctx, lua_KFunction k) {
-  ...
-  func = L->top - (nargs+1);
-  if (k != NULL && L->nny == 0) {  /* need to prepare continuation? */
-    L->ci->u.c.k = k;  /* save continuation */
-    L->ci->u.c.ctx = ctx;  /* save context */
-    luaD_call(L, func, nresults);  /* do the call */
-  }
-  else  /* no continuation or no yieldable */
-    luaD_callnoyield(L, func, nresults);  /* just do the call */
-  ...
-}
-```     
-
-lua_callk 在 `L->nny > 0` 或者参数 k 为 NULL 的时候，都会调用 luaD_callnoyield。`L->nny > 0` 的情况不用说了，肯定是要调用 luaD_callnoyield 的。但 k 是什么呢？k 是 continuation function，就是执行完要调用的函数之后，后续要执行的函数。这里 ( [https://lua.org/manual/5.3/manual.html#4.7](https://lua.org/manual/5.3/manual.html#4.7) ) 有解释，后文也会解释。    
-
-但是通常使用的函数是 lua_call/lua_pcall ( [lua.h](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/lua.h) )，这两个函数的定义是这样的：
-
-```c
-#define lua_call(L,n,r)		lua_callk(L, (n), (r), 0, NULL)
-#define lua_pcall(L,n,r,f)	lua_pcallk(L, (n), (r), (f), 0, NULL)
-```  
-
-它们传递的参数 k 都为 NULL，所以这两个绝对会调用 luaD_callnoyield。   
-
-ok，现在知道，一个协程的调用链中如果先出现 lua_call 或 lua_pcall，之后就不能有 yield 了。但为什么要这样限制呢？   
-
-这个跟 lua 协程的实现有关，它是通过 setjmp 和 longjmp 实现的，resume 对应 setjmp，yield 对应 longjmp。longjmp 对于协程内部纯 lua 的栈没啥影响，因为每个协程都有一块内存来保存自己的栈，但对于 C 栈就有影响了，一个线程只有一个 C 栈，longjmp 的时候，直接改掉了 C 栈的栈顶指针。如下图所示，longjmp 之后，逻辑回到了 A，那么 B 对应的整个栈帧都会被覆盖掉（相当于被抹除了）。即 B 协程 yield 之后需要执行的 C 代码就不执行了。           
-
-解释得七七八八了，但还是有些抽象。先举个简单的例子来验证一下上面的说法吧。以下 demo 代码在这里可以找到： [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary) 。      
-
-[clib.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/clib.c)  
-
-```c
-#include <stdlib.h>
-#include <stdio.h>
-#include <lua.h>
-#include <lauxlib.h>
-
-static int f1(lua_State* L) {
-    printf("enter f1\n");
-    lua_getglobal(L, "lua_yield");
-    lua_call(L, 0, 0);
-    printf("leave f1\n");
-    return 0;
-}
-
-LUAMOD_API int luaopen_clib(lua_State* L) {
-    luaL_Reg funcs[] = {
-        {"f1", f1},
-        {NULL, NULL}
-    };
-    luaL_newlib(L, funcs);
-    return 1;
-}
-```   
-
-[test_co_1.lua](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/test_co_1.lua)  
-
-```lua
-local co = require "coroutine"
-local clib = require "clib"
-
-function lua_yield()
-    print("enter lua_yield")
-    co.yield()
-    print("leave lua_yield")
-end
-
-local co_b = co.create(function()
-    print("enter co_b")
-    clib.f1()
-    print("leave co_b")
-end)
-
-local ok, err = co.resume(co_b)
-print(ok, err)
-```    
-
-编译&执行：    
-
-```bash
-gcc -fPIC -shared -g -o clib.so clib.c -I "../../3rd/lua-5.3.6/install/include" -L "../../3rd/lua-5.3.6/install/lib"
-
-../../3rd/lua-5.3.6/install/bin/lua test_co_1.lua
-```      
-
-输出：   
-
 ```
-enter f1
-enter lua_yield
-false   attempt to yield across a C-call boundary
-```   
-
-解释一下上面的代码，在 test_co_1.lua，创建了一个协程 co_b，co_b 里面调用了 c 函数 f1，而 f1 又通过 lua_call 调用了 test_co_1.lua 里面定义的 lua 函数 lua_yield，而 lua_yield 含有 yield 逻辑，所以就报错了：attempt to yield across a C-call boundary 。符合上文说的，只要这样就会报错： `... -> lua_call -> ... -> yield `。    
-
-那如果 lua_call 不报错，允许 co_b 去 yield，当再次 resume co_b 的时候，f1 的那句 `printf("leave f1\n");` 会执行吗？不会的，因为栈帧已经完全被破坏了，不会执行 yield 之后的 C 代码了。    
 
 ---
 
-# 4. 深入讨论
+# 4. 问题总结 & 解决办法
 
-## 4.1 lua 调用 C 函数是使用 lua_call/lua_pcall 吗？   
+## 4.1 问题总结
 
-答案：不是。   
-上面的例子中，如果把 clib 的 f1 改成这样，还会报错吗？   
+经过上面分析，可以看到，问题的核心在于 lua 的多个协程共用一个 c 栈，而协程里面 c 函数调用又会依赖 c 栈，如果在它返回之前就 yield 了，则它依赖的 c 栈会被其他协程覆盖掉，也就无法恢复运行了。按照 luajit 的说法，lua 官方实现不是一种 "fully resumable vm"。   
 
-```c
-static int f1(lua_State* L) {
-    printf("enter f1\n");
-    lua_yield(L, 0);
-    printf("leave f1\n");
-    return 0;
-}
-```      
+这里面 yield 又分两种情况：  
 
-它的输出是这样的，没有报错了：   
-
-```
-enter co_b
-enter f1
-true    nil
-```    
-
-为什么不会报错了呢？因为 co_b 里面调用 clib.f1，其底层实现并不是使用 lua_call/lua_pcall。那具体是什么呢？可以在 test_co_1.lua 对应的 lua 字节码中寻找答案。    
-
-生成 lua 字节码可以使用这样的命令: `luac -l -l -p <文件名>`，对于上文的 test_co_1.lua，命令是： `luac -l -l -p test_co_1.lua`。也可以使用这个在线的 lua bytecode explorer: [https://www.luac.nl/](https://www.luac.nl/) 进行查看，这个网站厉害的地方在于它有好多个 lua 版本可选，很方便。       
-
-test_co_1.lua 用 lua bytecode explorer 生成出来的字节码是这样的：  
-
-<br/>
-
-<div align="center">
-<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-coroutine-yield-bytecode.png" />
-</div>
-<center>图2：test_co_1.lua 的字节码</center>  
-
-<br/>
-
-关于字节码的具体含义，可以参考这个文章：[Lua 5.3 Bytecode Reference](https://the-ravi-programming-language.readthedocs.io/en/latest/lua_bytecode_reference.html)，或是这个文章：[深入理解 Lua 虚拟机](https://cloud.tencent.com/developer/article/1648925)。       
-
-说回 co_b，调用 clib.f1 实际上是使用了 lua 的 CALL 指令，如下图所示：  
-
-<br/>
-
-<div align="center">
-<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-coroutine-yield-bytecode-co-func.png" />
-</div>
-<center>图3：co_b 的字节码</center>   
-
-<br/>
-
-CALL 指令是如何实现的呢？可以看一下源码 ( [lvm.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/lvm.c) 的 luaV_execute ) ：  
-
-```c
-void luaV_execute (lua_State *L) {
-    ...
-      vmcase(OP_CALL) {
-        int b = GETARG_B(i);
-        int nresults = GETARG_C(i) - 1;
-        if (b != 0) L->top = ra+b;  /* else previous instruction set top */
-        if (luaD_precall(L, ra, nresults)) {  /* C function? */
-          if (nresults >= 0)
-            L->top = ci->top;  /* adjust results */
-          Protect((void)0);  /* update 'base' */
-        }
-        else {  /* Lua function */
-          ci = L->ci;
-          goto newframe;  /* restart luaV_execute over new Lua function */
-        }
-        vmbreak;
-      }
-    ...
-}
-```   
-
-可以看到 OP_CALL 只是调用了 luaD_precall ( [lvm.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/lvm.c) )，而 luaD_precall 的内部并没有调用到 lua_call/lua_pcall 或 luaD_callnoyield 。    
+|情况|症状|原因|
+|:--|:--|:--|
+|lua调c|不报错，但也不正常工作|lua 里调用函数（无论 lua 或 c），都是编译成 OP_CALL 指令，这个指令的实现不会设置让 yield 报错的标志位|
+|c调lua|报错|用的是 lua_call，它会设置让 yield 报错的标志位| 
 
 ---
 
-## 4.2 怎么才能随心所欲的 yield 呢？
+## 4.2 解决办法
 
-上面的例子中把 clib 的 f1 改成这样就可以 yield 了：  
+## 4.2.1 lua-5.2 及以上
 
-```c
-static int f1(lua_State* L) {
-    printf("enter f1\n");
-    lua_yield(L, 0);
-    printf("leave f1\n");
-    return 0;
-}
-```      
- 
-但是 yield 之后再次 resume，这句 `printf("leave f1\n");` 却没有被执行了。原因在上文也解释了。那要怎么做才能让它在 resume 之后被执行呢？这就得用到 lua_callk/lua_pcallk/lua_yieldk 了，这也是上文中提到的解决方案 [https://lua.org/manual/5.3/manual.html#4.7](https://lua.org/manual/5.3/manual.html#4.7) 。    
+lua 对于此问题的解决方案是引入 lua_callk / lua_pcallk / lua_yieldk，要求使用者把 yield 之后要执行的东西放到一个单独的函数 (类型为 lua_KFunction) 里，k 意为 continue，把这个 k 函数作为参数传给 lua_callk / lua_pcallk / lua_yieldk，这个 k 函数会被记录起来，等 yield 返回的时候调用它。   
 
-举个例子说明一下怎么使用，这里是在 C 代码中直接 yield 的，所以使用 lua_yieldk 就够了。    
+显然，lua 官方的这种方案有点操蛋，但也不失为一种办法。   
 
-[clib.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/clib.c)   
-
-```c
-static int f1_v2_continue (lua_State *L, int d1, lua_KContext d2) {
-  printf("leave f1_v2\n");
-  return 0;
-}
-
-static int f1_v2(lua_State* L) {
-    printf("enter f1_v2\n");
-    lua_yieldk(L, 0, 0, f1_v2_continue);
-    return 0;
-}
-```  
-
-[test_co_2.lua](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/test_co_2.lua)   
-
-```lua
-local co = require "coroutine"
-local clib = require "clib"
-
-local co_b = co.create(function()
-    print("enter co_b")
-    clib.f1_v2()
-    print("leave co_b")
-end)
-
-local ok, err = co.resume(co_b)
-print(ok, err)
-
-local ok, err = co.resume(co_b)
-print(ok, err)
-```   
-
-编译&执行：    
-
-```bash
-gcc -fPIC -shared -g -o clib.so clib.c -I "../../3rd/lua-5.3.6/install/include" -L "../../3rd/lua-5.3.6/install/lib"
-
-../../3rd/lua-5.3.6/install/bin/lua test_co_2.lua
-```       
-
-输出：
-
-```
-enter co_b
-enter f1_v2
-true    nil
-leave f1_v2
-leave co_b
-true    nil
-```   
-
-通过把 `printf("leave f1_v2\n");` 放到 f1_v2_continue 里面去执行，在第二次 resume 的时候成功输出了 `leave f1_v2`。     
+不过悲催的是，lua 5.2 才引入 kfunction 的，所以 lua-5.1 要用其他的办法。  
 
 ---
 
-## 4.3 lua 提供的函数里面，哪些容易导致这个报错？  
+## 4.2.2 lua-5.1
 
-skynet ([https://github.com/cloudwu/skynet](https://github.com/cloudwu/skynet)) 里面调用 require 的时候很容易就报这个错： "attempt to yield across a C-call boundary"。看一下 require 是不是调用了 lua_call/lua_pcall，它对应的实现是 ll_require ( [loadlib.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/loadlib.c) )，从源码上看，确实使用了 lua_call。
+lua-5.1 有两个办法，都与 luajit 相关。  
 
-```c
-static int ll_require (lua_State *L) {
-  ...
-  findloader(L, name);
-  lua_pushstring(L, name);  /* pass name as argument to module loader */
-  lua_insert(L, -2);  /* name is 1st argument (before search data) */
-  lua_call(L, 2, 1);  /* run loader to load module */
-  ...
-}
-```   
+**方法一：使用 luajit**
 
-再翻看其他源码，可以发现，常用的这两个函数：luaL_dostring、luaL_dofile 也会调用 lua_call/lua_pcall，所以也是容易报错的。  
+直接使用 luajit ( [https://luajit.org/luajit.html](https://luajit.org/luajit.html) )，luajit 支持 "Fully Resumable VM"[1]:   
 
-那有没有使用 lua_callk/lua_pcallk 来避免报错的呢？有的，比如 lua 函数: dofile，它对应的实现是 luaB_dofile ( [lbaselib.c](https://github.com/antsmallant/antsmallant_blog_demo/blob/main/3rd/lua-5.3.6/src/lbaselib.c) )，使用了 lua_callk。  
+>The LuaJIT VM is fully resumable. This means you can yield from a coroutine even across contexts, where this would not possible with the standard Lua 5.1 VM: e.g. you can yield across pcall() and xpcall(), across iterators and across metamethods.    
 
-```c
-static int dofilecont (lua_State *L, int d1, lua_KContext d2) {
-  (void)d1;  (void)d2;  /* only to match 'lua_Kfunction' prototype */
-  return lua_gettop(L) - 1;
-}
-static int luaB_dofile (lua_State *L) {
-  const char *fname = luaL_optstring(L, 1, NULL);
-  lua_settop(L, 1);
-  if (luaL_loadfile(L, fname) != LUA_OK)
-    return lua_error(L);
-  lua_callk(L, 0, LUA_MULTRET, 0, dofilecont);
-  return dofilecont(L, 0, 0);
-}
-```   
 
-<br/>     
-     
+
+**方法二：使用 lua-5.1.5 + coco 库**
+
+
 ---
 
 # 5. 总结
-* 一般情况下，lua_call/lua_pcall 之后如果跟着 yield，就会报这个错：attempt to yield across a C-call boundary。问题的根本原因是 lua 协程的 yield 是通过 longjmp 实现的，longjmp 直接回退了 C 栈的指针，使得执行了 yield 的协程的 C 栈被抹掉了，那么执行到一半的 C 逻辑就不会在下次 resume 的时候继续执行。  
 
-* 要规避这个问题，可以使用 lua_callk/lua_pcallk/lua_yieldk，显式的指定一个函数作为 yield 回来后要执行的内容。  
+* lua 官方实现的 vm 不是 "fully Resumable" 的，原因在于多个协程共用 c 栈，会导致协程的函数调用链中有 c 函数的情况下，yield 报错或工作不正常。   
 
 * lua 提供的函数中，有些使用了 lua_call/lua_pcall，很容易触发这个问题，比如 lua 函数：require，c 函数：luaL_dostring、luaL_dofile；而有些使用了 lua_callk/lua_pcallk 规避这个问题，比如 lua 函数：dofile。    
 
-* 使用这个网站 [https://www.luac.nl/](https://www.luac.nl/)，或者使用 `luac -l -l -p <文件名>` 可以查看 lua 字节码。    
+* lua-5.2 及以上的，可以使用 lua_callk / lua_pcallk / lua_yieldk 来规避 yield 报错问题。   
+
+* lua-5.1 可以使用 luajit 或 lua-5.1.5+coco库的方法解决 yield 报错。  
+
+---
+
+# 6. 参考
+
+[1] luajit. extensions. Available at https://luajit.org/extensions.html.    
