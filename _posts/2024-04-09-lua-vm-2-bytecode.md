@@ -13,7 +13,7 @@ tags: [lua]
 
 本文讲一讲如何查看 lua 的字节码（bytecode），以及如何看懂字节码。   
 
-以下分析基于 lua-5.4.6。  
+以下分析基于 lua-5.4.6，下载地址：[https://lua.org/ftp/](https://lua.org/ftp/) 。 
 
 ---
 
@@ -21,15 +21,15 @@ tags: [lua]
 
 ## 1.1 方法一：使用 luac
 
-`luac -l -p <文件名>` ，如果要完整展示，则用 -l -l ，比如 `luac -l -l -p <文件名>`。  
+luac 是 lua 自带的编译程序，用法是：`luac -l -p <文件名>` ，如果要完整展示，则用 `-l -l`，比如 `luac -l -l -p <文件名>`。  
 
-比如有 lua 脚本 a.lua:  
+有 lua 脚本 a.lua:  
 
 ```lua
 print("hello, world")
 ```
 
-用 `lua -l -l -p a.lua` 生成出来是这样的：  
+用 `luac -l -l -p a.lua` 生成出来是这样的：  
 
 ```
 main <a.lua:0,0> (5 instructions at 0x55a732d64cc0)
@@ -53,7 +53,9 @@ upvalues (1) for 0x55a732d64cc0:
 
 Lua Bytecode Explorer 的完整网址是： [https://www.luac.nl/](https://www.luac.nl/)。   
 
-它支持从 4.0 到 5.4.6 的所有版本(截至2024.4)。它还支持生成代码分享链接，在页面底下有 Generate Link 按钮，比如我写的 hello world 脚本： https://luac.nl/s/f79aff49f5fd7746b4e3ae2a65 。  
+它支持从 4.0 到 5.4.6 的所有版本(截至 2024.4)。它还支持生成代码分享链接，在页面底下有 Generate Link 按钮，比如我写的 hello world 脚本： https://luac.nl/s/f79aff49f5fd7746b4e3ae2a65 。  
+
+**大部分情况下，用这个在线网站是最方便的，推荐使用。**  
 
 效果是这样的：  
 
@@ -66,18 +68,40 @@ Lua Bytecode Explorer 的完整网址是： [https://www.luac.nl/](https://www.l
 
 <br/>
 
-**大部分情况下，用这个在线网站是最方便的，推荐使用。**  
-
 ---
 
 # 2. 看懂字节码
 
-## 2.1 字节码的说明文档
+## 2.1 指令集的说明文档
 
-最直接的方式是看源码，
+**方法一：lua 源码**   
 
+最直接的方式是看源码，所有指令的定义在这个代码文件：lopcodes.h ，不同指令的具体实现在 lvm.c 的 `luaV_execute` 函数里。  
 
+<br/>
+
+**方法二：一些文档或文章**    
+
+lua5.2 :  http://files.catwell.info/misc/mirror/lua-5.2-bytecode-vm-dirk-laurie/lua52vm.html     
+
+lua5.3 :  https://the-ravi-programming-language.readthedocs.io/en/latest/lua_bytecode_reference.html   
+
+lua5.4 :  https://zhuanlan.zhihu.com/p/277452733    
+
+<br/>
 
 ---
 
+## 2.2 指令集的基本格式
 
+---
+
+## 2.3 几个特别的指令说明
+
+---
+
+## 2.4 举个例子
+
+---
+
+## 3. 参考
