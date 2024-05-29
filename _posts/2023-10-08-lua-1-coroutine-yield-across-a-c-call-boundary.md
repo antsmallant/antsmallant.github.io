@@ -123,9 +123,13 @@ c 栈从栈底向栈顶生长
 
 以下分析使用的 lua 版本是 5.3.6（lua-5.2 跟 lua-5.4 也是差不多的）。    
 
-lua-5.3.6 下载链接: [https://lua.org/ftp/lua-5.3.6.tar.gz](https://lua.org/ftp/lua-5.3.6.tar.gz)。本人的 github 也有对应源码: [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6) 。     
+lua-5.3.6 官方下载链接: [https://lua.org/ftp/lua-5.3.6.tar.gz](https://lua.org/ftp/lua-5.3.6.tar.gz) 。  
+
+笔者的 github 也有 lua-5.3.6 源码的 copy: [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/3rd/lua-5.3.6) 。     
+
+<br/>
   
-下文展示的 demo 代码都在此，有 makefile，可以直接跑起来：[https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary) 。   
+下文展示的 demo 代码都在此（有 makefile，可以直接跑起来）：[https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/lua-co-yield](https://github.com/antsmallant/antsmallant_blog_demo/tree/main/blog_demo/lua-co-yield) 。   
 
 
 ---
@@ -302,6 +306,17 @@ lua-5.1 有两个办法，都与 luajit 相关。
 
 **方法二：使用 lua-5.1.5 + coco 库**
 
+coco 库是 luajit 下面的一个子项目 （ [https://coco.luajit.org/index.html](https://coco.luajit.org/index.html) ），它可以独立于 luajit 之外使用的，但它只能用于 lua-5.1.5 版本。  
+
+它的介绍[2]：
+>Coco is a small extension to get True C Coroutine semantics for Lua 5.1. Coco is available as a patch set against the standard Lua 5.1.5 source distribution.
+>   
+>Coco is also integrated into LuaJIT 1.x to allow yielding for JIT compiled functions. But note that Coco does not depend on LuaJIT and works fine with plain Lua.    
+
+coco 库能做到从 c 调用中恢复，是因为它为每个协程准备了专用的 c 栈："Coco allows you to use a dedicated C stack for each coroutine"[2]。  
+
+所以，如果不使用 luajit，就使用官方的 lua-5.1.5，再 patch 上这个 coco 库就可以了。  
+
 
 ---
 
@@ -320,3 +335,5 @@ lua-5.1 有两个办法，都与 luajit 相关。
 # 6. 参考
 
 [1] luajit. extensions. Available at https://luajit.org/extensions.html.    
+
+[2] luajit. Coco — True C Coroutines for Lua. Available at https://coco.luajit.org/index.html.   
