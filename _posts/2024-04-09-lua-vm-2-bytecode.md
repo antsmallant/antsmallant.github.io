@@ -49,10 +49,11 @@ upvalues (1) for 0x55a732d64cc0:
 
 <br/>
 
-如果是对于一份经过 luac 编译的字节码文件，则直接 `luac -l <文件名>` 或 `luac -l -l <文件名>` 就行了，直接显示。比如这样： 
+如果是一份由 luac 编译生成出来的字节码文件，则直接 `luac -l <文件名>` 或 `luac -l -l <文件名>` 就行了。比如这样： 
 
 ```bash
 luac -o a.lua.out a.lua
+
 luac -l -l a.lua.out
 ```
 
