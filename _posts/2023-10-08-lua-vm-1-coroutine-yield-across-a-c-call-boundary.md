@@ -96,7 +96,7 @@ setjmp/longjmp 示意图：
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-co-yield-across-c-call-boundary.png" />
 </div>
-<center>图2：lua yield 示意图</center>  
+<center>图2：lua yield</center>  
 
 <br/>
 
