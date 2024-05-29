@@ -349,7 +349,7 @@ L->nny++;
 
 ---
 
-## 4.2.1 lua-5.2 及以上
+### 4.2.1 lua-5.2 及以上
 
 lua 对于此问题的解决方案是引入 lua_callk / lua_pcallk / lua_yieldk，要求使用者把 yield 之后要执行的东西放到一个单独的函数 (类型为 lua_KFunction) 里，k 意为 continue，把这个 k 函数作为参数传给 lua_callk / lua_pcallk / lua_yieldk，这个 k 函数会被记录起来，等 yield 返回的时候调用它。   
 
@@ -359,7 +359,7 @@ lua 对于此问题的解决方案是引入 lua_callk / lua_pcallk / lua_yieldk�
 
 ---
 
-## 4.2.2 lua-5.1
+### 4.2.2 lua-5.1
 
 lua-5.1 有两个办法，都与 luajit 相关。  
 
