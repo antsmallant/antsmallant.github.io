@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "lua 常识二: lua vm 的工作机制"
+title: "lua vm 常识三: 栈的实现原理"
 date: 2024-04-10
 last_modified_at: 2024-04-10
 categories: [lua]
@@ -11,13 +11,13 @@ tags: [lua]
 {:toc}
 <br/>
 
-熟悉 lua vm 的工作机制，对于 lua 开发很有帮助，对于理解一些奇怪的问题比如 "yield across c-call boundary" 这种报错，很有帮助。  
+整个 lua 源码看下来，个人觉得栈的实现是最美妙的，它跟 callinfo 一起，完美的实现了 lua 函数调用，以及 c 函数调用。  
 
-lua vm 的工作机制，实际上就是对计算机工作机制的一种类似模拟。  
+本文就讲一讲中 lua 中的栈。以下分析使用 lua-5.4.6 版本。  
 
 ---
 
-以下分析使用 lua-5.4.6 版本。  
+
 
 ---
 
