@@ -24,7 +24,7 @@ categories: [游戏开发]
 
 ---
 
-# 同步方式的核心差异
+# 1. 同步方式的核心差异
 
 开门见山，直接把差异写出来，国内有不少文章，会把传输的数据是 “玩家操作” 还是 “状态数据” 作为差异，然而这并不是真正的差异的，而是因为工作方式的不同，导致的一种表象而已。  
 
@@ -39,9 +39,9 @@ categories: [游戏开发]
 
 ---
 
-# 同步方式的分类
+# 2. 同步方式的分类
 
-## Deterministic LockStep
+## 2.1 Deterministic LockStep
 
 Deterministic LockStep，对应到国内，勉强对得上的是帧同步。Deterministic lockstep 最重要的是 Deterministic，它的要求是：给定相同的初始状态，加上一系列相同的输入，可以计算得出相同的结果，不是差不多相同，而是完全相同。   
 
@@ -55,7 +55,7 @@ Deterministic LockStep，对应到国内，勉强对得上的是帧同步。Dete
 
 ---
 
-## Snapshot Interpolation 
+## 2.2 Snapshot Interpolation 
 
 Snapshot Interpolation 相当于国内的快照同步，服务端定期的产生整个世界的瞬时快照（就是整个世界所有物体的状态集合），发送给所有客户端，而客户端相当于一个播放器，通过插值的方式来使得视觉变得平滑。快照同步在早期出现的时候用的多，但太占带宽了，现在挺少游戏会使用这种方式了。快照同步带宽的优化问题，Glenn Fiedler 专门写了一篇文章[6]来论述各种方法。    
 
@@ -63,13 +63,13 @@ Snapshot Interpolation 相当于国内的快照同步，服务端定期的产生
 
 ---
 
-## State Synchronization
+## 2.3 State Synchronization
 
 State Synchronization 相当于国内的状态同步。状态同步可以说是快照同步的演进，服务器会运行游戏世界，但它同时也允许客户端运行，以服务器的状态为权威，服务器（定时）向客户端发送定制化的、差异化的状态变化，这点与快照同步很不同，快照同步下发给各个客户端的世界状态可以说是一模一样的。    
 
 ---
 
-## 状态帧？
+## 2.4 状态帧？
 
 这种叫法我是在 烟雨迷离半世殇 ( 知乎大佬： https://www.zhihu.com/people/gu-gao-de-wang-1 ，博客： https://www.lfzxb.top/ ) 的文章[8]里看到的。在对网络同步有足够多的研究之前，看到 “状态帧” 这种叫法是有点懵的。在了解了足够多之后，我才搞清楚 “状态帧” 其实就是守望先锋里面用到的状态同步。    
   
@@ -79,7 +79,7 @@ State Synchronization 相当于国内的状态同步。状态同步可以说是�
 
 ---
 
-# 参考
+# 3. 参考
 
 [1] Glenn Fiedler. Deterministic Lockstep. Available at https://gafferongames.com/post/deterministic_lockstep/, 2014-11.    
 
