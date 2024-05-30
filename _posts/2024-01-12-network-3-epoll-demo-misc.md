@@ -38,6 +38,8 @@ demo 地址： [https://github.com/antsmallant/antsmallant_blog_demo/tree/main/b
 
 另外有一点要注意的，阻塞与非阻塞是设置在文件描述符上的属性，而不是 api (比如 accept, read, write) 本身，api 本身没分阻塞与非阻塞，当 api 操作的是阻塞的文件描述符，那它就以阻塞的方式工作。   
 
+---
+
 ## 2.2 epoll 的本质
 
 epoll 是一种同步阻塞的 I/O 复用模型：  
