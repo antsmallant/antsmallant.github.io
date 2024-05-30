@@ -78,6 +78,8 @@ lsof 意为 list open files，可以显示被打开的文件以及打开这些�
 
 如果足够熟练，lsof 可以替代 netstat 和 ps 这两个工具。   
 
+---
+
 ### 1.2.1 lsof 基本要点
 
 * 没有任何选项时，lsof 会列出所有活跃进程的所有打开文件。  
@@ -88,6 +90,7 @@ lsof 意为 list open files，可以显示被打开的文件以及打开这些�
 
 关于 “或” 和 “与”，举个例子，想要获得进程 pid 为 191812 的 tcp 连接信息，需要这样写：`lsof -p 191812 -i tcp -a`，不能只写成 `lsof -p 191812 -i tcp`。如果没加 '-a'，结果将变成进程 pid 为 191812 的所有打开文件以及所有 tcp 连接信息的总和。 
 
+---
 
 ### 1.2.2 lsof 获取网络信息
 
@@ -115,6 +118,7 @@ lsof -i [46][protocol][@hostname|hostaddr][:service|port]
 |`lsof -i -s tcp:established`|显示已经建立的 tcp 连接|
 |`lsof -i -s tcp:listen`|显示等待连接 (listen) 的 tcp 端口|
 
+---
 
 ### 1.2.3 lsof 文件和目录
 
@@ -124,6 +128,7 @@ lsof -i [46][protocol][@hostname|hostaddr][:service|port]
 
 特别的，如果是用 vim 打开了文件，比如：root/a.txt，则通过 `lsof /root/.a.txt.swp` 可以找出来。通过 a.txt 是找不到的，因为 vim 打开的是一个 .swp 后缀的临时文件。  
 
+---
 
 ### 1.2.4 lsof 命令、进程、用户
 
@@ -135,6 +140,7 @@ lsof -i [46][protocol][@hostname|hostaddr][:service|port]
 
 通过 `-u` 选项可以找出指定用户打开的文件，比如 `lsof -u root` 可以找出 root 用户打开的所有文件。  
 
+---
 
 ### 1.2.5 lsof 各列的意义
 
@@ -216,7 +222,6 @@ space：if there is no lock.
 
 ```
 
-
 ---
 
 ## 1.3 nc
@@ -284,7 +289,6 @@ nc 127.0.0.1 9999 < send.txt
 >ifconfig 是读取 /proc/net/dev 下的数据，而后者的数据是从设备在内核的数据结构 net_device 里的结构 rtnl_link_stats64 中获取的；    
 >ethtool 是直接通过 ioctl 下放的方式从同样的结构（net_device 中的 rtnl_link_stats64 ）中获取数据；    
 >因此可以认为 ifconfig 和 ethtool 两者看到的网卡相关数据来源是一样的，但是 /proc/net/dev 进行了一定程度的归档，因此 ifconfig 中的 RX dropped = rx_dropped + rx_missed_errors，RX errors = rx_errors。    
-
 
 
 ---
