@@ -14,7 +14,7 @@ categories: [游戏开发]
 
 ---
 
-# 王者荣耀使用帧同步明智吗？
+# 1. 王者荣耀使用帧同步明智吗？
 
 这个很难评，成王败寇，它成功了，它就是明智的。但是帧同步带来的心智负担还是很重的，他们的分享里面也提到他们花了很大的功夫去解决不一致问题。   
 
@@ -22,7 +22,7 @@ categories: [游戏开发]
 
 ---
 
-# 服务端预测
+# 2. 服务端预测
 
 在 FPS 游戏中，会采用服务端预测的技术，服务端在没有收到输入的情况下，依据客户端当前的状态作出预测。那么问题来了，与客户端预测相比，它有何不同？  
 
@@ -40,7 +40,7 @@ categories: [游戏开发]
 
 ---
 
-# fps 中 Peeker’s advantage
+# 3. fps 中 Peeker’s advantage
 
 资料主要参考自天美工作室的分享[2]，以及拳头游戏的这个文章[1]。  
 
@@ -51,7 +51,7 @@ categories: [游戏开发]
 
 ---
 
-# 参考
+# 4. 参考
 
 [1] RiotGames. PEEKING INTO VALORANT'S NETCODE. Available at https://technology.riotgames.com/news/peeking-valorants-netcode, 2020-7-28.        
 
