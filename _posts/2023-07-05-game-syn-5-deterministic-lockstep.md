@@ -14,7 +14,7 @@ categories: [游戏开发]
 
 ---
 
-# 优化手段
+# 1. 优化手段
 
 帧同步的确定性，要求各种平台之上的客户端计算都是确定的，这些都可能导致不确定计算：浮点数，随机数，执行顺序，排序的稳定性，物理引擎。  
 
@@ -30,7 +30,7 @@ categories: [游戏开发]
 
 ---
 
-## 乐观帧
+## 1.1 乐观帧
 
 现在事实意义上的帧同步算法都是用的乐观帧了，即每帧固定时长，超时不等待。  
 
@@ -81,7 +81,7 @@ private void OnOptimisticFrame(Session client, GM_Frame recvData)
 
 ---
 
-## buffering
+## 1.2 buffering
 
 针对延迟以及网络抖动，可以通过增加缓冲区的方式来对抗：
 输入 -> 缓冲区 -> 渲染   
@@ -89,13 +89,13 @@ private void OnOptimisticFrame(Session client, GM_Frame recvData)
 
 ---
 
-## 预测回滚
+## 1.3 预测回滚
 
 不止是状态同步，帧同步也是可以 “预测回滚” 的，但叫法是 timewarp。大体做法都是记录快照，然后出现冲突的时候回滚到快照点。韦易笑的这篇文章《帧同步游戏中使用 Run-Ahead 隐藏输入延迟》[2]介绍过这种做法。   
 
 ---
 
-# 参考
+# 2. 参考
 
 [1] 邓君. 王者技术修炼之路. Available at https://youxiputao.com/articles/11842, 2017-5.   
 
