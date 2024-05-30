@@ -15,15 +15,15 @@ categories: [游戏开发]
 
 ---
 
-# 优化手段
+# 1. 优化手段
 
-## 客户端预测回滚 (client-side predition and rollback)
+## 1.1 客户端预测回滚 (client-side predition and rollback)
 
 客户端预测是为了更及时的反馈，如果玩家自己的每一个动作都要等待服务器的回应才执行，那么会严重受到延迟的影响，体验很糟糕，所以一般都会采取客户端预测，即客户端先行，客户端在把 input 发给服务器的同时，自己先执行动作，待等到服务器回包的时候再根据情况，如果状态不一致，则需要回滚（也称为和解），这个过程是这样的，客户端回滚到状态不一致的那一帧，然后再重新应用这一帧之后的所有 inputs，此为最新的预测状态，之后再通过插值平滑的过度到此状态。  
 
 ---
 
-## 延迟补偿 (lag compensation)
+## 1.2 延迟补偿 (lag compensation)
 
 这个是针对命中判断来说的，比如说 fps 类型的游戏，由于网络延迟以及一些优化手段，导致你在画面上看到的景象实际上是几帧之前发生的事情，这时候你进行射击，此刻出现在你画面中的玩家在服务器处可能已经跑远了，当你的射击指令到达服务器时，是不会被判断命中的，这时候服务器需要把画面回滚（rewind）到你射击时候播放的那一帧，然后再进行判断。用这张经典的图片来展示一下：  
 
@@ -39,7 +39,7 @@ categories: [游戏开发]
 
 ---
 
-## Dead Reckning
+## 1.3 Dead Reckning
 
 缩写为 DR，中文叫导航预测算法，这篇文章[3]对 DR 下了一个定义：  
 >Using a predetermined set of algorithms to extrapolate entity behavior, you can hide some of the effects that latency has on fast-action games.   
@@ -50,7 +50,7 @@ DR 实际上就是对于本玩家之外的其他物体进行预测的一种手�
 
 ---
 
-## 区域裁剪
+## 1.4 区域裁剪
 
 比如通过 AOI 算法，裁剪需要下发给客户端的消息包。  
 
@@ -92,7 +92,7 @@ AOI 算法还可以参考以下两篇文章，写得挺好的：
 
 ---
 
-## 障眼法-隐藏延迟的 trick
+## 1.5 障眼法-隐藏延迟的 trick
 
 通过前摇之类的方式来隐藏网络延迟的做法，我这里统称为障眼法。下面举一些实战的例子
 
@@ -112,7 +112,7 @@ halo 2011 年的这个 GDC 分享，展示一种如何让扔手雷看起来更�
 
 ---
 
-# 具体实现
+# 2. 具体实现
 
 预测回滚跟延迟补偿，对于客户端管理数据的能力提出了很高的要求，客户端要能够记录最近n帧的快照（世界状态），然后在检测到自身与服务端数据有冲突时进行和解，所谓和解，即回滚到发生冲突的那一帧，先把状态修改为服务端的权威状态，然后再应用本地的预测 input。   
 
@@ -136,7 +136,7 @@ public override void OnExecuteEntityAdMove()
 
 ---
 
-# 参考
+# 3. 参考
 
 [1] Valve. Source Multiplayer Networking. Available at https://developer.valvesoftware.com/wiki/Source_Multiplayer_Networking.    
 
