@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "lua vm 常识二: 查看字节码、看懂字节码"
+title: "lua vm 二: 查看字节码、看懂字节码"
 date: 2024-04-09
 last_modified_at: 2024-04-09
 categories: [lua]
