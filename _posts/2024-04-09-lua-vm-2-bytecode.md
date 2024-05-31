@@ -191,17 +191,17 @@ OP_ADD,/*	A B C	R[A] := R[B] + R[C]				*/
 
 ## 2.4 为什么一个函数生成了两个 return 的 opcode
 
-上图中，可以看到 my_add 函数，我们只写了一个 return 语句，但却有两个 return opcdoe，而 main 函数，我们没有 return，也有一个 return opcdoe。下面具体解释一下。  
+上图中，可以看到 my_add 函数，我们只写了一个 return 语句，但却有两个 return opcode，而 main 函数，我们没有 return，也有一个 return opcode。下面具体解释一下。  
 
 my_add 的两个分别对应 OP_RETURN1 和 OP_RETURN0。第一个 return1 对应的是 `return c` 这个语句。第二个 return0 是 lua 编译器自动生成的，每个函数的末尾都会补充一个 "final return"。   
 
-具体源码可以在 lparser.c 找到，里面分别处理 main 函数和普通函数，lua 会把一个 script 脚本处理成一个函数，就叫 main 函数，如果上图中的 `function main`。  
+具体源码可以在 lparser.c 找到，里面分别处理 main 函数和普通函数，lua 会把一个 script 脚本处理成一个函数，就叫 main 函数，如上图中的 `function main`。  
 
-我们显式写的 return 语句，是在 lparser.c 的 retstat 函数处理的，它内部调用 luaK_ret 生成一个 return 的 opcode。  
+我们显式写的 return 语句，是在 lparser.c 的 `retstat` 函数处理的，它内部调用 `luaK_ret` 生成一个 return 的 opcode。  
 
-main 函数，是在 lparser.c 的 mainfunc 函数处理的，末尾调用 close_func 处理收尾工作，close_func 内部会调用 luaK_ret 生成一个 return 的 opcode。  
+main 函数，是在 lparser.c 的 `mainfunc` 函数处理的，末尾调用 `close_func` 处理收尾工作，`close_func` 内部会调用 `luaK_ret` 生成一个 return 的 opcode。  
 
-普通函数，是在 lparser.c 的 body 函数处理的，末尾调用 close_func 处理收尾工作，close_func 内部会调用 luaK_ret 生成一个 return 的 opcode。  
+普通函数，是在 lparser.c 的 `body` 函数处理的，末尾调用 `close_func` 处理收尾工作，`close_func` 内部会调用 `luaK_ret` 生成一个 return 的 opcode。  
 
 ---
 
