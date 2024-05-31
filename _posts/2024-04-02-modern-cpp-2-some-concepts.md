@@ -178,7 +178,38 @@ int main()
 
 ---
 
+## eligible
+
+https://en.cppreference.com/w/cpp/language/copy_constructor
+
+Eligible copy constructor
+
+Eligible copy constructor
+
+
+A copy constructor is eligible if it is either user-declared or both implicitly-declared and definable. (until C++11) 
+
+A copy constructor is eligible if it is not deleted.  (since C++11) (until C++20)
+
+A copy constructor is eligible if all following conditions are satisfied:
+It is not deleted.
+Its associated constraints (if any) are satisfied.
+Among all copy constructors whose associated constraints are satisfied, it is more constrained than any other copy constructor.
+(since C++20)
+
+Triviality of eligible copy constructors determines whether the class is an implicit-lifetime type, and whether the class is a trivially copyable type.
+
+---
+
 ## 1.9 trivial
+
+[C++20: Aggregate, POD, trivial type, standard layout class, what is what](https://andreasfertig.blog/2021/01/cpp20-aggregate-pod-trivial-type-standard-layout-class-what-is-what/)
+
+[Trivial, standard-layout, POD, and literal types](https://learn.microsoft.com/en-us/cpp/cpp/trivial-standard-layout-and-pod-types?view=msvc-170)
+
+[C++：Trivial、Standard-Layout 和 POD](https://zhuanlan.zhihu.com/p/479755982)
+
+[整理一下 C++ POD 类型的细节（一）](https://zhuanlan.zhihu.com/p/29734547?utm_id=0)
 
 ---
 
