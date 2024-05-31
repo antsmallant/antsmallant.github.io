@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "lua vm 常识三: 栈的实现原理"
+title: "lua vm 三: 数据栈"
 date: 2024-04-10
 last_modified_at: 2024-04-10
 categories: [lua]

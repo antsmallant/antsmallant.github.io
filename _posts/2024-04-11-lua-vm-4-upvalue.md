@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "lua vm 常识四: upvalue 的实现原理"
+title: "lua vm 四: upvalue"
 date: 2024-04-11
 last_modified_at: 2024-04-11
 categories: [lua]
