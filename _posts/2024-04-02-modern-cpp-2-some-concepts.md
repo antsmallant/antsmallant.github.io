@@ -25,13 +25,17 @@ tags: [c++]
 
 ---
 
-# 表达式 (expression)
+# 1. 概念
+
+---
+
+## 1.1 表达式 (expression)
 
 表达式是由一个或多个运算对象（operand）组成，对表达式求值将得到一个结果。字面值和变量是最简单的表达式（expression），其结果就是字面值和变量的值。把一个运算符（operator）和一个或多个运算对象组合起来可以生成较复杂的表达式 (expression)。[1]   
 
 ---
 
-# 语句 (statement)
+# 1.2 语句 (statement)
 
 C++语言中的大多数语句都以分号结束，一个表达式，比如 ival + 5，末尾加上分号就变成了表达式语句（expression statement）。表达式语句的作用是执行表达式并丢弃掉求值结果。[1]   
 
@@ -55,7 +59,7 @@ while (val <= 10) {
 
 ---
 
-# 容易搞错的赋值表达式
+## 1.3 容易搞错的赋值表达式
 
 * 什么是赋值表达式       
 
@@ -80,7 +84,7 @@ printf("0x%x\n", &(a=5));   // 在我本机上输出 0x500d58
 
 ---
 
-# 定义时初始化 vs 赋值
+## 1.4 定义时初始化 vs 赋值
 
 上面讲赋值表达式的时候已经提及了，定义时初始化与赋值是不同的，不能混为一谈。这个很重要，因为不同场景调用的函数是不同的，定义时初始化调用的是拷贝构造函数，而赋值调用的是赋值运算符函数。    
 
@@ -109,19 +113,19 @@ int main() {
  
 ---
 
-# 函数 (function)
+## 1.5 函数 (function)
 
 函数是一个**命名了的代码块**，我们通过调用函数执行相应的代码。函数可以有 0 个或多个参数，而且（通常）会产生一个结果。可以重载函数，也就是说，同一个名字可以对应几个不同的函数。[1]     
 
 ---
 
-# 无参数构造函数
+## 1.6 无参数构造函数
 
 假设一个类 A，它的构造函数是无参数的，那么要这样写来定义一个实例：`A a;`，不能写成这样：`A a();`，因为后者会被编译器当成是函数声明。   
 
 ---
 
-# 实参与形参
+## 1.7 实参与形参
 
 例子：
 
@@ -133,7 +137,7 @@ f(a);            // a 是实参
 
 ---
 
-# pointer to member of object
+## 1.8 pointer to member of object
 
 参考： https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_pointer-to-member_access_operators
 
@@ -174,23 +178,23 @@ int main()
 
 ---
 
-# trivial
+## 1.9 trivial
 
 ---
 
-# non-trivail
+## 1.10 non-trivail
 
 ---
 
-# cv-qualified
+## 1.11 cv-qualified
 
 ---
 
-# POD
+## 1.12 POD
 
 ---
 
-# FCD
+## 1.13 FCD
 
 FCD 是 Final Committee Draft 的缩写，它是草案（draft）的一个阶段（ Document stage ）。
 
@@ -200,6 +204,6 @@ C++0x 是 C++11 标准正为正式标准前的草案临时名字。
 
 ---
 
-# 参考
+# 2. 参考
 
 [1] [美] Stanley B. Lippman, Josée Lajoie, Barbara E. Moo. C++ Primer 中文版（第 5 版）. 王刚, 杨巨峰. 北京: 电子工业出版社, 2013-9: 120, 154, 182.   
