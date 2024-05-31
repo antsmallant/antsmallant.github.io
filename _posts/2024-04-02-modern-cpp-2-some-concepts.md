@@ -194,16 +194,28 @@ int main()
 
 ---
 
-## 1.13 FCD
+# 2. 术语
 
-FCD 是 Final Committee Draft 的缩写，它是草案（draft）的一个阶段（ Document stage ）。
+---
+
+## 2.1 FCD
+
+FCD 是 Final Committee Draft 的缩写，即最终委员会草案，它是草案（draft）的一个阶段（ Document stage ）。
 
 比如 C++0x Final Committee Draft :  https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3092.pdf 。  
 
 C++0x 是 C++11 标准正为正式标准前的草案临时名字。   
 
+经常出现的是 CD (Committee Draft)，即委员会草案。  
+
 ---
 
-# 2. 参考
+## 2.2 DR
+
+Defect Report 的缩写，即缺陷报告。   
+
+---
+
+# 3. 参考
 
 [1] [美] Stanley B. Lippman, Josée Lajoie, Barbara E. Moo. C++ Primer 中文版（第 5 版）. 王刚, 杨巨峰. 北京: 电子工业出版社, 2013-9: 120, 154, 182.   
