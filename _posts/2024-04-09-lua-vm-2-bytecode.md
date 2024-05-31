@@ -86,7 +86,7 @@ Lua Bytecode Explorer 的完整网址是： [https://www.luac.nl/](https://www.l
 
 **方法一：lua 源码**   
 
-最直接的方式是看源码，所有指令的定义在这个代码文件：lopcodes.h ，不同指令的具体实现在 lvm.c 的 `luaV_execute` 函数里。  
+最直接的方式是看源码，所有指令的定义在这个代码文件：lopcodes.h ( [https://lua.org/source/5.4/lopcodes.h.html](https://lua.org/source/5.4/lopcodes.h.html) )，不同指令的具体实现在 lvm.c ( [https://lua.org/source/5.4/lvm.c.html](https://lua.org/source/5.4/lvm.c.html) ) 的 `luaV_execute` 函数里。  
 
 <br/>
 
