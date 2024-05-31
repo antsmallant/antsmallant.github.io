@@ -129,13 +129,7 @@ lua5.4 指令的基本信息：
 
 有 5 种指令编码格式，比如 iABC，i 表示 instruction，ABC 分别是三个操作数。  
 
-举个例子，加法指令 OP_ADD 就是 iABC 格式的：   
-
-```c
-OP_ADD,/*	A B C	R[A] := R[B] + R[C]				*/
-```
-
-对于这样一个脚本：
+举个具体的例子说明一下吧，对于这样一个脚本：
 
 ```lua
 local function my_add(a, b)
@@ -151,6 +145,37 @@ end
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-lua5.4-opcode-add-example.png"/>
 </div>
 <br/>
+
+`local c = a+b` 这个语句被编译成这两句：   
+
+```
+1	ADD	2 0 1	
+2	MMBIN	0 1 6	; __add
+```
+
+MMBIN 这句可以不用管，是元表相关的，这里不会用到，只关注 ADD 这一句就好了。  
+
+加法指令 OP_ADD 就是 iABC 格式的：   
+
+```c
+OP_ADD,/*	A B C	R[A] := R[B] + R[C]				*/
+```
+
+`ADD 2 0 1` 中 A = 2，B = 0，C = 1。意思就是把 R[2] = R[0] + R[1]。 
+
+补充解释一下为什么会有两个 return 的 opcode 产生。 
+
+这两个分别对应 OP_RETURN1 和 OP_RETURN0。第一个 return1 对应的是 `return c` 这个语句。第二个 return0 是 lua 编译器自动生成的，每个函数的末尾都会补充一个 "final return"。   
+
+具体源码可以在 lparser.c 找到，里面分别处理 main 函数和普通函数，lua 会把一个 script 脚本处理成一个函数，就叫 main 函数，如果上图中的 `function main`。  
+
+我们显式写的 return 语句，是在 lparser.c 的 retstat 函数处理的，它内部调用 luaK_ret 生成一个 return 的 opcode。  
+
+main 函数，是在 lparser.c 的 mainfunc 函数处理的，末尾调用 close_func 处理收尾工作，close_func 内部会调用 luaK_ret 生成一个 return 的 opcode。  
+
+普通函数，是在 lparser.c 的 body 函数处理的，末尾调用 close_func 处理收尾工作，close_func 内部会调用 luaK_ret 生成一个 return 的 opcode。  
+
+
 
 
 ---
