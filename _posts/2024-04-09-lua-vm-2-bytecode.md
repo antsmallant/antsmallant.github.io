@@ -132,21 +132,22 @@ lua5.4 指令的基本信息：
 举个具体的例子说明一下吧，对于这样一个脚本：
 
 ```lua
-local function my_add(a, b)
-	local c = a+b
-    return c
+local function my_add(x, y)
+	local z = x + y
+    return z
 end
 ```
 
-经过编译后是这样的： 
+用 lua bytecode explorer 生成的，代码片段的 link 是 https://luac.nl/s/fac2949499991b83b0e3ae2a65 ，编译结果如下图：  
 
 <br/>
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-lua5.4-opcode-add-example.png"/>
 </div>
+<center>图3：简单加法例子</center>
 <br/>
 
-`local c = a+b` 这个语句被编译成这两句：   
+`local z = x + y` 这个语句被编译成这两句：   
 
 ```
 1	ADD	2 0 1	
@@ -161,11 +162,38 @@ MMBIN 这句可以不用管，是元表相关的，这里不会用到，只关�
 OP_ADD,/*	A B C	R[A] := R[B] + R[C]				*/
 ```
 
-`ADD 2 0 1` 中 A = 2，B = 0，C = 1。意思就是把 R[2] = R[0] + R[1]。 
+`ADD 2 0 1` 中 A 对应 2，B 对应 0，C 对应 1。R[0] 存的是形参 x 的值，R[1] 存的是形参 y 的值，R[2] 存的是局部变量 z 的值。  
 
-补充解释一下为什么会有两个 return 的 opcode 产生。 
+所以 `local z = x + y` 就翻译成 `R[2] = R[0] + R[1]`。   
 
-这两个分别对应 OP_RETURN1 和 OP_RETURN0。第一个 return1 对应的是 `return c` 这个语句。第二个 return0 是 lua 编译器自动生成的，每个函数的末尾都会补充一个 "final return"。   
+
+看到这里可能会有点晕，R[0] 是什么东西？这就是 lua 的 “寄存器”，但它是虚拟出来的，代表的实际上是 lua 数据栈的一个位置，而 lua 数据栈是一个数组结构，每个函数都会在这个数组上占据一段空间。   
+
+可以理解为，每个函数都有一个自己的栈，它是一个数组。数组的最前面放的是参数，之后放的是局部变量。在我们的例子中，数据是这样放的：
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-lua5.4-opcode-add-example-array.png"/>
+</div>
+<center>图4：简单加法的数据结构</center>
+<br/>
+
+实际上，编译结果的 locals 项已经清楚表明了各个变量在 lua 数据栈中的位置了，index 列就表示在数据栈数组中的索引。  
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-lua5.4-opcode-add-example-locals.png"/>
+</div>
+<center>图5：locals 信息</center>
+<br/>
+
+---
+
+## 2.4 为什么一个函数生成了两个 return 的 opcode
+
+上图中，可以看到 my_add 函数，我们只写了一个 return 语句，但却有两个 return opcdoe，而 main 函数，我们没有 return，也有一个 return opcdoe。下面具体解释一下。  
+
+my_add 的两个分别对应 OP_RETURN1 和 OP_RETURN0。第一个 return1 对应的是 `return c` 这个语句。第二个 return0 是 lua 编译器自动生成的，每个函数的末尾都会补充一个 "final return"。   
 
 具体源码可以在 lparser.c 找到，里面分别处理 main 函数和普通函数，lua 会把一个 script 脚本处理成一个函数，就叫 main 函数，如果上图中的 `function main`。  
 
@@ -175,17 +203,9 @@ main 函数，是在 lparser.c 的 mainfunc 函数处理的，末尾调用 close
 
 普通函数，是在 lparser.c 的 body 函数处理的，末尾调用 close_func 处理收尾工作，close_func 内部会调用 luaK_ret 生成一个 return 的 opcode。  
 
-
-
-
 ---
 
-## 2.4 举例说明指令是否编码及工作的
-
-
-
-
-## 2.4 lua5.4 的所有 83 条操作码
+## 2.5 lua5.4 的所有 83 条操作码
 
 下面取自 lua 源码中的 lopcode.h。  
 
@@ -308,4 +328,4 @@ OP_EXTRAARG/*	Ax	extra (larger) argument for previous opcode	*/
 
 ---
 
-## 3. 参考
+正文完。  
