@@ -74,5 +74,20 @@ typedef struct global_State {
 
 ---
 
-# 参考
+# 4. upvalue
 
+upvalue 即函数引用到的外部变量，像这样
+
+```lua
+local x = 10
+local function f(y)
+    return x + y
+end
+```
+
+变量 x 就是函数 f 的一个 upvalue。   
+
+
+---
+
+# 参考
