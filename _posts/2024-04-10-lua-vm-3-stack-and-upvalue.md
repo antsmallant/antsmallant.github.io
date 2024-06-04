@@ -124,7 +124,35 @@ c 函数是通过 lua api 操作 lua 数据栈的，初始的时候，lua_State 
 
 ## 1.4 固定参数的函数调用
 
-固定参数的函数调用比较简单，
+固定参数的函数调用比较简单，比如这样一个简单的打印函数：  
+
+```lua
+local function f1(x, y, z)
+    print(x, y, z)
+end
+
+f1(10, 20, 30)
+```
+
+编译出来是这样的： 
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-stack-simple-print-func.png"/>
+</div>
+<center>图4：简单打印函数的编译结果</center>
+<br/>
+
+f1 调用 print 的过程中，栈空间布局是这样的：  
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-stack-simple-print.drawio.png"/>
+</div>
+<center>图5：简单打印函数的栈空间布局</center>
+<br/>
+
+从这里可以看出，函数占用的栈空间是堆叠在一起的，a 函数调用 b 函数的时候，要在自己的栈空间上先放入 b 函数的 closure，再放入参数，而当 b 函数开始执行，从 b 函数 closure 开始的这段空间又可以当成是 b 函数的栈空间。  
 
 ---
 
