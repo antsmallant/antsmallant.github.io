@@ -25,7 +25,7 @@ upvalue 以一种高效的方式实现了词法作用域，使得函数能成为
 
 ## 1.1 栈的数据结构
 
-一个操作线程中，可以运行多个 lua vm，lua vm 用 global_State 这个结构体来表示。  
+一个操作系统线程中，可以运行多个 lua vm，lua vm 用 global_State 这个结构体来表示。  
 
 一个 lua vm 中，可以运行多条 lua thread，即协程，lua thread 用 lua_State 这个结构体来表示。  
 
@@ -76,13 +76,48 @@ CallInfo 与 stack 的大致对应关系如下：
 
 ## 1.3 CallInfo 中的 top 字段
 
-图2 中的有个细节要纠一下，CallInfo 的 top 字段指向了栈数组中的 argn(R[n]) 项，在一些情况下，并不准确，要分情况讨论。      
+图2 中的有个细节要纠正一下，CallInfo 的 top 字段指向了栈数组中的 argn(R[n]) 项，在一些情况下，并不准确，要分情况讨论。      
 
-1、lua 函数，CallInfo 的 top 指向的应该是 `func + 1 + maxstacksize` 这个位置，maxstacksize 是在编译期确定的这个函数需要的 “寄存器” 总数量。一个普通的 lua 函数，需要的寄存器往往不止要用于存放形参，还有一些本地变量，一些运算过程的中间结果。    
+**1、lua 函数**
 
-2、c 函数，上图是准确的，
+上图部分准确。在代码中，CallInfo 的 top 指向的是 `func + 1 + maxstacksize` 这个位置，maxstacksize 是在编译期确定的这个函数需要的 “寄存器” 总数量。一个普通的 lua 函数，需要的寄存器往往不止要用于存放形参，还有一些本地变量，一些运算过程的中间结果，所以 maxstacksize 往往是比形参个数大的。      
 
+比如这样一个函数:
 
+```lua
+local function f1(x, y)
+	local a = x + y
+end
+```
+
+编译出来成这样：  
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-f1-compile.png"/>
+</div>
+<center>图3：编译结果</center>
+<br/>
+
+locals 那项显示，它至少需要 3 个寄存器，2 个用于存放形参 x 和 y，1 个用于存放本地变量 a。    
+
+<br/>
+
+**2、c 函数**    
+
+上图完全不准确。CallInfo 的 top 指向的应该是 `func + 1 + LUA_MINSTACK` 这个位置，LUA_MINSTACK 大小为 20，是初始时给 c 函数额外分配的栈空间（除了参数之外的）。   
+
+c 函数是通过 lua api 操作 lua 数据栈的，初始的时候，lua_State 的 top 和 callinfo 的 top 都是指向 argn 的位置的。随着 c 函数的运行，比如通过 lua_push 开头的 api 往栈里面压 n 个数据，top 就相应的增长 n 个位置。   
+
+这也是 lua 数据栈的巧妙之处：    
+
+* 当一个 lua 函数调用一个 c 函数，就先把参数放到栈上，而 c 函数被 op_call 的时候，它又可以通过 lua_to 开头的 api 把栈上保存的参数转换成 c 函数自己的变量。  
+
+* 当一个 c 函数调用一个 lua 函数时，先通过 lua_push 开头的 api 往栈里压 n 个参数以及 lua 函数，然后再调用 lua_call 完成调用，而调用完成后，lua 函数的返回结果又都保存在栈上，这时候 c 函数又可以通过 lua_to 开头的命令获取这些返回结果。    
+
+<br/>
+
+值得注意的是，写 c 函数的时候，要时刻注意栈空间的大小是否足够。这种情况下 lua 不会惯着你了，初始时只提供了额外的 LUA_MINSTACK 个元素的栈空间。当栈空间不够的时候，要使用 luaL_checkstack 来扩容。     
 
 
 ---
