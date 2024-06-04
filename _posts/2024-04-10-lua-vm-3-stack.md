@@ -1,3 +1,16 @@
+---
+layout: post
+title: "lua vm 三: 栈与函数调用"
+date: 2024-04-10
+last_modified_at: 2024-04-10
+categories: [lua]
+tags: [lua]
+---
+
+* 目录  
+{:toc}
+<br/>
+
 
 lua vm 运行过程中，栈是一个重要的数据结构。   
 
