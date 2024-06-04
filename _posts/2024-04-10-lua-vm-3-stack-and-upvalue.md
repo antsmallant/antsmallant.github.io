@@ -11,83 +11,91 @@ tags: [lua]
 {:toc}
 <br/>
 
-整个 lua 源码看下来，个人觉得栈的实现是最美妙的，它跟 callinfo 一起，完美的实现了 lua 函数调用，以及 c 函数调用。  
+lua vm 运行过程中，栈和 upvalue 是两个重要的数据结构。   
 
-本文就讲一讲中 lua 中的栈。以下分析使用 lua-5.4.6 版本。  
+栈是一个很精妙的设计，它同时能满足 lua 函数、c 函数运行的需要，并且很好的实现了 lua 与 c 函数的互相调用。   
 
----
-
-
+upvalue 以一种高效的方式实现了词法作用域，使得函数成为 lua 中的第一类值，高效的实现，也导致其内部有点复杂。  
 
 ---
 
-# 1. 简要说明
+# 1. 栈
 
-lua vm (virtual machine，虚拟机) 跟进程有点像，一个 lua vm 内部可以有多个 lua 线程（thread），这种线程又被称为协程 (coroutine)。   
+---
+
+## 1.1 栈的数据结构
+
+一个操作线程中，可以运行多个 lua vm，lua vm 用 global_State 这个结构体来表示。  
+
+一个 lua vm 中，可以运行多条 lua thread，即协程，lua thread 用 lua_State 这个结构体来表示。  
 
 <br/>
-
-<div align="center">  
-<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-threads.png" />
-
-图1：lua vm threads
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-lua_State.png"/>
 </div>
-
+<center>图1：lua_state</center>
 <br/>
 
-理解 vm 的工作机制，只需要了解几个关键点：  
+每个 lua thread 都有一个专属的 “栈”，它是一个 StackValue 类型的数组，而 StackValue 内部包含了 TValue，它可以表示 lua vm 中所有类型的变量。  
 
-* lua thread 内部是怎么组织函数调用的
+在 lua_State 中，用 stack 和 stack_last 这个字段来描述栈数组，stack 表示数组开头，stack_last 表示数组结尾（真实情况更复杂一点点，末尾还有 EXTRA_STACK 个元素，但问题不大）。  
 
-* 函数会怎么操作数据？
+为了与操作系统线程的栈区别开来，这里称 lua 的这个栈为 lua 数据栈。  
 
-* 数据是怎么组织的，lua 栈是什么？寄存器又是什么？
+lua 数据栈的作用是处理函数调用以及存储函数运行时需要的数据。  
 
-至于字节码是怎么被编译出来的，字节码是怎么执行的，这些都是简单问题。  
-
-lua 的协程实现上是一种非对称协程。所谓对称，即是这样的，A 可以 resume B，B 可以 yield 到 
+它会随着函数调用而增长，增长是通过 luaD_growstack 实现的。但有数量限制，即 LUAI_MAXSTACK，在 32位或以上系统中，设定为 1000000，超过就会报 “stack overflow”。  
 
 ---
 
-# 2. 数据结构
+## 1.2 函数调用与栈的关系
 
-lua vm 使用结构体 `global_State` 来表示，lua thread 使用结构体 `lua_State` 来表示。  
+协程执行的过程，就是一个函数调用另一个函数的过程，形成一个函数调用链：`f1->f2->f3->....`。    
 
-```c
-typedef struct global_State {
-  // gc 相关的字段
-  // ...
+函数调用在 lua_State 中用 CallInfo 结构体来表示，由 CallInfo 组成的链表，即是函数调用链。     
 
-  struct lua_State *mainthread;
-  
-  // 其他 vm 字段 
-  // ...
-} global_State;
+每个函数在 lua 数据栈上都占用一块空间，其范围是由 CallInfo 的两个字段表述的，func 表示起始位置，p 表示终止位置。一个函数在栈上的数据分布大概是这样的：  
+
+```
+      0    1        n     n+1         n+m
+func|arg1|arg2|...|argn|var1|var2|...|varm|
 ```
 
----
+func 实际上就是 Closure 类型的数据，TValue 可以表示它，而 arg1 ~ argn 表示函数的 n 个形参，var1 ~ varm 表示函数的 m 个本地变量，形参跟本地变量在 lua 里都称为 local vars。它们是在编译期确定好各自在栈中的位置的，0 到 n+m 这些栈元素，也被称为 “寄存器”，用 R 表示，比如 R[0] 就表示 arg1，而 R[n+1] 表示 var1。   
 
-# 3. 函数调用
+CallInfo 与 stack 的大致对应关系如下：  
 
-这是能真正感受到 lua 和谐的地方，它与 c 融合得特别好。可以在 lua 中调用 c 函数，也可以在 c 中调用 lua 函数。lua 函数只操作 lua 数据栈，而 c 函数也可以通过接口操作 lua 数据栈。   
-
-
----
-
-# 4. upvalue
-
-upvalue 即函数引用到的外部变量，像这样
-
-```lua
-local x = 10
-local function f(y)
-    return x + y
-end
-```
-
-变量 x 就是函数 f 的一个 upvalue。   
-
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-stack-and-callinfo.png"/>
+</div>
+<center>图2：callinfo 与 stack[1]</center>
+<br/>
 
 ---
 
-# 参考
+## 1.3 CallInfo 中的 p 与 lua_State 中的 p
+
+图2 中的有个细节要纠一下，CallInfo 的 top 字段指向了栈数组中的 argn(R[n]) 项，在很多情况下，并不准确。   
+
+对于一个正常的有局部变量的的 lua 函数，top 指向的应该是 `func + maxstacksize` 这个位置，maxstacksize 是在编译期确定的，这个函数的形参+局部变量，以及运算过程中需要的中间变量，全部加起来需要的最多的栈空间。  
+
+
+
+---
+
+## 1.4 固定参数的函数调用
+
+---
+
+## 1.2 不定参数的函数调用
+
+---
+
+# 2. upvalue
+
+---
+
+# 3. 参考
+
+[1] codedump. Lua 设计与实现. 北京: 人民邮电出版社, 2017.8: 45.   
