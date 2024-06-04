@@ -44,7 +44,7 @@ upvalue 以一种高效的方式实现了词法作用域，使得函数能成为
 
 lua 数据栈的作用是处理函数调用以及存储函数运行时需要的数据。  
 
-它会随着函数调用而增长，增长是通过 luaD_growstack 实现的。但有数量限制，即 LUAI_MAXSTACK，在 32位或以上系统中，设定为 1000000，超过就会报 “stack overflow”。  
+栈会随着函数调用而增长，增长是通过 luaD_growstack 实现的，但有大小限制，上限为 LUAI_MAXSTACK，在 32位或以上系统中是 1000000，超过就会报 “stack overflow”。  
 
 ---
 
