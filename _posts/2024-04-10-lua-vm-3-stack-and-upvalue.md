@@ -124,13 +124,40 @@ c 函数是通过 lua api 操作 lua 数据栈的，初始的时候，lua_State 
 
 ## 1.4 固定参数的函数调用
 
+固定参数的函数调用比较简单，
+
 ---
 
-## 1.2 不定参数的函数调用
+## 1.5 不定参数的函数调用
 
 ---
 
 # 2. upvalue
+
+---
+
+## 2.1 upvalue 要解决的问题
+
+upvalue 就是外部函数的局部变量，比如下面的函数定义中，base 就是 inner 这个函数的一个 upvalue。  
+
+```lua
+local function getf(delta)
+    local base = 100
+    local function inner()
+        return base+delta
+    end
+    return inner
+end
+
+local f1 = getf(10)
+```
+
+upvalue 复杂的地方在于，在离开了 upvalue 的作用域之后，还要能够访问得到。比如上面调用了 `local f1 = getf(10)` ，getf 返回后它的栈空间已经被抹掉了，但 inner 还要能访问 base 这个变量，所以需要想办法把它捕捉下来。  
+
+---
+
+## 2.2 upvalue 的实现
+
 
 ---
 
