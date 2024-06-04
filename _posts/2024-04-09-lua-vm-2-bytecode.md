@@ -193,11 +193,11 @@ OP_ADD,/*	A B C	R[A] := R[B] + R[C]				*/
 
 上图中，可以看到 my_add 函数，我们只写了一个 return 语句，但却有两个 return opcode，而 main 函数，我们没有 return，也有一个 return opcode。下面具体解释一下。  
 
-* my_add 的第一个是 return1，对应的是 `return c` 这个语句，是在 lparser.c 的 `retstat` 函数处理的，内部调用 `luaK_ret` 生成一个 return 的 opcode。  
+1、my_add 的第一个是 return1，对应的是 `return c` 这个语句，是在 lparser.c 的 `retstat` 函数处理的，内部调用 `luaK_ret` 生成一个 return 的 opcode。    
 
-* my_add 的第二个是 return0，是 lua 编译器自动生成的，每个函数的末尾都会补充一个 "final return"，是在 lparser.c 的 `body` 函数处理的，末尾调用 `close_func` 处理收尾工作，`close_func` 内部会调用 `luaK_ret` 生成一个 return 的 opcode。   
+2、my_add 的第二个是 return0，是 lua 编译器自动生成的，每个函数的末尾都会补充一个 "final return"，是在 lparser.c 的 `body` 函数处理的，末尾调用 `close_func` 处理收尾工作，`close_func` 内部会调用 `luaK_ret` 生成一个 return 的 opcode。    
 
-* main 函数的 return0，也是 lua 编译器自动生成的 "final return"，lua 会把一个 script 脚本处理成一个函数，叫 main 函数，它末尾加的 return 是在 lparser.c 的 `mainfunc` 函数处理的，它末尾也调用了 `close_func`，处理方式与 `body` 差不多。    
+3、main 函数的 return0，也是 lua 编译器自动生成的 "final return"，lua 会把一个 script 脚本处理成一个函数，叫 main 函数，它末尾加的 return 是在 lparser.c 的 `mainfunc` 函数处理的，它末尾也调用了 `close_func`，处理方式与 `body` 差不多。     
 
 ---
 
