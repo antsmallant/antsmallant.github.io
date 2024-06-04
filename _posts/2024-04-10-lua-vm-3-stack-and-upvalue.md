@@ -74,11 +74,14 @@ CallInfo 与 stack 的大致对应关系如下：
 
 ---
 
-## 1.3 CallInfo 中的 p 与 lua_State 中的 p
+## 1.3 CallInfo 中的 top 字段
 
-图2 中的有个细节要纠一下，CallInfo 的 top 字段指向了栈数组中的 argn(R[n]) 项，在很多情况下，并不准确。   
+图2 中的有个细节要纠一下，CallInfo 的 top 字段指向了栈数组中的 argn(R[n]) 项，在一些情况下，并不准确，要分情况讨论。      
 
-对于一个正常的有局部变量的的 lua 函数，top 指向的应该是 `func + maxstacksize` 这个位置，maxstacksize 是在编译期确定的，这个函数的形参+局部变量，以及运算过程中需要的中间变量，全部加起来需要的最多的栈空间。  
+1、lua 函数，CallInfo 的 top 指向的应该是 `func + 1 + maxstacksize` 这个位置，maxstacksize 是在编译期确定的这个函数需要的 “寄存器” 总数量。一个普通的 lua 函数，需要的寄存器往往不止要用于存放形参，还有一些本地变量，一些运算过程的中间结果。    
+
+2、c 函数，上图是准确的，
+
 
 
 
