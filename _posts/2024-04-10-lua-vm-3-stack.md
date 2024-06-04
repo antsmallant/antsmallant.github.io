@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "lua vm 三: 寄存器、栈与函数调用"
+title: "lua vm 三: 栈与函数调用"
 date: 2024-04-10
 last_modified_at: 2024-04-10
 categories: [lua]
