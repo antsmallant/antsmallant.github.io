@@ -140,7 +140,7 @@ f1(10, 20, 30)
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-stack-simple-print-func.png"/>
 </div>
-<center>图4：简单打印函数的编译结果</center>
+<center>图4：固定参数函数调用的编译结果</center>
 <br/>
 
 f1 调用 print 的过程中，栈空间布局是这样的：  
@@ -149,10 +149,10 @@ f1 调用 print 的过程中，栈空间布局是这样的：
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-stack-simple-print.drawio.png"/>
 </div>
-<center>图5：简单打印函数的栈空间布局</center>
+<center>图5：固定参数函数调用的栈空间布局</center>
 <br/>
 
-f1 调用 print 的过程，可以归结为三步：   
+整个调用过程可以归结为三步：   
 
 第一、把 print 这个函数入栈。   
 
@@ -197,7 +197,43 @@ C 表示返回值的个数，1 表示没有返回值；
 
 ## 1.5 不定参数的函数调用
 
-不定参数调用的时候，比较复杂，上面讲 OP_CALL
+不定参数调用的时候，比较复杂。当参数个数确定的时候，可以让 OP_CALL 的参数 B 来表示个数，当参数不确定的时候，只能用别的办法。  
+
+举个例子：  
+
+```lua
+local function f1()
+    local t = {10, 20, 30}
+    print(table.unpack(t))
+end
+```
+
+编译出来是这样：  
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-stack-multi-arg-bytecode.png"/>
+</div>
+<center>图6：不定参数函数调用的编译结果</center>
+<br/>
+
+这里略复杂，
+
+---
+
+## 1.6 OP_CALL 的完整规则[2]
+
+**Syntax**   
+
+`CALL A B C    R(A), ... ,R(A+C-2) := R(A)(R(A+1), ... ,R(A+B-1))`
+
+**Description**    
+
+Performs a function call, with register R(A) holding the reference to the function object to be called. Parameters to the function are placed in the registers following R(A). If B is 1, the function has no parameters. If B is 2 or more, there are (B-1) parameters. If B >= 2, then upon entry to the called function, R(A+1) will become the base.
+
+If B is 0, then B = ‘top’, i.e., the function parameters range from R(A+1) to the top of the stack. This form is used when the number of parameters to pass is set by the previous VM instruction, which has to be one of OP_CALL or OP_VARARG.
+
+If C is 1, no return results are saved. If C is 2 or more, (C-1) return values are saved. If C == 0, then ‘top’ is set to last_result+1, so that the next open instruction (OP_CALL, OP_RETURN, OP_SETLIST) can use ‘top’.
 
 ---
 
@@ -233,3 +269,5 @@ upvalue 复杂的地方在于，在离开了 upvalue 的作用域之后，还要
 # 3. 参考
 
 [1] codedump. Lua 设计与实现. 北京: 人民邮电出版社, 2017.8: 45.   
+
+[2] dibyendumajumdar. op-call-instruction. Available at https://the-ravi-programming-language.readthedocs.io/en/latest/lua_bytecode_reference.html#op-call-instruction.   
