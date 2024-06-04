@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "lua vm 三: stack 与 upvalue"
+title: "lua vm 三: stack"
 date: 2024-04-10
 last_modified_at: 2024-04-10
 categories: [lua]
@@ -11,11 +11,9 @@ tags: [lua]
 {:toc}
 <br/>
 
-lua vm 运行过程中，栈和 upvalue 是两个重要的数据结构。   
+lua vm 运行过程中，栈是一个重要的数据结构。   
 
 栈是一个很巧妙的设计，它同时能满足 lua、c 函数运行的需要，也能实现 lua 与 c 函数的互相调用。   
-
-upvalue 以一种高效的方式实现了词法作用域，使得函数能成为 lua 中的第一类值；而其高效也导致在实现上有点复杂。   
 
 ---
 
@@ -279,40 +277,11 @@ Performs a function call, with register R(A) holding the reference to the functi
 
 If B is 0, then B = ‘top’, i.e., the function parameters range from R(A+1) to the top of the stack. This form is used when the number of parameters to pass is set by the previous VM instruction, which has to be one of OP_CALL or OP_VARARG.
 
-If C is 1, no return results are saved. If C is 2 or more, (C-1) return values are saved. If C == 0, then ‘top’ is set to last_result+1, so that the next open instruction (OP_CALL, OP_RETURN, OP_SETLIST) can use ‘top’.
+If C is 1, no return results are saved. If C is 2 or more, (C-1) return values are saved. If C == 0, then ‘top’ is set to last_result+1, so that the next open instruction (OP_CALL, OP_RETURN, OP_SETLIST) can use ‘top’.    
 
 ---
 
-# 2. upvalue
-
----
-
-## 2.1 upvalue 要解决的问题
-
-upvalue 就是外部函数的局部变量，比如下面的函数定义中，base 就是 inner 这个函数的一个 upvalue。  
-
-```lua
-local function getf(delta)
-    local base = 100
-    local function inner()
-        return base+delta
-    end
-    return inner
-end
-
-local f1 = getf(10)
-```
-
-upvalue 复杂的地方在于，在离开了 upvalue 的作用域之后，还要能够访问得到。比如上面调用了 `local f1 = getf(10)` ，getf 返回后它的栈空间已经被抹掉了，但 inner 还要能访问 base 这个变量，所以需要想办法把它捕捉下来。  
-
----
-
-## 2.2 upvalue 的实现
-
-
----
-
-# 3. 参考
+# 2. 参考
 
 [1] codedump. Lua 设计与实现. 北京: 人民邮电出版社, 2017.8: 45.   
 
