@@ -71,17 +71,21 @@ CallInfo 与 stack 的大致对应关系如下：
 <center>图2：callinfo 与 stack[1]</center>
 <br/>
 
+上图出自 codedump 的《Lua 设计与实现》[1]，不过里面有个细节没画准，就是 CallInfo 的 top 指针，不一定是会指在 argn 处的，具体是为什么下面展开讲讲。  
+
 ---
 
 ## 1.3 CallInfo 中的 top 字段
 
-图2 中的有个细节要纠正一下，CallInfo 的 top 字段指向了栈数组中的 argn(R[n]) 项，在一些情况下，并不准确，要分情况讨论。      
+图2 中 CallInfo 的 top 字段指向了栈数组中的 argn 项，但在一些情况下并不准确，下面分情况讨论。      
 
 **1、lua 函数**
 
-上图部分准确。在代码中，CallInfo 的 top 指向的是 `func + 1 + maxstacksize` 这个位置，maxstacksize 是在编译期确定的这个函数需要的 “寄存器” 总数量。一个普通的 lua 函数，需要的寄存器往往不止要用于存放形参，还有一些本地变量，一些运算过程的中间结果，所以 maxstacksize 往往是比形参个数大的。      
+上图部分情况下准确。在代码中，CallInfo 的 top 指向的是 `func + 1 + maxstacksize` 这个位置，maxstacksize 是在编译期确定的这个函数需要的 “寄存器” 总数量。一个普通的 lua 函数，需要的寄存器往往不止要用于存放形参，还有一些本地变量，一些运算过程的中间结果，所以 maxstacksize 往往是比形参个数大的。      
 
-比如这样一个函数:
+也就是说，只有当 maxstacksize 刚好是形参的个数时，上图才是准确的。  
+
+比如这样一个函数，maxstacksize 就是大于形参个数的:   
 
 ```lua
 local function f1(x, y)
