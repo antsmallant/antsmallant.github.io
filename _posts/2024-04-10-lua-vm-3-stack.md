@@ -77,7 +77,7 @@ CallInfo 与 stack 的大致对应关系如下：
 
 ## 1.3 CallInfo 中的 top 字段
 
-图2 中 CallInfo 的 top 字段指向了栈数组中的 argn 项，但在一些情况下并不准确，下面分情况讨论。      
+图2 中 CallInfo 的 top 字段指向了栈数组中的 argn 项，多数情况下并不是这样的，下面分情况讨论。      
 
 **1、lua 函数**
 
