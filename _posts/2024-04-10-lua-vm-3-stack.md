@@ -55,10 +55,12 @@ lua 数据栈的作用是处理函数调用以及存储函数运行时需要的�
 
 每个函数在 lua 数据栈上都占用一块空间，其范围是由 CallInfo 的两个字段表述的，func 表示起始位置，p 表示终止位置。一个函数在栈上的数据分布大概是这样的：  
 
-```
-      0    1        n   n+1           n+m
-func|arg1|arg2|...|argn|var1|var2|...|varm|
-```
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-stack-func-stack-space.drawio.png"/>
+</div>
+<center>图2：函数的栈空间分布</center>
+<br/>
 
 func 实际上就是 Closure 类型的数据，TValue 可以表示它，而 arg1 ~ argn 表示函数的 n 个形参，var1 ~ varm 表示函数的 m 个本地变量，形参跟本地变量在 lua 里都称为 local vars。它们是在编译期确定好各自在栈中的位置的，0 到 n+m 这些栈元素，也被称为 “寄存器”，用 R 表示，比如 R[0] 就表示 arg1，而 R[n+1] 表示 var1。   
 
@@ -68,7 +70,7 @@ CallInfo 与 stack 的大致对应关系如下：
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-stack-and-callinfo.png"/>
 </div>
-<center>图2：callinfo 与 stack[1]</center>
+<center>图3：callinfo 与 stack[1]</center>
 <br/>
 
 上图出自 codedump 的《Lua 设计与实现》[1]，不过里面有个细节没画准，就是 CallInfo 的 top 指针，不一定是会指在 argn 处的，具体是为什么下面展开讲讲。  
@@ -77,7 +79,7 @@ CallInfo 与 stack 的大致对应关系如下：
 
 ## 1.3 CallInfo 中的 top 字段
 
-图2 中 CallInfo 的 top 字段指向了栈数组中的 argn 项，多数情况下并不是这样的，下面分情况讨论。      
+图3 中 CallInfo 的 top 字段指向了栈数组中的 argn 项，多数情况下并不是这样的，下面分情况讨论。      
 
 **1、lua 函数**
 
@@ -99,7 +101,7 @@ end
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-f1-compile.png"/>
 </div>
-<center>图3：编译结果</center>
+<center>图4：编译结果</center>
 <br/>
 
 locals 那项显示，它至少需要 3 个寄存器，2 个用于存放形参 x 和 y，1 个用于存放本地变量 a。    
@@ -143,7 +145,7 @@ f1(10, 20, 30)
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-stack-simple-print-func.png"/>
 </div>
-<center>图4：固定参数函数调用的编译结果</center>
+<center>图5：固定参数函数调用的编译结果</center>
 <br/>
 
 f1 调用 print 的过程中，栈空间布局是这样的：  
@@ -152,7 +154,7 @@ f1 调用 print 的过程中，栈空间布局是这样的：
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-stack-simple-print.drawio.png"/>
 </div>
-<center>图5：固定参数函数调用的栈空间布局</center>
+<center>图6：固定参数函数调用的栈空间布局</center>
 <br/>
 
 整个调用过程可以归结为三步：   
@@ -217,7 +219,7 @@ end
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-stack-multi-arg-bytecode.png"/>
 </div>
-<center>图6：不定参数函数调用的编译结果</center>
+<center>图7：不定参数函数调用的编译结果</center>
 <br/>
 
 大致步骤如下：  
