@@ -146,6 +146,6 @@ ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 I/O，如果返回�
 
 [3] Raymond Chen. A history of the fd_set, FD_SETSIZE, and how it relates to WinSock. Available at https://devblogs.microsoft.com/oldnewthing/20221102-00/?p=107343, 2022-11-2.  
 
-[4] 张彦飞. 图解 | 深入揭秘 epoll 是如何实现 IO 多路复用的！. Available at https://mp.weixin.qq.com/s?__biz=MjM5Njg5NDgwNA==&mid=2247484905&idx=1&sn=a74ed5d7551c4fb80a8abe057405ea5e, 2021-03-17.    
+[4] 张彦飞. 深入揭秘 epoll 是如何实现 IO 多路复用的！. Available at https://mp.weixin.qq.com/s?__biz=MjM5Njg5NDgwNA==&mid=2247484905&idx=1&sn=a74ed5d7551c4fb80a8abe057405ea5e, 2021-03-17.    
 
 [5] mingguangtu. 深入学习IO多路复用 select/poll/epoll 实现原理. Available at https://mp.weixin.qq.com/s?__biz=MjM5ODYwMjI2MA==&mid=2649774761&idx=1&sn=cd93afad37fecb2071d72d7e0dfebf5e, 2022-12-07.   
