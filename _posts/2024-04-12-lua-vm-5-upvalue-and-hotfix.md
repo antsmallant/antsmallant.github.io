@@ -126,10 +126,10 @@ typedef struct LClosure {
 
 ### 1.2.2 upvalue 的访问
 
-upvalue 是间接访问的，LClosure 结构体的 upvals 字段是 UpVal* 类型的数组。访问的时候先通过 upvals 获得到 UpVal 指针，再通过 UpVal 里面的 v.p 去访问具体的变量，如下：  
+upvalue 是间接访问的，LClosure 结构体的 upvals 字段是 UpVal* 类型的数组。访问的时候先通过 upvals 获得到 UpVal 指针，再通过 UpVal 里面的 v.p 去访问具体的变量，伪码如下：  
 
 ```c
-UpVal* UpValPtr = upvals[upidx];
+UpVal* UpValPtr = closure->upvals[upidx];
 TValue* p = UpValPtr->v.p;
 ```
 
@@ -330,14 +330,9 @@ typedef struct CClosure {
 
 不过，这里面有些状况是需要特别考虑的，就是新函数可能依赖了旧函数（闭包）上没有的 upvalue，这种情况可能会被我们忽略掉。  
 
----
-
-# 3. 总结
-
-本文讲了 lua upvalue 的实现机制，以及在这种机制下，如何对 lua 服务器做出有效的热修复。  
 
 ---
 
-# 4. 参考
+# 3. 参考
 
 [1] yuerer. Lua 服务端热更新. Available at https://yuerer.com/Lua服务端热更新/, 2020-12-19.     
