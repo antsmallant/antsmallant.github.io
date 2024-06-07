@@ -198,22 +198,27 @@ RDKCTC 我也闹不清楚。
 
 从例子上可以看到，f1 引用了上一层函数 getf 的局部变量 var2，所以它的 instack 值是 true，而引用了上两层的局部变量 var1，则它的 instack 是 false。  
 
-instack 主要就是在创建 Closure 的时候帮助初始化 Closure 的 upvals 数组，对于 instack 为 true 的 upvalue，直接搜索上一层函数的栈空间即可，对于 instack 为 false 的 upvalue，就不能这样了，为什么呢？因为上两层的有可能已经不在栈上了。能想象得到吗？举个例子： 
+instack 主要就是在创建 Closure 的时候帮助初始化 Closure 的 upvals 数组，对于 instack 为 true 的 upvalue，直接搜索上一层函数的栈空间即可，对于 instack 为 false 的 upvalue，就不能这样了，为什么呢？因为上两层的有可能已经不在栈上了。能想象得到吗？举个例子：   
 
 ```lua
 local function l1()
     local var1 = 1
+
     local function l2()
         local var2 = 2
+
         local function l3()
             return var1+var2+3
         end
+
         return l3
     end
+
     return l2
 end
 
 local ret_l2 = l1()
+
 local ret_l3 = ret_l2()
 ```
 
@@ -252,9 +257,9 @@ static void pushclosure (lua_State *L, Proto *p, UpVal **encup, StkId base,
 
 分两个阶段讲，getf 调用时以及 getf 调用后。  
 
-1、getf 调用时，var2、var3 这两个变量作为 f1, f2 的 upvalue，它们还处在 getf 的栈上，这时候它们会被放在 lua_State 的 openupval 链表中。  
+1、getf 调用时，var2、var3 这两个变量作为 f1, f2 的 upvalue，它们还处在 getf 的栈上，这时候它们会被放在 lua_State 的 openupval 链表中。   
 
-2、getf 调用后，它的栈要被收回的，这时候 lua vm 会调用 luaF_close 来关闭 (close) `getf` 栈上被引用的 upvalue，最终是 luaF_closeupval 这个函数执行：  
+2、getf 调用后，它的栈要被收回的，这时候 lua vm 会调用 luaF_close 来关闭 `getf` 栈上被引用的 upvalue，最终是 luaF_closeupval 这个函数执行：  
 
 ```lua
 void luaF_closeupval (lua_State *L, StkId level) {
@@ -274,15 +279,16 @@ void luaF_closeupval (lua_State *L, StkId level) {
 }
 ```
 
-要理解这个函数，就要知道 StkId level 这个参数的意义，它是 getf 的 base 指针，即它的栈底。同个 lua_State 的函数调用链上的所有函数共用一个栈，按顺序各占一段栈空间，栈是一个数组，所以后调用的函数的变量在栈上的索引是更大的，表现上就是指针值更大。而 openupval 链表里面 Upval 里的 p 就是指向这指针。openupval 是 根据变量在栈上出现的先后排序的，链头是最先出现的，链尾是最后出现的，所以从链头开始，只要它里面的 p 值大于等于 getf 的 base 值，就说明这是 getf 栈上的变量，要 close 掉。   
+要理解这个函数，就要知道 `StkId level` 这个参数的意义，它在这里是 `getf` 的 `base` 指针，即它的栈底。同个 lua_State 的函数调用链上的所有函数共用一个栈，按顺序各占一段栈空间，栈是一个数组，所以后调用的函数的变量在栈上的索引是更大的，表现上就是指针值更大。而 openupval 链表里面 Upval 里的 p 就是指向这指针，所以遍历 openupval 的时候，遇到 p 比 base 大的，就表明这个是 `getf` 栈上的变量，要把它 close 掉。 
 
 close 的操作就是把 upval 从 openupval 链表移掉，同时把 upval 的 p 指向的值拷贝到它自身上。    
 
-这里也就大概这么一讲，文字表达反而啰嗦，实际看一下代码就清晰了，就几个要点：  
-
-1、栈是一个数组，每个函数各占一段空间，按调用顺序先后排列的；  
-2、每个函数里的本地变量就是一个指针，即 StkId，它的定义是 `typedef StackValue *StkId;`，即一个 `StackValue *` 类型的指针，指向栈数组上的一个元素；    
-3、StkId 是可以比较大小的，在栈上越靠后，它的值越大；     
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-vm-stack-upvalue-close.png"/>
+</div>
+<center>图3：upvalue close 时的拷贝</center>
+<br/>
 
 ### 1.2.5 C 闭包中的 value
 
