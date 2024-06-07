@@ -294,7 +294,7 @@ close 的操作就是把 upval 从 openupval 链表移掉，同时把 upval 的 
 
 ---
 
-### 1.2.5 C 闭包中的 value
+### 1.2.5 C 闭包中的 upvalue
 
 C 闭包（CClosure）也是有 upvalue 的，是在 lua_pushcclosure 时设置的，但用的是值拷贝，所以多个 C 闭包不能共享 upvalue。如果要在多个 C 闭包，只能是各自的upvalue 指向同一个 table 这样的变量。  
 
