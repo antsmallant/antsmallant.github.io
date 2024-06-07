@@ -37,13 +37,13 @@ tags: [lua]
 
 ## 1.1 upvalue 要解决的问题
 
-upvalue 就是外部函数的局部变量，比如下面的函数定义中，base 就是 inner 这个函数的一个 upvalue。  
+upvalue 就是外部函数的局部变量，比如下面的函数定义中，var1 就是 inner 的一个 upvalue。  
 
 ```lua
 local function getf(delta)
-    local fvar1 = 100
+    local var1 = 100
     local function inner()
-        return fvar1+delta
+        return var1+delta
     end
     return inner
 end
@@ -51,13 +51,13 @@ end
 local f1 = getf(10)
 ```
 
-upvalue 复杂的地方在于，在离开了 upvalue 的作用域之后，还要能够访问得到。比如上面调用了 `local f1 = getf(10)` ，`fvar1` 这个变量是在 `getf` 的栈上分配的，`getf` 返回后，它的栈空间已经被抹掉了，但 `inner` 还要能访问 `fvar1` 这个变量，所以要想办法把它捕捉下来。  
+upvalue 复杂的地方在于，在离开了 upvalue 的作用域之后，还要能够访问得到。比如上面调用了 `local f1 = getf(10)` ，`var1` 是在 `getf` 的栈上分配的，`getf` 返回后，栈空间被抹掉，但 `inner` 还要能访问 `var1`，所以要想办法把它捕捉下来。  
 
 ---
 
 ## 1.2 upvalue 的实现
 
-前面先讲 lua 闭包的 upvalue，最后再讲 c 闭包的，复杂性几乎都在 lua 闭包这里面。  
+下面先讲 lua 闭包的 upvalue，最后再讲 c 闭包的，因为复杂性几乎都在 lua 闭包这里面了。  
 
 ---
 
@@ -65,7 +65,7 @@ upvalue 复杂的地方在于，在离开了 upvalue 的作用域之后，还要
 
 与 upvalue 相关的结构体有：  
 
-1、UpVal，这个可以说是 upvalue 的本体了，很巧妙的结构，运行时的变量。  
+1、UpVal，可以说是 upvalue 的本体了，很巧妙的结构，运行时用到的变量。   
 
 ```c
 typedef struct UpVal {
@@ -84,7 +84,7 @@ typedef struct UpVal {
 } UpVal;
 ```
 
-2、Upvaldesc，这个是编译
+2、Upvaldesc，这个是编译时产生的信息，Proto 结构体就包含 `Upvaldesc*` 类型的数组：upvalues，用于描述当前函数用到的 upvalue 信息。  
 
 ```c
 typedef struct Upvaldesc {
@@ -94,9 +94,15 @@ typedef struct Upvaldesc {
   lu_byte kind;  /* kind of corresponding variable */
 } Upvaldesc;
 
+typedef struct Proto {
+  ...
+  Upvaldesc *upvalues;  /* upvalue information */
+  ...
+} Proto;
+
 ```
 
-3、lua_State 中的 openupval 字段，它是 UpVal 类型的链表，它相当于一个 cache，cache 了当前栈上还存活着的，被引用到的 upvalue。   
+3、lua_State 中的 openupval 字段，它是 UpVal* 类型的链表，它相当于一个 cache，保存当前栈上还存活着的被引用到的 upvalue。   
 
 ```c
 struct lua_State {
@@ -120,14 +126,14 @@ typedef struct LClosure {
 
 ### 1.2.2 upvalue 的访问
 
-upvalue 是间接访问的，LClosure 结构体的 upvals 是 UpVal* 类型的数组，所以访问的时候先通过 upvals 获得到 UpVal 指针，再通过 UpVal 里面的 v.p 去访问的，如下：  
+upvalue 是间接访问的，LClosure 结构体的 upvals 字段是 UpVal* 类型的数组。访问的时候先通过 upvals 获得到 UpVal 指针，再通过 UpVal 里面的 v.p 去访问具体的变量，如下：  
 
 ```c
 UpVal* UpValPtr = upvals[upidx];
 TValue* p = UpValPtr->v.p;
 ```
 
-需要这样间接的访问，主要是因为 UpVal 本身会随着函数的返回发生状态的变化，从 open 改为 close，这时它的值也从栈上拷贝到了 “堆” 上，所以指针是变化的，不能写死。  
+需要这样间接访问，主要是因为 UpVal 本身会随着函数调用的返回发生状态的变化：从 open 改为 close，这时它的值也从栈上被拷贝到了 "自己身上"，所以指针（v.p）是变化的，不能写死。  
 
 至于为什么会发生 open 到 close 的变化，后面会讲。  
 
@@ -135,9 +141,7 @@ TValue* p = UpValPtr->v.p;
 
 ### 1.2.3 upvalue 的创建
 
-upvalue 是在编译的时候计算好一个 Proto 需要什么 upvalue，相关信息存放在 Proto 的 upvalues 数组（ `Upvaldesc *upvalues;  /* upvalue information */`）中。  
-
-在 
+upvalue 是在编译的时候计算好一个 Proto 需要什么 upvalue，相关信息存放在 Proto 的 upvalues 数组（ `Upvaldesc *upvalues;  /* upvalue information */`）中的。   
 
 举个例子，对于这样一个脚本，内部的函数 f1、f2 既引用了 getf 之外的变量 var1，也引用了 getf 之内的变量 var2、var3，并且在 `local f1, f2 = getf()` 调用完成后，f1 还要能访问到 var1、var2，f2 还要能访问到 var1、var3。  
 
@@ -182,15 +186,19 @@ instack 表示这个 upvalue 是否刚好是上一层函数的局部变量，比
 idx 表示 instack 为 false 的情况下，可以在上一层函数的 upvals 数组的第几个找到这个 upvalue。  
 kind 表示 upvalue 类型，一般都是 VDKREG，即普通类型。 
 
+<br/>
+
 补充说明，kind 是 lua5.4 才整出来的，lua5.3 及之前都只有 VDKREG。5.4 新增了 RDKCONST，RDKTOCLOSE，RDKCTC。    
 
 RDKCONST 是对应到 `<const>`，指定变量为常量。   
 RDKTOCLOSE 是对应到 `<close>`，指定变量为 to be closed 的（类似于 RAII 特性，超出作用域后执行 `__close` 元函数）。   
 RDKCTC 我也闹不清楚。  
 
-从例子上可以看到，f1 引用了上一层函数 getf 的局部变量 var2，所以它的 instack 值是 1，而引用了上两层的局部变量 var1，则它的 instack 是 0。  
+<br/>
 
-instack 主要就是在创建 Closure 的时候帮助初始化 Closure 的 upvals 数组，对于 instack 为 1 的 upvalue，直接搜索上一层函数的栈空间即可，对于 instack 为 0 的 upvalue，就不能这样了，为什么呢？因为上两层的有可能已经不在栈上了。能想象得到吗？举个例子： 
+从例子上可以看到，f1 引用了上一层函数 getf 的局部变量 var2，所以它的 instack 值是 true，而引用了上两层的局部变量 var1，则它的 instack 是 false。  
+
+instack 主要就是在创建 Closure 的时候帮助初始化 Closure 的 upvals 数组，对于 instack 为 true 的 upvalue，直接搜索上一层函数的栈空间即可，对于 instack 为 false 的 upvalue，就不能这样了，为什么呢？因为上两层的有可能已经不在栈上了。能想象得到吗？举个例子： 
 
 ```lua
 local function l1()
@@ -234,9 +242,9 @@ static void pushclosure (lua_State *L, Proto *p, UpVal **encup, StkId base,
 }
 ```
 
-函数实现可以看到，instack 为 1 时，调用 `luaF_findupval` 去上一层函数的栈上搜索，instack 为 0 时，上一层函数已经帮忙捕捉好了，直接从它的 upvals 数组（即这里的 encup 变量中）索引。  
+函数实现可以看到，instack 为 true 时，调用 `luaF_findupval` 去上一层函数的栈上搜索，instack 为 false 时，上一层函数已经帮忙捕捉好了，直接从它的 upvals 数组（即这里的 encup 变量中）索引。  
 
-这里 `uv[i].idx` 就是上面 upvaldesc 的 idx 列，即当 instack 为 0 时，它对应于上一层函数的 upvals 数组的第几项。    
+这里 `uv[i].idx` 就是上面 upvaldesc 的 idx 列，即当 instack 为 false 时，它对应于上一层函数的 upvals 数组的第几项。    
 
 ---
 
