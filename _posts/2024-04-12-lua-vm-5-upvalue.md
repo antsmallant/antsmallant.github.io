@@ -2,7 +2,7 @@
 layout: post
 title: "lua vm 五: upvalue"
 date: 2024-04-12
-last_modified_at: 2024-04-10
+last_modified_at: 2024-04-12
 categories: [lua]
 tags: [lua]
 ---
