@@ -37,7 +37,7 @@ tags: [lua]
 
 ---
 
-## 1.1 upvalue 要解决的问题
+## 1.1 upvalue 实现上要解决的问题
 
 upvalue 就是外部函数的局部变量，比如下面的函数定义中，var1 就是 inner 的一个 upvalue。  
 
@@ -291,6 +291,8 @@ close 的操作就是把 upval 从 openupval 链表移掉，同时把 upval 的 
 </div>
 <center>图3：upvalue close 时的拷贝</center>
 <br/>
+
+---
 
 ### 1.2.5 C 闭包中的 value
 
