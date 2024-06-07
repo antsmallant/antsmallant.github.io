@@ -330,10 +330,14 @@ typedef struct CClosure {
 
 不过，这里面有些状况是需要特别考虑的，就是新函数可能依赖了旧函数（闭包）上没有的 upvalue，这种情况可能会被我们忽略掉。  
 
+---
 
+# 3. 总结
+
+本文讲了 lua upvalue 的实现机制，以及在这种机制下，如何对 lua 服务器做出有效的热修复。  
 
 ---
 
-# 3. 参考
+# 4. 参考
 
 [1] yuerer. Lua 服务端热更新. Available at https://yuerer.com/Lua服务端热更新/, 2020-12-19.     
