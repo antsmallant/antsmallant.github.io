@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "lua vm 五: upvalue 与 lua 服务器热更新"
+title: "lua vm 五: upvalue"
 date: 2024-04-12
 last_modified_at: 2024-04-10
 categories: [lua]
@@ -15,9 +15,9 @@ tags: [lua]
 
 在 lua vm 中，upvalue 是一个重要的数据结构。upvalue 以一种高效的方式实现了词法作用域，使得函数能成为 lua 中的第一类值，也因其高效的设计，导致在实现上有点复杂。   
 
-函数+upvalue 构成了闭包（closure），在 lua 中调用一个函数，实际上是调用一个闭包。即它的函数，总是带有若干个 upvalue 构造的上下文的，虽然有时候 upvalue 个数可能为 0。  
+函数 (proto) + upvalue 构成了闭包（closure），在 lua 中调用一个函数，实际上是调用一个闭包。upvalue 就相当于函数的上下文。  
 
-这种带 “上下文” 的函数，也导致了热更新的麻烦，可以说是麻烦透顶了。没法简单的通过替换新的函数代码来更新一个旧闭包，因为旧闭包上可能带着几个 upvalue，这几个 upvalue 的值可能已经发生改变，或者正被其他的函数使用着。所以，要更新一个旧闭包，得把旧闭包上的所有 upvalue 都找出来，绑定到新函数上，形成一个新闭包，再用这个新闭包替换旧闭包。   
+这种带 “上下文” 的函数，也导致了热更新的麻烦，可以说是麻烦透顶了。没法简单的通过替换新的函数代码来更新一个旧闭包，因为旧闭包上可能带着几个 upvalue，这几个 upvalue 的值可能已经发生改变，或者也被其他的函数引用着。  
 
 <br/>
 <div align="center">
@@ -26,7 +26,9 @@ tags: [lua]
 <center>图1：函数与upvalue</center>
 <br/>
 
-本文主要讲 upvalue 在 lua vm 中的实现，之后以 skynet 为例讲一下游戏服务器如何解决 upvalue 的绑定问题，实现热更新。    
+所以，要更新一个旧闭包，得把旧闭包上的所有 upvalue 都找出来，绑定到新函数上，形成一个新闭包，再用这个新闭包替换旧闭包。    
+
+本文主要讲 upvalue 在 lua vm 中的实现，下篇文章再讲如何解决带有 upvalue 的闭包的热更新问题。   
 
 ---
 
@@ -65,7 +67,7 @@ upvalue 复杂的地方在于，在离开了 upvalue 的作用域之后，还要
 
 与 upvalue 相关的结构体有：  
 
-1、UpVal，可以说是 upvalue 的本体了，很巧妙的结构，运行时用到的变量。   
+1、UpVal，可以说是 upvalue 的本体了，很巧妙的结构，运行时用到的变量。    
 
 ```c
 typedef struct UpVal {
@@ -84,7 +86,7 @@ typedef struct UpVal {
 } UpVal;
 ```
 
-2、Upvaldesc，这个是编译时产生的信息，Proto 结构体就包含 `Upvaldesc*` 类型的数组：upvalues，用于描述当前函数用到的 upvalue 信息。  
+2、Upvaldesc，这个是编译时产生的信息，Proto 结构体就包含 `Upvaldesc*` 类型的数组：upvalues，用于描述当前函数用到的 upvalue 信息。   
 
 ```c
 typedef struct Upvaldesc {
@@ -112,7 +114,7 @@ struct lua_State {
 };
 ```
 
-4、LClosure 中的 upvals 数组， 
+4、LClosure 中的 upvals 数组。  
 
 ```c
 typedef struct LClosure {
@@ -306,33 +308,4 @@ typedef struct CClosure {
 
 ---
 
-# 2. lua 服务器热更新
-
-前言已经提到 upvalue 给热更新带来的麻烦，我日常开发中，使用的比较多的是 skynet，所以下面以 skynet 为例来讲。   
-
-首先，在实际使用中，我们并不真正的做热更新，即不做功能上的热更新；而是做一些 “热修复”，即修复一些 bug。  
-
-功能上的热更新，应该是通过架构层面上的设计来实现，因为它要考虑的问题会更多，如果没搞好，玩家的数据状态可能就不一致了，得不偿失，这个话题暂且不说。   
-
-热修复，就是用新代码替换旧代码，前言也提到了，没法简单的替换，要把旧函数上的 upvalue 找出来，绑定到新函数上。   
-
-## 2.1 skynet 服务器热修复  
-
-这篇文章 《Lua 服务端热更新》[1] 的作者提到了一种比较 “通用” 的办法，但在实际生产环境中，这种遍历的方式，可能会非常耗时，并导致服务端出现卡顿，所以，这种遍历的做法，比较适合轻负载的，对帧率要求不高的游戏。    
-
-在 skynet 下，我们生产上使用的 hotfix 方式是点对点的，即只修复特定需要修复的函数。skynet 暴露了 inject 接口，可以在一个服务中执行一份代码文件，这份代码文件我们可以写上新函数，然后利用 lua 的 debug 库完全 upvalue 的重新绑定。  
-
-大体实现差不多是这样：  
-
-```lua
-
-```
-
-不过，这里面有些状况是需要特别考虑的，就是新函数可能依赖了旧函数（闭包）上没有的 upvalue，这种情况可能会被我们忽略掉。  
-
-
----
-
-# 3. 参考
-
-[1] yuerer. Lua 服务端热更新. Available at https://yuerer.com/Lua服务端热更新/, 2020-12-19.     
+# 2. 参考
