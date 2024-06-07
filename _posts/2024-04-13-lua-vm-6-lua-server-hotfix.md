@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "lua vm 五: upvalue"
-date: 2024-04-12
-last_modified_at: 2024-04-10
+title: "lua vm 六: lua 服务器热更新"
+date: 2024-04-13
+last_modified_at: 2024-04-13
 categories: [lua]
 tags: [lua]
 ---
