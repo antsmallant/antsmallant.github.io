@@ -184,19 +184,19 @@ local retf1, retf2 = getf()
 
 从编译结果可以看到，每个 Proto 都会生成 UpvalueDesc 数组，用于描述这个函数（proto）会用到的 upvalue。   
 
-index 表示在 LClosure 的 upvals 数组中是第几个。  
-name 表示变量名。  
-instack 表示这个 upvalue 是否刚好是上一层函数的局部变量，比如 var2 是 f1 的上一层的，所以 instack 为 true，而 var1 是上两层的，所以为 false。  
-idx 表示 instack 为 false 的情况下，可以在上一层函数的 upvals 数组的第几个找到这个 upvalue。  
-kind 表示 upvalue 类型，一般都是 VDKREG，即普通类型。 
+* index 表示在 LClosure 的 upvals 数组中是第几个。  
+* name 表示变量名。  
+* instack 表示这个 upvalue 是否刚好是上一层函数的局部变量，比如 var2 是 f1 的上一层的，所以 instack 为 true，而 var1 是上两层的，所以为 false。  
+* idx 表示 instack 为 false 的情况下，可以在上一层函数的 upvals 数组的第几个找到这个 upvalue。  
+* kind 表示 upvalue 类型，一般都是 VDKREG，即普通类型。 
 
 <br/>
 
 补充说明，kind 是 lua5.4 才整出来的，lua5.3 及之前都只有 VDKREG。5.4 新增了 RDKCONST，RDKTOCLOSE，RDKCTC。    
 
-RDKCONST 是对应到 `<const>`，指定变量为常量。   
-RDKTOCLOSE 是对应到 `<close>`，指定变量为 to be closed 的（类似于 RAII 特性，超出作用域后执行 `__close` 元函数）。   
-RDKCTC 我也闹不清楚。  
+* RDKCONST 是对应到 `<const>`，指定变量为常量。   
+* RDKTOCLOSE 是对应到 `<close>`，指定变量为 to be closed 的（类似于 RAII 特性，超出作用域后执行 `__close` 元函数）。   
+* RDKCTC 我也闹不清楚。  
 
 <br/>
 
