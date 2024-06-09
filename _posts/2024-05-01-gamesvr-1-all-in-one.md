@@ -39,6 +39,8 @@ btw，棋牌类型的，早期的架构都是房间+桌子，整个游戏分 n �
 
 一切的难点都是因为量级太大，当 pcu 到达百万级的时候，水平扩容&负载均衡成为最关键的问题，整个架构的各个组成部分都要设计成可以水平扩容的。除此之外，还要做到高可用、容灾。   
 
+## 2.1 架构图
+
 以下是一个实际可用的服务器架构：      
 
 <br/>
@@ -48,16 +50,25 @@ btw，棋牌类型的，早期的架构都是房间+桌子，整个游戏分 n �
 <center>图1：全区全服游戏服务器总体架构</center>
 <br/>
 
-以 “玩家登录并战斗” 为场景，简单说明一下工作过程。  
+---
+
+## 2.2 工作过程
+
+以 “玩家登录并战斗” 为场景，简单说明一下工作过程:  
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/gamesvr-big-region-cli-join-battle-seq.png"/>
+</div>
+<center>图2：玩家登录并战斗流程</center>
+<br/>
+
+用文字描述就是：  
 
 1、客户端通过 sdksvr 完成 sdk 登录授权，获得一个 token；  
-2、客户端以 token 作为凭证连接上 plazasvr，拉取玩家数据，游戏数据；  
-3、客户端发送匹配请求到 plazasvr，plazasvr 转发给 matchsvr，matchsvr 完成匹配后，从 battlesvr 集群中选择一台 battlesvr 来承担这局战斗；  
+2、客户端以 token 作为凭证连接上 plazasvr，拉取游戏数据；  
+3、客户端发送加入战斗请求到 plazasvr，plazasvr 转发给 matchsvr，matchsvr 完成匹配后，从 battlesvr 集群中选择一台 battlesvr 来承担这局战斗；  
 4、客户端连上分配下来的 battlesvr 进行战斗；  
-
-
-
-
 
 ---
 
