@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "游戏开发之网络同步技术"
+title: "网络游戏同步技术"
 date: 2023-10-11
 last_modified_at: 2023-10-11
-categories: [游戏开发]
+categories: [网络游戏同步技术]
 ---
 
 * 目录  

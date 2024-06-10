@@ -3,7 +3,7 @@ layout: post
 title: "网络游戏同步技术四：方案选择"
 date: 2023-07-04
 last_modified_at: 2023-07-04
-categories: [游戏开发]
+categories: [网络游戏同步技术]
 ---
 
 * 目录  

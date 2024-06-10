@@ -3,7 +3,7 @@ layout: post
 title: "游戏服务器工程实践一：百万级同时在线的全区全服游戏"
 date: 2024-05-01
 last_modified_at: 2024-05-01
-categories: [游戏开发]
+categories: [游戏后端]
 tags: [gameserver]
 ---
 

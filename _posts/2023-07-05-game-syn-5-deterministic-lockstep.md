@@ -3,7 +3,7 @@ layout: post
 title: "网络游戏同步技术五：帧同步的优化与实现"
 date: 2023-07-05
 last_modified_at: 2023-07-05
-categories: [游戏开发]
+categories: [网络游戏同步技术]
 ---
 
 * 目录  

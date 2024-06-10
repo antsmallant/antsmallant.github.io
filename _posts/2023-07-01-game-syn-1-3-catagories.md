@@ -3,7 +3,7 @@ layout: post
 title: "网络游戏同步技术一：分类及差异"
 date: 2023-07-01
 last_modified_at: 2023-07-01
-categories: [游戏开发]
+categories: [网络游戏同步技术]
 ---
 
 * 目录  

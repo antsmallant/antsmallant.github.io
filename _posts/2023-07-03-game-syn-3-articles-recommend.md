@@ -3,7 +3,7 @@ layout: post
 title: "网络游戏同步技术三：拓展阅读"
 date: 2023-07-03
 last_modified_at: 2023-07-03
-categories: [游戏开发]
+categories: [网络游戏同步技术]
 ---
 
 * 目录  

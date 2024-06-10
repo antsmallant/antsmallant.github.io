@@ -3,7 +3,7 @@ layout: post
 title: "网络游戏同步技术六：若干问题探讨"
 date: 2023-07-06
 last_modified_at: 2023-07-06
-categories: [游戏开发]
+categories: [网络游戏同步技术]
 ---
 
 * 目录  
