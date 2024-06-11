@@ -11,10 +11,21 @@ tags: [server, devops]
 {:toc}
 <br/>
 
+本文记录一次对 prometheus pushgateway 做性能优化的过程。  
 
-# 1. 基本现状
+prometheus 只允许拉取（pull）指标数据，不允许主动推给（push）它，所以要接入 prometheus，通常都需要实现一个 exporter 接口，其实就是一个 http 接口，允许 prometheus 主动来拉数据。  
 
-我们是分区分服的游戏，生产环境会有几百上千个游戏服进程，这些进程都想接入 prometheus 做一些指标监控。优化前的状况是：  
+但是我们的游戏已经上线了，所以同事不想再在游戏服上增加 http 接口，于是他就用 pushgateway 来实现，pushgateway 相当于一个中介，它接受外部的 push，提供 pull 接口给 prometheus 去拉取。  
+
+一般情况下，一个物理服上我们会部署 50 个左右的区服（大部分都是老服，人很少的，所以不会有啥性能问题），所以整个实现看起来是这样的：   
+
+
+
+
+
+但是对于分区分服的游戏来说，生产环境一般会有几百到上千个游戏服进程，这些进程都需要接入 prometheus 做一些指标监控。
+
+优化前的状况是：  
 
 * 全局只部署一个 pushgateway。
 
