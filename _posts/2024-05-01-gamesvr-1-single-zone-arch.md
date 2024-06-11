@@ -233,9 +233,9 @@ mysql 要实现 sharding，自建跟公有云都有不同的方案。
 
 **mysql以外**
 
-可以考虑 MongoDB，它本身就支持 sharding，并且文档化数据库跟游戏对于数据 keyvalue 用法很匹配。  
+可以考虑 MongoDB，它本身就支持 sharding，并且在游戏中，我们通常是以 keyvalue 的形式存储数据的，文档数据库很契合这种使用习惯。   
 
-MongoDB 从 4.2 版本开始支持自定义分片键了，游戏一般不需要范围查询，所以用 uid 作为分片键，且基于 Hash 去做 sharding，可以使用数据分布得很均匀，sharding 效果会很好。  
+MongoDB 从 4.2 版本开始支持自定义分片键了，游戏一般不需要范围查询，所以用 uid 作为分片键，且基于 Hash 去做 sharding，可以使数据分布得很均匀，sharding 效果会很好。  
 
 <br/>
 
