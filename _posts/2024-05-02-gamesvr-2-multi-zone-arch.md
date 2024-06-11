@@ -39,13 +39,13 @@ tags: [gameserver]
 
 ## 1.2 工作过程
 
-以 “玩家登录并进入某一区服” 为场景，简单说明一下工作过程:  
+以 “玩家登录并进入选中的区服” 为场景，简单说明一下工作过程:   
 
 <br/>
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/gamesvr-multi-zone-cli-join-battle-seq.png"/>
 </div>
-<center>图2：玩家登录并进入选择的区服</center>
+<center>图2：玩家登录并进入选中的区服</center>
 <br/>
 
 用文字描述就是：  
