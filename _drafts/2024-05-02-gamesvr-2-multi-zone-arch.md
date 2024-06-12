@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "游戏服务器工程实践三：分服分区游戏的性能优化经验"
+title: "游戏服务器工程实践三：分服分区游戏的架构与性能优化实战"
 date: 2024-05-02
 last_modified_at: 2024-05-02
 categories: [游戏后端]
@@ -11,13 +11,6 @@ tags: [gameserver]
 {:toc}
 <br/>
 
-
-系列文章： 
-
-* [游戏服务器工程实践一：百万级同时在线的全区全服游戏](https://zhuanlan.zhihu.com/p/702597017)   
-* [游戏服务器工程实践二：prometheus pushgateway 性能差的解决办法](https://zhuanlan.zhihu.com/p/676366384)
-
----
 
 全区全服和分区分服这两大类游戏的服务器我都开发过，宏观架构上，分区分服要简单得多，需要水平扩容的地方不多。   
 
