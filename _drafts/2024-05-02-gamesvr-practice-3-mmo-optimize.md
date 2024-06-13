@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "游戏服务器工程实践三：MMO 同屏优化"
+title: "游戏服务器工程实践三：MMO 优化经验"
 date: 2024-05-02
 last_modified_at: 2024-05-02
 categories: [游戏后端]
@@ -10,6 +10,8 @@ tags: [gameserver]
 * 目录  
 {:toc}
 <br/>
+
+一款横版的 2d mmoarpg 游戏，偏挂机向，服务端是用 skynet 开发的。   
 
 
 全区全服和分区分服这两大类游戏的服务器我都开发过，宏观架构上，分区分服要简单得多，需要水平扩容的地方不多。   

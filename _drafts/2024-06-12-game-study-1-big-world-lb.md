@@ -21,7 +21,7 @@ tags: [gameserver]
 
 # scale
 
-## 初代 scale 技术
+## 第一代 scale 技术
 
 大地图分成多个小地图，每个小地图放到一个单独的逻辑单元（node）去跑（进程或线程），这种情况要处理的主要就是边界的问题，node1，node2 这两个相邻的 node，node1的上玩家 node1p 走到 node1 的边界，要能看到边界上 node2 的玩家 node2p，
 
@@ -34,7 +34,7 @@ tags: [gameserver]
 ---
 
 
-## 二代 scale 技术
+## 第二代 scale 技术
 
 bigworld 的分布式 aoi
 
