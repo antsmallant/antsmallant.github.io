@@ -112,7 +112,7 @@ locals 那项显示，它至少需要 3 个寄存器，2 个用于存放形参 x
 
 上图完全不准确。CallInfo 的 top 指向的应该是 `func + 1 + LUA_MINSTACK` 这个位置，LUA_MINSTACK 大小为 20，是初始时给 c 函数额外分配的栈空间（除了参数之外的）。   
 
-c 函数是通过 lua api 操作 lua 数据栈的，初始的时候，lua_State 的 top 和 callinfo 的 top 都是指向 argn 的位置的。随着 c 函数的运行，比如通过 lua_push 开头的 api 往栈里面压 n 个数据，top 就相应的增长 n 个位置。   
+c 函数是通过 lua api 操作 lua 数据栈的，初始的时候，lua_State 的 top 指向 argn 的位置的。随着 c 函数的运行，比如通过 lua_push 开头的 api 往栈里面压 n 个数据，top 就相应的增长 n 个位置。   
 
 这也是 lua 数据栈的巧妙之处：    
 
