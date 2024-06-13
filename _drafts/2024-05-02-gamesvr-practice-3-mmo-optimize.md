@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "游戏服务器工程实践三：分服分区游戏的架构与性能优化实战"
+title: "游戏服务器工程实践三：MMO 同屏优化"
 date: 2024-05-02
 last_modified_at: 2024-05-02
 categories: [游戏后端]
