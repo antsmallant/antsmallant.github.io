@@ -42,7 +42,7 @@ Glen Fielder 是网络同步的世界级专家，在 gdc 上做过多次技术�
 
 ---
 
-Gabriel Gambetta 这几篇关于状态同步相关优化手段的文章写得很通俗易懂，甚至还在文章里内嵌里一个 js 写的 demo：  
+Gabriel Gambetta 这几篇关于状态同步相关优化手段的文章写得很通俗易懂，甚至还在文章里内嵌了一个 js 写的 demo：  
 * [Fast-Paced Multiplayer (Part I): Client-Server Game Architecture](https://www.gabrielgambetta.com/client-server-game-architecture.html)
 * [Fast-Paced Multiplayer (Part II): Client-Side Prediction and Server Reconciliation](https://www.gabrielgambetta.com/client-side-prediction-server-reconciliation.html)
 * [Fast-Paced Multiplayer (Part III): Entity Interpolation](https://www.gabrielgambetta.com/entity-interpolation.html)
