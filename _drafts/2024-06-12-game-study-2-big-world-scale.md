@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "游戏服务器研究一：大世界的 scale"
-date: 2024-06-12
-last_modified_at: 2024-06-12
+title: "游戏服务器研究二：大世界的 scale 问题"
+date: 2024-06-19
+last_modified_at: 2024-06-19
 categories: [游戏后端]
 tags: [gameserver]
 ---
