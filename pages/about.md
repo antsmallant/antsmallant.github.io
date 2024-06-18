@@ -22,4 +22,3 @@ permalink: /about/
 |知乎|[https://www.zhihu.com/people/antsmallant/posts](https://www.zhihu.com/people/antsmallant/posts)|
 |csdn|[https://blog.csdn.net/antsmall?type=blog](https://blog.csdn.net/antsmall?type=blog)|
 |email|[antsmall@qq.com](mailto:antsmall@qq.com)|
-|QQ|4122八八四八二|
