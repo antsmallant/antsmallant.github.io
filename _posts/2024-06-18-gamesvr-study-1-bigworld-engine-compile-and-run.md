@@ -285,7 +285,23 @@ sudo service bwmachined2 start
 
 ---
 
-## 5.4 创建 ~/.bwmachined.conf 文件
+## 5.4 创建一个目录存放 server 运行文件
+
+（这一步看起来有点多余，但是如果不做，bwmachined2 可能会运行异常）            
+
+1、创建目录     
+```bash
+mkdir -p ~/mf/bigworld/server/bin
+```
+
+2、拷贝文件      
+```bash
+cp -R game/bin/server/el7/server/* ~/mf/bigworld/bin/server/
+```
+
+---
+
+## 5.5 创建 ~/.bwmachined.conf 文件   
 
 1、在当前用户的 home 目录 (~/) 下创建一个名为 .bwmachined.conf 的文本文件，要注意，文件名是以 . 号开头，内容如下： 
 
@@ -341,7 +357,7 @@ server 目录就放编译出来的服务器二进制文件，baseapp, cellapp, b
 
 ---
 
-## 5.5 运行 server
+## 5.6 运行 server
 
 （说明：server 的运行不需要什么参数，它是读取 ~/.bwmachined.conf 文件去加载相应的东西的）
 
