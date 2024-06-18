@@ -429,27 +429,51 @@ start bin\client\win32\bwclient.exe --res D:\code\game-src\bigworld\bigworld2014
 
 1、执行上面的 run-client.bat 就跑起来了
 
-![[bigworld-fantasydemo-pic1.png]]
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-fantasydemo-pic1.png"/>
+</div>
+<br/>
 
 2、选择 "Connect to Standard Server"，就看到之前配置的自己的服务器地址了
 
-![[bigworld-fantasydemo-pic2.png]]  
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-fantasydemo-pic2.png"/>
+</div>
+<br/>
 
 3、创建游戏账号
 
-![[bigworld-fantasydemo-pic3.png]]  
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-fantasydemo-pic3.png"/>
+</div>
+<br/>
 
 4、选择一个区
 
-![[bigworld-fantasydemo-pic4.png]]
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-fantasydemo-pic4.png"/>
+</div>
+<br/>
 
 5、创建区账号
 
-![[bigworld-fantasydemo-pic5.png]]
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-fantasydemo-pic5.png"/>
+</div>
+<br/>
 
 6、进入游戏
 
-![[bigworld-fantasydemo-pic6.png]]
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-fantasydemo-pic6.png"/>
+</div>
+<br/>
 
 ---
 
