@@ -1,18 +1,3 @@
----
-layout: post
-title: "游戏服务器研究一：bigworld 开源代码的编译与运行"
-date: 2024-06-18
-last_modified_at: 2024-06-18
-categories: [游戏后端]
-tags: [gameserver]
----
-
-* 目录  
-{:toc}
-<br/>
-
-
----
 
 # 1. 前言
 
