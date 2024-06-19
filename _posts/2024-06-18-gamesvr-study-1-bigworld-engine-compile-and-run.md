@@ -159,8 +159,19 @@ yum install rpm-build
 1）进入 `programming\bigworld\third_party\mongodb\mongo_cxx_driver`    
 2）根据 README.BigWorld 编译 mongo_cxx_driver     
 
-3、出错处理
-1） 使用 scons 编译&链接 mongo_cxx_driver 会总是报错，虽然已经正确指定了 boost 的 cpppath 和 libpath。一个 trick 就是根据报错，自己手动去拷贝文件到它的编译命令报错的目录。编译时报错就看看 -I 是指定哪些目录的，把 boost 拷贝过去。链接时报错就看看 -L 是指定哪些目录的，把 boost 的 lib 拷贝过去。  
+3、出错处理     
+使用 scons 编译 mongo_cxx_client 的时候，无论怎么折腾，总会报错的，换到 scons-3.x 也是一样，其原因就是找不到 boost 的 include 和 lib，虽然我们已经按照 readme ，在 scons 的参数中指定了 cpppath 和 libpath 了，也还是不行的。      
+
+这时候有两种办法解决。      
+
+1）省事的办法，不要追求什么优雅了，向现实低头吧，回到 boost 目录，把 include 跟 lib 拷贝到 `/user/local` 去。即回到 `programming/bigworld/third_party/mongodb/boost` 目录，执行以下语句，然后再重跑 mongo_cxx_driver 的编译：     
+
+```bash
+sudo cp -R build/include/boost/ /usr/local/include/
+sudo cp build/lib/* /usr/local/lib
+```
+
+2） 麻烦的办法，根据报错，自己手动去拷贝文件到它的编译命令报错的目录。编译时报错就看看 -I 是指定哪些目录的，把 boost 拷贝过去。链接时报错就看看 -L 是指定哪些目录的，把 boost 的 lib 拷贝过去。     
 
 ---
 
