@@ -29,11 +29,11 @@ mmo 这里取广义的概念（ Massive Multiplayer Online ），不特指 mmorp
 
 # 一些游戏的单服 pcu（最高同时在线）
 
-坦克世界（world of tanks），自称是 MMO，但实际上并不是 mmo，它是组队匹配作战，并不是一个大世界的，相当于一个 moba 而已。官网自称有 1M+ 的 pcu，但实际上没啥特别的。另外，虽然它用 bigworld 做服务端，但其实也没用上 bigworld 最牛的技术。           
+坦克世界（world of tanks），自称是 MMO，但实际上并不是 mmo，它是 match based [1]，并不是一个大世界的，相当于一个 moba 而已。官网自称有 1M+ 的 pcu，但实际上没啥特别的。另外，虽然它用 bigworld 做服务端，但其实也没用上 bigworld 最牛的技术。           
 
-eve online，这么多年下来，单服 pcu 记录大概是 65000 人左右。   
+eve online，这么多年下来，单服 pcu 记录大概是 65000 人左右 [2]。     
 
-wow，前段时间发了个测试数据，单服能去到 12 万。   
+wow，前段时间发了个测试数据，单服能去到 12 万 [3]。   
 
 看起来还是 wow 最强？   
 
@@ -41,7 +41,17 @@ wow，前段时间发了个测试数据，单服能去到 12 万。
 
 # mmo 的 scale
 
-mmo 的 scale，无非就是找到一种方式进行 partition，而目前为止，总的就两种方式，一种是按地图拆分，一种是按 aoi 拆分。  
+mmo 的 scale，无非就是找到一种方式进行 partition，实际上，我觉得目前就只有一种方式，即按地图区域划分，bigworld 在本质上也是这样的。   
+
+这里面有两种做法，即固定切分和动态划分。  
+
+普通的方式是固定划分，即预先按一定的方式把地图切割成 n 块，由 n 个服务（器）承载这 n 块地图，服务器运行起来之后这种切分就不变了。   
+
+bigworld 的方式是动态划分，它并不提前切割，而是动态切割，有一个全局的服务器（cellappmgr），根据整个地图上 entity（实体）的分布情况，尽量平衡的对区域进行切割，切割出来的小块尽量平均的分散到各个地图服务器上（cellapp）。   
+
+普通的方式在实现上可能真的会把地图切成 n 个小块，每个服务器只保存一小块的地图数据。而 bigworld 是不切地图的，每个 cellapp 拥有完整的地图数据，它只通过分割区域的坐标范围来确定自己的管辖范围。    
+
+至于无缝地图，无论是固定切分还是动态划分，都是可实现的，只是代价问题。   
 
 ## 按地图拆分
 
@@ -101,3 +111,8 @@ from: [无缝大地图-总体架构.pptx](https://github.com/yekoufeng/seamless-
 
 # 参考
 
+[1] reddit. Why is this game considered an "MMO". Available at https://www.reddit.com/r/WorldofTanks/comments/uwsyj/why_is_this_game_considered_an_mmo/.      
+
+[2] eve-offline. EVE-ONLINE STATUS MONITOR. Available at https://eve-offline.net/?server=tranquility.    
+
+[3] 17173. 魔兽世界：官方公布测试首日数据，单服12W同时在线，世界第一. http://news.17173.com/content/06132024/025402002.shtml.    
