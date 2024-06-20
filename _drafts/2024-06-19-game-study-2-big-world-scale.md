@@ -41,6 +41,8 @@ wow，前段时间发了个测试数据，单服能去到 12 万 [3]。
 
 # mmo 的 scale
 
+## partition 的方式
+
 mmo 的 scale，无非就是找到一种方式进行 partition，实际上，我觉得目前就只有一种方式，即按地图区域划分，bigworld 在本质上也是这样的。   
 
 这里面有两种做法，即固定切分和动态划分。  
@@ -53,17 +55,36 @@ bigworld 的方式是动态划分，它并不提前切割，而是动态切割�
 
 至于无缝地图，无论是固定切分还是动态划分，都是可实现的，只是代价问题。   
 
-## 按地图拆分
+## 固定划分的实现
 
-按地图拆分的思路就是大地图拆成小地图，小地图分散到多个进程去跑着，各自承担一部分玩家。玩家在地图间位移，又分两种做法，一种是通过“传送”的方式把玩家从地图 a 送到地图b，另一种是做成“无缝地图”，玩家基本上感知不到小地图边界的存在。  
-
-大体结构上就是这样的了：  
+固定切分没什么好讲的，它的大体结构就是这样，下图取自韦易笑老师（ 知乎大佬：https://www.zhihu.com/people/skywind3000 ） 的这篇文章《》[4]。 
 
 <br/>
 <div align="center">
 <img src="https://www.skywind.me/blog/wp-content/uploads/2015/04/image31.png"/>
 </div>
 <br/>
+
+
+## 动态划分的实现
+
+其实就是讲一下 bigworld 是怎么实现的，基本思路就是根据区域内的 entity 数量来，entity 数量多就按照算法进行切割，数量少之后，再按算法重新合并，减少 cell。  
+
+bigwold 有几个名词需要知道的，space 就代表一整张大地图，cell 就代表地图上的某块区域，就像这样：  
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-scale-cell-split.png"/>
+</div>
+<br/>
+
+## 按地图拆分
+
+按地图拆分的思路就是大地图拆成小地图，小地图分散到多个进程去跑着，各自承担一部分玩家。玩家在地图间位移，又分两种做法，一种是通过“传送”的方式把玩家从地图 a 送到地图b，另一种是做成“无缝地图”，玩家基本上感知不到小地图边界的存在。  
+
+大体结构上就是这样的了：  
+
+
 
 from: [游戏服务端架构发展史（中）](https://www.skywind.me/blog/archives/1301)
 
@@ -74,12 +95,6 @@ from: [游戏服务端架构发展史（中）](https://www.skywind.me/blog/arch
 当某个区域聚集的 entity 数量超过设定的阈值时，就根据算法动态的把区域再次划分，拆给到负载更轻的进程上。  
 
 bigworld 是使用 bsptree 来管理区域的划分的，区域都是处理成矩形的，但区域的大小是各异的，比如这样：  
-
-<br/>
-<div align="center">
-<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-scale-cell-split.png"/>
-</div>
-<br/>
 
 from: [无缝大地图-总体架构.pptx](https://github.com/yekoufeng/seamless-world/blob/master/无缝大地图-总体架构.pptx) 。   
 
