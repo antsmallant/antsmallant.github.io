@@ -101,6 +101,16 @@ from: [无缝大地图-总体架构.pptx](https://github.com/yekoufeng/seamless-
 
 ---
 
+# kbengine 与 bigworld
+
+kbe 就是仿 bigworld 的，代码仿，连 "KBEngine overview" 这份 ppt 也是仿的，但是最核心的动态分割部分，kbe 没有实现。   
+
+并且，cell 边界的 ghosting 机制也没实现，entity 的代码里面倒是有些 ghost 相关的代码，但是 cell，space 这一层都没有 ghost 管理的实现，所以等于是没有实现。  
+
+所以，从完成度来看， kbe 只是一个非常普通的 mmorpg 实现，没有动态分割，也做不了无缝地图，除非自己对它进行魔改。   
+
+---
+
 # slg 的 scale 问题
 
 slg 跟常规的 mmorpg 有很多不同，需要单独研究一下它的 scale 问题，以及 aoi 问题。  
