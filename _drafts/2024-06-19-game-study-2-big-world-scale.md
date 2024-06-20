@@ -23,15 +23,15 @@ tags: [gameserver]
 
 mmo 这里取广义的概念（ Massive Multiplayer Online ），不特指 mmorpg，所以像现在各种 slg，其实也算是一种 mmo。   
 
-本文将大致总结一些相关的技术点，如有错误，请指出，谢谢。    
+本文将大致总结一些相关的技术点，如有错误，欢迎指出，谢谢。    
 
-另外，本（水）文内容比较浅，老司机请无视。    
+另外，本（水）文内容比较浅，老司机可以无视。    
 
 ---
 
 # 一些游戏的单服 pcu（最高同时在线）
 
-坦克世界（world of tanks），自称是 MMO，但实际上并不是 mmo，它是 match based [1]，并不是一个大世界的，相当于一个 moba 而已。官网自称有 1M+ 的 pcu，但实际上没啥特别的。另外，虽然它用 bigworld 做服务端，但其实也没用上 bigworld 最拿手的动态分割技术。           
+坦克世界（world of tanks），自称是 MMO，但实际上并不是 mmo，它是 match based [1]，并不是一个大世界，相当于 moba 而已。官方说有 1M+ 的 pcu，但实际上没啥特别的。另外，虽然它用 bigworld 做服务端，但其实也没用上 bigworld 最拿手的动态分割技术。           
 
 eve online，这么多年下来，单服 pcu 纪录大概是 65000 人左右 [2]。     
 
