@@ -109,7 +109,9 @@ from: [无缝大地图-总体架构.pptx](https://github.com/yekoufeng/seamless-
 
 # kbengine 与 bigworld
 
-kbe 就是仿 bigworld 的，代码是仿的，连 "KBEngine overview" 这份 ppt 也是仿的，但是最核心的动态分割部分，kbe 没有实现。   
+kbe （ [https://github.com/kbengine/kbengine](https://github.com/kbengine/kbengine) ） 是仿 bigworld 实现的一套游戏服务器引擎，代码是仿的，连文档也是仿的，比如 "KBEngine overview" （ [KBEngine overview(cn).pptx](https://github.com/kbengine/kbengine/blob/master/docs/KBEngine%20overview(cn).pptx) ）这份 ppt。   
+
+但是最核心的动态分割部分，kbe 并没有实现。   
 
 另外，kbe 也没实现无缝地图，space 之间没有实现边界的管理，它们都是独立存在的。kbe 的 ghosting 机制，目前也只是用于 entity 在 space 之间传输，因为 “跳转不同的 space 在一瞬间也存在 ghost 状态”[6]。跨 space 传输，其实就是将玩家从一张地图传送到另一张地图。      
 
