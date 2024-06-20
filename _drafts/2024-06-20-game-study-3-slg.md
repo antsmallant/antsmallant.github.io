@@ -7,5 +7,3 @@ categories: [游戏后端]
 tags: [gameserver]
 ---
 
-
-slg 也可以是一个很大的世界。 

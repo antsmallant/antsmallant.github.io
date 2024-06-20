@@ -53,7 +53,7 @@ mmo 的 scale，无非就是找到一种方式进行分割，实际上，目前�
 
 有些文章会说 bigworld 的实现是一种分布式 aoi，但是本质上，它就是对地图区域进行某种分割。    
 
-至于无缝地图，无论是固定分割还是动态分割，都是可实现的，只是代价问题。   
+至于无缝地图，无论是固定分割还是动态分割，都是可实现的，基本上都是使用 ghosting 机制来处理边界问题，让玩家无感的跨越边界。   
 
 ---
 
@@ -75,7 +75,7 @@ node 就是一个个的地图服务器，负责运行一小块地图；nm 就 no
 
 典型的一种实现方式就是 bigworld engine。基本思路就是根据区域内的 entity 数量来分割，entity 数量多就按照算法进行分割，数量少之后，再按算法重新合并，减少 cell。  
 
-bigwold 有几个名词需要知道的，space 就代表一整张大地图，cell 就代表地图上的某块区域，就像这样：   
+bigwold 有几个名词需要知道的，space 对应物理上一张连续的地图，cell 对应地图上的某个区域，就像这样：   
 
 <br/>
 <div align="center">
@@ -123,10 +123,9 @@ kbe （ [https://github.com/kbengine/kbengine](https://github.com/kbengine/kbeng
 
 # slg 的 scale 问题
 
-slg 跟常规的 mmorpg 有很多不同，需要单独研究一下它的 scale 问题，以及 aoi 问题。  
+slg 跟常规的 mmorpg 有一些不同，需要单独研究一下它的 scale 以及 aoi 问题。  
 
-单独讲一下 slg 的 scale 问题，slg 的 aoi 跟 mmorpg 相比，有一些不同之处。像 rok 这种，是做了几个层次的 aoi 的。地图放大缩小，aoi 关注的点是不一样的。  
-
+留到下一篇文章再讲吧。  
 
 ---
 
