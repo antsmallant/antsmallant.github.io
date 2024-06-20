@@ -105,11 +105,11 @@ from: [无缝大地图-总体架构.pptx](https://github.com/yekoufeng/seamless-
 
 kbe 就是仿 bigworld 的，代码仿，连 "KBEngine overview" 这份 ppt 也是仿的，但是最核心的动态分割部分，kbe 没有实现。   
 
-并且，cell 或 space 边界的 ghosting 机制也没实现，entity 的代码里面倒是有些 ghost 相关的代码，但是 cell，space 这一层都没有 ghost 管理的实现，所以等于是没有实现。   
+另外，kbe 也没实现无缝地图，它的 ghost 机制，目前只是用于 entity 在 space 之间传输，而 space 之间并没有实现边界的管理，它们都是独立存在的。  
 
-所以，从完成度来看， kbe 只是一个非常普通的 mmorpg 实现，没有动态分割，也做不了无缝地图，除非对它进行魔改。   
+所以，从完成度来看， kbe 只是一个普通的 mmorpg 实现，没有动态分割，也没实现无缝地图。    
 
-不过，有空的时候改一改 kbe，把动态分割跟 ghosting 都补充完整，应该会挺有意思的。   
+有空的时候改一改 kbe，把动态分割跟无缝地图补充完整，应该会挺有意思的。   
 
 ---
 
