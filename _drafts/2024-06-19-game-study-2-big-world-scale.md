@@ -125,7 +125,7 @@ kbe （ [https://github.com/kbengine/kbengine](https://github.com/kbengine/kbeng
 
 slg 跟常规的 mmorpg 有一些不同，需要单独研究一下它的 scale 以及 aoi 问题。  
 
-留到下一篇文章再讲吧。  
+留到下一篇文章再讨论吧。  
 
 ---
 
