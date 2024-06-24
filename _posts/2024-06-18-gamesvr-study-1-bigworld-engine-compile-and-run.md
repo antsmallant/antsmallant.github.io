@@ -218,7 +218,30 @@ sudo cp build/lib/* /usr/local/lib
 
 # 5. wsl 安装&运行 server
 
-## 5.1 安装 mysql  并创建 bigworld 数据库&账号
+## 5.1 wsl 设置开机启动 systemctl
+
+如果不配置，无法这样运行服务：`sudo service xxx start`     
+
+方法如下：      
+
+1、在虚拟机里面，编辑或新增这份文件： `/etc/wsl.conf`        
+
+2、写入以下内容      
+
+```
+[boot]
+systemd=true
+```
+
+3、重启虚拟机      
+1）以管理员身份打开 powershell        
+2）运行 `wsl --shutdown` 进行关闭        
+3）运行 `wsl -l -v` 确认是否都 shutdown 成功了         
+4）重新打开虚拟机       
+
+---
+
+## 5.2 安装 mysql  并创建 bigworld 数据库&账号
 
 1、安装 mysql
 
@@ -242,7 +265,7 @@ flush privileges;
 
 ---
 
-## 5.2 修改 res 目录的数据库配置     
+## 5.3 修改 res 目录的数据库配置     
 
 1、打开文件 `game\res\bigworld\server\production_defaults.xml`，搜索到 mysql，
 配置相关信息，比如我配置完是这样的：    
@@ -265,7 +288,7 @@ flush privileges;
 
 ---
 
-## 5.3 安装 bwmachined
+## 5.4 安装 bwmachined
 
 1、把编译出来的 bwmachined2 拷贝到正确位置 
 （以下都用的我机器上的绝对路径，具体视自己的情况而定）
@@ -296,7 +319,7 @@ sudo service bwmachined2 start
 
 ---
 
-## 5.4 创建一个目录存放 server 运行文件
+## 5.5 创建一个目录存放 server 运行文件
 
 （这一步看起来有点多余，但是如果不做，bwmachined2 可能会运行异常）            
 
@@ -312,7 +335,7 @@ cp -R game/bin/server/el7/server/* ~/mf/bigworld/bin/server/
 
 ---
 
-## 5.5 创建 ~/.bwmachined.conf 文件   
+## 5.6 创建 ~/.bwmachined.conf 文件   
 
 1、在当前用户的 home 目录 (~/) 下创建一个名为 .bwmachined.conf 的文本文件，要注意，文件名是以 . 号开头，内容如下： 
 
@@ -368,7 +391,7 @@ server 目录就放编译出来的服务器二进制文件，baseapp, cellapp, b
 
 ---
 
-## 5.6 运行 server
+## 5.7 运行 server
 
 （说明：server 的运行不需要什么参数，它是读取 ~/.bwmachined.conf 文件去加载相应的东西的）
 
