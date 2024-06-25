@@ -34,6 +34,17 @@ space 以及分割相关的信息，由单点的 cellappmgr 服务器管理，�
 
 3、如果可以通过调整边界来使得各个 cell 的负载在阈值之内，则直接调整边界。      
 
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-load-balance-cell-split-2-adjust.drawio.png"/>
+</div>
+<br/>
+
+4、如果调整边界仍然无法解决负载过高的问题，则继续增加 cell，但 cell 是采取 geometric tessellation 的方式分割的，横向（Horizontal）与纵向（Vertical）交织着分割。  
+
+
+
+
 
 
 
