@@ -64,12 +64,24 @@ Space 以及 cell 相关的分割信息，由全局唯一的 cellappmgr 服务�
 </div>
 <br/>
 
-5、依上述方法不断分割（有上限的），可能演变成如下。   
+5、依上述方法，经过多次分割后，可能演变成如下。   
 
-
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-load-balance-cell-split-10.drawio.png"/>
+</div>
+<br/>
 
 ---
 
 # 代码分析 
 
-整个 load balance 的算法虽然思路简单，但是具体的代码实现，如果没有一些辅助信息，一开始是很难看懂的，没办法，网上找不到其他人写的分析文章，只能硬看，看看
+bigworld 的代码质量很高，模块划分还是比较清晰的。但是如果不了解一些核心概念，那么看 load balance 相关的代码会很吃力。   
+
+
+
+
+---
+
+# 参考
+
