@@ -71,7 +71,9 @@ zoning，即按地图区域进行分割。有两种方法进行分割：固定�
 </div>
 <br/>
 
-node 就是一个个的地图服务器，负责运行一小块地图；nm 就 nodemanager，负责管理这些 node；world 就是大世界地图服务器，管理整个大地图的全局信息。   
+node 就是一个个的地图服务器，负责运行一块地图区域；nm 就 nodemanager，负责管理这些 node；world 就是世界服务器，负责提供世界级别的服务。   
+
+这种结构下，每个 node 承载的地图区域是固定的，玩家多的时候压力重，玩家少的时候压力轻，没有弹性可言。  
 
 ---
 
@@ -85,7 +87,7 @@ bigworld 的服务器架构是这样的：
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-server-architecture.png"/>
 </div>
-<center>图1：bigworld 服务器架构[7]</center>
+<center>图1：bigworld 服务器架构[5]</center>
 <br/>
 
 动态分割+动态调整边界的算法是这样：   
@@ -168,9 +170,9 @@ offloading 的思路很简单，就是分拆逻辑，能够独立出去的逻辑
 
 ### mmorpg offloading 的例子
 
-网易的这个分享 [《游戏服务端高性能框架：来看《天谕》手游千人团战实例》](https://zhuanlan.zhihu.com/p/700231330) [5] 就是第二种思路，这种方式也叫 offloading。   
+网易的这个分享 [《游戏服务端高性能框架：来看《天谕》手游千人团战实例》](https://zhuanlan.zhihu.com/p/700231330) [6] 就是第二种思路，这种方式也叫 offloading。   
 
-它干脆就不分割地图了，通过纵向拆分，提升单线程处理主逻辑的能力，最终用 60%~80% （主线程40%~50%，网络线程20%~30%）的单进程 cpu 消耗，支撑 1150+ 人在同一地图团战 [5]。   
+它干脆就不分割地图了，通过纵向拆分，提升单线程处理主逻辑的能力，最终用 60%~80% （主线程40%~50%，网络线程20%~30%）的单进程 cpu 消耗，支撑 1150+ 人在同一地图团战 [6]。   
 
 大体思路总结如下：  
 
@@ -214,8 +216,19 @@ offloading 的思路很简单，就是分拆逻辑，能够独立出去的逻辑
 
 2、尽量降低单个对象向客户端同步的流量    
 
-1）技能事件，根据各个客户端各自配置的流量限制进行同步（比如0.5秒内最多50个事件），可动态调整；按照优先级进行裁剪，规则有：玩家自己的事件优先级高，稀有事件优先级高，等。  
-2）属性事件，a）字段级增量同步；b）按需同步，当前场景不需要的字段就不同步了；c）
+1）技能同步
+根据各个客户端各自配置的流量限制进行同步（比如0.5秒内最多50个事件），可动态调整；按照优先级进行裁剪，规则有：玩家自己的事件优先级高，稀有事件优先级高，等。  
+
+2）属性同步     
+ a）字段级增量同步。   
+ b）按需同步，当前场景不需要的字段就不同步了。   
+ c）LOD 同步，每个属性在定义处可加上 LOD 标签，当玩家缩放时，根据 LOD 层数自动筛选必要的属性进行下发。   
+
+3、属性存盘   
+
+基于支持字段级增量的属性系统，采用 fulldata + deltadata 的存盘方式，减少存盘的 io 流量。   
+
+<br/>
 
 二、大地图优化   
 
@@ -236,7 +249,7 @@ kbe （ [https://github.com/kbengine/kbengine](https://github.com/kbengine/kbeng
 
 但是最核心的动态分割部分，kbe 并没有实现。   
 
-另外，kbe 没实现无缝地图，space 之间没有实现边界的管理。kbe 的 ghosting 机制，目前也只是用于 entity 在 space 之间传输，因为 “跳转不同的 space 在一瞬间也存在 ghost 状态”[6]。跨 space 传输，也就是将玩家从一张地图传送到另一张地图。      
+另外，kbe 没实现无缝地图，space 之间没有实现边界的管理。kbe 的 ghosting 机制，目前也只是用于 entity 在 space 之间传输，因为 “跳转不同的 space 在一瞬间也存在 ghost 状态”[7]。跨 space 传输，也就是将玩家从一张地图传送到另一张地图。      
 
 所以，从完成度来看， kbe 只是一个普通的 mmorpg 实现，没有动态分割，也没实现无缝地图。    
 
@@ -248,7 +261,8 @@ kbe （ [https://github.com/kbengine/kbengine](https://github.com/kbengine/kbeng
 
 本文讲了大世界 scale 的两大思路：zoning 和 offloading，简单描述了 bigworld engine 的 zoning 实现，也以一些公开的技术分享为例，总结了 offloading 的一般做法。   
 
-新项目如果处于规划阶段，可以考虑 zoning 的思路，但是这个实现难度相对较高，如果不是精英团队，得慎重。老项目或已经动工了的项目，按照 offloading 的思路做优化会比较靠谱。     
+新项目如果处于规划阶段，可以考虑 zoning 的思路，但是这个实现难度相对较高，如果不是精英团队，要慎重考虑。  
+老项目或已经动工的项目，按照 offloading 的思路做优化会比较靠谱。     
 
 ---
 
@@ -262,8 +276,9 @@ kbe （ [https://github.com/kbengine/kbengine](https://github.com/kbengine/kbeng
 
 [4] 韦易笑. 游戏服务端架构发展史（中）. Available at https://www.skywind.me/blog/archives/1301, 2015-4-26.    
 
-[5] 网易游戏雷火事业群​.游戏服务端高性能框架：来看《天谕》手游千人团战实例》. Available at https://zhuanlan.zhihu.com/p/700231330, 2024-05-28.       
+[5] bigworld. BigWorld Technology Server Whitepaper. https://sourceforge.net/p/bigworld/code/HEAD/tree/trunk/docs/pdf/BigWorld%20Technology%20Server%20Whitepaper.pdf.    
 
-[6] kbengine. ghost机制实现 #48. Available at https://github.com/kbengine/kbengine/issues/48, 2014-7-19.   
+[6] 网易游戏雷火事业群​.游戏服务端高性能框架：来看《天谕》手游千人团战实例》. Available at https://zhuanlan.zhihu.com/p/700231330, 2024-05-28.       
 
-[7] bigworld. BigWorld Technology Server Whitepaper. https://sourceforge.net/p/bigworld/code/HEAD/tree/trunk/docs/pdf/BigWorld%20Technology%20Server%20Whitepaper.pdf.    
+[7] kbengine. ghost机制实现 #48. Available at https://github.com/kbengine/kbengine/issues/48, 2014-7-19.   
+
