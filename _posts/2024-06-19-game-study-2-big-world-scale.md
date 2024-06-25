@@ -63,7 +63,7 @@ zoning，即按地图区域进行分割。有两种方法进行分割：固定�
 
 ### 2.1.1 zoning 固定分割
 
-固定分割没什么好讲的，它的大体结构就是这样，下图取自韦易笑老师（ 知乎大佬：https://www.zhihu.com/people/skywind3000 ） 的这篇文章[《游戏服务端架构发展史（中）》](https://www.skywind.me/blog/archives/1301) [4]。 
+固定分割没什么好讲的，它的大体结构就是这样，下图取自韦易笑老师（ 知乎大佬：[https://www.zhihu.com/people/skywind3000](https://www.zhihu.com/people/skywind3000) ） 的这篇文章 [《游戏服务端架构发展史（中）》](https://www.skywind.me/blog/archives/1301) [4]。 
 
 <br/>
 <div align="center">
