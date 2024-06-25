@@ -16,7 +16,7 @@ bigworld 的 load balance 的基本算法是地图区域分割+动态的区域�
 space 以及分割相关的信息，由单点的 cellappmgr 服务器管理，具体的 cell 运行在 cellapp 上，整个集群会有多个 cellapp。一个 space 可能会分割成多个 cell，但是在一个 cellapp 上，只能运行这个 space 的一个 cell，否则就没有意义了。   
 
 
-1、一开始的时候，一个 Space 只包含一个 cell，这个 cell 占据了整个 space 的面积。  
+1、一开始的时候，一个 Space 只包含一个 cell，这个 cell 占据了整个 space 的面积。    
 
 <br/>
 <div align="center">
@@ -24,7 +24,7 @@ space 以及分割相关的信息，由单点的 cellappmgr 服务器管理，�
 </div>
 <br/>
 
-2、当这个 cell 所在的 cellapp 的负载超过设定的阈值时，cellappmgr 决定增加一个 cell，并把这个 cell 放到另外的 cellapp 上运行，以此分担压力。  
+2、当这个 cell 所在的 cellapp 的负载超过设定的阈值时，cellappmgr 决定增加一个 cell，并把这个 cell 放到另外的 cellapp 上运行，以此分担压力。    
 
 <br/>
 <div align="center">
@@ -32,7 +32,7 @@ space 以及分割相关的信息，由单点的 cellappmgr 服务器管理，�
 </div>
 <br/>
 
-3、如果可以通过调整边界来使得各个 cell 的负载在阈值之内，则直接调整边界
+3、如果可以通过调整边界来使得各个 cell 的负载在阈值之内，则直接调整边界。      
 
 
 
