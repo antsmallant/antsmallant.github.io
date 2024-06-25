@@ -21,7 +21,7 @@ bigworld 的 load balance 算法的大致思路是知道的，即动态区域分
 
 bigworld 的 load balance 的基本算法是动态区域分割+动态边界调整。  
 
-一张地图，bigworld 用一个 Space 类来表示，根据负载情况，动态分割成 n 个 区域（cell），这些 cell 的面积是不固定的，会根据地图上的实体（entity）的 cpu 使用率（cpu load）分布情况来动态调整。   
+一张地图，bigworld 用一个 Space 类来表示，根据负载情况，动态分割成 n 个 区域（cell），这些 cell 的面积不是固定的，会根据地图上的实体（entity）的 cpu 使用率（cpu load）的分布情况来动态调整。   
 
 Space 以及 cell 相关的分割信息，由全局唯一的 cellappmgr 服务器管理；具体的 cell 运行在 cellapp 服务器上，整个集群会有多个 cellapp。  
 
@@ -31,6 +31,9 @@ Space 以及 cell 相关的分割信息，由全局唯一的 cellappmgr 服务�
 
 ## 算法过程
 
+下面大致描述一种可能的分割情况。   
+
+<br/>
 
 1、一开始的时候，一个 Space 只包含一个 cell，这个 cell 占据了整个 space 的面积。    
 
@@ -48,7 +51,9 @@ Space 以及 cell 相关的分割信息，由全局唯一的 cellappmgr 服务�
 </div>
 <br/>
 
-3、如果可以通过调整边界来使得各个 cell 的负载在阈值之内，则直接调整边界。      
+3、如果可以通过调整边界来使得各个 cell 的负载在阈值之内，并且负载相差最小，则直接调整边界。  
+
+值得指出的是，上面第 2 步中，新增的 cell3，一开始它的面积是 0，在动态的调整中，会慢慢增加它的占用面积，直到它上面运行的 entity 的负载之和与 cell2 相当。这个过程不是一步到位的，这样做的好处是整个过程变得很平滑，不会一下子需要从 cell2 迁移大量的 entity 到 cell3 上面。        
 
 <br/>
 <div align="center">
@@ -76,12 +81,40 @@ Space 以及 cell 相关的分割信息，由全局唯一的 cellappmgr 服务�
 
 # 代码分析 
 
-bigworld 的代码质量很高，模块划分还是比较清晰的。但是如果不了解一些核心概念，那么看 load balance 相关的代码会很吃力。   
+bigworld 的代码质量很高，模块划分比较清晰。但是如果不了解一些核心概念，那么看 load balance 相关的代码会很吃力。   
 
+直接看我下面的描述也会一头雾水的，需要自己去看了代码，然后回过头来对照我的这些描述，才会比较清晰。   
+
+---
+
+## bsptree 的概念
+
+bsptree 即是 binary spacial tree，实际上这里并不需要深入理解这种 tree，把它当成一棵二叉树即可，不会影响对整个算法的理解。   
+
+---
+
+## bsptree 相关的数据结构
+
+在 cellappmgr 目录下
+
+|类名|说明|文件|
+|:--|:--|:--|
+|BSPNode|bsp节点基类|bsp_node.cpp|
+|CellData|bsp叶子节点类，继承自BSPNode|cell_data.cpp|
+|InternalNode|bsp中间节点类，继承自BSPNode|internal_node.cpp|
+
+---
+
+## bsptree 的构造过程
+
+---
+
+## cpu 负载的计算
 
 
 
 ---
+
 
 # 参考
 
