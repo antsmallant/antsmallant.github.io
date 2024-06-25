@@ -203,7 +203,7 @@ offloading 的思路很简单，就是分拆逻辑，能够独立出去的逻辑
 
 ### slg offloading 的例子
 
-天美工作室的关于【重返帝国】这个游戏的分享 [《怎么解决大地图SLG的技术痛点？》](https://youxiputao.com/article/24673.html) 挺不错的，具体的讲了他们是如何优化的。  
+天美工作室的关于【重返帝国】这个游戏的分享 [《怎么解决大地图SLG的技术痛点？》](https://youxiputao.com/article/24673.html) [7] 挺不错的，具体的讲了他们是如何优化的。  
 
 大体思路总结如下：   
 
@@ -249,7 +249,7 @@ kbe （ [https://github.com/kbengine/kbengine](https://github.com/kbengine/kbeng
 
 但是最核心的动态分割部分，kbe 并没有实现。   
 
-另外，kbe 没实现无缝地图，space 之间没有实现边界的管理。kbe 的 ghosting 机制，目前也只是用于 entity 在 space 之间传输，因为 “跳转不同的 space 在一瞬间也存在 ghost 状态”[7]。跨 space 传输，也就是将玩家从一张地图传送到另一张地图。      
+另外，kbe 没实现无缝地图，space 之间没有实现边界的管理。kbe 的 ghosting 机制，目前也只是用于 entity 在 space 之间传输，因为 “跳转不同的 space 在一瞬间也存在 ghost 状态”[8]。跨 space 传输，也就是将玩家从一张地图传送到另一张地图。      
 
 所以，从完成度来看， kbe 只是一个普通的 mmorpg 实现，没有动态分割，也没实现无缝地图。    
 
@@ -280,5 +280,7 @@ kbe （ [https://github.com/kbengine/kbengine](https://github.com/kbengine/kbeng
 
 [6] 网易游戏雷火事业群​.游戏服务端高性能框架：来看《天谕》手游千人团战实例》. Available at https://zhuanlan.zhihu.com/p/700231330, 2024-05-28.       
 
-[7] kbengine. ghost机制实现 #48. Available at https://github.com/kbengine/kbengine/issues/48, 2014-7-19.   
+[7] 天美工作室. 怎么解决大地图SLG的技术痛点. Available at https://youxiputao.com/article/24673.html.    
+
+[8] kbengine. ghost机制实现 #48. Available at https://github.com/kbengine/kbengine/issues/48, 2014-7-19.   
 
