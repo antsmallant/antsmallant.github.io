@@ -11,7 +11,9 @@ bigworld 的 load balance 算法的大致思路是知道的，即动态区域分
 
 本文大致记录我所分析到的算法实现，基于 bigworld 的这个开源版本：[2014 BigWorld Open-Source Edition Code](https://sourceforge.net/p/bigworld/code/HEAD/tree/)，更具体的信息可在我另一篇文章找到 [《游戏服务器研究一：bigworld 开源代码的编译与运行》](https://zhuanlan.zhihu.com/p/704118722) 。   
 
-本文应该会持续更新，因为算法有很多细节，看得越多，了解到的细节越多。而这些细节对于这类算法是很重要的，属于生产实践上的微调，离开这些微调，load balance 可能工作得不如预期，甚至在一些边角的情况下，可能会表现得特别差。    
+本文应该会持续更新，因为算法有很多细节，看得越多，了解越多。而这些细节对于这类算法是很重要的，属于生产实践上的微调，离开这些微调，load balance 可能工作得不如预期，甚至在一些边角的情况下，可能会表现得特别差。    
+
+如有错误，欢迎指出。  
 
 ---
 
@@ -54,7 +56,15 @@ Space 以及 cell 相关的分割信息，由全局唯一的 cellappmgr 服务�
 </div>
 <br/>
 
-4、如果调整边界仍然无法解决负载过高的问题，则继续增加 cell，但 cell 是采取 geometric tessellation 的方式分割的，横向（Horizontal）与纵向（Vertical）交织着分割。  
+4、如果调整边界仍然无法解决负载过高的问题，则继续增加 cell，但 cell 是采取 geometric tessellation（几何镶嵌）的方式分割的，横向（Horizontal）与纵向（Vertical）交织着分割。  
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-load-balance-cell-split-3.drawio.png"/>
+</div>
+<br/>
+
+
 
 
 ---
