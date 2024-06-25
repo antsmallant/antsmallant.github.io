@@ -249,7 +249,7 @@ kbe （ [https://github.com/kbengine/kbengine](https://github.com/kbengine/kbeng
 
 但是最核心的动态分割部分，kbe 并没有实现。   
 
-另外，kbe 没实现无缝地图，space 之间没有实现边界的管理。kbe 的 ghosting 机制，目前也只是用于 entity 在 space 之间传输，因为 “跳转不同的 space 在一瞬间也存在 ghost 状态”[8]。跨 space 传输，也就是将玩家从一张地图传送到另一张地图。      
+另外，kbe 没实现无缝地图，space 之间没有实现边界的管理。kbe 的 ghosting 机制，目前也只是用于 entity 在 space 之间传输，因为 “跳转不同的 space 在一瞬间也存在 ghost 状态” [8]。跨 space 传输，也就是将玩家从一张地图传送到另一张地图。      
 
 所以，从完成度来看， kbe 只是一个普通的 mmorpg 实现，没有动态分割，也没实现无缝地图。    
 
