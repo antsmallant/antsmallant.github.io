@@ -27,7 +27,7 @@ mmo 这里取广义的概念（ Massive Multiplayer Online ），不特指 mmorp
 
 ---
 
-# 一些游戏的单服 pcu（最高同时在线）
+# 1. 一些游戏的单服 pcu（最高同时在线）
 
 坦克世界（world of tanks），自称是 mmo，但实际上并不是 mmo。它是 match based [1]，并不是一个大世界，相当于 moba 而已。官方说有 1M+ 的 pcu，但这也没啥特别的，毕竟这类游戏做负载均衡比较简单。另外，虽然它使用 bigworld engine 开发服务端，但并没有用到 bigworld 最拿手的动态负载能力。              
 
@@ -39,7 +39,7 @@ wow，前段时间发了个测试数据，单服 pcu 能去到 12 万 [3]。
 
 ---
 
-# scale 的大致方法
+# 2. scale 的方法
 
 大致有两种方法，一种叫 zoning，一种叫 offloading。  
 
@@ -49,7 +49,7 @@ offloading 是逻辑上的分割，把相对独立的逻辑拆分到其他的线
 
 ---
 
-## zoning 
+## 2.1 zoning 
 
 zoning，即按地图区域进行分割。有两种方法进行分割：固定分割和动态分割。   
 
@@ -61,7 +61,7 @@ zoning，即按地图区域进行分割。有两种方法进行分割：固定�
 
 ---
 
-### zoning 固定分割
+### 2.1.1 zoning 固定分割
 
 固定分割没什么好讲的，它的大体结构就是这样，下图取自韦易笑老师（ 知乎大佬：https://www.zhihu.com/people/skywind3000 ） 的这篇文章[《游戏服务端架构发展史（中）》](https://www.skywind.me/blog/archives/1301) [4]。 
 
@@ -77,7 +77,7 @@ node 就是一个个的地图服务器，负责运行一块地图区域；nm 就
 
 ---
 
-### zoning 动态分割
+### 2.1.2 zoning 动态分割
 
 典型的一种实现方式就是 bigworld engine。基本思路就是根据地图上 entity 的 cpu load 的分布情况进行分割，使用 bsptree 管理地图区域（cell），尽量保持 bsptree 子树的 cpu load 处于平衡状态。   
 
@@ -114,7 +114,7 @@ bigworld 的整个 load balance 的算法实现略复杂，我会单独写一篇
 
 ---
 
-### 无缝地图
+### 2.1.3 无缝地图
 
 提到 zoning，不得不说无缝地图。无论是固定分割还是动态分割，无缝都是可实现的，基本上都是用 ghosting 机制来处理边界问题。  
 
@@ -144,7 +144,7 @@ Cell1 的 entity 处于 cell1 自己的边界时，可以自己看到一些 ghos
 
 ---
 
-### 小结
+### 2.1.4 小结
 
 固定分割的优点是实现简单；缺点是静态的对地图进行分割，无法适应玩家负载的动态变化，整体的适应能力较差。   
 
@@ -154,7 +154,7 @@ Cell1 的 entity 处于 cell1 自己的边界时，可以自己看到一些 ghos
 
 ---
 
-## offloading
+## 2.2 offloading
 
 玩家在小范围内聚集，导致局部负载过重，这里就称为同屏问题吧。同屏单位多的时候，假设有 M 个单位，彼此都在对方的 aoi 范围内，那么消息广播量就是 M 平方的量级，非常可怕。   
 
@@ -168,7 +168,7 @@ offloading 的思路很简单，就是分拆逻辑，能够独立出去的逻辑
 
 ---
 
-### mmorpg offloading 的例子
+### 2.2.1 mmorpg offloading 的例子
 
 网易的这个分享 [《游戏服务端高性能框架：来看《天谕》手游千人团战实例》](https://zhuanlan.zhihu.com/p/700231330) [6] 就是第二种思路，这种方式也叫 offloading。   
 
@@ -201,7 +201,7 @@ offloading 的思路很简单，就是分拆逻辑，能够独立出去的逻辑
 
 ---
 
-### slg offloading 的例子
+### 2.2.2 slg offloading 的例子
 
 天美工作室的关于【重返帝国】这个游戏的分享 [《怎么解决大地图SLG的技术痛点？》](https://youxiputao.com/article/24673.html) [7] 挺不错的，具体的讲了他们是如何优化的。  
 
@@ -237,13 +237,13 @@ offloading 的思路很简单，就是分拆逻辑，能够独立出去的逻辑
 
 ---
 
-### 小结
+### 2.2.3 小结
 
 offloading 的目标是尽可能的优化性能，优化是第一目标，所以它的做法基本上都很难说得上优雅。但是也没有其他更好的办法了，算是一种妥协吧。   
 
 ---
 
-# kbengine 与 bigworld
+# 3. kbengine 与 bigworld
 
 kbe （ [https://github.com/kbengine/kbengine](https://github.com/kbengine/kbengine) ） 是仿 bigworld 实现的一套游戏服务器引擎，代码是仿的，连文档也是仿的，比如 "KBEngine overview" （ [KBEngine overview(cn).pptx](https://github.com/kbengine/kbengine/blob/master/docs/KBEngine%20overview(cn).pptx) ）这份 ppt。   
 
@@ -257,7 +257,7 @@ kbe （ [https://github.com/kbengine/kbengine](https://github.com/kbengine/kbeng
 
 ---
 
-# 总结
+# 4. 总结
 
 本文讲了大世界 scale 的两大思路：zoning 和 offloading，简单描述了 bigworld engine 的 zoning 实现，也以一些公开的技术分享为例，总结了 offloading 的一般做法。   
 
@@ -266,7 +266,7 @@ kbe （ [https://github.com/kbengine/kbengine](https://github.com/kbengine/kbeng
 
 ---
 
-# 参考
+# 5. 参考
 
 [1] reddit. Why is this game considered an "MMO". Available at https://www.reddit.com/r/WorldofTanks/comments/uwsyj/why_is_this_game_considered_an_mmo/, 2012.      
 
