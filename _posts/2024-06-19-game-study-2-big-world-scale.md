@@ -77,7 +77,7 @@ node 就是一个个的地图服务器，负责运行一小块地图；nm 就 no
 
 ### zoning 动态分割
 
-典型的一种实现方式就是 bigworld engine。基本思路就是根据区域内的 entity 的 cpu load 的分布情况进行分割，使用 bsptree 管理地图区域，尽量保持 bsptree 的子树的 cpu load 平衡。   
+典型的一种实现方式就是 bigworld engine。基本思路就是根据地图上 entity 的 cpu load 的分布情况进行分割，使用 bsptree 管理地图区域（cell），尽量保持 bsptree 子树的 cpu load 处于平衡状态。   
 
 <br/>
 <div align="center">
@@ -85,9 +85,23 @@ node 就是一个个的地图服务器，负责运行一小块地图；nm 就 no
 </div>
 <br/>
 
-当出现过载的时，就考虑新增 cell，并把 cell 放到新的 cell 服务器（cellapp）去运行。  
+大体算法是这样：  
 
-当出现负载不均衡时，就尝试移动 cell 的边界，也就是把一些 entity 从某些 cell 放到另一些 cell 上去承载。   
+1、当出现过载的时，尝试新增 cell，并把 cell 放到新的 cell 服务器（cellapp）去运行。  
+
+2、当出现负载不均衡时，尝试移动 cell 的边界，促使部分 entity 从一些 cell 移到另一些 cell。   
+
+<br/>  
+
+在 bigworld 中，用一个 space 代表一整张地图，分割出来的每个区域称为 cell，这些 cell 的面积不是固定的，边界会随着负载的变化进行移动，直至达到平衡。  
+
+下图展示一种经过动态分割+动态边界调整之后的可能情况：   
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-load-balance-cell-split-10.drawio.png"/>
+</div>
+<br/>
 
 bigworld 除了动态负载均衡，还做了下行消息优化来保证 scale，它会限制每个 client 的下行带宽，aoi 范围内有太多 entity 的时候，优先发送离自己比较近的 entity 的属性变化。   
 
@@ -97,12 +111,32 @@ bigworld 的整个 load balance 的算法实现略复杂，我会单独写一篇
 
 ### 无缝地图
 
-提到 zoning，不得不说无缝地图。无论是固定分割还是动态分割，无缝都是可实现的，基本上都是使用 ghosting 机制来处理边界问题。  
+提到 zoning，不得不说无缝地图。无论是固定分割还是动态分割，无缝都是可实现的，基本上都是用 ghosting 机制来处理边界问题。  
 
 当玩家处于 cell 边界时，它要能通过 aoi 获取到相邻 cell 的 entity，并且可以无感的跨越 cell 的边界。   
 
+Real Entity 是权威的 Entity。Ghost Entity 相邻 Cell 对应的 Real Entity 的数据拷贝。  
 
-如果不懂 ghosting，可以看下韦易笑老师（ 知乎大佬：https://www.zhihu.com/people/skywind3000 ） 的这篇文章[《游戏服务端架构发展史（中）》](https://www.skywind.me/blog/archives/1301) [4]，看完基本上就懂了。   
+下图表示两个相邻的挨在一起的 cell。  
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/big-world-scale-ghosting-1.drawio.png"/>
+</div>
+<br/>
+
+下图表示这两个 cell 是怎么处理各自边界上的 entity 的。每个 cell 都会在边界处再延伸一段虚构的区域出来，这块区域就是对方的边界区域，且它的宽度跟 aoi 的半径相同。  
+
+Cell1 的 entity 处于 cell1 自己的边界时，可以自己看到一些 ghost entity，这些 ghost entity 对应 cell2 边界区域上的 real entity。假如 cell1 上的 real entity 攻击了 ghost entity，则这些 ghost entity 会把相关事件转发给 cell2 上的 real entity，如果 real entity 发生属性变化，也会同步回对应的 ghost entity。  
+
+所以 ghost entity 就相当于一个代理，方便了 cell1 对 cell2 边界上的 entity 进行操作，反之亦然。  
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/big-world-scale-ghosting-2.drawio.png"/>
+</div>
+<br/>
+
 ---
 
 ### zoning 小结
@@ -150,17 +184,19 @@ offloading 的思路很简单，就是分拆逻辑，能够独立出去的逻辑
 有几个点在此简略复述一下，具体的可看原文：  
 
 一、流量优化     
+
 1、降低向客户端同步的对象数量
-1）aoi 上，放弃九宫格算法，根据客户端的梯形视野精确的筛选视野内单位；    
-2）根据客户端上报的实际负载能力，进行优先级裁剪，只向客户端同步最重要的对象；   
+1）aoi 上，放弃九宫格算法，根据客户端的梯形视野精确的筛选视野内单位。   
+2）根据客户端上报的实际负载能力，进行优先级裁剪，只向客户端同步最重要的对象。      
 
 2、尽量降低单个对象向客户端同步的流量    
-1）技能事件，根据各个客户端各自配置的流量限制进行同步（比如0.5秒内最多50个事件），可动态调整；按照优先级进行裁剪，规则：玩家自己的事件优先级高，稀有事件优先级高，...    
+1）技能事件，根据各个客户端各自配置的流量限制进行同步（比如0.5秒内最多50个事件），可动态调整；按照优先级进行裁剪，规则有：玩家自己的事件优先级高，稀有事件优先级高，等。  
 2）属性事件，a）字段级增量同步；b）按需同步，当前场景不需要的字段就不同步了；c）
 
 二、大地图优化   
-1、视野拆到独立的线程，并且可以配置线程数；    
-2、寻路拆到独立的线程，并且可以配置线程数；   
+
+1、视野拆到独立的线程，并且可以配置线程数。    
+2、寻路拆到独立的线程，并且可以配置线程数。      
 
 ---
 
@@ -170,7 +206,7 @@ kbe （ [https://github.com/kbengine/kbengine](https://github.com/kbengine/kbeng
 
 但是最核心的动态分割部分，kbe 并没有实现。   
 
-另外，kbe 也没实现无缝地图，space 之间没有实现边界的管理，它们都是独立存在的。kbe 的 ghosting 机制，目前也只是用于 entity 在 space 之间传输，因为 “跳转不同的 space 在一瞬间也存在 ghost 状态”[6]。跨 space 传输，也就是将玩家从一张地图传送到另一张地图。      
+另外，kbe 没实现无缝地图，space 之间没有实现边界的管理。kbe 的 ghosting 机制，目前也只是用于 entity 在 space 之间传输，因为 “跳转不同的 space 在一瞬间也存在 ghost 状态”[6]。跨 space 传输，也就是将玩家从一张地图传送到另一张地图。      
 
 所以，从完成度来看， kbe 只是一个普通的 mmorpg 实现，没有动态分割，也没实现无缝地图。    
 
@@ -180,9 +216,9 @@ kbe （ [https://github.com/kbengine/kbengine](https://github.com/kbengine/kbeng
 
 # 总结
 
-本文讲了大世界 scale 的两大思路：zoning 和 offloading，重点描述了 bigworld engine 的 zoning 实现，也以一些公开的技术分享为例，总结了 offloading 的一般做法。   
+本文讲了大世界 scale 的两大思路：zoning 和 offloading，简单描述了 bigworld engine 的 zoning 实现，也以一些公开的技术分享为例，总结了 offloading 的一般做法。   
 
-新项目处于规划阶段，可以考虑一下 zoning 的思路，但是这个实现难度相对较高，且异步编程多，如果不是精英团队，还得慎重。老项目或已经动工了的项目做优化，按照 offloading 的思路会比较靠谱。   
+新项目如果处于规划阶段，可以考虑 zoning 的思路，但是这个实现难度相对较高，如果不是精英团队，得慎重。老项目或已经动工了的项目，按照 offloading 的思路做优化会比较靠谱。     
 
 ---
 

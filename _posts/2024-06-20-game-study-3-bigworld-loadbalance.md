@@ -17,7 +17,19 @@ bigworld 的 load balance 算法的大致思路是知道的，即动态区域分
 
 ---
 
-# 基本算法
+# bigworld 服务器架构
+
+与 load balance 相关的服务器是 cellapp 和 cellappmgr，其中 cellapp 可以有很多个，而 cellappmgr 全局只有一个。   
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-server-architecture.png"/>
+</div>
+<br/>
+
+---
+
+# load balance 基本算法
 
 bigworld 的 load balance 的基本算法是动态区域分割+动态边界调整。  
 
