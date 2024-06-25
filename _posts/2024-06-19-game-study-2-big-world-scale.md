@@ -69,6 +69,7 @@ zoning，即按地图区域进行分割。有两种方法进行分割：固定�
 <div align="center">
 <img src="https://www.skywind.me/blog/wp-content/uploads/2015/04/image31.png"/>
 </div>
+<center>图1：zoning 固定分割的典型服务器架构[4]</center>
 <br/>
 
 node 是一个个的地图服务器，负责运行一块地图区域；nm 是 nodemanager，负责管理这些 node；world 是世界服务器，负责提供世界级别的服务。   
@@ -87,7 +88,7 @@ bigworld 的服务器架构是这样的：
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-server-architecture.png"/>
 </div>
-<center>图1：bigworld 服务器架构[5]</center>
+<center>图2：bigworld 服务器架构[5]</center>
 <br/>
 
 动态分割+动态调整边界的算法是这样：   
@@ -106,6 +107,7 @@ bigworld 的服务器架构是这样的：
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-load-balance-cell-split-10.drawio.png"/>
 </div>
+<center>图3：bigworld 动态分割的可能结果</center>
 <br/>
 
 bigworld 除了动态负载均衡，还做了下行消息优化来保证 scale，它会限制每个 client 的下行带宽，aoi 范围内有太多 entity 的时候，优先发送离自己比较近的 entity 的属性变化。   
@@ -128,6 +130,7 @@ Real Entity 是权威的 Entity。Ghost Entity 相邻 Cell 对应的 Real Entity
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/big-world-scale-ghosting-1.drawio.png"/>
 </div>
+<center>图4：相邻的两个 cell</center>
 <br/>
 
 下图表示这两个 cell 是怎么处理各自边界上的 entity 的。每个 cell 都会在边界处再延伸一段虚构的区域出来，这块区域就是对方的边界区域，且它的宽度跟 aoi 的半径相同。  
@@ -140,6 +143,7 @@ Cell1 的 entity 处于 cell1 自己的边界时，可以自己看到一些 ghos
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/big-world-scale-ghosting-2.drawio.png"/>
 </div>
+<center>图5：相邻的两个 cell 如何处理边界</center>
 <br/>
 
 ---
