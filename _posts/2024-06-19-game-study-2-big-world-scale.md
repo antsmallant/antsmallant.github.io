@@ -79,23 +79,26 @@ node 就是一个个的地图服务器，负责运行一小块地图；nm 就 no
 
 典型的一种实现方式就是 bigworld engine。基本思路就是根据地图上 entity 的 cpu load 的分布情况进行分割，使用 bsptree 管理地图区域（cell），尽量保持 bsptree 子树的 cpu load 处于平衡状态。   
 
+bigworld 的服务器架构是这样的：  
+
 <br/>
 <div align="center">
-<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-scale-cell-split.png"/>
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-server-architecture.png"/>
 </div>
+<center>图1：bigworld 服务器架构[7]</center>
 <br/>
 
-大体算法是这样：  
+动态分割+动态调整边界的算法是这样：   
 
-1、当出现过载的时，尝试新增 cell，并把 cell 放到新的 cell 服务器（cellapp）去运行。  
+1、当出现过载的时，动态分割，尝试新增 cell，并把 cell 放到新的 cell 服务器（cellapp）去运行。  
 
-2、当出现负载不均衡时，尝试移动 cell 的边界，促使部分 entity 从一些 cell 移到另一些 cell。   
+2、当出现负载不均衡时，动态调整边界，尝试移动 cell 的边界，促使部分 entity 从一些 cell 移到另一些 cell。   
 
 <br/>  
 
 在 bigworld 中，用一个 space 代表一整张地图，分割出来的每个区域称为 cell，这些 cell 的面积不是固定的，边界会随着负载的变化进行移动，直至达到平衡。  
 
-下图展示一种经过动态分割+动态边界调整之后的可能情况：   
+下图展示一种经过 动态分割+动态边界调整 之后的可能情况：   
 
 <br/>
 <div align="center">
@@ -139,7 +142,7 @@ Cell1 的 entity 处于 cell1 自己的边界时，可以自己看到一些 ghos
 
 ---
 
-### zoning 小结
+### 小结
 
 固定分割的优点是实现简单；缺点是静态的对地图进行分割，无法适应玩家负载的动态变化，整体的适应能力较差。   
 
@@ -235,3 +238,5 @@ kbe （ [https://github.com/kbengine/kbengine](https://github.com/kbengine/kbeng
 [5] 网易游戏雷火事业群​.游戏服务端高性能框架：来看《天谕》手游千人团战实例》. Available at https://zhuanlan.zhihu.com/p/700231330, 2024-05-28.       
 
 [6] kbengine. ghost机制实现 #48. Available at https://github.com/kbengine/kbengine/issues/48, 2014-7-19.   
+
+[7] bigworld. BigWorld Technology Server Whitepaper. https://sourceforge.net/p/bigworld/code/HEAD/tree/trunk/docs/pdf/BigWorld%20Technology%20Server%20Whitepaper.pdf.    
