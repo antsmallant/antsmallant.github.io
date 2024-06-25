@@ -89,7 +89,7 @@ bigworld 的代码质量很高，模块划分比较清晰。但是如果不了�
 
 ## bsptree 的概念
 
-bsptree 即是 binary spacial tree，实际上这里并不需要深入理解这种 tree，把它当成一棵二叉树即可，不会影响对整个算法的理解。   
+bsptree 即 Binary Space Partioning Tree，实际上这里并不需要深入理解这种 tree，把它当成一棵二叉树即可，不会影响对整个算法的理解。   
 
 ---
 
@@ -111,10 +111,62 @@ bsptree 即是 binary spacial tree，实际上这里并不需要深入理解这�
 
 ## cpu 负载的计算
 
+负载不是简单的使用 entity 的数量来衡量的，而是精细到每个 entity 的 cpu load。每个 entity 上面都有一个 profiler，当 entity 处理消息（handle message）的时候，profiler 就会被触发。  
 
 
 ---
 
+## smooth 的意义
+
+有很多变量前都加了 smooth 作为前缀，比如 `smoothedLoad_`，它的意义就是数学上说的“平滑”。   
+
+比如下面这个函数里面计算 `smoothedLoad_`，就是使用了指数平滑法，其中 bias 就是指数平滑法用的参数。平滑的作用就是让变量不会抖动的太厉害，相对平缓一些。  
+
+```cpp
+void CellApp::informOfLoad( const CellAppMgrInterface::informOfLoadArgs & args )
+{
+	lastReceivedLoad_ = args.load;
+
+	float addedArtificialLoad = 0.f;
+	for (Cells::const_iterator it = cells_.begin();
+			it != cells_.end();
+			++it)
+	{
+		addedArtificialLoad +=
+				(*it)->space().artificialMinLoadCellShare( lastReceivedLoad_ );
+	}
+
+	currLoad_ = lastReceivedLoad_ + addedArtificialLoad;
+	float bias = CellAppMgrConfig::loadSmoothingBias();
+	smoothedLoad_ = ((1.f - bias) * smoothedLoad_) + (bias * currLoad_);
+	estimatedLoad_ = smoothedLoad_;
+	numEntities_ = args.numEntities;
+}
+```
+
+指数平滑法的计算公式为 $𝑆_𝑡$=𝑎$𝑌_{𝑡−1}$+(1−𝑎)$𝑆_{𝑡−1}$，其中$𝑆_𝑡$是平滑值，$𝑌_{𝑡−1}$是上一期的实际值，$𝑆_{𝑡−1}$是上一期的平滑值，a是平滑常数。   
+
+---
+
+# 一些问题
+
+## cellapp 是怎么找到 cellappmgr 的
+
+通过本机的 bwmachined2 这个进程查询得到 cellappmgr 的地址，然后向 cellappmgr 注册。   
+
+---
+
+## cellapp 上面 entity 的消息是怎么处理的
+
+1、消息是收到立即处理的，但如果下一帧即将到来（ `app.nextTickPending()` ），则不能因为处理这个消息导致下一帧被延迟执行，所以需要先把消息先放到 cellapp 的这几个 buffered 队列中： bufferedEntityMessages，bufferedInputMessages。   
+
+2、这几个 buffered 队列里的消息，会在下一帧开头的函数 `CellApp::handleGameTickTimeSlice()` 中被处理，即
+```cpp
+this->bufferedEntityMessages().playBufferedMessages( *this );
+this->bufferedInputMessages().playBufferedMessages( *this );
+```    
+
+---
 
 # 参考
 
