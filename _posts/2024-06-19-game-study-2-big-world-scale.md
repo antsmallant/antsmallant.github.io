@@ -276,11 +276,11 @@ kbe （ [https://github.com/kbengine/kbengine](https://github.com/kbengine/kbeng
 
 [2] eve-offline. EVE-ONLINE STATUS MONITOR. Available at https://eve-offline.net/?server=tranquility.    
 
-[3] 17173. 魔兽世界：官方公布测试首日数据，单服12W同时在线，世界第一. http://news.17173.com/content/06132024/025402002.shtml, 2024-06-13.    
+[3] 17173. 魔兽世界：官方公布测试首日数据，单服12W同时在线，世界第一. Available at http://news.17173.com/content/06132024/025402002.shtml, 2024-06-13.    
 
 [4] 韦易笑. 游戏服务端架构发展史（中）. Available at https://www.skywind.me/blog/archives/1301, 2015-4-26.    
 
-[5] bigworld. BigWorld Technology Server Whitepaper. https://sourceforge.net/p/bigworld/code/HEAD/tree/trunk/docs/pdf/BigWorld%20Technology%20Server%20Whitepaper.pdf.    
+[5] bigworld. BigWorld Technology Server Whitepaper. Available at https://sourceforge.net/p/bigworld/code/HEAD/tree/trunk/docs/pdf/BigWorld%20Technology%20Server%20Whitepaper.pdf.    
 
 [6] 网易游戏雷火事业群​.游戏服务端高性能框架：来看《天谕》手游千人团战实例》. Available at https://zhuanlan.zhihu.com/p/700231330, 2024-05-28.       
 
