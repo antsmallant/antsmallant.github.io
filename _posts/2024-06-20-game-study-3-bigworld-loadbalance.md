@@ -25,6 +25,7 @@ bigworld 的 load balance 算法的大致思路是知道的，即动态区域分
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-server-architecture.png"/>
 </div>
+<center>图1：bigworld 服务器架构[1]</center>
 <br/>
 
 ---
@@ -182,3 +183,4 @@ this->bufferedInputMessages().playBufferedMessages( *this );
 
 # 参考
 
+[1] bigworld. BigWorld Technology Server Whitepaper. https://sourceforge.net/p/bigworld/code/HEAD/tree/trunk/docs/pdf/BigWorld%20Technology%20Server%20Whitepaper.pdf.    
