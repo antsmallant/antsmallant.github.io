@@ -28,9 +28,13 @@ space 以及分割相关的信息，由单点的 cellappmgr 服务器管理，�
 
 <br/>
 <div align="center">
-<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-load-balance-cell-single-1.drawio.png"/>
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-load-balance-cell-split-2.drawio.png"/>
 </div>
 <br/>
+
+3、如果可以通过调整边界来使得各个 cell 的负载在阈值之内，则直接调整边界
+
+
 
 
 
