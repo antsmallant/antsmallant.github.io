@@ -1,17 +1,3 @@
----
-layout: post
-title: "游戏服务器研究二：大世界的 scale 问题"
-date: 2024-06-19
-last_modified_at: 2024-06-19
-categories: [游戏后端]
-tags: [gameserver]
----
-
-* 目录  
-{:toc}
-<br/>
-
----
 
 这是一个非常陈旧的话题了，没什么新鲜的，但本人对 scale 比较感兴趣，所以研究得比较多。   
 
