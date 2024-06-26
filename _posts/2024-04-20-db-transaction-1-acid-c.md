@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "数据库事务一：ACID 中的 C"
+title: "数据库事务一：ACID 中的 C 是多余的"
 date: 2024-04-20
 last_modified_at: 2024-04-20
 categories: [数据库]

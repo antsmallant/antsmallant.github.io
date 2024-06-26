@@ -14,7 +14,7 @@ tags: [gameserver]
 
 ---
 
-bigworld 的 load balance 算法的大致思路是知道的，即动态区域分割+动态边界调整。但具体是怎么实现的，不清楚，网上也不找到相关的文章介绍，所以只能自己看代码进行分析。   
+bigworld 的 load balance 算法的大致思路是知道的，即 动态区域分割 + 动态边界调整。但具体是怎么实现的，不清楚，网上也不找到相关的文章介绍，所以只能自己看代码进行分析。   
 
 本文大致记录我所分析到的算法实现，基于 bigworld 的这个开源版本：[2014 BigWorld Open-Source Edition Code](https://sourceforge.net/p/bigworld/code/HEAD/tree/)，更具体的信息可在我另一篇文章找到 [《游戏服务器研究一：bigworld 开源代码的编译与运行》](https://zhuanlan.zhihu.com/p/704118722) 。   
 
@@ -39,13 +39,17 @@ bigworld 的 load balance 算法的大致思路是知道的，即动态区域分
 
 # load balance 基本算法
 
-bigworld 的 load balance 的基本算法是动态区域分割+动态边界调整。  
-
 一张地图，bigworld 用一个 Space 类来表示，根据负载情况，动态分割成 n 个 区域（cell），这些 cell 的面积不是固定的，会根据地图上的实体（entity）的 cpu 使用率（cpu load）的分布情况来动态调整。   
 
-Space 以及 cell 相关的分割信息，由全局唯一的 cellappmgr 服务器管理；具体的 cell 运行在 cellapp 服务器上，整个集群会有多个 cellapp。  
+Space 以及 cell 相关的分割信息，由全局唯一的 cellappmgr 服务器管理。具体的 cell 运行在 cellapp 服务器上，整个集群会有多个 cellapp。  
 
-一个 space 可能会分割成多个 cell，但是在同一个 cellapp 上，只能运行这个 space 的一个 cell（否则负载均衡就没有意义了）。   
+一个 space 可能会分割成多个 cell，但是在同一个 cellapp 上，只能运行这个 space 的一个 cell（否则负载均衡就没有意义了）。所以，一个 space 分割成 n 个 cell，就需要有 n 个 cellapp 来运行这些 cell。    
+
+bigworld 的 load balance 基本算法是 动态区域分割 + 动态边界调整。     
+
+动态区域分割：space 所使用的一组 cellapp 的平均 cpu load 已经超过阈值，无法通过改变 cell 的边界来减轻负载，只能通过增加 cell 的个数解决。  
+
+动态边界调整：当前 cell 个数不变，通过改变各个 cell 的管辖范围，即移动 cell 之间的边界，来使得 cell 之间的 cpu load 处于阈值之内，且相对平衡。  
 
 ---
 
@@ -167,16 +171,57 @@ CellAppMgr::metaLoadBalance()
 
 ## cpu 负载（cpu load）的计算
 
-负载不是简单的使用 entity 的数量来衡量的，而是精细到每个 entity 的 cpu load。每个 entity 上面都有一个 profiler，当 entity 处理消息（handle message）的时候，profiler 就会被触发。  
+负载不是简单的使用 entity 的数量来衡量的，而是精细到每个 entity 的 cpu load。每个 entity 上面都有一个 profiler，在涉及到具体的 entity 处理的地方，基本上都调用这个 profiler 进入 profiling。  
 
+以下讨论的是 cellapp 下的类。  
+
+**几个关键点**  
+
+1、Entity 上挂着的 profiler 是 `EntityProfiler profiler_;`。    
+
+2、与 `EntityProfiler` 关系密切的是这个 `AutoScopedHelper` 类，它是个简单的类，利用 RAII 机制来调用 profiler；会在构造函数里调用 `pEntity->profiler().start();`，在析构函数里调用 `pEntity_->profiler().stop();`。    
+
+3、`AUTO_SCOPED_ENTITY_PROFILE` 和 `AUTO_SCOPED_THIS_ENTITY_PROFILE` 这两个宏是对 `AutoScopedHelper` 的封装，使用这两个宏的地方都是对 entity 进行 profiling 的地方，在代码中搜索一下，可以发现一大堆。  
+
+
+4、每个 gametick，都会调用 `EntityProfiler::tick` 以重新计算每个 entity 的 cpu load，调用链路是:  
+
+```cpp
+CellApp::handleGameTickTimeSlice()
+-> CellApp::updateLoad()
+-> CellApp::tickProfilers( uint64 lastTickInStamps )
+-> Cells::tickProfilers( uint64 tickDtInStamps, float smoothingFactor )
+-> Cell::tickProfilers( uint64 tickDtInStamps, float smoothingFactor )
+```
 
 ---
 
-## 动态分割的逻辑
+## 动态区域分割
 
 ---
 
-## 动态调整边界的逻辑
+## 动态边界调整
+
+动态边界调整的目标是使得 bsptree 的左右子树的 cpu load 处于相对平衡的状态，让两棵子树的 cpu load 之差尽可能达到最小。它是自上而下调整的，一级级都做调整。  
+
+以下的类都是 cellappmgr 下面的。  
+
+调用链是： 
+
+```cpp
+
+
+```
+
+---
+
+## EntityBoundLevels 的含义是什么？  
+
+在 `BSPNode` 里面有个成员变量 `EntityBoundLevels entityBoundLevels_;`。  
+
+最开始看这个的时候很费解，搞不懂它的作用，但它在动态边界调整的时候会被使用，是个很重要的变量。后面仔细研究，终于搞懂了。  
+
+它实际上就是对于一个 cell 上的 entity 的 cpu load 的分布情况的一个刻画，而且是从横向（左->右，右->左），纵向（上->下，下->上）总 4 个方向都进行了刻画。因为相邻 cell 的边界调整可以是向左或向右，向上或向下的，需要准备好这 4 个方向的数据，提供算法决策的依据。  
 
 
 ---
@@ -237,6 +282,12 @@ $$
 this->bufferedEntityMessages().playBufferedMessages( *this );
 this->bufferedInputMessages().playBufferedMessages( *this );
 ```    
+
+---
+
+# 总结
+
+bigworld 的整个 load balance 算法实现得挺精细，但在分布式环境下，如何保证这套算法的稳健运行，还需要再深入研究，并且自己动手实验一下。   
 
 ---
 
