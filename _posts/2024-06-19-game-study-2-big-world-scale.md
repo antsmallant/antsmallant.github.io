@@ -284,7 +284,7 @@ kbe （ [https://github.com/kbengine/kbengine](https://github.com/kbengine/kbeng
 
 [6] 网易游戏雷火事业群​.游戏服务端高性能框架：来看《天谕》手游千人团战实例》. Available at https://zhuanlan.zhihu.com/p/700231330, 2024-05-28.       
 
-[7] 天美工作室. 怎么解决大地图SLG的技术痛点. Available at https://youxiputao.com/article/24673.html.    
+[7] 天美工作室. 怎么解决大地图SLG的技术痛点. Available at https://youxiputao.com/article/24673.html, 2023-03-01.       
 
 [8] kbengine. ghost机制实现 #48. Available at https://github.com/kbengine/kbengine/issues/48, 2014-7-19.   
 
