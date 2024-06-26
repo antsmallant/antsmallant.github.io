@@ -110,7 +110,7 @@ bigworld 的服务器架构是这样的：
 <center>图3：bigworld 动态分割的可能结果</center>
 <br/>
 
-bigworld 除了动态负载均衡，还做了下行消息优化来保证 scale，它会限制每个 client 的下行带宽，aoi 范围内有太多 entity 的时候，优先发送离自己比较近的 entity 的属性变化。   
+bigworld 除了负载均衡，还做了下行消息优化来保证 scale，它会限制每个 client 的下行带宽，aoi 范围内有太多 entity 的时候，优先发送离自己比较近的 entity 的属性变化。   
 
 bigworld 的整个 load balance 的算法实现略复杂，我会单独写一篇文章总结一下。   
 
