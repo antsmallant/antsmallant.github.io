@@ -7,6 +7,13 @@ categories: [游戏后端]
 tags: [gameserver]
 ---
 
+系列文章：  
+
+* [游戏服务器研究一：bigworld 开源代码的编译与运行](https://zhuanlan.zhihu.com/p/704118722)   
+* [游戏服务器研究二：大世界的 scale 问题](https://zhuanlan.zhihu.com/p/705423006)
+
+---
+
 bigworld 的 load balance 算法的大致思路是知道的，即动态区域分割+动态边界调整。但具体是怎么实现的，不清楚，网上也不找到相关的文章介绍，所以只能自己看代码进行分析。   
 
 本文大致记录我所分析到的算法实现，基于 bigworld 的这个开源版本：[2014 BigWorld Open-Source Edition Code](https://sourceforge.net/p/bigworld/code/HEAD/tree/)，更具体的信息可在我另一篇文章找到 [《游戏服务器研究一：bigworld 开源代码的编译与运行》](https://zhuanlan.zhihu.com/p/704118722) 。   
@@ -94,9 +101,9 @@ Space 以及 cell 相关的分割信息，由全局唯一的 cellappmgr 服务�
 
 # 代码分析 
 
-bigworld 的代码质量很高，模块划分比较清晰。但是如果不了解一些核心概念，那么看 load balance 相关的代码会很吃力。   
+bigworld 的代码质量很高，模块划分比较清晰。但是如果不了解一些核心概念，那么看 load balance 相关的代码就会很吃力。我也是硬看了一段时间，才理清楚大致的脉络。     
 
-直接看我下面的描述也会一头雾水的，需要自己去看了代码，然后回过头来对照我的这些描述，才会比较清晰。   
+下面的分析不会按照小白的方式，进行有条有理的叙述，只会点出一些核心的、对于理解整个逻辑最关键的要点，具体逻辑要自己看代码。    
 
 ---
 
@@ -120,11 +127,58 @@ bsptree 即 Binary Space Partioning Tree，实际上这里并不需要深入理�
 
 ## bsptree 的构造过程
 
+以下讨论的都是 cellappmgr 里面的类。   
+
+1、数据结构
+bsptree 的根结点保存在 Space 类中，即 `CM::BSPNode * pRoot_`。  
+
+2、根结点的初始化
+根结点的初始化很容易找到，它的调用链路是：  
+
+```cpp
+CellAppMgr::createEntityInNewSpace 
+-> Space::addCell() 
+-> Space::addCell( CellApp & cellApp, CellData * pCellToSplit )
+```
+
+强调一下，此时创建出来的 `pRoot_` 是 `CellData` 类型的（即 bsptree 的叶子节点类型）。它需要等到第一次分裂之后，才会变成 `InternalNode` 类型（即 bsptree 的中间节点类型）。  
+
+3、根节点的第一次分裂     
+这是隐藏得很深的，我找了挺久才捋清楚。  
+
+它的调用链路是： 
+
+```cpp
+CellAppMgr::metaLoadBalance()
+-> CellAppGroups::checkForOverloaded( float addCellThreshold )
+-> overloadedGroups.addCells();
+-> CellAppGroup::addCell()
+-> Space::addCell()
+-> Space::addCell( CellApp & cellApp, CellData * pCellToSplit )
+```
+
+到此为止，看看 `Space::addCell( CellApp & cellApp, CellData * pCellToSplit )` 的内部，此时传递的参数 `pCellToSplit` 是 null 的。  
+
+里面执行到这句的时候 `pRoot_ = (pRoot_ ? pRoot_->addCell( pCellData ) : pCellData);` ，由于 `pRoot_` 此前已经初始化过，所以非空，那么就会执行 `pRoot_->addCell( pCellData )`，也就是调用 `CellData::addCell( CellData * pCell, bool isHorizontal )`，这里面就产生了分裂。  
+
+经过这次分裂，`pRoot_` 正式变为 `InternalNode` 类型。  
+
 ---
 
-## cpu 负载的计算
+## cpu 负载（cpu load）的计算
 
 负载不是简单的使用 entity 的数量来衡量的，而是精细到每个 entity 的 cpu load。每个 entity 上面都有一个 profiler，当 entity 处理消息（handle message）的时候，profiler 就会被触发。  
+
+
+---
+
+## 动态分割的逻辑
+
+---
+
+## 动态调整边界的逻辑
+
+
 
 
 ---
