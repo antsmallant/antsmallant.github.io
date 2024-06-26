@@ -10,7 +10,8 @@ tags: [gameserver]
 系列文章：  
 
 * [游戏服务器研究一：bigworld 开源代码的编译与运行](https://zhuanlan.zhihu.com/p/704118722)   
-* [游戏服务器研究二：大世界的 scale 问题](https://zhuanlan.zhihu.com/p/705423006)
+
+* [游戏服务器研究二：大世界的 scale 问题](https://zhuanlan.zhihu.com/p/705423006)   
 
 ---
 
@@ -111,6 +112,12 @@ bigworld 的代码质量很高，模块划分比较清晰。但是如果不了�
 
 ---
 
+## cell 
+
+cell 是平面的，尽管地图是 3d 的，但 cell 只取平面的信息。  
+
+---
+
 ## bsptree 的概念
 
 bsptree 即 Binary Space Partioning Tree，实际上这里并不需要深入理解这种 tree，把它当成一棵二叉树即可，不会影响对整个算法的理解。   
@@ -119,7 +126,7 @@ bsptree 即 Binary Space Partioning Tree，实际上这里并不需要深入理�
 
 ## bsptree 相关的数据结构
 
-在 cellappmgr 目录下
+在 cellappmgr 目录下：  
 
 |类名|说明|文件|
 |:--|:--|:--|
@@ -131,7 +138,7 @@ bsptree 即 Binary Space Partioning Tree，实际上这里并不需要深入理�
 
 ## bsptree 的构造过程
 
-以下讨论的都是 cellappmgr 里面的类。   
+以下讨论的都是 cellappmgr 目录下的类。   
 
 1、数据结构
 bsptree 的根结点保存在 Space 类中，即 `CM::BSPNode * pRoot_`。  
@@ -173,7 +180,7 @@ CellAppMgr::metaLoadBalance()
 
 负载不是简单的使用 entity 的数量来衡量的，而是精细到每个 entity 的 cpu load。每个 entity 上面都有一个 profiler，在涉及到具体的 entity 处理的地方，基本上都调用这个 profiler 进入 profiling。  
 
-以下讨论的是 cellapp 下的类。  
+以下讨论的是 cellapp 目录下的类。  
 
 **几个关键点**  
 
@@ -196,33 +203,128 @@ CellApp::handleGameTickTimeSlice()
 
 ---
 
-## 动态区域分割
-
----
-
 ## 动态边界调整
 
 动态边界调整的目标是使得 bsptree 的左右子树的 cpu load 处于相对平衡的状态，让两棵子树的 cpu load 之差尽可能达到最小。它是自上而下调整的，一级级都做调整。  
 
-以下的类都是 cellappmgr 下面的。  
+以下讨论的都是 cellappmgr 目录下的类。   
 
 调用链是： 
 
 ```cpp
-
-
+CellAppMgr::handleTimeout( TimerHandle /*handle*/, void * arg )
+-> CellAppMgr::loadBalance()
+-> Space::loadBalance()
 ```
+
+进入 `Space::loadBalance()` 之后，就要看 `pRoot_` 的状态了。  
+
+如果当前 `pRoot_` 是 CellData 类型的，则调用的是 `CellData::balance`，没什么特别的事情好做的。 
+
+如果当前 `pRoot_` 是 InternalNode 类，则调用的是 `InternalNode::balance`，这里面就比较复杂了，会自顶向下的尝试对各个层级的边界进行调整。  
 
 ---
 
-## EntityBoundLevels 的含义是什么？  
+## 动态区域分割
+
+动态区域分割的原因是，space 所使用的一组 cellapp 的平均 cpu load 已经超过阈值，无法通过改变 cell 的边界来减轻负载，只能通过增加 cell 的个数解决。  
+
+以下讨论的都是 cellappmgr 目录下的类。   
+
+调用链是： 
+
+```cpp
+CellAppMgr::handleTimeout( TimerHandle /*handle*/, void * arg )
+-> CellAppMgr::metaLoadBalance()
+-> CellAppGroups::checkForOverloaded( float addCellThreshold )
+```
+
+`CellAppGroups` 以及 `checkForOverloaded` 的逻辑都比较直，容易分析，这里就不细说了。  
+
+---
+
+## EntityBoundLevels 的作用是什么？  
+
+这一小段会有点长，要解释清楚这个概念并不容易。  
+
+**概念解释**  
 
 在 `BSPNode` 里面有个成员变量 `EntityBoundLevels entityBoundLevels_;`。  
 
-最开始看这个的时候很费解，搞不懂它的作用，但它在动态边界调整的时候会被使用，是个很重要的变量。后面仔细研究，终于搞懂了。  
+最开始看这个的时候很费解，搞不懂它的作用，但它在 loadbalance 的时候会被使用，是个很重要的变量。后面仔细研究，终于搞懂了。  
 
-它实际上就是对于一个 cell 上的 entity 的 cpu load 的分布情况的一个刻画，而且是从横向（左->右，右->左），纵向（上->下，下->上）总 4 个方向都进行了刻画。因为相邻 cell 的边界调整可以是向左或向右，向上或向下的，需要准备好这 4 个方向的数据，提供算法决策的依据。  
+它实际上就是对于一个 cell 上的 entity 的 cpu load 分布情况的一个刻画，而且是从横向（左->右，右->左），纵向（上->下，下->上）总 4 个方向都进行了刻画。因为相邻 cell 的边界调整可以是向左或向右，向上或向下的，需要准备好这 4 个方向的数据，提供算法决策的依据。  
 
+举个例子，两个挨在一起的 cell：cell1 和 cell2，在执行 loadbalance 的时候，它们的 cpu load 分别是 load1 和 load2，load1 小于 load2。   
+
+那么这时候要怎么移动边界，让 cell1 和 cell2 的 cpu load 接近相等呢？答案是向右移动。  
+
+但要移动多少呢？这时候就需要 cell2 从左到右的 cpu load 的分布情况，而这就刚好是 cell2 的 `entityBoundLevels_` 变量保存的信息。它并不是一个完整的信息，而是一个压缩后的信息，只记录了 5 个 level 的 cpu load 分布，注意，level 越大 cpu load 值越小。   
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/bigworld-load-balance-entity-bound-1.drawio.png"/>
+</div>
+<br/>
+
+举个例子，如果 `diff = (load2-load1)/2`，而 `diff >= entityBoundLevels_[左到右][level5]` 且 `diff < entityBoundLevels_[左到右][level4]`，那么把边界移动到 level5 对应的线就行了，这里只是尽量做到负载平衡，而不是百分百平衡。  
+
+<br/>
+
+**代码说明**   
+
+1、cellapp 端
+
+向 cellappmgr 发送 `EntityBoundLevels` 等数据，调用链是：  
+
+```cpp
+CellApp::handleGameTickTimeSlice()
+-> CellApp::updateBoundary()
+-> CellAppMgrGateway::updateBounds( const Cells & cells )
+-> Cells::writeBounds( BinaryOStream & stream )
+-> Cell::writeBounds( BinaryOStream & stream )
+-> Space::writeBounds( BinaryOStream & stream )
+-> Space::writeEntityBounds( BinaryOStream & stream )
+```
+
+最后就是在 `Space::writeEntityBounds` 里面，把 cell 4 个方向的 entity cpu load 信息都写入了。  
+
+```cpp
+void Space::writeEntityBounds( BinaryOStream & stream ) const
+{
+	// This needs to match CellAppMgr's CellData::updateEntityBounds
+
+	// Args are isMax and isY
+	this->writeEntityBoundsForEdge( stream, false, false ); // Left
+	this->writeEntityBoundsForEdge( stream, false, true  ); // Bottom
+	this->writeEntityBoundsForEdge( stream, true,  false ); // Right
+	this->writeEntityBoundsForEdge( stream, true,  true  ); // Top
+}
+```
+
+<br/> 
+
+2、cellappmgr 端    
+
+接收 cellapp 发上来的 update 数据，接收逻辑是：   
+
+```cpp
+CellApp::updateBounds( BinaryIStream & data )
+```
+
+这个其实被定义在 cellappmgr_interface.hpp 里面的。  
+
+```cpp
+BW_STREAM_MSG( CellApp, updateBounds );
+```
+
+<br/>
+
+3、细究 `writeEntityBoundsForEdge`     
+
+为何这个函数能方便的从4个方向统计 entity 的 cpu load 分布呢？因为 bigworld 使用了十字链表法来实现 aoi。     
+
+这样一来，只要从左到右或从右到左扫描 x 轴，就可以得到横向的分布信息；从上到下或从下往上扫描 y 轴，就可以得到纵向的分布信息。     
 
 ---
 
@@ -287,7 +389,7 @@ this->bufferedInputMessages().playBufferedMessages( *this );
 
 # 总结
 
-bigworld 的整个 load balance 算法实现得挺精细，但在分布式环境下，如何保证这套算法的稳健运行，还需要再深入研究，并且自己动手实验一下。   
+bigworld 的整个 load balance 算法实现是比较精细的，但在分布式环境下，如何保证这套算法的稳健运行，还需要再深入研究，亲自动手实验一下。   
 
 ---
 
