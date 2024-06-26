@@ -328,6 +328,14 @@ BW_STREAM_MSG( CellApp, updateBounds );
 
 ---
 
+## `chunkBounds_` 的作用是什么？  
+
+在 `BSPNode` 里面有个成员变量 `BW::Rect chunkBounds_;`。 
+
+它表示自己所在的 cellapp 上，自己对应的 space 已经加载的地图的边界范围，通过把自己的 `range_` 与 `chunkBounds_` 取交集，就可以判断自己所在的区域是否已经完成地图数据的加载的，这也就是 `CellData::calculateAreaNotLoaded()` 所做的事情。   
+
+---
+
 ## smooth 的意义
 
 有很多变量前都加了 smooth 作为前缀，比如 `smoothedLoad_`，它的意义就是数学上说的“平滑”。   
