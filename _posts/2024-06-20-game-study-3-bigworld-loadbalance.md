@@ -56,7 +56,7 @@ Space 以及 cell 相关的分割信息，由全局唯一的 cellappmgr 服务�
 </div>
 <br/>
 
-2、当这个 cell 所在的 cellapp 的负载超过设定的阈值时，cellappmgr 决定增加一个 cell，并把这个 cell 放到另外的 cellapp 上运行，以此分担压力。    
+2、当一个 space 所使用的一组 cellapp 的平均负载超过阈值时，cellappmgr 会决定增加一个 cell，并把这个 cell 放到组外的 cellapp 上运行，以此分担压力。    
 
 <br/>
 <div align="center">
@@ -171,9 +171,10 @@ void CellApp::informOfLoad( const CellAppMgrInterface::informOfLoadArgs & args )
 
 ## cellapp 上面 entity 的消息是怎么处理的
 
-1、消息是收到立即处理的，但如果下一帧即将到来（ `app.nextTickPending()` ），则不能因为处理这个消息导致下一帧被延迟执行，所以需要先把消息先放到 cellapp 的这几个 buffered 队列中： bufferedEntityMessages，bufferedInputMessages。   
+1、消息是收到立即处理的，但如果下一帧即将到来（ `app.nextTickPending()` ），则不能因为处理这个消息导致下一帧被延迟执行，所以需要先把消息先放到 cellapp 的 buffered 队列中： bufferedEntityMessages，bufferedInputMessages。   
 
-2、这几个 buffered 队列里的消息，会在下一帧开头的函数 `CellApp::handleGameTickTimeSlice()` 中被处理，即
+2、这些 buffered 队列里的消息，会在下一帧开头的函数 `CellApp::handleGameTickTimeSlice()` 中被处理，即  
+
 ```cpp
 this->bufferedEntityMessages().playBufferedMessages( *this );
 this->bufferedInputMessages().playBufferedMessages( *this );
