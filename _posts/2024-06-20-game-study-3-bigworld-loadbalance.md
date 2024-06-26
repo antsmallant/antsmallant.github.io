@@ -7,13 +7,12 @@ categories: [游戏后端]
 tags: [gameserver]
 ---
 
-系列文章：  
-
-* [游戏服务器研究一：bigworld 开源代码的编译与运行](https://zhuanlan.zhihu.com/p/704118722)   
-
-* [游戏服务器研究二：大世界的 scale 问题](https://zhuanlan.zhihu.com/p/705423006)   
+* 目录  
+{:toc}
+<br/>
 
 ---
+
 
 # 1. 前言
 
@@ -338,7 +337,7 @@ BW_STREAM_MSG( CellApp, updateBounds );
 
 ---
 
-## 1.10 smooth 的意义
+## 4.10 smooth 的意义
 
 有很多变量前都加了 smooth 作为前缀，比如 `smoothedLoad_`，它的意义就是数学上说的“平滑”。   
 
@@ -406,3 +405,14 @@ bigworld 的整个 load balance 算法实现是比较精细的，但在分布式
 # 7. 参考
 
 [1] bigworld. BigWorld Technology Server Whitepaper. https://sourceforge.net/p/bigworld/code/HEAD/tree/trunk/docs/pdf/BigWorld%20Technology%20Server%20Whitepaper.pdf.    
+
+
+---
+
+系列文章：  
+
+* [游戏服务器研究一：bigworld 开源代码的编译与运行](https://zhuanlan.zhihu.com/p/704118722)   
+
+* [游戏服务器研究二：大世界的 scale 问题](https://zhuanlan.zhihu.com/p/705423006)   
+
+* [游戏服务器研究三：bigworld 的 load balance 算法](https://zhuanlan.zhihu.com/p/705585879)    
