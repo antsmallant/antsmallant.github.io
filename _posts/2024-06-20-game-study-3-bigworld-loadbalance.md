@@ -414,3 +414,5 @@ bigworld 的整个 load balance 算法实现是比较精细的，但在分布式
 * [游戏服务器研究一：bigworld 开源代码的编译与运行](https://zhuanlan.zhihu.com/p/704118722)   
 
 * [游戏服务器研究二：大世界的 scale 问题](https://zhuanlan.zhihu.com/p/705423006)   
+
+* [游戏服务器研究三：bigworld 的 load balance 算法](https://zhuanlan.zhihu.com/p/705595784)
