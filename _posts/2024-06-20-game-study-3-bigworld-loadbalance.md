@@ -209,7 +209,7 @@ void CellApp::informOfLoad( const CellAppMgrInterface::informOfLoadArgs & args )
 }
 ```
 
-指数平滑法的计算公式为 $𝑆_𝑡$ = 𝑎$𝑌_{𝑡−1}$+(1−𝑎)$𝑆_{𝑡−1}$ ，
+指数平滑法的计算公式为:       
 
 $$
 𝑆_𝑡 = 𝑎𝑌_{𝑡−1}+(1−𝑎)𝑆_{𝑡−1}
