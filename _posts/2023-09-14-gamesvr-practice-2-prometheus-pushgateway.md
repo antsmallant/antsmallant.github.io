@@ -11,7 +11,7 @@ tags: [server, devops]
 {:toc}
 <br/>
 
-本文记录一次对 prometheus pushgateway 做性能优化的过程。   
+本文记录一次对 prometheus pushgateway 做性能优化的过程，推送延迟从 200 秒下降到 0.1 秒。      
 
 ---
 
@@ -69,7 +69,7 @@ memory{"server_id":1,"zone":1001,"service":"clusterd"} 10000
 
 prometheus 会从多个 target pull 指标，但它并不是很关心一个指标是从哪个 target 来的（虽然可以配置不同 target 给指标附加一些特定的标签值），只要保证 “指标名+标签” 是唯一的就够了。而我们的 server_id 是唯一的，所以能够保证唯一性。     
 
-**优化效果**   
+**优化效果**     
 
 按照这个思路优化之后，单轮的延迟从 200 秒下降到了 6 秒。  
 
@@ -79,39 +79,48 @@ prometheus 会从多个 target pull 指标，但它并不是很关心一个指�
 
 ### 2.2.2 阶段二：pushgateway 开启 gzip 支持
 
+定时脚本 push 的时候，指标数据是裸的 push 的，没做任何压缩，单次 push 的数据量可以达到 1.7 MB 左右，于是考虑是否可以通过压缩来进行优化。  
 
+pushgateway 高一点的版本也支持了 gzip 优化，具体可以参考这个 [https://github.com/prometheus/pushgateway#request-compression](https://github.com/prometheus/pushgateway#request-compression)：   
 
-* 优化效果   
-单轮延迟从 6 秒降到 4 秒。文档的压缩率挺高，1.7MB 的 log 文件经过压缩后是 94KB。   
-
-* 具体做法  
-关于 gzip 使用的说明 [https://github.com/prometheus/pushgateway#request-compression](https://github.com/prometheus/pushgateway#request-compression)：   
 >Request compression
 >The body of a POST or PUT request may be gzip- or snappy-compressed. Add a header Content-Encoding: gzip or Content-Encoding: snappy to do so.
 >
 >```
 >echo "some_metric 3.14" | gzip | curl -H 'Content-Encoding: gzip' --data-binary @- http://pushgateway.example.org:9091/metrics/job/some_job
->```      
+>```
+
+**优化效果**     
+
+按照这个思路优化之后，单轮延迟从 6 秒降到 4 秒。文档的压缩率挺高，1.7MB 的 log 文件经过压缩后是 94KB。   
+
+效果很不明显，于是就继续优化。  
+
 
 ---
 
-## 3.3 优化三：每个物理服部署 pushgateway
+## 3.3 阶段三：增加 pushgateway 的数量
 
-* 优化效果  
-单轮延迟从 4 秒下降到 0.1 秒。    
-
-* 具体做法  
-直接在每个物理服上部署一个 pushgateway，服务于本服上的所有游戏服进程；prometheus 修改配置，从多个 pushgateway pull 数据。虽然 pushgateway 数量增加了，但其实没增加多少，以 1000 个游戏服，每个物理服部署 50 个游戏服计算，也才 20 个 pushgateway，对 prometheus 来说压力不大。     
-
-<br/>
+想来想去，瓶颈还是出在 pushgateway 上，既然它性能这么差，那干脆就每个物理服部署 pushgateway，只服务于本物理服上的游戏服进程。而 prometheus 也修改配置，从多个 pushgateway pull 数据。虽然 pushgateway 数量增加了，但其实没增加多少，原先是 1 个，现在是 25 个，才增加 24 个，这对于 prometheus 来说压力不大。  
 
 以上优化完，整个拓扑大概是这样：  
-![部署结构](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/prometheus-pushgateway.png)  
-<center>图1：部署结构</center>   
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/prometheus-pushgateway.png" />
+</div>
+<center>图1：阶段三优化后的部署结构</center>   
+<br/>
+
+**优化效果**   
+
+按照这个思路优化之后，单轮延迟从 4 秒下降到 0.1 秒。    
+
+感觉已经挺完美了，优化完毕。   
 
 ---
 
-# 4. 优化过程回顾
+# 4. 优化反思
 
 在 pushgateway 的 github 主页 ([https://github.com/prometheus/pushgateway](https://github.com/prometheus/pushgateway))，README.md 最开始就写了设计初衷：
 >The Prometheus Pushgateway exists to allow ephemeral and batch jobs to expose their metrics to Prometheus. Since these kinds of jobs may not exist long enough to be scraped, they can instead push their metrics to a Pushgateway. The Pushgateway then exposes these metrics to Prometheus.    
@@ -133,12 +142,16 @@ pushgateway 的维护者说得也有道理，要 "keep the PGW simple and focusd
 
 # 5. 总结
 
-* pushgateway 没有多线程支持，并发性能很差，并且未来也不考虑支持多线程，因为它的设计目标不在于此。
+* pushgateway 没有多线程支持，并发性能很差，并且未来也不考虑支持多线程，因为它的设计目标不在于此。   
 
-* pushgateway 在生产环境应该以多进程的方式进行部署，可以每个物理服部署一个进程。
+* pushgateway 在生产环境应该以多进程的方式进行部署，可以每个物理服部署一个进程。    
 
-* 往 pushgateway 发送指标数据的时候，尽量把数据合并起来发送，减少发送的次数，合并的时候想办法保证 “指标名+标签” 唯一就行了。
+* 往 pushgateway 发送指标数据的时候，尽量把数据合并起来发送，减少发送的次数，合并的时候想办法保证 “指标名+标签” 唯一就行了。   
 
 * 使用一个工具前，需要深入了解此工具的设计初衷、适用场景、性能局限等。
 
-* 一个项目的文档，最关键的内容往往放在最开头，不妨花点时间好好读一读。
+* 一个项目的文档，最关键的内容往往放在最开头，不妨花点时间好好读一读。   
+
+---
+
+正文完
