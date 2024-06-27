@@ -215,7 +215,7 @@ c++23 是一个 minor 版本。
 
 ---
 
-## 2.1 按 c++ 版本
+## 2.1 按版本区分
 
 |版本|支持|
 |:--|:--|
@@ -227,12 +227,13 @@ c++23 是一个 minor 版本。
 
 ---
 
-## 2.2 按编译器
+## 2.2 按编译器区分
 
 |编译器|支持|
 |:--|:--|
 |gcc|[C++ Standards Support in GCC](https://gcc.gnu.org/projects/cxx-status.html)|
 |clang|[C++ Support in Clang](https://clang.llvm.org/cxx_status.html)|
+|汇总|[cpp/compiler support/vendors](https://en.cppreference.com/w/cpp/compiler_support/vendors)|
 
 ---
 
