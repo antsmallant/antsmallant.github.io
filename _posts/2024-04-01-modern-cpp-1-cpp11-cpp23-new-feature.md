@@ -93,7 +93,7 @@ c++14 是一个 minor 版本，没什么重要的新特性，主要是在给 c++
 
 # 3. c++17 新特性
 
-c++17 是一个 major 版本。  
+c++17 是一个 “中” 版本（它本来应该是一个 major 版本）。  
 
 新的语言特性[3]：  
 
@@ -127,36 +127,35 @@ c++20 是一个 major 版本，有很重要的更新，"The Big Four"，即四�
 
 新的语言特性[4]：  
 
-* coroutines
-* concepts
-* designated initializers
-* template syntax for lambdas
-* range-based for loop with initializer
-* `[[likely]]` and `[[unlikely]]` attributes
-* deprecate implicit capture of this
-* class types in non-type template parameters
-* constexpr virtual functions
-* explicit(bool)
-* immediate functions
-* using enum
-* lambda capture of parameter pack
-* char8_t
-* constinit
+* 模块
+* 概念
+* 协程
+* 可指定的初始值设定项(C99功能的略微受限版本)
+* `<=>`(“宇宙飞船操作符”)三向比较操作符
+* `[*this]`按值捕获当前对象
+* 标准属性 `[[no_unique address]]`、`[[likely]]` 和 `[[unlikely]]`
+* 在 constexpr 函数中允许使用更多功能，包括 new、union、try-catch、dynamic_cast 和 typeid
+* 保证编译时求值的 consteval 函数
+* 保证静态(非运行时)初始化的 constinit 变量
+* using 可用于带作用域的 enum
+* 还有一些小的扩展
 
 新的标准库特性[4]：  
 
-* concepts library
-* synchronized buffered outputstream
-* std::span
-* bit operations
-* math constants
-* std::is_constant_evaluated
-* std::make_shared supports arrays
-* starts_with and ends_with on strings
-* check if associative container has element
-* std::bit_cast
-* std::midpoint
-* std::to_array
+* 范围、视图和管道
+* `printf()` 风格的格式化: `format()` 和 `vformat()`
+* 日历和时区
+* `span`，用于对连续数组进行读写访问
+* source_location
+* 数学常数，例如 pi 和 1n10e
+* 对 atomic 的许多扩展
+* 等待多个 thread 的方法: barrier 和 latch
+* 特性测试宏
+* `bit cast<>`
+* 位操作
+* 更多的标准库函数成为 constexpr
+* 在标准库中更多地使用 `<=>` 操作符
+* 更多的小扩展
 
 ---
 
@@ -218,6 +217,6 @@ c++23 是一个 minor 版本。
 
 [3] 玩转Linux内核. 快速入门c++17：了解最新的语言特性和功能. Available at: https://zhuanlan.zhihu.com/p/664746128, 2023-11-06.    
 
-[4] AnthonyCalandra. modern-cpp-features:CPP20. Available at: https://github.com/AnthonyCalandra/modern-cpp-features/blob/master/CPP20.md, 2023-3-19.   
+[4] [美] Bjarne Stroustrup. C++之旅（第3版）. pansz. 北京: 电子工业出版社, 2023-10(1).   
 
 [5] cppreference. c++23. Available at: https://zh.cppreference.com/w/cpp/23, 2024-3-3.   
