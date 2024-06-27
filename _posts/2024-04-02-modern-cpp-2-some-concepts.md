@@ -15,13 +15,13 @@ tags: [c++]
 
 要精确的掌握 c++ 的概念：  
 
-* 最好直接看 specification，比如 cppreference：[https://en.cppreference.com/w/](https://en.cppreference.com/w/) ；    
+* 最好直接看 specification，比如 cppreference：[https://en.cppreference.com/w/](https://en.cppreference.com/w/) 。   
 
-* 其次是 c++ 标准委员会最接近标准的 working draft: [https://www.open-std.org/jtc1/sc22/wg21/docs/standards](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) ；    
+* 其次是看 c++ 标准委员会最接近标准的 working draft: [https://www.open-std.org/jtc1/sc22/wg21/docs/standards](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) 。       
 
-* 再次是看一些权威的书；        
+* 再次是看一些权威的书。         
 
-最不推荐的是看博客文章。本文除外，笔者是比较认真的考究之后才写出来的，当然由于个人认知有限，出错在所难免，敬请指正。   
+* 少看博客文章。    
 
 ---
 
