@@ -11,6 +11,8 @@ tags: [server, devops]
 {:toc}
 <br/>
 
+---
+
 本文记录一次对 prometheus pushgateway 做性能优化的过程，推送延迟从 200 秒下降到 0.1 秒。      
 
 ---
@@ -92,7 +94,7 @@ pushgateway 高一点的版本也支持了 gzip 优化，具体可以参考这�
 
 **优化效果**     
 
-按照这个思路优化之后，单轮延迟从 6 秒降到 4 秒。文档的压缩率挺高，1.7MB 的 log 文件经过压缩后是 94KB。   
+按照这个思路优化之后，单轮延迟从 6 秒降到 4 秒。文档的压缩率挺高，1.7 MB 的 log 文件经过压缩后是 94 KB。   
 
 效果很不明显，于是就继续优化。  
 
@@ -101,7 +103,9 @@ pushgateway 高一点的版本也支持了 gzip 优化，具体可以参考这�
 
 ### 2.2.3 阶段三：增加 pushgateway 的数量
 
-想来想去，瓶颈还是出在 pushgateway 上，既然它性能这么差，那干脆就每个物理服部署 pushgateway，只服务于本物理服上的游戏服进程。而 prometheus 也修改配置，从多个 pushgateway pull 数据。虽然 pushgateway 数量增加了，但其实没增加多少，原先是 1 个，现在是 25 个，才增加 24 个，这对于 prometheus 来说压力不大。  
+想来想去，瓶颈还是出在 pushgateway 上，既然它性能这么差，那干脆就每个物理服部署 pushgateway，只服务于本物理服上的游戏服进程。而 prometheus 也修改配置，从多个 pushgateway pull 数据。  
+
+虽然 pushgateway 数量增加了，但其实没增加多少，原先是 1 个，现在是 25 个，才增加 24 个，这对于 prometheus 来说压力不大。  
 
 以上优化完，整个拓扑大概是这样：  
 
@@ -129,6 +133,8 @@ pushgateway 高一点的版本也支持了 gzip 优化，具体可以参考这�
 
 唯一的收获是发现新版本的 pushgateway 支持 gzip 了，但这个带来的效果并不怎么明显。      
 
+<br/>
+
 关于 performance，这个 issue "Feature request: Multi-thread support #402" ([https://github.com/prometheus/pushgateway/issues/402](https://github.com/prometheus/pushgateway/issues/402)) 说的内容跟我的场景有点类似。他提到他们有 1000 个 client 需要发指标给 pushgateway，当只有一个 pushgateway 时请求延迟是 4 分钟，当数量增加到三个之后，请求延迟下降到 12 秒，所以他问 pushgateway 是否能提供多线程支持。而项目维护者的回复是:    
 >https://github.com/prometheus-community/PushProx may be helpful for your use case, but as said, details need to be discussed elsewhere.
 >
@@ -136,7 +142,9 @@ pushgateway 高一点的版本也支持了 gzip 优化，具体可以参考这�
 
 pushgateway 的维护者说得也有道理，要 "keep the PGW simple and focusd on what it is meant for", blah blah ..。哎，反正他懒得优化的时候，这些都是说得过去的说辞。     
 
-不过也没关系，通过这些优化手段：1.批量合并指标数据 2.多进程方式部署 pushgateway，我们也达到了优化目标，并且能扛住未来数据量的增长。    
+<br/>
+
+不过也没关系，通过这些优化手段：批量合并指标数据、多进程方式部署 pushgateway，也达到了优化目标，并且能扛住未来数据量的增长。    
 
 ---
 
