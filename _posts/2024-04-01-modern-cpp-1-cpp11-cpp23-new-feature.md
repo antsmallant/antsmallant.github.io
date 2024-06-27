@@ -213,27 +213,21 @@ c++23 是一个 minor 版本。
 
 # 2. 编译器支持情况
 
----
-
 ## 2.1 按版本区分
 
-|版本|支持|
-|:--|:--|
-|c++11|[Compiler support for C++11](https://en.cppreference.com/w/cpp/compiler_support/11)|
-|c++14|[Compiler support for C++14](https://en.cppreference.com/w/cpp/compiler_support/14)|
-|c++17|[Compiler support for C++17](https://en.cppreference.com/w/cpp/compiler_support/17)|
-|c++20|[C++ compiler support](https://en.cppreference.com/w/cpp/compiler_support)|
-|c++23|[C++ compiler support](https://en.cppreference.com/w/cpp/compiler_support)|
+* c++11 : [Compiler support for C++11](https://en.cppreference.com/w/cpp/compiler_support/11)
+* c++14 : [Compiler support for C++14](https://en.cppreference.com/w/cpp/compiler_support/14)
+* c++17 : [Compiler support for C++17](https://en.cppreference.com/w/cpp/compiler_support/17)
+* c++20 : [C++ compiler support](https://en.cppreference.com/w/cpp/compiler_support)
+* c++23 : [C++ compiler support](https://en.cppreference.com/w/cpp/compiler_support)
 
 ---
 
 ## 2.2 按编译器区分
 
-|编译器|支持|
-|:--|:--|
-|gcc|[C++ Standards Support in GCC](https://gcc.gnu.org/projects/cxx-status.html)|
-|clang|[C++ Support in Clang](https://clang.llvm.org/cxx_status.html)|
-|汇总|[cpp/compiler support/vendors](https://en.cppreference.com/w/cpp/compiler_support/vendors)|
+* gcc : [C++ Standards Support in GCC](https://gcc.gnu.org/projects/cxx-status.html)
+* clang : [C++ Support in Clang](https://clang.llvm.org/cxx_status.html)
+* 汇总 : [cpp/compiler support/vendors](https://en.cppreference.com/w/cpp/compiler_support/vendors)
 
 ---
 
