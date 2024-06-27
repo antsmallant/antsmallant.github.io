@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "游戏服务器工程实践二：prometheus pushgateway 性能差的优化经历"
+title: "游戏服务器工程实践二：prometheus pushgateway 的性能优化"
 date: 2023-09-14
 last_modified_at: 2023-09-14
 categories: [游戏后端]
@@ -29,7 +29,7 @@ prometheus 只允许拉取（pull）指标数据，不允许主动推给（push�
 
 # 2. 优化
 
-## 2.1 分析
+## 2.1 优化分析
 
 这款游戏的游戏服进程很多，大概有 25 个物理服，每个物理服部署 40 个游戏服进程，所以总的大概有 1000 个游戏服进程。  
 
@@ -99,7 +99,7 @@ pushgateway 高一点的版本也支持了 gzip 优化，具体可以参考这�
 
 ---
 
-## 3.3 阶段三：增加 pushgateway 的数量
+### 2.2.3 阶段三：增加 pushgateway 的数量
 
 想来想去，瓶颈还是出在 pushgateway 上，既然它性能这么差，那干脆就每个物理服部署 pushgateway，只服务于本物理服上的游戏服进程。而 prometheus 也修改配置，从多个 pushgateway pull 数据。虽然 pushgateway 数量增加了，但其实没增加多少，原先是 1 个，现在是 25 个，才增加 24 个，这对于 prometheus 来说压力不大。  
 
@@ -120,7 +120,7 @@ pushgateway 高一点的版本也支持了 gzip 优化，具体可以参考这�
 
 ---
 
-# 4. 优化反思
+# 3. 优化反思
 
 在 pushgateway 的 github 主页 ([https://github.com/prometheus/pushgateway](https://github.com/prometheus/pushgateway))，README.md 最开始就写了设计初衷：
 >The Prometheus Pushgateway exists to allow ephemeral and batch jobs to expose their metrics to Prometheus. Since these kinds of jobs may not exist long enough to be scraped, they can instead push their metrics to a Pushgateway. The Pushgateway then exposes these metrics to Prometheus.    
@@ -140,7 +140,7 @@ pushgateway 的维护者说得也有道理，要 "keep the PGW simple and focusd
 
 ---
 
-# 5. 总结
+# 4. 总结
 
 * pushgateway 没有多线程支持，并发性能很差，并且未来也不考虑支持多线程，因为它的设计目标不在于此。   
 
