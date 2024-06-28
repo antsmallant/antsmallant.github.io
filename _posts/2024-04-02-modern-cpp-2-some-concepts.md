@@ -11,19 +11,21 @@ tags: [c++]
 {:toc}
 <br/>
 
-可能有多年 c++ 编程经验，但回过头来发现，对一些基础概念却并不怎么熟悉，比如表达式、语句这些。   
+可能有多年 c++ 编程经验，但回过头来发现，对一些基础概念却并不怎么熟悉，比如表达式、语句这些。有些概念，可能自以为知道，当要用文字把它表达出来的时候，又发现掌握得似乎不是很牢固。有些概念，大家都知道，唯独自己不知道，很尴尬。  
 
-要精确的掌握 c++ 的概念，可以看以下材料：  
+这只是一篇总结性的文章，涉及一些最 basic 的常识，如有错误，请指出，谢谢。   
+
+---
+
+# 1. 概念
+
+要精确的掌握 c++ 的概念，可以看以下材料：   
 
 * specification，比如 cppreference：[https://en.cppreference.com/w/](https://en.cppreference.com/w/) 。   
 
 * c++ 标准委员会最接近标准的 working draft: [https://www.open-std.org/jtc1/sc22/wg21/docs/standards](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) 。       
 
-* 一些权威的书。             
-
----
-
-# 1. 概念
+* 一些权威的书。    
 
 ---
 
@@ -137,7 +139,7 @@ f(a);            // a 是实参
 
 ## 1.8 pointer to member of object
 
-参考： https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_pointer-to-member_access_operators
+参考： [https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_pointer-to-member_access_operators](https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_pointer-to-member_access_operators)    
 
 ```cpp
 #include <iostream>
@@ -172,66 +174,74 @@ int main()
 
 上面的 `int S::* pmi = &S::mi;`，pmi 就是一个指向 member 的指针，s.*pmi 就相当于 s.mi。  
 
-存在的意义是什么？
+存在的意义是什么？应该是可以做一些批量操作，类成员变量或函数的指针可以被存起来，在需要的时候被自动调用。  
+
+比如这样：  
+
+```cpp
+#include <iostream>
+#include <vector>
+
+class A {
+public:
+    int a = 100;
+    int b = 200;
+    void f1() { std::cout << "f1" << std::endl; }
+    void f2() { std::cout << "f2" << std::endl; }
+};
+
+int main()
+{
+    A x;
+    
+    auto mem_var_ptrs = std::vector<int A::*>{&A::a, &A::b};
+    for (auto varptr : mem_var_ptrs) {
+        std::cout << x.*varptr << std::endl;
+    }
+    
+    auto mem_func_ptrs = std::vector<decltype(&A::f1)>{&A::f1, &A::f2};
+    for (auto funcptr : mem_func_ptrs) {
+        (x.*funcptr)();
+    }
+    return 0;
+}
+```
+
+输出是： 
+```
+100
+200
+f1
+f2
+```
+
+
 
 ---
 
-## eligible
+# 2. 机制
 
-https://en.cppreference.com/w/cpp/language/copy_constructor
+## 2.1 RAII 与异常
 
-Eligible copy constructor
+RAII 即 Resource acquisition is initialization，利用局部对象自动销毁的特性来控制资源的生命期。分配在栈上的类对象，在栈空间被回收的时候，这些类对象的析构函数会被自动调用。  
 
-Eligible copy constructor
+但是如果发生了异常怎么办？RAII 机制会否失效？  
 
+这个要取决于异常是否被捕捉，如果异常直接导致整个程序 abort 了，那么栈空间也无所谓回收了，自然就不会调用析构函数。如果捕捉了异常，程序不会 abort，那么栈空间可以保证被回收的，此时分配在上面的类对象都会被调用析构。  
 
-A copy constructor is eligible if it is either user-declared or both implicitly-declared and definable. (until C++11) 
-
-A copy constructor is eligible if it is not deleted.  (since C++11) (until C++20)
-
-A copy constructor is eligible if all following conditions are satisfied:
-It is not deleted.
-Its associated constraints (if any) are satisfied.
-Among all copy constructors whose associated constraints are satisfied, it is more constrained than any other copy constructor.
-(since C++20)
-
-Triviality of eligible copy constructors determines whether the class is an implicit-lifetime type, and whether the class is a trivially copyable type.
+所以，只要程序不死，RAII 总是有效的。  
 
 ---
 
-## 1.9 trivial
-
-[C++20: Aggregate, POD, trivial type, standard layout class, what is what](https://andreasfertig.blog/2021/01/cpp20-aggregate-pod-trivial-type-standard-layout-class-what-is-what/)
-
-[Trivial, standard-layout, POD, and literal types](https://learn.microsoft.com/en-us/cpp/cpp/trivial-standard-layout-and-pod-types?view=msvc-170)
-
-[C++：Trivial、Standard-Layout 和 POD](https://zhuanlan.zhihu.com/p/479755982)
-
-[整理一下 C++ POD 类型的细节（一）](https://zhuanlan.zhihu.com/p/29734547?utm_id=0)
+# 3. 术语
 
 ---
 
-## 1.10 non-trivail
-
----
-
-## 1.11 cv-qualified
-
----
-
-## 1.12 POD
-
----
-
-# 2. 术语
-
----
-
-## 2.1 FCD
+## 3.1 FCD
 
 FCD 是 Final Committee Draft 的缩写，即最终委员会草案，它是草案（draft）的一个阶段（ Document stage ）。
 
-比如 C++0x Final Committee Draft :  https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3092.pdf 。  
+比如 C++0x Final Committee Draft :  https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3093.pdf 。  
 
 C++0x 是 C++11 标准正为正式标准前的草案临时名字。   
 
@@ -239,13 +249,13 @@ C++0x 是 C++11 标准正为正式标准前的草案临时名字。
 
 ---
 
-## 2.2 DR
+## 3.2 DR
 
 Defect Report 的缩写，即缺陷报告。   
 
 ---
 
-# 3. 参考
+# 4. 参考
 [1] cppreference. 表达式. Available at https://zh.cppreference.com/w/cpp/language/expressions.  
 
 [2] [美] Stanley B. Lippman, Josée Lajoie, Barbara E. Moo. C++ Primer 中文版（第 5 版）. 王刚, 杨巨峰. 北京: 电子工业出版社, 2013-9: 120, 154, 182.   
