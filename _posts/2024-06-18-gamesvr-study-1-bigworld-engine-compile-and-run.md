@@ -213,6 +213,7 @@ sudo cp build/lib/* /usr/local/lib
 1）提示 ”无法找到 v141_xp 的生成工具“，则打开 visual studio installer，安装这个组件 ”对 C++的 Windows XP 支持“      
 2）提示找不到 atl 开头的头文件，则 visual studio installer 安装 atl    
 3）提示找不到 afx 开头的头文件，则 visual studio installer 安装 mfc     
+4）提示需要 directx，则搜索一下，并安装，我安装的是这个链接的： [https://download.microsoft.com/download/A/E/7/AE743F1F-632B-4809-87A9-AA1BB3458E31/DXSDK_Jun10.exe](https://download.microsoft.com/download/A/E/7/AE743F1F-632B-4809-87A9-AA1BB3458E31/DXSDK_Jun10.exe)
 
 ---
 
