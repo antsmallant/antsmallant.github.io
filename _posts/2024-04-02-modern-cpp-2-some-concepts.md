@@ -25,7 +25,7 @@ tags: [c++]
 
 * c++ 标准委员会最接近标准的 working draft: [https://www.open-std.org/jtc1/sc22/wg21/docs/standards](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) 。       
 
-* 一些权威的书。    
+* 一些权威的书，比如《c++之旅》，《Effective Modern C++》。     
 
 ---
 
