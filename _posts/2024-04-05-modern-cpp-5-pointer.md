@@ -39,10 +39,11 @@ std::auto_ptr 是 c++98 残留的特性，在 c++11 被弃用 (deprecated ) 了�
 
 在条件合适的场景下，智能指针首选 std::unique_ptr，原因是它开销小，不像 std::shared_ptr 那样需要原子的维护引用计数。std::unique_ptr 的开销几乎与裸指针相当，在离开作用域的时候能自动释放内存，避免内存泄漏，所以能用 std::unique_ptr 就尽量使用。  
 
-### 构造
 
+### 构造和移动   
 
-### 禁止复制    
+std::unique_ptr 的构造往往是伴随着资源占有权的转移的，所以放在一起讲。  
+
 std::unique_ptr 是不允许复制的，像这样复制是不行的： 
 
 ```cpp
@@ -52,31 +53,50 @@ std::unique_ptr<int> p2 = p1;  // 不行的，禁止这样做
 
 <br/>
 
-但可以被移动，有好几种移动方式。  
+**单纯的构造**   
 
-1、用 release 释放控制并返回裸指针  
+如果单纯的创建资源并占有资源，有两种方式：  
+
+1、使用 make_unique
+```cpp
+auto p1 = std::make_unique<int>(10);
+```
+
+2、使用 new
+
+```cpp
+std::unique_ptr<int> p1(new int(10));
+```
+
+<br/>
+
+**移动**    
+
+虽然不能复制，但可以被移动，有好几种移动方式。   
+
+1、用 release 释放控制并返回裸指针     
 ```cpp
     auto p1 = std::make_unique<int>(10);
     auto p2(p1.release());   
 ```
 
-2、用 std::move 触发移动构造或移动拷贝
+2、用 std::move 触发移动构造或移动拷贝     
 ```cpp
     auto p1 = std::make_unique<int>(10);
     auto p2(std::move(p1));  // 触发移动构造
-                             // 也可以这样触发移动拷贝: auto p2 = std::move(p1);
+    // auto p2 = std::move(p1); // 也可以这样触发移动拷贝
 ```
 
-3、用 release 释放控制，后者用 reset 重置
+3、用 release 释放控制，后者用 reset 重置      
 ```cpp
     auto p1 = std::make_unique<int>(10);
     std::unique_ptr<int> p2;
     p2.reset(p1.release());
 ```
 
-### 释放或销毁   
+### 释放和销毁   
 
-有几种方式可以释放，但要特别注意 release，搞不好就内存泄漏了。    
+**销毁的方式**    
  
 1、直接置空，这种情况下，会直接销毁资源。    
 ```cpp
@@ -90,7 +110,9 @@ auto p1 = std::make_unique<int>(10);
 p1.reset();
 ```
 
-3、调用 release，这种情况下，不是销毁资源，是放弃占有资源，返回一个裸指针。 
+**释放的方式**    
+
+1、调用 release，这种情况下，不是销毁资源，是放弃占有资源，返回一个裸指针。 
 这种要特别注意了，应该是结合资源转移来使用，而不是把 release 当成销毁资源的方式。         
 ```cpp
 auto p1 = std::make_unique<int>(10);
