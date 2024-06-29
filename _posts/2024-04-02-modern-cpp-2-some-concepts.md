@@ -269,13 +269,13 @@ RAII 即 Resource acquisition is initialization，资源获取即初始化。它
 
 ### 2.2.1 dynamic_cast
 
-核心用途是在**运行时**把基类的指针或引用安全地转换成派生类的指针或引用[2]。  
+核心用途是在**运行时**把基类的指针或引用安全地转换成派生类的指针或引用[2]。    
 
-其他的用法都是些边角料，就不叙述了，要了解可以直接去看 specification，比如 [https://en.cppreference.com/w/cpp/language/dynamic_cast](https://en.cppreference.com/w/cpp/language/dynamic_cast)。    
+其他的用法都是些边角料，就不叙述了，要了解可以直接去看 specification，比如 [https://en.cppreference.com/w/cpp/language/dynamic_cast](https://en.cppreference.com/w/cpp/language/dynamic_cast)。     
 
-cppreference 上面对于 dynamic_cast 的定义是："Safely converts pointers and references to classes up, down, and sideways along the inheritance hierarchy" [3]。即在继承层次内，安全的实现类的指针或引用的转换，可以向上，向下，或向侧边。  
+cppreference 上面对于 dynamic_cast 的定义是："Safely converts pointers and references to classes up, down, and sideways along the inheritance hierarchy" [3]。即在继承层次内，安全的实现类的指针或引用的转换，可以向上，向下，或向侧边。   
 
-向下转换就是父类到子类。向上转换就是子类转为父类。向侧边（sideways）就是菱形继承的情形，比如下面这样，一个 A 类型的引用指向一个 D 类型的实体，那么此 A 类型的引用是可以转换为 B 类型的引用的（指针同理）。   
+向下转换就是基类到派生类。向上转换就是派生类转为基类。向侧边（sideways）就是菱形继承的情形，比如下面这样，一个 A 类型的引用指向一个 D 类型的实体，那么此 A 类型的引用是可以转换为 B 类型的引用的（指针同理）。   
 
 ```
     V
@@ -297,7 +297,7 @@ dynamic_cast<type&&>(e)
 1、type 必须是类类型，并且通常情况下该类型要含有虚函数，即是一个 polymorphic class，这样才能使用运行时检测。  
 2、形式 1 中 e 必须是一个有效指针；形式 2 中 e 必须是左值；形式 3 中 e 不能是左值。  
 
-要转换成功，e 必须满足以下三种条件之一： 
+要转换成功，e 必须满足以下三种条件之一：  
 1、e 的类型是目标 type 的公有派生类。  
 2、e 的类型是目标 type 的公有基类。  
 3、e 的类型是目标 type 的类型。  
