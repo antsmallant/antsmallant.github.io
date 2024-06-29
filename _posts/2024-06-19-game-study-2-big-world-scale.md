@@ -122,7 +122,7 @@ bigworld 的整个 load balance 的算法实现略复杂，我会单独写一篇
 
 当玩家处于 cell 边界时，它要能通过 aoi 获取到相邻 cell 的 entity，并且可以无感的跨越 cell 的边界。   
 
-Real Entity 是权威的 Entity。Ghost Entity 相邻 Cell 对应的 Real Entity 的数据拷贝。  
+Real Entity 是权威的 Entity。Ghost Entity 是相邻 Cell 的 Real Entity 的数据拷贝。  
 
 下图表示两个相邻的挨在一起的 cell。  
 
