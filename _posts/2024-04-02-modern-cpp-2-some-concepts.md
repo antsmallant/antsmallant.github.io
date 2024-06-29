@@ -213,7 +213,7 @@ double Mean(std::vector<Sample>::const_iterator begin,
 double mean = Mean(samples.begin(), samples.end(), &Sample::value2);
 ```
 
-这个 Mean 函数支持传入任意一个成员变量的指针，求得一组这样的成员变量的平均数。比如上面对 samples 数组里面的所有对象的 value2 字段取平均数。也可以求 value1，value2 取平均数，只要传入它们的指针即可。  
+这个 Mean 函数支持传入任意一个成员变量的指针，求得一组这样的成员变量的平均数。比如上面对 samples 数组里面的所有对象的 value2 字段取平均数。也可以求 value1，value3 取平均数，只要传入它们的指针即可。  
 
 但这么写有个局限，就是无法对 `time` 这个变量取平均数，因为它不是 double 类型的。所以，老哥又写了另一个版本，通过模板支持任意数值类型的。  
 
