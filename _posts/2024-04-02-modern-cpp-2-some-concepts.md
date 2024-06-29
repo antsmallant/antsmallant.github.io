@@ -256,7 +256,7 @@ double m2 = mean(samples.begin(), samples.end(), &Sample::y);
 
 ## 2.1 RAII 与异常
 
-RAII 即 Resource acquisition is initialization，利用局部对象自动销毁的特性来控制资源的生命期。即分配在栈上的类对象，在栈空间被回收的时候，这些类对象的析构函数会被自动调用。  
+RAII 即 Resource acquisition is initialization，资源获取即初始化。它是利用局部对象自动销毁的特性来控制资源的生命期，即分配在栈上的类对象，在栈空间被回收的时候，这些类对象的析构函数会被自动调用。  
 
 但是如果发生了异常怎么办？RAII 机制会否失效？  
 
