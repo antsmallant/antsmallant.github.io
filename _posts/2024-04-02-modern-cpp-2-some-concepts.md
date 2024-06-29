@@ -271,9 +271,9 @@ RAII 即 Resource acquisition is initialization，资源获取即初始化。它
 
 Safely converts pointers and references to classes up, down, and sideways along the inheritance hierarchy.[3]   
 
-意思是，在继承层次内，安全的实现类的指针或引用的转换，可以向上，向下，或向侧边。   
+意思是，在继承层次内，安全的实现类的指针或引用的转换，可以向上，向下，或向侧边。
 
-如果转换指针失败了，则会返回空指针。如果转换引用失败了，则会抛出异常（std::bad_cast）。  
+只有转换是完整的，合理的，dynamic_cast 才会成功。如果转换指针失败了，则会返回空指针。如果转换引用失败了，则会抛出异常（std::bad_cast）。  
 
 sideways 是发生在菱形继承的情形，比如下面这样，一个 A 类型的引用指向一个 D 类型的实体，那么此 A 类型的引用是可以转换为 B 类型的引用的（指针同理）。   
 
