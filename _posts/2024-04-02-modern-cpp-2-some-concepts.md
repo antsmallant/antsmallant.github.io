@@ -249,7 +249,6 @@ double m2 = mean(samples.begin(), samples.end(), &Sample::y);
 
 无论是 int 类型，还是 double 类型的成员变量，都支持传参进去求平均数了。  
 
-
 ---
 
 # 2. 机制
@@ -268,10 +267,72 @@ RAII 即 Resource acquisition is initialization，资源获取即初始化。它
 
 ## 2.2 各种 cast
 
+### 2.2.1 dynamic_cast
+
+Safely converts pointers and references to classes up, down, and sideways along the inheritance hierarchy.[3]   
+
+意思是，在继承层次内，安全的实现类的指针或引用的转换，可以向上，向下，或向侧边。   
+
+如果转换指针失败了，则会返回空指针。如果转换引用失败了，则会抛出异常（std::bad_cast）。  
+
+sideways 是发生在菱形继承的情形，比如下面这样，一个 A 类型的引用指向一个 D 类型的实体，那么此 A 类型的引用是可以转换为 B 类型的引用的（指针同理）。   
+
+```
+    V
+  /  \
+ A    B
+  \  /
+   D
+```
+
+
+代码示例[3]：   
+
+```cpp
+struct V
+{
+    virtual void f() {} // must be polymorphic to use runtime-checked dynamic_cast
+};
+ 
+struct A : virtual V {};
+ 
+struct B : virtual V
+{
+    B(V* v, A* a)
+    {
+        // casts during construction (see the call in the constructor of D below)
+        dynamic_cast<B*>(v); // well-defined: v of type V*, V base of B, results in B*
+        dynamic_cast<B*>(a); // undefined behavior: a has type A*, A not a base of B
+    }
+};
+ 
+struct D : A, B
+{
+    D() : B(static_cast<A*>(this), this) {}
+};
+
+int main()
+{
+    D d; // the most derived object
+    A& a = d; // upcast, dynamic_cast may be used, but unnecessary
+ 
+    [[maybe_unused]]
+    D& new_d = dynamic_cast<D&>(a); // downcast
+    [[maybe_unused]]
+    B& new_b = dynamic_cast<B&>(a); // sidecast
+}
+```
 
 ---
 
-## 2.3 漂泊不定的 const
+### 2.2.2 static_cast   
+
+
+
+
+---
+
+## 2.3 漂泊的 const
 
 
 ---
@@ -282,7 +343,7 @@ RAII 即 Resource acquisition is initialization，资源获取即初始化。它
 
 ## 3.1 FCD
 
-FCD 是 Final Committee Draft 的缩写，即最终委员会草案，它是草案（draft）的一个阶段（ Document stage ）。
+FCD 是 Final Committee Draft 的缩写，即最终委员会草案，它是草案（draft）的一个阶段（ Document stage ）。   
 
 比如 C++0x Final Committee Draft :  https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3093.pdf 。  
 
@@ -298,7 +359,10 @@ Defect Report 的缩写，即缺陷报告。
 
 ---
 
-# 4. 参考
-[1] cppreference. 表达式. Available at https://zh.cppreference.com/w/cpp/language/expressions.  
+# 4. 参考  
+
+[1] cppreference. Expressions. Available at https://en.cppreference.com/w/cpp/language/expressions.   
 
 [2] [美] Stanley B. Lippman, Josée Lajoie, Barbara E. Moo. C++ Primer 中文版（第 5 版）. 王刚, 杨巨峰. 北京: 电子工业出版社, 2013-9: 120, 154, 182.   
+
+[3] cppreference. dynamic_cast conversion. Available at https://en.cppreference.com/w/cpp/language/dynamic_cast.    
