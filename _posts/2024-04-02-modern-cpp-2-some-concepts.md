@@ -137,9 +137,11 @@ f(a);            // a 是实参
 
 ---
 
-## 1.8 pointer to member of object
+## 1.8 pointer to member
 
-参考： [https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_pointer-to-member_access_operators](https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_pointer-to-member_access_operators)    
+类成员变量指针或类成员函数指针。   
+
+以下例子参考自： [https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_pointer-to-member_access_operators](https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_pointer-to-member_access_operators)     
 
 ```cpp
 #include <iostream>
@@ -172,49 +174,80 @@ int main()
 }
 ```
 
-上面的 `int S::* pmi = &S::mi;`，pmi 就是一个指向 member 的指针，s.*pmi 就相当于 s.mi。  
+`int S::* pmi = &S::mi;`，pmi 就是一个指向类成员变量 mi 的指针，`s.*pmi` 就相当于 `s.mi`。    
+`int (S::* pf)(int) = &S::f;`，pf 就是一个指向类成员函数 f 的指针，`d.*pf` 就相当于 `d.f`。    
 
-存在的意义是什么？应该是可以做一些批量操作，类成员变量或函数的指针可以被存起来，在需要的时候被自动调用。  
+尽管可以这样用，但存在的意义是什么？很少看到这方面的使用。直到在 stackoverflow 看到这个 answer：[What is a pointer to class data member "::*" and what is its use?](https://stackoverflow.com/a/4078006/8530163)。  
 
-比如这样：  
+作者举了一个例子，假设一个结构体里面有好几个数值类型的变量，可以写一个函数，任意对这里面的成员变量取平均数。  
+
+**版本一**    
 
 ```cpp
-#include <iostream>
-#include <vector>
-
-class A {
-public:
-    int a = 100;
-    int b = 200;
-    void f1() { std::cout << "f1" << std::endl; }
-    void f2() { std::cout << "f2" << std::endl; }
+struct Sample {
+    time_t time;
+    double value1;
+    double value2;
+    double value3;
 };
 
-int main()
+std::vector<Sample> samples;
+//... fill the vector ...
+
+double Mean(std::vector<Sample>::const_iterator begin, 
+    std::vector<Sample>::const_iterator end,
+    double Sample::* var)
 {
-    A x;
-    
-    auto mem_var_ptrs = std::vector<int A::*>{&A::a, &A::b};
-    for (auto varptr : mem_var_ptrs) {
-        std::cout << x.*varptr << std::endl;
+    float mean = 0;
+    int samples = 0;
+    for(; begin != end; begin++) {
+        const Sample& s = *begin;
+        mean += s.*var;
+        samples++;
     }
-    
-    auto mem_func_ptrs = std::vector<decltype(&A::f1)>{&A::f1, &A::f2};
-    for (auto funcptr : mem_func_ptrs) {
-        (x.*funcptr)();
-    }
-    return 0;
+    mean /= samples;
+    return mean;
 }
+
+//...
+double mean = Mean(samples.begin(), samples.end(), &Sample::value2);
 ```
 
-输出是： 
-```
-100
-200
-f1
-f2
+这个 Mean 函数支持传入任意一个成员变量的指针，求得一组这样的成员变量的平均数。比如上面对 samples 数组里面的所有对象的 value2 字段取平均数。也可以求 value1，value2 取平均数，只要传入它们的指针即可。  
+
+但这么写有个局限，就是无法对 `time` 这个变量取平均数，因为它不是 double 类型的。所以，老哥又写了另一个版本，通过模板支持任意数值类型的。  
+
+<br/>
+
+**版本二**   
+
+注：下面我做了点小修改，以表示可以支持任意数值类型。  
+
+```cpp
+template<typename Titer, typename S>
+S mean(Titer begin, const Titer& end, S std::iterator_traits<Titer>::value_type::* var) {
+    using T = typename std::iterator_traits<Titer>::value_type;
+    S sum = 0;
+    size_t samples = 0;
+    for( ; begin != end ; ++begin ) {
+        const T& s = *begin;
+        sum += s.*var;
+        samples++;
+    }
+    return sum / samples;
+}
+
+struct Sample {
+    double x;
+    int y;
+};
+
+std::vector<Sample> samples { {1.0, 100}, {2.0, 200}, {3.0, 300} };
+double m1 = mean(samples.begin(), samples.end(), &Sample::x);  
+double m2 = mean(samples.begin(), samples.end(), &Sample::y);
 ```
 
+无论是 int 类型，还是 double 类型的成员变量，都支持传参进去求平均数了。  
 
 
 ---
@@ -223,13 +256,23 @@ f2
 
 ## 2.1 RAII 与异常
 
-RAII 即 Resource acquisition is initialization，利用局部对象自动销毁的特性来控制资源的生命期。分配在栈上的类对象，在栈空间被回收的时候，这些类对象的析构函数会被自动调用。  
+RAII 即 Resource acquisition is initialization，利用局部对象自动销毁的特性来控制资源的生命期。即分配在栈上的类对象，在栈空间被回收的时候，这些类对象的析构函数会被自动调用。  
 
 但是如果发生了异常怎么办？RAII 机制会否失效？  
 
-这个要取决于异常是否被捕捉，如果异常直接导致整个程序 abort 了，那么栈空间也无所谓回收了，自然就不会调用析构函数。如果捕捉了异常，程序不会 abort，那么栈空间可以保证被回收的，此时分配在上面的类对象都会被调用析构。  
+这个要取决于异常是否被捕捉，如果异常直接导致整个程序 abort 了，那么栈空间也无所谓回收了，自然就不会调用析构函数。如果捕捉了异常，程序不会 abort，那么栈空间可以保证被回收，此时分配在上面的类对象都会被调用析构。  
 
 所以，只要程序不死，RAII 总是有效的。  
+
+---
+
+## 2.2 各种 cast
+
+
+---
+
+## 2.3 漂泊不定的 const
+
 
 ---
 
