@@ -328,7 +328,24 @@ int main()
 ### 2.2.2 static_cast   
 
 
+---
 
+### 2.2.3 const_cast
+
+用于移除常量性，可作用于引用或指针。比如：  
+
+```cpp
+const int x = 100;
+
+int& y = const_cast<int&>(x);
+int* z = const_cast<int*>(&x);
+```
+
+对于一些不接受 const 参数的函数，可以使用 const_cast 来移除常量性，但要注意，移除之后，如果改变变量的值，结果是 undefined。  
+
+---
+
+### 2.2.4 reinterpret_cast
 
 ---
 
