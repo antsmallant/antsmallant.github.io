@@ -282,10 +282,10 @@ c-style cast 在 c++ 这里，按不同场景拆成了 static_cast、reinterpret
 
 |类型|作用|底层|操作对象|可移植|
 |:--|:--|:--|:--|:--|
-|static_cast|静态转换，用于非多态类型的转换，两个类型必须是相关的|可能改变内存数据|无限制|是|
-|reinterpret_cast|强制将一种类型转换为另一种类型，两个类型可以是不相关的|可能改变内存数据|无限制|否|
-|dynamic_cast|动态转换，用于多态类型的转换，父转子的情形|不改变内存数据，只改变对内存数据的解释|类类型的指针或引用|是|
-|const_cast|移除表达式的 const 或 valatile 性质|不改变内存数据，只改变对内存数据的解释|指针或引用|否|
+|static_cast|低风险的静态转换：1）相关类型的指针或引用转换；2）整型、浮点型、字符型的互相转换|可能改变内存数据|无限制|是|
+|reinterpret_cast|高风险的静态转换：1）不相关的类型间的指针或引用的转换；2）指针到整型的转换|可能改变内存数据|无限制|否|
+|dynamic_cast|安全的动态转换：多态类型的父转子情形|不改变内存数据，只改变对内存数据的解释|类类型的指针或引用|是|
+|const_cast|移除表达式的 const 或 valatile 性质|不改变内存数据，只改变对内存数据的解释|指针或引用|是|
 
 <br/>
 
@@ -301,6 +301,13 @@ cast 如果很全面的列举所有的情形，就很复杂了，这里只抓住
 
 **1、static_cast 与 reinterpret_cast**   
 
+static_cast 主要用于一些 “低风险” 的转换，比如：  
+1）整型与浮点型、字符型的转换，比如 `double` 转成 `int`，`int` 转成 `char`。  
+2）相关类型的指针或引用的转换，相关指的是这些类在继承层次上是有关系的，比如 A 和 B 要有继承关系才能转换。    
+
+reinterpret_cast 主要用于一些 “高风险” 的转换，比如：  
+1）不同类型的指针或引用之间，比如可以把 `int*` 转换成 `string*`。  
+2）指针与能够容纳指针的整型之间，比如可以把 `string*` 转换成 `int`。    
 
 <br/>
 
@@ -320,11 +327,7 @@ dynamic_cast 可以作用于指针或引用。当转换失败时，如果是指�
 
 * [四种强制类型转换](https://github.com/YKitty/Notes/blob/master/notes/C++/%E5%9B%9B%E7%A7%8D%E5%BC%BA%E5%88%B6%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2.md)
 * [dynamic_cast背着你偷偷做了什么](https://blog.csdn.net/D_Guco/article/details/106033180)
-
----
-
-## 2.3 const
-
+* [(C++ 成长记录) —— C++强制类型转换运算符（static_cast、reinterpret_cast、const_cast和dynamic_cast）](https://zhuanlan.zhihu.com/p/368267441)
 
 ---
 
