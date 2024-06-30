@@ -302,32 +302,33 @@ cast 如果很全面的列举所有的情形，就很复杂了，这里只抓住
 **1、static_cast 与 reinterpret_cast**   
 
 
+<br/>
 
 **2、dynamic_cast 与 static_cast**  
 
 dynamic_cast 可以看成 static_cast 的补充，当把子类转换为父类 (up cast) 的时候，用 static_cast 或 dynamic_cast 都没问题，效果是一样的。  
 
-但是父类转子类的时候就说不准了，一个父类可能有多个子，如果父实际上是子 A，但要转成子 B，显然是不行的。这也没法在编译时判断，因为运行的时候父可以指向子 A，也可以指向子 B，而这正是多态的意义，所以 static_cast 在这种情况下是没法工作。static_cast 的要义正是**静态**转换，只在编译期起作用。  
+但是父类转子类的时候就说不准了，一个父类可能有多个子，如果父实际上是子 A，但要转成子 B，显然是不行的。这也没法在编译时判断，因为运行时，父可以指向子 A，也可以指向子 B，这正是多态的意义。而 static_cast 的要义正是**静态**转换，只在编译期起作用，无法在运行时做判断。  
 
-要解决问题，只能是运行期再判断了，如果父类中有虚函数，那么实现的时候就会有虚表，虚表会额外存储类型信息（RTTI），这些类型信息可以在运行时帮助 dynamic_cast 判断转换是否是可以进行的。  
+要解决问题，只能是新增一个能够在运行时判断的 cast，即 dynamic_cast。工作原理是利用虚表里面额外存储的类型信息（RTTI），这些类型信息被利用来在运行时进行判断。   
 
-dynamic_cast 可以作用于指针或引用，当作用于指针时，如果转换失败则返回空指针；当作用于引用时，如果转换失败则抛出 std::bad_cast 异常。  
+dynamic_cast 可以作用于指针或引用。当转换失败时，如果是指针，则返回空指针；如果是引用，则抛出 std::bad_cast 异常。   
 
 <br/>
 
-**几篇不错的参考**
+**3、几篇不错的参考**
 
 * [四种强制类型转换](https://github.com/YKitty/Notes/blob/master/notes/C++/%E5%9B%9B%E7%A7%8D%E5%BC%BA%E5%88%B6%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2.md)
 * [dynamic_cast背着你偷偷做了什么](https://blog.csdn.net/D_Guco/article/details/106033180)
 
 ---
 
-## 2.3 漂泊的 const
+## 2.3 const
 
 
 ---
 
-# 3. 术语
+# 3. 相关术语
 
 ---
 
