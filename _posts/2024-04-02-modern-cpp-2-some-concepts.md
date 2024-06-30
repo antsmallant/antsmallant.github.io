@@ -139,9 +139,21 @@ f(a);            // a 是实参
 
 ## 1.8 pointer to member
 
-类成员变量指针或类成员函数指针。   
+类成员变量指针或类成员函数指针。  
 
-以下例子参考自： [https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_pointer-to-member_access_operators](https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_pointer-to-member_access_operators)     
+比如一个类 S 有个成员变量 mi，那么可以用一个指针把这个成员变量保存起来，之后用这个指针来指代这个成员变量。成员函数也是同理。  
+
+```cpp
+struct S {
+    int a;
+};
+
+int S::* pa = &S::a;
+S s;
+cout << s.*pa;
+```
+
+完整例子参考自 cppreference ： [https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_pointer-to-member_access_operators](https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_pointer-to-member_access_operators)     
 
 ```cpp
 #include <iostream>
@@ -174,12 +186,11 @@ int main()
 }
 ```
 
-`int S::* pmi = &S::mi;`，pmi 就是一个指向类成员变量 mi 的指针，`s.*pmi` 就相当于 `s.mi`。    
-`int (S::* pf)(int) = &S::f;`，pf 就是一个指向类成员函数 f 的指针，`d.*pf` 就相当于 `d.f`。    
+<br/>
 
-尽管可以这样用，但存在的意义是什么？很少看到这方面的使用。直到在 stackoverflow 看到这个 answer：[What is a pointer to class data member "::*" and what is its use?](https://stackoverflow.com/a/4078006/8530163)。  
+尽管可以这样用，但存在的意义是什么？很少看到这方面的使用。直到在 stackoverflow 看到这个 answer ：[What is a pointer to class data member "::*" and what is its use?](https://stackoverflow.com/a/4078006/8530163)。  
 
-作者举了一个例子，假设一个结构体里面有好几个数值类型的变量，可以写一个函数，任意对这里面的成员变量取平均数。  
+作者举了一个例子，假设一个结构体里面有好几个数值类型的变量，那么可以写一个函数，任意对各个成员变量取平均数。  
 
 **版本一**    
 
@@ -267,105 +278,47 @@ RAII 即 Resource acquisition is initialization，资源获取即初始化。它
 
 ## 2.2 各种 cast
 
-### 2.2.1 dynamic_cast
+c-style cast 在 c++ 这里，按不同场景拆成了 static_cast、reinterpret_cast、const_cast。而 dynamic_cast 是 c++ 特有的，它用于多态类型（即包含虚函数的）从父类到子类的转换。  
 
-核心用途是在**运行时**把基类的指针或引用安全地转换成派生类的指针或引用[2]。    
+|类型|作用|底层|操作对象|可移植|
+|:--|:--|:--|:--|:--|
+|static_cast|静态转换，用于非多态类型的转换，两个类型必须是相关的|可能改变内存数据|无限制|是|
+|reinterpret_cast|强制将一种类型转换为另一种类型，两个类型可以是不相关的|可能改变内存数据|无限制|否|
+|dynamic_cast|动态转换，用于多态类型的转换，父转子的情形|不改变内存数据，只改变对内存数据的解释|类类型的指针或引用|是|
+|const_cast|移除表达式的 const 或 valatile 性质|不改变内存数据，只改变对内存数据的解释|指针或引用|否|
 
-其他的用法都是些边角料，要了解可以直接去看 specification，比如 [https://en.cppreference.com/w/cpp/language/dynamic_cast](https://en.cppreference.com/w/cpp/language/dynamic_cast)。     
+<br/>
 
-cppreference 上面对于 dynamic_cast 的定义是："Safely converts pointers and references to classes up, down, and sideways along the inheritance hierarchy" [3]。即在继承层次内，安全的实现类的指针或引用的转换，可以向上，向下，或向侧边。   
+cast 如果很全面的列举所有的情形，就很复杂了，这里只抓住主线逻辑，完整的可以参考 cppreference 上面的 specification：  
 
-向下转换就是基类到派生类。向上转换就是派生类转为基类。向侧边（sideways）就是菱形继承的情形，比如下面这样，一个 A 类型的引用指向一个 D 类型的实体，那么此 A 类型的引用是可以转换为 B 类型的引用的（指针同理）。   
+* static_cast: [cppreference-static_cast](https://en.cppreference.com/w/cpp/language/static_cast)    
+* reinterpret_cast: [cppreference-reinterpret_cast](https://en.cppreference.com/w/cpp/language/reinterpret_cast)     
+* dynamic_cast: [cppreference-dynamic_cast](https://en.cppreference.com/w/cpp/language/dynamic_cast)
+* const_cast: [cppreference-const_cast](https://en.cppreference.com/w/cpp/language/const_cast)
+* c-style cast：[cppreference-explicit_cast](https://en.cppreference.com/w/cpp/language/explicit_cast)
 
-```
-    V
-  /  \
- A    B
-  \  /
-   D
-```
+<br/>
 
-它的使用形式有三种[2]：  
-
-```cpp
-dynamic_cast<type*>(e) 
-dynamic_cast<type&>(e) 
-dynamic_cast<type&&>(e) 
-```
-
-一些要求：   
-1、type 必须是类类型，并且通常情况下该类型要含有虚函数，即是一个 polymorphic class，这样才能使用运行时检测。  
-2、形式 1 中 e 必须是一个有效指针；形式 2 中 e 必须是左值；形式 3 中 e 不能是左值。  
-
-要转换成功，e 必须满足以下三种条件之一：  
-1、e 的类型是目标 type 的公有派生类。  
-2、e 的类型是目标 type 的公有基类。  
-3、e 的类型是目标 type 的类型。  
-
-如果转换失败，当转换目标是指针是，则返回空指针；当转换目标是引用时，则抛出 `std::bad_cast` 异常。  
-
-代码示例[3]：   
-
-```cpp
-struct V
-{
-    virtual void f() {} // must be polymorphic to use runtime-checked dynamic_cast
-};
- 
-struct A : virtual V {};
- 
-struct B : virtual V
-{
-    B(V* v, A* a)
-    {
-        // casts during construction (see the call in the constructor of D below)
-        dynamic_cast<B*>(v); // well-defined: v of type V*, V base of B, results in B*
-        dynamic_cast<B*>(a); // undefined behavior: a has type A*, A not a base of B
-    }
-};
- 
-struct D : A, B
-{
-    D() : B(static_cast<A*>(this), this) {}
-};
-
-int main()
-{
-    D d; // the most derived object
-    A& a = d; // upcast, dynamic_cast may be used, but unnecessary
- 
-    [[maybe_unused]]
-    D& new_d = dynamic_cast<D&>(a); // downcast
-    [[maybe_unused]]
-    B& new_b = dynamic_cast<B&>(a); // sidecast
-}
-```
-
----
-
-### 2.2.2 static_cast   
+**1、static_cast 与 reinterpret_cast**   
 
 
 
+**2、dynamic_cast 与 static_cast**  
 
----
+dynamic_cast 可以看成 static_cast 的补充，当把子类转换为父类 (up cast) 的时候，用 static_cast 或 dynamic_cast 都没问题，效果是一样的。  
 
-### 2.2.3 const_cast
+但是父类转子类的时候就说不准了，一个父类可能有多个子，如果父实际上是子 A，但要转成子 B，显然是不行的。这也没法在编译时判断，因为运行的时候父可以指向子 A，也可以指向子 B，而这正是多态的意义，所以 static_cast 在这种情况下是没法工作。static_cast 的要义正是**静态**转换，只在编译期起作用。  
 
-用于移除常量性，可作用于引用或指针。比如：  
+要解决问题，只能是运行期再判断了，如果父类中有虚函数，那么实现的时候就会有虚表，虚表会额外存储类型信息（RTTI），这些类型信息可以在运行时帮助 dynamic_cast 判断转换是否是可以进行的。  
 
-```cpp
-const int x = 100;
+dynamic_cast 可以作用于指针或引用，当作用于指针时，如果转换失败则返回空指针；当作用于引用时，如果转换失败则抛出 std::bad_cast 异常。  
 
-int& y = const_cast<int&>(x);
-int* z = const_cast<int*>(&x);
-```
+<br/>
 
-对于一些不接受 const 参数的函数，可以使用 const_cast 来移除常量性。但要注意，移除之后，如果改变变量的值，结果是 undefined。  
+**几篇不错的参考**
 
----
-
-### 2.2.4 reinterpret_cast
+* [四种强制类型转换](https://github.com/YKitty/Notes/blob/master/notes/C++/%E5%9B%9B%E7%A7%8D%E5%BC%BA%E5%88%B6%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2.md)
+* [dynamic_cast背着你偷偷做了什么](https://blog.csdn.net/D_Guco/article/details/106033180)
 
 ---
 
@@ -400,6 +353,6 @@ Defect Report 的缩写，即缺陷报告。
 
 [1] cppreference. Expressions. Available at https://en.cppreference.com/w/cpp/language/expressions.   
 
-[2] [美] Stanley B. Lippman, Josée Lajoie, Barbara E. Moo. C++ Primer 中文版（第 5 版）. 王刚, 杨巨峰. 北京: 电子工业出版社, 2013-9: 120, 154, 182, 730.     
+[2] [美] Stanley B. Lippman, Josée Lajoie, Barbara E. Moo. C++ Primer 中文版（第 5 版）. 王刚, 杨巨峰. 北京: 电子工业出版社, 2013-9: 120, 144, 154, 182, 730.     
 
 [3] cppreference. dynamic_cast conversion. Available at https://en.cppreference.com/w/cpp/language/dynamic_cast.    
