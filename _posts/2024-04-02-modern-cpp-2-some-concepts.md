@@ -271,7 +271,7 @@ RAII 即 Resource acquisition is initialization，资源获取即初始化。它
 
 核心用途是在**运行时**把基类的指针或引用安全地转换成派生类的指针或引用[2]。    
 
-其他的用法都是些边角料，就不叙述了，要了解可以直接去看 specification，比如 [https://en.cppreference.com/w/cpp/language/dynamic_cast](https://en.cppreference.com/w/cpp/language/dynamic_cast)。     
+其他的用法都是些边角料，要了解可以直接去看 specification，比如 [https://en.cppreference.com/w/cpp/language/dynamic_cast](https://en.cppreference.com/w/cpp/language/dynamic_cast)。     
 
 cppreference 上面对于 dynamic_cast 的定义是："Safely converts pointers and references to classes up, down, and sideways along the inheritance hierarchy" [3]。即在继承层次内，安全的实现类的指针或引用的转换，可以向上，向下，或向侧边。   
 
@@ -346,6 +346,8 @@ int main()
 ### 2.2.2 static_cast   
 
 
+
+
 ---
 
 ### 2.2.3 const_cast
@@ -359,7 +361,7 @@ int& y = const_cast<int&>(x);
 int* z = const_cast<int*>(&x);
 ```
 
-对于一些不接受 const 参数的函数，可以使用 const_cast 来移除常量性，但要注意，移除之后，如果改变变量的值，结果是 undefined。  
+对于一些不接受 const 参数的函数，可以使用 const_cast 来移除常量性。但要注意，移除之后，如果改变变量的值，结果是 undefined。  
 
 ---
 
