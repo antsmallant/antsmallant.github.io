@@ -283,7 +283,7 @@ c-style cast 在 c++ 这里，按不同场景拆成了 static_cast、reinterpret
 |类型|作用|底层|操作对象|可移植|
 |:--|:--|:--|:--|:--|
 |static_cast|低风险的静态转换：1）相关类型的指针或引用转换；2）整型、浮点型、字符型的互相转换|可能改变内存数据|无限制|是|
-|reinterpret_cast|高风险的静态转换：1）不相关的类型间的指针或引用的转换；2）指针到整型的转换|可能改变内存数据|无限制|否|
+|reinterpret_cast|高风险的静态转换：1）不相关的类型间的指针或引用的转换；2）指针与整型间的互转换|可能改变内存数据|无限制|否|
 |dynamic_cast|安全的动态转换：多态类型的父转子情形|不改变内存数据，只改变对内存数据的解释|类类型的指针或引用|是|
 |const_cast|移除表达式的 const 或 valatile 性质|不改变内存数据，只改变对内存数据的解释|指针或引用|是|
 
@@ -307,7 +307,9 @@ static_cast 主要用于一些 “低风险” 的转换，比如：
 
 reinterpret_cast 主要用于一些 “高风险” 的转换，比如：  
 1）不同类型的指针或引用之间，比如可以把 `int*` 转换成 `string*`。  
-2）指针与能够容纳指针的整型之间，比如可以把 `string*` 转换成 `int`。    
+2）指针与整型间，比如可以把 `string*` 转换成 `int`，也可以把 `int` 转换成 `string*`。      
+
+注：reinterpret_cast 在指针与整型互转换时，要求整型能够容纳得下指针。  
 
 <br/>
 
@@ -358,5 +360,3 @@ Defect Report 的缩写，即缺陷报告。
 [1] cppreference. Expressions. Available at https://en.cppreference.com/w/cpp/language/expressions.   
 
 [2] [美] Stanley B. Lippman, Josée Lajoie, Barbara E. Moo. C++ Primer 中文版（第 5 版）. 王刚, 杨巨峰. 北京: 电子工业出版社, 2013-9: 120, 144, 154, 182, 730.     
-
-[3] cppreference. dynamic_cast conversion. Available at https://en.cppreference.com/w/cpp/language/dynamic_cast.    
