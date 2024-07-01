@@ -400,6 +400,14 @@ const 作用于 stl 的 iterator 时，`const std::vector<string>::iterator iter
 
 ---
 
+## 2.4 const reference
+
+**参考文章**   
+
+* [c++中函数参数里，是否能用 const reference 的地方尽量都用？](https://www.zhihu.com/question/594059514/answer/2973611125)
+
+---
+
 # 3. 用法
 
 ## 3.1 以 by reference 方式捕捉 exceptions
