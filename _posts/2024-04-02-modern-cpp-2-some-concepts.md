@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "现代 c++ 二：一些概念和机制"
+title: "现代 c++ 二：概念、机制、惯用法"
 date: 2024-04-02
 last_modified_at: 2024-04-02
 categories: [c++]
@@ -333,15 +333,21 @@ dynamic_cast 可以作用于指针或引用。当转换失败时，如果是指�
 
 ---
 
-# 3. 相关术语
+# 3. 惯用法
+
+
 
 ---
 
-## 3.1 FCD
+# 4. 相关术语
+
+---
+
+## 4.1 FCD
 
 FCD 是 Final Committee Draft 的缩写，即最终委员会草案，它是草案（draft）的一个阶段（ Document stage ）。   
 
-比如 C++0x Final Committee Draft :  https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3093.pdf 。  
+比如 C++0x Final Committee Draft :  https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3094.pdf 。  
 
 C++0x 是 C++11 标准正为正式标准前的草案临时名字。   
 
@@ -355,7 +361,7 @@ Defect Report 的缩写，即缺陷报告。
 
 ---
 
-# 4. 参考  
+# 5. 参考  
 
 [1] cppreference. Expressions. Available at https://en.cppreference.com/w/cpp/language/expressions.   
 
