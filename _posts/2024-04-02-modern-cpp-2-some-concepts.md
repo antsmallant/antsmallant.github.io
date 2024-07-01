@@ -269,11 +269,12 @@ double m2 = mean(samples.begin(), samples.end(), &Sample::y);
 RAII 即 Resource acquisition is initialization，资源获取即初始化。它是利用局部对象自动销毁的特性来控制资源的生命期，即分配在栈上的类对象，在栈空间被回收的时候，这些类对象的析构函数会被自动调用。  
 
 **问题一：为什么析构函数会被自动调用？**   
-编译器在编译的时候自动加进去的调用。  
 
-举个例子，完整的 code 在些： [https://gcc.godbolt.org/z/6G9azzae6](https://gcc.godbolt.org/z/6G9azzae6)
+答：编译器在编译的时候自动加进去的。  
 
-像这样的代码： 
+举个例子，完整的 code 在此： [https://gcc.godbolt.org/z/6G9azzae6](https://gcc.godbolt.org/z/6G9azzae6)。   
+
+像这样的代码：    
 ```cpp
 struct S {
     S() {}
@@ -289,7 +290,7 @@ void f() {
 }
 ```
 
-在 x86-64 gcc 14.1，函数 f 会被编译成如下的汇编码，可以看到编译器自动插入了析构函数的调用代码。   
+在 x86-64 gcc 14.1，函数 f 会被编译成如下的汇编码，可以看到编译器自动插入了析构函数的调用代码。    
 
 ```nasm
 f():
