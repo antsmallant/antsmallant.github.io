@@ -268,7 +268,53 @@ double m2 = mean(samples.begin(), samples.end(), &Sample::y);
 
 RAII 即 Resource acquisition is initialization，资源获取即初始化。它是利用局部对象自动销毁的特性来控制资源的生命期，即分配在栈上的类对象，在栈空间被回收的时候，这些类对象的析构函数会被自动调用。  
 
-但是如果发生了异常怎么办？RAII 机制会否失效？  
+**问题一：为什么析构函数会被自动调用？**   
+编译器在编译的时候自动加进去的调用。  
+
+举个例子，完整的 code 在些： [https://gcc.godbolt.org/z/6G9azzae6](https://gcc.godbolt.org/z/6G9azzae6)
+
+像这样的代码： 
+```cpp
+struct S {
+    S() {}
+    ~S() {}
+};
+struct S1 {
+    S1() {}
+    ~S1() {}
+};
+void f() {
+    S s;
+    S1 s1;
+}
+```
+
+在 x86-64 gcc 14.1，函数 f 会被编译成如下的汇编码，可以看到编译器自动插入了析构函数的调用代码。   
+
+```nasm
+f():
+        pushq   %rbp
+        movq    %rsp, %rbp
+        subq    $16, %rsp
+        leaq    -1(%rbp), %rax
+        movq    %rax, %rdi
+        call    S::S() [complete object constructor]
+        leaq    -2(%rbp), %rax
+        movq    %rax, %rdi
+        call    S1::S1() [complete object constructor]
+        leaq    -2(%rbp), %rax
+        movq    %rax, %rdi
+        call    S1::~S1() [complete object destructor]
+        leaq    -1(%rbp), %rax
+        movq    %rax, %rdi
+        call    S::~S() [complete object destructor]
+        leave
+        ret
+```
+
+<br/>
+
+**问题二：如果发生了异常怎么办？RAII 机制会否失效？**
 
 这个要取决于异常是否被捕捉，如果异常直接导致整个程序 abort 了，那么栈空间也无所谓回收了，自然就不会调用析构函数。如果捕捉了异常，程序不会 abort，那么栈空间可以保证被回收，此时分配在上面的类对象都会被调用析构。  
 
