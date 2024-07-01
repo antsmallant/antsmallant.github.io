@@ -361,7 +361,7 @@ const 作用于 stl 的 iterator 时，`const std::vector<string>::iterator iter
 
 catch by pointer 的方式容易发生两个问题：1、指向不复存在的对象；2、捕获者不确定是否需要 delete，容易内存泄漏。  
 
-catch by value 的方式可能会发生切割，当抛出的是派生类，而用基类类型捕捉的时候，对象就被切割成基类了，调用虚函数的时候，也只是调用到基类的虚函数。  
+catch by value 的方式可能会发生切割，当抛出的是派生类，而用基类类型捕捉的时候，对象就被切割成基类了，调用虚函数的时候，也只是调用到基类的虚函数版本。  
 
 ---
 
