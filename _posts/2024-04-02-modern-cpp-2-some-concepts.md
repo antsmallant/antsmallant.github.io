@@ -333,6 +333,26 @@ dynamic_cast 可以作用于指针或引用。当转换失败时，如果是指�
 
 ---
 
+## 2.3 const
+
+const 大意是指所指之物为常量，不可改变，如若改变，则编译会报错。  
+
+1、const 作用于指针    
+
+在 `*` 号左边表示被指之物为常量，在 `*` 号右边表示指针本身为常量。       
+
+const 作用于 stl 的 iterator 时，`const std::vector<string>::iterator iter` 与 `std::vector<string>::const_iterator` 是不同的。  
+前者相当于 `T * const iter；`，表示 iter 本身是常量，`*iter = xx;` 是 ok 的，而 `++iter;` 是错误的。    
+后者相当于 `const T* iter;`，表示 iter 所指之物是常量，`*iter = xx;` 是错误的，而 `++iter;` 是 ok 的。    
+
+2、const 在类型前后   
+
+比较 trick 的是，const 可以写在类型之前或之后，但这都无妨，认准 `*` 号这一边界即可。  
+
+也就是说 `const int * p;` 与 `int const * p;` 是一样的， `const int i;` 与 `int const i;` 是一样的。  
+
+---
+
 # 3. 用法
 
 ## 3.1 以 by reference 方式捕捉 exceptions
@@ -342,6 +362,12 @@ dynamic_cast 可以作用于指针或引用。当转换失败时，如果是指�
 catch by pointer 的方式容易发生两个问题：1、指向不复存在的对象；2、捕获者不确定是否需要 delete，容易内存泄漏。  
 
 catch by value 的方式可能会发生切割，当抛出的是派生类，而用基类类型捕捉的时候，对象就被切割成基类了，调用虚函数的时候，也只是调用到基类的虚函数。  
+
+---
+
+## 3.2 当参数是不需要被改变的时候，就顺手打上 const  
+
+可以避免偶尔把 `==` 误打成 `=` 的情况。  
 
 
 ---
