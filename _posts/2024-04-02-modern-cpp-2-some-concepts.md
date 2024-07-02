@@ -392,19 +392,48 @@ const 作用于 stl 的 iterator 时，`const std::vector<string>::iterator iter
 前者相当于 `T * const iter；`，表示 iter 本身是常量，`*iter = xx;` 是 ok 的，而 `++iter;` 是错误的。    
 后者相当于 `const T* iter;`，表示 iter 所指之物是常量，`*iter = xx;` 是错误的，而 `++iter;` 是 ok 的。    
 
-2、const 在类型前后   
+2、const 放在类型前后   
 
 比较 trick 的是，const 可以写在类型之前或之后，但这都无妨，认准 `*` 号这一边界即可。  
 
 也就是说 `const int * p;` 与 `int const * p;` 是一样的， `const int i;` 与 `int const i;` 是一样的。  
 
+3、const 作用于类成员函数   
+
+表明此成员函数不会改变类成员的值。 此时 const 是放在成员函数参数的末尾，并且声明处跟定义处都要写上。    
+
+```cpp
+class S {
+    int a;
+public:
+    void f() const;   // 声明处要写上 const
+};
+
+void S::f() const {   // 定义处也要写上 const
+    cout << a << endl;
+}
+```
+
+4、const 作用于函数返回值    
+
+表明返回的是 const 类型。需要赋值给同样的 const 类型。   
+
+```cpp
+const char* f() {}
+
+char* = f();       // not ok
+const char* = f(); // ok
+```
+
 ---
 
-## 2.4 const reference
+## 2.4 const reference   
 
 **参考文章**   
 
-* [c++中函数参数里，是否能用 const reference 的地方尽量都用？](https://www.zhihu.com/question/594059514/answer/2973611125)
+* [c++中函数参数里，是否能用 const reference 的地方尽量都用？](https://www.zhihu.com/question/594059514/answer/2973611125)  
+
+* [Back to the Basics! Essentials of Modern C++ Style - Herb Sutter - CppCon 2014.pdf](https://github.com/CppCon/CppCon2014/blob/master/Presentations/Back%20to%20the%20Basics!%20Essentials%20of%20Modern%20C%2B%2B%20Style/Back%20to%20the%20Basics!%20Essentials%20of%20Modern%20C%2B%2B%20Style%20-%20Herb%20Sutter%20-%20CppCon%202014.pdf)
 
 ---
 
