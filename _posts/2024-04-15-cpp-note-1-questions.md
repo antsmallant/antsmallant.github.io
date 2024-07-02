@@ -35,7 +35,7 @@ f(nullptr);   // ok
 
 ---
 
-# 什么情况下编译器会对参数进行隐式类型转换以保证函数调用成功？   
+## 什么情况下编译器会对参数进行隐式类型转换以保证函数调用成功？   
 
 编译器进行隐式类型转换，即是要生成一个临时对象，有两个前提：    
 1、实参是可以隐式转换成目标类型的；   
@@ -58,6 +58,44 @@ int main() {
 }
 
 ```
+
+---
+
+## 当实参是一个临时对象时，by value 方式传参的情况下，还会产生新的临时对象吗？ 
+
+比如这样： 
+
+```cpp
+struct S {
+    int a;
+    S() { cout << "S 构造" << endl; }
+    S(const S& other) { cout << "S 拷贝构造" << endl; this->a = other.a; }
+    ~S() { cout << "S 析构" << endl; }
+};
+
+void f(S s) {(void)s;}
+
+int main() {
+    f(S());  // 这里会使用构造函数生成一个 S 对象，再通过拷贝构造生成另一个临时对象吗？
+    return 0;
+}
+---
+
+不会的，当实参本身就是临时对象时，不需要再生成临时对象。  
+
+只有这样才需要： 
+```cpp
+S s;     // 构造一次，得到 s
+f(s);    // 拷贝构造一次，得到临时对象
+```
+
+---
+
+## 为什么 c++11 之后，`char* s = "hello, world";` 编译时会有 warning ？  
+
+因为在 c++11 中，string literal 即这里的 "hello, world" 是 const char 数组类型的，不允许把 const char 数组转换成 char* 类型。   
+
+要避免 warning，需要这样使用，`const char* = "hello, world";`。  
 
 ---
 
