@@ -288,13 +288,15 @@ public:
 
 [A Cross-Platform Memory Leak Detector](http://wyw.dcweb.cn/leakage.htm)
 
-
 ---
 
-## valgrind
+# 材料
 
+* [unique_ptr作为函数参数时，应该以值还是右值引用类型传递？](https://www.zhihu.com/question/534389744/answer/2500052393)
 
+* [C++ 原始指针、shared_ptr、unique_ptr分别在什么场景下使用？](https://www.zhihu.com/question/648170767/answer/3428590625)
 
+* [GotW #91 Solution: Smart Pointer Parameters](https://herbsutter.com/2013/06/05/gotw-91-solution-smart-pointer-parameters/)
 
 
 ---
