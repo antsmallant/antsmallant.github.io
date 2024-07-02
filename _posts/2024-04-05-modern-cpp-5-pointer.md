@@ -133,9 +133,6 @@ auto rawptr = p1.release();
 
 但也有些情况下是可以使用的，比如生产和消费的场景。  
 
-```cpp
-```
-
 
 ---
 
@@ -214,10 +211,6 @@ c） 运行 std::shared_ptr 构造函数
 make 系列函数还包括 std::allocate_shared，它与 std::make_shared 类似，只不过它的第一个实参是个动态内存分配器 [3]。 
 
 btw，std::make_unique 是在 c++14 才被引入的，c++11 时只有 std::make_shared。 
-
----
-
-## 
 
 ---
 
