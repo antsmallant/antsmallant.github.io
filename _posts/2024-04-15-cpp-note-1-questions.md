@@ -159,6 +159,7 @@ f(s);    // 拷贝构造一次，得到临时对象
 
 ## `auto&` 是一种好的写法吗？
 
+* [C++ auto& vs auto - Stack Overflow](https://stackoverflow.com/questions/29859796/c-auto-vs-auto)
 
 ---
 
