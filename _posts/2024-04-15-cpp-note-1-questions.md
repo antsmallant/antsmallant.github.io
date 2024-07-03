@@ -143,7 +143,7 @@ f(s);    // 拷贝构造一次，得到临时对象
 
 ---
 
-## 什么是结构化绑定？有性能损耗吗？
+## 什么是结构化绑定？有性能损耗吗？  
 
 ---
 
@@ -166,8 +166,7 @@ f(s);    // 拷贝构造一次，得到临时对象
 
 万能引用，即 Universal References。 
 
-
-在 c++17 的标准里面已经将这种用法标准化为 “转发引用” 了。    
+在 c++17 的标准里面已经将这种用法标准化为 “转发引用” (forwarding reference) 了。    
 
 参考 [https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4164.pdf](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4164.pdf)。  
 
