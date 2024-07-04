@@ -12,3 +12,32 @@ tags: [golang]
 <br/>
 
 ---
+
+# 问题
+
+---
+
+# 实用写法
+
+## 命令行转圈等待
+
+```go
+package main
+import (
+	"fmt"
+	"time"
+)
+func spinner(delay time.Duration) {
+	for {
+		for _, r := range `-\|/` {
+			fmt.Printf("\r%c", r)
+			time.Sleep(delay)
+		}
+	}
+}
+func main() {
+	go spinner(100 * time.Millisecond)
+	// do some other things
+}
+
+```
