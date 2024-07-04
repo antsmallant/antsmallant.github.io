@@ -407,7 +407,7 @@ bigworld 的整个 load balance 算法实现是比较精细的，但在分布式
 
 # 7. 参考
 
-[1] bigworld. BigWorld Technology Server Whitepaper. https://sourceforge.net/p/bigworld/code/HEAD/tree/trunk/docs/pdf/BigWorld%20Technology%20Server%20Whitepaper.pdf.    
+[1] bigworld. BigWorld Technology Server Whitepaper. Available at https://sourceforge.net/p/bigworld/code/HEAD/tree/trunk/docs/pdf/BigWorld Technology Server Whitepaper.pdf.    
 
 
 ---
