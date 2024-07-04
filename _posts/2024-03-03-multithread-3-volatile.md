@@ -23,7 +23,7 @@ tags: [并发 同步 多线程]
 
 Scott Meyers 在《Effective Modern C++》的条款40[1]说到：“可怜的 volatile。被误解到如此地步。它甚至不应该出现在本章中，因为它与并发程序设计毫无关系。”。    
 
-要了解清楚 volatile 是如何被误解和滥用的，需要先了解一下它的历史。下文主要参考自这篇文章：《C++11 volatile》[2]。  
+要了解清楚 volatile 是如何被误解和滥用的，需要先了解一下它的历史。下文主要参考自这篇文章：[《C++11 volatile》](https://bajamircea.github.io/coding/cpp/2019/11/05/cpp11-volatile.html) [2]。  
 
 ---
 
@@ -145,9 +145,9 @@ microsoft 在这篇文章《volatile (C++)》[3] 介绍了 volatile 的两个编
 
 除了 Microsoft 的编译器，其他编译器对于 volatile 的处理也有其他问题，比如以下帖子和文章讲的：    
 
-* 《Curious thing about the volatile keyword in C++》[4]  
+* [《Curious thing about the volatile keyword in C++》](https://www.reddit.com/r/cpp/comments/592sui/curious_thing_about_the_volatile_keyword_in_c/) [4]  
 
-* 《A note about the volatile keyword in C++》[5]   
+* [《A note about the volatile keyword in C++》](https://componenthouse.com/2016/10/21/a-note-about-the-volatile-keyword-in-cpp/) [5]   
 
 ---
 
