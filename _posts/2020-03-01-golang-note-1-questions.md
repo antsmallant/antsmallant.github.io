@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "golang 笔记一：常识与用法"
+title: "golang 笔记一：常识、术语、用法"
 date: 2021-04-15
 last_modified_at: 2021-04-15
 categories: [golang]
