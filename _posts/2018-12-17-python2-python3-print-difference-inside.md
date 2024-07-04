@@ -16,7 +16,7 @@ tags: [python]
 
 查看字节码除了下面展示的用 python 自带的 dis 模块，也可以用这个网站：[compiler explorer](https://gcc.godbolt.org/)，当前它只支持 python3，btw，也不支持 lua，不过它对 c++ 的支持是特别完善的，支持各种类型的编译器。lua 可以通过 `luac -l -p <文件名>` 来查看，或者使用这个网站：[Lua Bytecode Explorer](https://www.luac.nl/)。     
 
-python2:    
+**python2**    
 
 ```python
 def hello():
@@ -36,7 +36,9 @@ dis.dis(hello)
               8 RETURN_VALUE
 ```    
 
-python3:   
+<br/>
+
+**python3**     
 
 ```python
 def hello():
