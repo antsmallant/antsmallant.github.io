@@ -11,11 +11,11 @@ tags: [并发 同步 多线程]
 {:toc}
 <br/>
 
-本文讲一讲 volatile，在多线程领域，它是被误解得最严重的，实际上，它对于多线程编程一点帮助都没有。  
+本文总结 volatile 相关的一些知识。在多线程领域，它是被误解得最严重的，实际上，它对于多线程编程一点帮助都没有。   
 
 ---
 
-# 被误解的 volatile
+# 1. 被误解的 volatile
 
 先说一下结论：  
 * volatile 只能阻止编译器优化，应该只把它用于 Memory Mapped I/O 的场景中，不应该将它用于解决多线程下的诸入原子读写之类的问题。    
@@ -27,7 +27,7 @@ Scott Meyers 在他那本《Effective Modern C++》的条款40[1]说到：“可
 
 ---
 
-# volatile 的原始用途
+# 2. volatile 的原始用途
 
 最开始是 C 语言引入的，用在 Memory Mapped I/O 中，避免编译器优化导致的错误。  
 
@@ -51,7 +51,7 @@ B = 1000;
 
 ---
 
-# volatile 在 C++ 中的使用
+# 3. volatile 在 C++ 中的使用
 
 C++ 保留了 volatile 这个关键字，除了继续用于 Memory Mapped I/O 之外，随着多线程的发展，在一些厂商或者书本的鼓励下，volatile 被推荐用于解决一些多线程编程的问题。比如这样的：    
 
@@ -116,7 +116,7 @@ void consumer_thread()
 
 ---
 
-# 某些编译器赋予 volatile 额外的能力
+# 4. 某些编译器赋予 volatile 额外的能力
 
 上文提到 volatile 无法阻止 reordering，但并不是所有 volatile 的实现都无法阻止，这取决于不同的编译器实现，有些编译器实现就通过插入屏障（barrier）的方向来阻止 reordering，比如说 Microsoft 的编译器。  
 
@@ -151,13 +151,13 @@ microsoft 在这篇文章《volatile (C++)》[3] 介绍了 volatile 的两个编
 
 ---
 
-# 总结
+# 5. 总结
 
 * 多线程编程中，不要依赖 volatile。  
 
 ---
 
-# 参考
+# 6. 参考
 
 [1] [美]Scott Meyers. Effective Modern C++(中文版). 高博. 北京: 中国电力出版社, 2018-4: 254.    
 
