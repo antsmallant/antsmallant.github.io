@@ -3,7 +3,7 @@ layout: post
 title: "python2 和 python3 的 print 在底层实现上有何区别？"
 date: 2018-12-17
 last_modified_at: 2018-12-17
-categories: [语言]
+categories: [python]
 tags: [python]
 ---
 
