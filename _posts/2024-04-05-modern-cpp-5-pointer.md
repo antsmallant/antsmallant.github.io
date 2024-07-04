@@ -22,7 +22,7 @@ tags: [c++]
 
 ---
 
-# 智能指针
+# 1. 智能指针
 
 c++11 中共有四种智能指针，std::auto_ptr, std::unique_ptr, std::shared_ptr, std::weak_ptr。    
 
@@ -30,7 +30,7 @@ std::auto_ptr 是 c++98 时代的产物，其他几个都是 c++11 新引入的�
 
 ---
 
-## std::auto_ptr
+## 1.1 std::auto_ptr
 
 std::auto_ptr 是 c++98 残留的特性，在 c++11 被弃用 (deprecated ) 了，在 c++17 被移除了[1] 。  
 
@@ -38,14 +38,14 @@ std::auto_ptr 是 c++98 残留的特性，在 c++11 被弃用 (deprecated ) 了�
 
 ---
 
-## std::unique_ptr   
+## 1.2 std::unique_ptr   
 
 它用于管理具备专属所有权的资源，意思是 std::unique_ptr 独享它指向的对象，不允许多个 std::unique_ptr 指向同个资源。   
 
 在条件合适的场景下，智能指针首选 std::unique_ptr，原因是它开销小，不像 std::shared_ptr 那样需要原子的维护引用计数。std::unique_ptr 的开销几乎与裸指针相当，在离开作用域的时候能自动释放内存，避免内存泄漏，所以能用 std::unique_ptr 就尽量使用。  
 
 
-### 构造和移动   
+### 1.2.1 构造和移动   
 
 std::unique_ptr 的构造往往是伴随着资源占有权的转移的，所以放在一起讲。  
 
@@ -99,7 +99,7 @@ std::unique_ptr<int> p1(new int(10));
     p2.reset(p1.release());
 ```
 
-### 销毁和释放
+### 1.2.2 销毁和释放
 
 **销毁的方式**    
  
@@ -124,7 +124,7 @@ auto p1 = std::make_unique<int>(10);
 auto rawptr = p1.release();
 ```
 
-### 使用场景
+### 1.2.3 使用场景
 
 **作为参数**   
 
@@ -136,7 +136,7 @@ auto rawptr = p1.release();
 
 ---
 
-## std::shared_ptr
+## 1.3 std::shared_ptr
 
 **注意事项** 
 
@@ -154,39 +154,38 @@ auto rawptr = p1.release();
 3、容器中的 shared_ptr 要及时 erase   
 这个挺容易漏掉的，如果没有及时 erase，就会一直引用着，不会释放。    
 
-4、
 
 ---
 
-## std::weak_ptr
+## 1.4 std::weak_ptr
 
 ---
 
-# 指针的原则
+# 2. 指针的原则
 
 这一部分属于个人观点，不代表共识。  
 
 ---
 
-## 引用、裸指针、智能指针的使用时机
+## 2.1 引用、裸指针、智能指针的使用时机
 
 智能指针的核心是所有权管理，无关所有权的时候首选引用或裸指针，在需要所有权管理的时候使用智能指针。  
 
 ---
 
-## 作为参数的时候
+## 2.2 作为参数的时候
 
 传参在大部分情况下与所有权管理无关，所以应该首选引用或者裸指针，这样更灵活。  
 
 ---
 
-## 什么时候使用引用、裸指针、智能指针
+## 2.3 什么时候使用引用、裸指针、智能指针
 
 少用裸指针，智能指针几乎可以做到裸指针能做到的任何事情，但犯错的机会大大减少了。    
 
 ---
 
-## 优先使用 `make_` 函数初始化智能指针
+## 2.4 优先使用 `make_` 函数初始化智能指针
 
 以上例子刻意用 std::make_unique 来构造 p1，而不是像这样：   
 ```cpp
@@ -214,13 +213,13 @@ btw，std::make_unique 是在 c++14 才被引入的，c++11 时只有 std::make_
 
 ---
 
-# 内存泄漏的检测
+# 3. 内存泄漏的检测
 
 以下列举一些定位内存泄漏的方法和工具。   
 
 ---
 
-## 静态计数    
+## 3.1 静态计数    
 
 这篇文章 [《C++极简内存泄露检测工具（34行代码实现）》](https://zhuanlan.zhihu.com/p/663858656) [2] 介绍的这种静态方法很简单，虽然只适用于类类型，但已经足够用于很多场景了。  
 
@@ -280,13 +279,13 @@ public:
 
 ---
 
-## A Cross-Platform Memory Leak Detector
+## 3.2 A Cross-Platform Memory Leak Detector
 
 [A Cross-Platform Memory Leak Detector](http://wyw.dcweb.cn/leakage.htm)
 
 ---
 
-# 材料
+# 4. 材料
 
 * [unique_ptr作为函数参数时，应该以值还是右值引用类型传递？](https://www.zhihu.com/question/534389744/answer/2500052393)
 
@@ -297,7 +296,7 @@ public:
 
 ---
 
-# 参考
+# 5. 参考
 
 [1] cppreference. auto_ptr. Available at https://en.cppreference.com/w/cpp/memory/auto_ptr.   
 
