@@ -11,7 +11,7 @@ tags: [golang]
 {:toc}
 <br/>
 
-记录一些平常学习到的常识问题，**持续更新**。  
+记录一些平常学习到的常识问题，**持续更新**。    
 
 ---
 
@@ -59,26 +59,30 @@ c := b[3:cap(b)] // ok，相当于 c := b[3:5]
 
 ## 1.3 type 关键字
 
-用于定义新类型，实质上就是在起别名。   
+来自官方的定义："A type declaration binds an identifier, the type name, to a type. Type declarations come in two forms: alias declarations and type definitions." [1]    
 
-**例子1**   
+翻译过来是：将一个类型名绑定到一个类型上，有两种形式，别名声明和类型定义。   
+
+<br/>
+
+**例子1：别名声明**   
+
+`type MyFloat float64`，这里面 `MyFloat` 作为 `float64` 的别名。   
+   
+<br/>
+
+**例子2：类型定义**    
+
 `type Vertex struct { X, Y float }`， 这里面 `struct { X, Y float }` 定义了一种结构体，而 `type Vertex` 则用 `Vertex` 这个别名来指代它。    
 
-当使用 struct 的时候，别名（或者说类型名）不是必须的，譬如可以这样直接定义一个 struct 切片。  
+实际上，类型名不是必须的，譬如可以这样定义一个 struct 切片。  
 
 ```go
 	v := []struct{ X, Y float64 }{
 		{1.1, 1.2},
 		{2.1, 2.2},
 	}
-```    
-
-**例子2**    
-`type MyFloat float64`，这里面 `MyFloat` 作为 `float64` 的别名。   
-
-
-
-
+```
 
 ---
 
@@ -134,3 +138,5 @@ func main() {
 ---
 
 # 4. 参考
+
+[1] go.dev. Type declarations. Available ab https://go.dev/ref/spec#Type_declarations.     
