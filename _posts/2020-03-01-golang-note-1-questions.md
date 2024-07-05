@@ -57,6 +57,31 @@ c := b[3:cap(b)] // ok，相当于 c := b[3:5]
 
 ---
 
+## 1.3 type 关键字
+
+用于定义新类型，实质上就是在起别名。   
+
+**例子1**   
+`type Vertex struct { X, Y float }`， 这里面 `struct { X, Y float }` 定义了一种结构体，而 `type Vertex` 则用 `Vertex` 这个别名来指代它。    
+
+当使用 struct 的时候，别名（或者说类型名）不是必须的，譬如可以这样直接定义一个 struct 切片。  
+
+```go
+	v := []struct{ X, Y float64 }{
+		{1.1, 1.2},
+		{2.1, 2.2},
+	}
+```    
+
+**例子2**    
+`type MyFloat float64`，这里面 `MyFloat` 作为 `float64` 的别名。   
+
+
+
+
+
+---
+
 # 2. 术语
 
 ---
