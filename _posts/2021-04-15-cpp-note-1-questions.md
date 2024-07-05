@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "c++ 笔记一：常识问题合集"
+title: "c++ 笔记一：常识、用法"
 date: 2021-04-15
 last_modified_at: 2021-04-15
 categories: [c++]
@@ -15,7 +15,7 @@ tags: [c++ cpp]
 
 ---
 
-# 1. 问题
+# 1. 常识
 
 ---
 
@@ -189,4 +189,8 @@ included; however, in §3.3 below we argue why auto&& is also a forwarding case 
 
 ---
 
-# 2. 参考
+# 2. 用法
+
+---
+
+# 3. 参考
