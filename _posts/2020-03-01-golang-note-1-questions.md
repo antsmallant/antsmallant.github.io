@@ -266,4 +266,4 @@ func main() {
 
 # 5. 参考
 
-[1] go.dev. Type declarations. Available ab https://go.dev/ref/spec#Type_declarations.     
+[1] go.dev. Type declarations. Available at https://go.dev/ref/spec#Type_declarations.     
