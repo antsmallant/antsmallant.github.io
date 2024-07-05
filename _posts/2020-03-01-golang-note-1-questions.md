@@ -15,11 +15,32 @@ tags: [golang]
 
 ---
 
-# 1. 常识
+# 1. 资料
 
 ---
 
-## 1.1 数组
+## 1.1 官方资料
+
+官网：[https://go.dev/](https://go.dev/)     
+
+官方文档合集：[https://go.dev/doc/](https://go.dev/doc/)      
+
+language specification: [https://go.dev/doc/](https://go.dev/doc/)     
+
+library 文档: [https://pkg.go.dev/std](https://pkg.go.dev/std)    
+
+a tour of go: [https://go.dev/tour/welcome/1](https://go.dev/tour/welcome/1)    
+
+go by example: [https://gobyexample.com/](https://gobyexample.com/)    
+ 
+
+---
+
+# 2. 常识
+
+---
+
+## 2.1 数组
 
 1、数组的长度是其类型的一部分，数组不能改变大小。    
 
@@ -27,7 +48,7 @@ tags: [golang]
 
 ---
 
-## 1.2 切片
+## 2.2 切片
 
 参考： [Go Slices: usage and internals](https://go.dev/blog/slices-intro)   
 
@@ -57,7 +78,7 @@ c := b[3:cap(b)] // ok，相当于 c := b[3:5]
 
 ---
 
-## 1.3 type 关键字
+## 2.3 type 关键字
 
 来自官方的定义："A type declaration binds an identifier, the type name, to a type. Type declarations come in two forms: alias declarations and type definitions." [1]    
 
@@ -79,40 +100,42 @@ c := b[3:cap(b)] // ok，相当于 c := b[3:5]
 
 ```go
 	v := []struct{ X, Y float64 }{
-		{1.1, 1.2},
 		{2.1, 2.2},
+		{3.1, 3.2},
 	}
 ```
 
 ---
 
-# 2. 术语
+# 3. 术语
 
 ---
 
-## 2.1 短变量声明
+## 3.1 短变量声明
 
 `:=` 是短变量声明。  
 
 ---
 
-## 2.2 隐式解引用
+## 3.2 隐式解引用
 
 `指针.字段名` 就是【隐式解引用】，正规的写法应该是 `(*指针).字段名`。    
 
 ---
 
-## 2.3 方法与函数
+## 3.3 方法与函数
 
 方法是一类带特殊的 **接收者** 参数的函数。所以，方法是函数的一种。   
 
----
-
-# 3. 用法
+只能为同一个包中定义的接收者类型声明方法，不能为其他别的包中定义的类型声明方法。  
 
 ---
 
-## 3.1 命令行转圈等待
+# 4. 用法
+
+---
+
+## 4.1 命令行转圈等待
 
 ```go
 package main
@@ -137,6 +160,6 @@ func main() {
 
 ---
 
-# 4. 参考
+# 5. 参考
 
 [1] go.dev. Type declarations. Available ab https://go.dev/ref/spec#Type_declarations.     
