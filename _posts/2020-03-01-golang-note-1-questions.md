@@ -264,6 +264,32 @@ func main() {
 
 ---
 
+## 4.2 go tour 的 rot13 的简单做法
+
+```go
+func rot13Trans(b byte) byte {
+	if b >= byte('A') && b <= byte('M') {
+		return byte(b+13)
+	} else if b > byte('M') && b <= byte('Z') {
+		return byte(b-13)
+	} else if b >= byte('a') && b <= byte('m') {
+		return byte(b+13)
+	} else {
+		return byte(b-13)
+	}
+}
+
+func (r13 rot13Reader) Read(b []byte) (int, error) {
+	n, err := r13.r.Read(b)
+	for i := 0; i < n; i++ {
+		b[i] = rot13Trans(b[i])
+	}
+	return n, err
+}
+```
+
+---
+
 # 5. 参考
 
 [1] go.dev. Type declarations. Available at https://go.dev/ref/spec#Type_declarations.     
