@@ -177,11 +177,11 @@ c++23 是一个 minor 版本。
 * static operator[]
 * auto(x)：语言中的衰退复制
 * lambda 表达式上的属性
-* 可选的扩展浮点类型：std::float{16|32|64|128}_t 和 std::bfloat16_t。
-* （有符号）std::size_t 字面量的字面量后缀 'Z'/'z'
+* 可选的扩展浮点类型：`std::float{16|32|64|128}_t` 和 `std::bfloat16_t`。
+* （有符号）`std::size_t` 字面量的字面量后缀 `'Z'/'z'`。  
 * 后缀
-* #elifdef、#elifndef 与 #warning
-* 通过新属性 [[assume(表达式)]] 进行假设
+* `#elifdef`、`#elifndef` 与 `#warning`
+* 通过新属性 `[[assume(表达式)]]` 进行假设
 * 具名通用字符转义
 * 可移植源文件编码为 UTF-8
 * 行拼合之前修剪空白
