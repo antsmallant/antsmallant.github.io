@@ -25,7 +25,7 @@ tags: [golang]
 
 官方文档合集：[https://go.dev/doc/](https://go.dev/doc/)      
 
-language specification: [https://go.dev/doc/](https://go.dev/doc/)     
+language specification: [https://go.dev/ref/spec](https://go.dev/ref/spec)     
 
 library 文档: [https://pkg.go.dev/std](https://pkg.go.dev/std)    
 
@@ -143,6 +143,32 @@ i = t
 ## 2.6 空接口
 
 空接口可以保存任何类型的值，这样就可以声明一个空接口类型的变量了： `var i interface{}`，不需要特意用 `type` 写这个的别名。   
+
+---
+
+## 2.7 fmt print 的基本格式
+
+参照： [https://pkg.go.dev/fmt@go1.22.5#hdr-Printing](https://pkg.go.dev/fmt@go1.22.5#hdr-Printing)   
+
+General:
+```
+%v	the value in a default format
+	when printing structs, the plus flag (%+v) adds field names
+%#v	a Go-syntax representation of the value
+%T	a Go-syntax representation of the type of the value
+%%	a literal percent sign; consumes no value
+```
+
+The default format for %v is:
+```
+bool:                    %t
+int, int8 etc.:          %d
+uint, uint8 etc.:        %d, %#x if printed with %#v
+float32, complex64, etc: %g
+string:                  %s
+chan:                    %p
+pointer:                 %p
+```
 
 ---
 
