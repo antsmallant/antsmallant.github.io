@@ -17,7 +17,7 @@ tags: [c]
 
 ## 1.1 struct 与 typedef
 
-1、不使用 `typedef`
+1、不使用 `typedef`    
 
 后续定义变量都要加上 `struct`，比如这样：    
 
@@ -34,6 +34,8 @@ int main() {
     printf("%d\n", s.x);
 }
 ```
+
+<br/>
 
 2、使用 `typedef` 
 
@@ -73,6 +75,8 @@ typedef struct {
     int x;
 } S;  // 此处 S 也可以换成别的，随便一个 aliasname 都行
 ```
+
+<br/>
 
 **写法二**
 
