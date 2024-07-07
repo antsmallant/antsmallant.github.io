@@ -50,6 +50,7 @@ typedef struct structname {
 ```
 
 比如：  
+
 ```c
 typedef struct S {
     int x;
@@ -66,6 +67,7 @@ typedef struct S {
 ```
 
 变化2：`structname` 本身也可以省略的，比如:    
+
 ```c
 typedef struct {
     int x;
@@ -75,6 +77,7 @@ typedef struct {
 **写法二**
 
 标准写法： 
+
 ```c
 struct structname {
     ...
@@ -91,9 +94,6 @@ struct S {
 
 typedef struct S AliasOfS; // ok 的
 typedef struct S S; // 也 ok 的，aliasname 也可以使用 S 本身
-
-```
-
 ```
 
 ---
