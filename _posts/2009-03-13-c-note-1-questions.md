@@ -42,10 +42,12 @@ int main() {
 **写法一**
 
 标准写法： 
+
 ```c
 typedef struct structname {
     ...
 } aliasname;
+```
 
 比如：  
 ```c
@@ -54,7 +56,8 @@ typedef struct S {
 } S;
 ```
 
-其中 `aliasname` 可以换成别的，不需要仍然是 `S`，比如： 
+
+变化1：`aliasname` 可以换成别的，不需要仍然是 `S`，比如：   
 
 ```c
 typedef struct S {
@@ -62,7 +65,7 @@ typedef struct S {
 } AliasOfS;
 ```
 
-`structname` 本身也可以省略的，比如: 
+变化2：`structname` 本身也可以省略的，比如:    
 ```c
 typedef struct {
     int x;
