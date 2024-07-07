@@ -102,4 +102,26 @@ typedef struct S S; // 也 ok 的，aliasname 也可以使用 S 本身
 
 ---
 
+# 1.2 struct 中包含自己类型的指针
+
+无论是否 typdef，在 struct 内部，只能用 `struct structname` 来声明自己类型的变量，比如这样： 
+
+```c
+struct S {
+    int x;
+    struct S* next;
+};
+```
+
+或者这样： 
+
+```c
+typedef struct S {
+    int x;
+    void (*print)(struct S* self);
+} S;
+```
+
+---
+
 # 2. 参考
