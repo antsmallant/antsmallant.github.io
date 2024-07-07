@@ -118,6 +118,67 @@ f(s);    // 拷贝构造一次，得到临时对象
 
 ## 1.7 c with class 要怎么实现？即 c 如何模拟面向对象？  
 
+要模拟面向对象，即要实现封装、继承、多态。  
+
+**封装**    
+可以把函数指针放入 struct 中，这种成员函数的第一个变量就是此 struct 类型的对象的指针。举个例子： 
+
+```c
+#include "stdio.h"
+#include "stdlib.h"
+
+typedef struct Point {
+    int x;
+    int y;
+    void (*scale) (struct Point*, int);
+} Point;
+
+void point_scale(Point* self, int factor) {
+    self->x *= factor;
+    self->y *= factor;
+}
+
+int main() {
+    Point p = {10, 20, point_scale};
+    p.scale(&p, 30);
+    printf("%d, %d\n", p.x, p.y);
+    return 0;
+}
+```
+
+**继承**   
+可以在子类里定义一个基类的对象作为变量，并且在重载函数的时候，在重载函数里，选择性的调用基类的函数。举个例子：   
+
+```c
+#include "stdio.h"
+#include "stdlib.h"
+
+typedef struct Base {
+    void (*print) (struct Base*);
+} Base;
+
+void base_print(Base* self) {
+    printf("base\n");
+}
+
+typedef struct Derived {
+    Base base;
+    void (*derivedPrint) (struct Derived*);
+} Derived;
+
+void derived_print(Derived* self) {
+    self->base.print(&self->base);
+    printf("derived\n");
+}
+
+int main() {
+    Derived d = { {base_print}, derived_print };
+    d.derivedPrint(&d);
+    return 0;
+}
+```
+
+
 ---
 
 ## 1.8 什么是编译期多态？  
@@ -156,7 +217,7 @@ f(s);    // 拷贝构造一次，得到临时对象
 
 ---
 
-## 什么是 emplace_back？它的作用是什么？ 
+## 什么是 emplace_back ？它的作用是什么？ 
 
 
 ---
