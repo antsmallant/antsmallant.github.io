@@ -100,6 +100,12 @@ typedef struct S AliasOfS; // ok 的
 typedef struct S S; // 也 ok 的，aliasname 也可以使用 S 本身
 ```
 
+<br/>
+
+3、注意点
+
+当使用 typedef 并且 structname 与 aliasname 一样的情况下，用 `struct structname var;` 与 `structname var;` 都是 ok 的。   
+
 ---
 
 # 1.2 struct 中包含自己类型的指针
