@@ -13,7 +13,7 @@ tags: [c]
 
 # 1. 常识
 
-## 1.1 struct 的几种写法
+## 1.1 struct 与 typedef
 
 1、不使用 `typedef`，那么后续每次都要加上 `struct`，比如这样：    
 
