@@ -2,7 +2,7 @@
 layout: post
 title: "c 笔记一：常识、用法"
 date: 2009-03-13
-last_modified_at: 2009-03-13
+last_modified_at: 2023-04-15
 categories: [c]
 tags: [c]
 ---
@@ -10,6 +10,12 @@ tags: [c]
 * 目录  
 {:toc}
 <br/>
+
+**持续更新**   
+
+记录 c 相关的常识，以及使用过程中遇到的问题。    
+
+---
 
 # 1. 常识
 

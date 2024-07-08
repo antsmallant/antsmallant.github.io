@@ -1,8 +1,8 @@
 ---
 layout: post
 title: "c++ 笔记一：常识、用法"
-date: 2021-04-15
-last_modified_at: 2021-04-15
+date: 2013-02-15
+last_modified_at: 2023-04-15
 categories: [c++]
 tags: [c++ cpp]
 ---
@@ -11,7 +11,9 @@ tags: [c++ cpp]
 {:toc}
 <br/>
 
-记录 c++ 相关的常识，以及使用过程中遇到的问题，**持续更新**。    
+**持续更新**   
+
+记录 c++ 相关的常识，以及使用过程中遇到的问题。    
 
 ---
 
