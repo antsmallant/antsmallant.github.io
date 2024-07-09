@@ -147,20 +147,23 @@ void point_scale(struct Point* self, int factor) {
     self->y *= factor;
 }
 
-void point_init(struct Point* point) {
-    point->x = 10;
-    point->y = 20;
-    point->scale = point_scale;
+void point_init(struct Point* pt) {
+    pt->x = 10;
+    pt->y = 20;
+    pt->scale = point_scale;
 }
 
-void point_destryo(struct Point* pt) {
-    free(p);
+void point_destroy(struct Point* pt) {
+    free(pt);
 }
 
 int main() {
-    struct Point* pt = (struct Point*)malloc(sizeof(Point));
-    pt->scale(&p, 30);
-    printf("%d, %d\n", pt->x, pt->y);
+    struct Point* pt = (struct Point*)malloc(sizeof(struct Point));
+    point_init(pt);
+    printf("before scale: %d, %d\n", pt->x, pt->y);
+    pt->scale(pt, 30);
+    printf("after scale: %d, %d\n", pt->x, pt->y);
+    point_destroy(pt);
     return 0;
 }
 ```
