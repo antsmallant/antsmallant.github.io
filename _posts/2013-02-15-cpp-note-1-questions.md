@@ -133,8 +133,9 @@ f(s);    // 拷贝构造一次，得到临时对象
 举个例子： 
 
 ```c
-#include "stdio.h"
-#include "stdlib.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <memory.h>
 
 struct Point {
     int x;
@@ -154,7 +155,8 @@ void point_init(struct Point* pt) {
 }
 
 void point_destroy(struct Point* pt) {
-    free(pt);
+    memset(pt, 0, sizeof(struct Point));
+    // do not free here
 }
 
 int main() {
@@ -164,6 +166,7 @@ int main() {
     pt->scale(pt, 30);
     printf("after scale: %d, %d\n", pt->x, pt->y);
     point_destroy(pt);
+    free(pt);
     return 0;
 }
 ```
