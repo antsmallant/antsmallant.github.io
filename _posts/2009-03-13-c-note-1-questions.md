@@ -172,6 +172,132 @@ c99 开始是合法的，在此之前不合法。
 翻译过来：
 * `<>` 用于包含标准库头文件，`""` 用于包含用户自定义头文件；  
 * `<>` 从编译器或IDC指定的目录搜索，比如 `/usr/include`，`/usr/local/include`；`""` 从当前目录搜索，或者从 `-I` 指定的目录搜索。  
+
+---
+
+## 1.6 c 如何模拟面向对象？  
+
+要模拟面向对象，即要实现封装、继承、多态。  
+
+**一、封装**    
+
+封装就是把属性和对属性的操作封装在一个独立的实体中，这种实体在 c++ 称为类。  
+
+1、c 语言模拟封装，可以用 struct 来模拟类，struct 中可以使用函数指针变量来保存类的成员函数。   
+2、c 函数要访问类里面的成员，需要有类对象的指针，那么这些成员函数的第一个变量可以统一为指向对象指向的指针，这个相当于模拟 c++ 的 this 指针。   
+3、但是 c++ 的 public, protected, private 这几种对成员的访问限制，在 c 中模拟不了。   
+
+举个例子： 
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <memory.h>
+
+struct Point {
+    int x;
+    int y;
+    void (*scale) (struct Point*, int);
+};
+
+void point_scale(struct Point* self, int factor) {
+    self->x *= factor;
+    self->y *= factor;
+}
+
+void point_init(struct Point* pt) {
+    pt->x = 10;
+    pt->y = 20;
+    pt->scale = point_scale;
+}
+
+void point_destroy(struct Point* pt) {
+    printf("point destroy\n");
+    // do not free here
+}
+
+int main() {
+    struct Point* pt = (struct Point*)malloc(sizeof(struct Point));
+    point_init(pt);
+    printf("before scale: %d, %d\n", pt->x, pt->y);
+    pt->scale(pt, 30);
+    printf("after scale: %d, %d\n", pt->x, pt->y);
+    point_destroy(pt);
+    free(pt);
+    return 0;
+}
+```
+
+说明：    
+1、在这种模拟中，使用函数指针来保存函数，相比于 C++，是一种内存上的额外开销，C++ 对象的内存里不需要保存成员函数指针，它在编译时就能确定。     
+
+<br/>
+
+**二、继承**   
+
+可以在子类里定义一个基类的对象作为变量，并且在重载函数的时候，在重载函数里，选择性的调用基类的函数。  
+
+举个例子：   
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <memory.h>
+
+struct Base {
+    int x;
+    void (*print) (struct Base*);
+};
+
+void base_print(struct Base* self) {
+    printf("base, x: %d\n", self->x);
+}
+
+void base_init(struct Base* base) {
+    base->x = 10;
+    base->print = base_print;
+}
+
+void base_destroy(struct Base* base) {
+    printf("base destroy\n");
+}
+
+struct Derived {
+    struct Base base;
+    int y;
+    void (*derivedPrint) (struct Derived*);
+};
+
+void derived_print(struct Derived* self) {
+    self->base.print(&self->base);
+    printf("derived, y: %d\n", self->y);
+}
+
+void derived_init(struct Derived* d) {
+    base_init((struct Base*)d);
+    d->y = 20;
+    d->derivedPrint = derived_print;
+}
+
+void derived_destroy(struct Derived* d) {
+    printf("derived_destroy\n");
+    base_destroy((struct Base*)d);
+}
+
+int main() {
+    struct Derived* d = (struct Derived*)malloc(sizeof(struct Derived));
+    derived_init(d);
+    d->derivedPrint(d);
+    derived_destroy(d);
+    free(d);
+    return 0;
+}
+```
+
+</br>
+
+**三、多态**   
+
 ---
 
 # 2. 参考
