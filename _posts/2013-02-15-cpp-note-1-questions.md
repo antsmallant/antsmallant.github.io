@@ -177,37 +177,62 @@ int main() {
 <br/>
 
 **二、继承**   
-可以在子类里定义一个基类的对象作为变量，并且在重载函数的时候，在重载函数里，选择性的调用基类的函数。举个例子：   
+
+可以在子类里定义一个基类的对象作为变量，并且在重载函数的时候，在重载函数里，选择性的调用基类的函数。  
+
+举个例子：   
 
 ```c
-#include "stdio.h"
-#include "stdlib.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <memory.h>
 
-typedef struct Base {
+struct Base {
+    int x;
     void (*print) (struct Base*);
-} Base;
+};
 
-void base_print(Base* self) {
-    printf("base\n");
+void base_print(struct Base* self) {
+    printf("base, x: %d\n", self->x);
 }
 
-void base_init(Base* base) {
+void base_init(struct Base* base) {
+    base->x = 10;
     base->print = base_print;
 }
 
-typedef struct Derived {
-    Base base;
-    void (*derivedPrint) (struct Derived*);
-} Derived;
+void base_destroy(struct Base* base) {
+    memset(base, 0, sizeof(struct Base));
+}
 
-void derived_print(Derived* self) {
+struct Derived {
+    struct Base base;
+    int y;
+    void (*derivedPrint) (struct Derived*);
+};
+
+void derived_print(struct Derived* self) {
     self->base.print(&self->base);
-    printf("derived\n");
+    printf("derived, y: %d\n", self->y);
+}
+
+void derived_init(struct Derived* d) {
+    base_init((struct Base*)d);
+    d->y = 20;
+    d->derivedPrint = derived_print;
+}
+
+void derived_destroy(struct Derived* d) {
+    base_destroy((struct Base*)d);
+    memset(d, 0, sizeof(struct Derived));
 }
 
 int main() {
-    Derived d = { {base_print}, derived_print };
-    d.derivedPrint(&d);
+    struct Derived* d = (struct Derived*)malloc(sizeof(struct Derived));
+    derived_init(d);
+    d->derivedPrint(d);
+    derived_destroy(d);
+    free(d);
     return 0;
 }
 ```
