@@ -158,7 +158,9 @@ c99 开始是合法的，在此之前不合法。
 
 ## 1.6 `#include <>` 与 `#include ""` 的区别
 
-`#include<> vs #include””` [1]
+下表参考自： [《Difference between #include and #include” ” in C/C++ with Examples》](https://www.geeksforgeeks.org/difference-between-include-and-include-in-c-c-with-examples/) [1]。  
+
+<br/>
 
 |No.	| `#include<filename>`	| `#include”filename”` |
 |:--|:--|:--|
@@ -171,7 +173,7 @@ c99 开始是合法的，在此之前不合法。
 
 翻译过来：
 * `<>` 用于包含标准库头文件，`""` 用于包含用户自定义头文件；  
-* `<>` 从编译器或IDC指定的目录搜索，比如 `/usr/include`，`/usr/local/include`；`""` 从当前目录搜索，或者从 `-I` 指定的目录搜索。  
+* `<>` 从编译器或IDE指定的目录搜索，比如 `/usr/include`，`/usr/local/include`；`""` 从当前目录搜索，或者从 `-I` 指定的目录搜索。  
 
 ---
 
