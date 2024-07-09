@@ -417,7 +417,7 @@ animal_destroy
 
 有几篇文章可供参考：  
 
-* [C语言实现虚函数/继承/封装](https://zhuanlan.zhihu.com/p/566782733)
+* [《C语言实现虚函数/继承/封装》](https://zhuanlan.zhihu.com/p/566782733)
 * [《C 语言实现面向对象（一）：初步实现三个基本特征》](https://schaepher.github.io/2020/03/12/c-oop/)
 * [《使用C语言实现面相对对象三大特性》](https://www.cnblogs.com/Kroner/p/16456733.html)
 
