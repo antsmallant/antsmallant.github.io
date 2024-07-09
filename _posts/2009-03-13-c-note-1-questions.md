@@ -136,13 +136,21 @@ typedef struct S {
 
 ---
 
-## 1.3 c 函数支持重载吗？
+## 1.3 struct 使用 typedef 定义别名是否是好的做法？  
+
+在多数情况下并不适合，参照 linux 内核的: [kernel coding-style](https://www.kernel.org/doc/html/latest/process/coding-style.html#typedefs)，里面提到了一些关于 typedef 的 rule。   
+
+对于 struct，当它是一个透明的类型，别人可以访问里面的成员时，那么不要用 typedef 来取别名。这样的好处是，使用这样的方式定义变量 `struct SomeType somevar;`，当别人看到 `struct` 时，一下子就知道 `somevar` 是一个 `struct` 类型的，这样更清晰。  
+
+---
+
+## 1.4 c 函数支持重载吗？
 
 不支持，c 编译的时候，函数名符号不会像 c++ 那样结合参数进行 mangling，所以同名函数在编译后也是相同的符号，故无法重载。  
 
 ---
 
-## 1.4 c 语言 enum 最后多个逗号
+## 1.5 c 语言 enum 最后多个逗号
 
 c99 开始是合法的，在此之前不合法。  
 

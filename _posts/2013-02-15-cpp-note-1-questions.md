@@ -168,6 +168,10 @@ void base_print(Base* self) {
     printf("base\n");
 }
 
+void base_init(Base* base) {
+    base->print = base_print;
+}
+
 typedef struct Derived {
     Base base;
     void (*derivedPrint) (struct Derived*);
