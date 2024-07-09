@@ -123,27 +123,44 @@ f(s);    // 拷贝构造一次，得到临时对象
 要模拟面向对象，即要实现封装、继承、多态。  
 
 **一、封装**    
-可以把函数指针放入 struct 中，这种成员函数的第一个变量就是此 struct 类型的对象的指针。举个例子： 
+
+封装就是把属性和对属性的操作封装在一个独立的实体中，这种实体在 c++ 称为类。  
+
+1、c 语言模拟封装，可以用 struct 来模拟类，struct 中可以使用函数指针变量来保存类的成员函数。   
+2、c 函数要访问类里面的成员，需要有类对象的指针，那么这些成员函数的第一个变量可以统一为指向对象指向的指针，这个相当于模拟 c++ 的 this 指针。   
+3、但是 c++ 的 public, protected, private 这几种对成员的访问限制，在 c 中模拟不了。   
+
+举个例子： 
 
 ```c
 #include "stdio.h"
 #include "stdlib.h"
 
-typedef struct Point {
+struct Point {
     int x;
     int y;
     void (*scale) (struct Point*, int);
-} Point;
+};
 
-void point_scale(Point* self, int factor) {
+void point_scale(struct Point* self, int factor) {
     self->x *= factor;
     self->y *= factor;
 }
 
+void point_init(struct Point* point) {
+    point->x = 10;
+    point->y = 20;
+    point->scale = point_scale;
+}
+
+void point_destryo(struct Point* pt) {
+    free(p);
+}
+
 int main() {
-    Point p = {10, 20, point_scale};
-    p.scale(&p, 30);
-    printf("%d, %d\n", p.x, p.y);
+    struct Point* pt = (struct Point*)malloc(sizeof(Point));
+    pt->scale(&p, 30);
+    printf("%d, %d\n", pt->x, pt->y);
     return 0;
 }
 ```
