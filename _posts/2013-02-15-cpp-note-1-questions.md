@@ -118,12 +118,17 @@ f(s);    // 拷贝构造一次，得到临时对象
 
 ---
 
-## 1.7 什么是运行时多态？是怎么实现的？  
+## 什么是运行时多态？是怎么实现的？  
 
+c++ 的运行时多态是使用虚函数表实现的，有一篇文章总结得不错：[C++中虚函数、虚继承内存模型](https://zhuanlan.zhihu.com/p/41309205?utm_psn=1706095557872001024) [2]。   
 
 ---
 
-## 1.8 什么是编译时多态？  
+## 关于继承的一些常识
+
+---
+
+## 什么是编译时多态？  
 
 参考自：[编译期多态](https://xie.infoq.cn/article/829d74dcd8d19aa613f8da059) [1]。  
 
@@ -138,22 +143,22 @@ f(s);    // 拷贝构造一次，得到临时对象
 
 ---
 
-## 1.9 auto 对于运行速度有影响吗？ 
+## auto 对于运行速度有影响吗？ 
 
 不会有影响，auto 是编译时推导的。auto 依赖于值的类型进行类型推导，所以使用 auto 声明时必须同时进行初始化。  
 
 
 ---
 
-## 1.10 extern 的作用是什么？  
+## extern 的作用是什么？  
 
 ---
 
-## 1.11 volatile 的作用是什么？  
+## volatile 的作用是什么？  
 
 ---
 
-## 1.12 template 中 typename 与 class 的区别？  
+## template 中 typename 与 class 的区别？  
 
 ---
 
@@ -228,3 +233,5 @@ included; however, in §3.3 below we argue why auto&& is also a forwarding case 
 # 3. 参考
 
 [1] SkyFire. 编译期多态. Available at https://xie.infoq.cn/article/829d74dcd8d19aa613f8da059, 2023-01-28.    
+
+[2] Holy Chen. C++中虚函数、虚继承内存模型. Available at https://zhuanlan.zhihu.com/p/41309205, 2018-08-07.   
