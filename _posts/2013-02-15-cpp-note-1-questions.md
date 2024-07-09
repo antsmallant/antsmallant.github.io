@@ -155,7 +155,7 @@ void point_init(struct Point* pt) {
 }
 
 void point_destroy(struct Point* pt) {
-    memset(pt, 0, sizeof(struct Point));
+    printf("point destroy\n");
     // do not free here
 }
 
@@ -202,7 +202,7 @@ void base_init(struct Base* base) {
 }
 
 void base_destroy(struct Base* base) {
-    memset(base, 0, sizeof(struct Base));
+    printf("base destroy\n");
 }
 
 struct Derived {
@@ -223,8 +223,8 @@ void derived_init(struct Derived* d) {
 }
 
 void derived_destroy(struct Derived* d) {
+    printf("derived_destroy\n");
     base_destroy((struct Base*)d);
-    memset(d, 0, sizeof(struct Derived));
 }
 
 int main() {
