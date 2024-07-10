@@ -302,7 +302,7 @@ int main() {
 
 c++ 的多态有编译时多态，有运行时多态，显然这里我们也不可能实现编译时多态，但运行时多态还是可以进行一定程度的模拟的。c++ 的运行时多态，是使用虚函数表的机制来实现的。  
 
-关于 c++ 虚函数表的内部实现细节，可以参考这篇文章：[《C++中虚函数、虚继承内存模型》](https://zhuanlan.zhihu.com/p/41309205)，总结得比较到位。简单来说，当一个类包含虚函数时，不论是继承来的，还是自己定义的，编译器就会为此类自动的新增一个隐藏的成员变量，即虚函数表的指针。虚函数表是类级别的，它在编译时被确定，存储在只读数据段 (.rodata) 中。  
+关于 c++ 虚函数表的内部实现细节，可以参考这篇文章：[《C++中虚函数、虚继承内存模型》](https://zhuanlan.zhihu.com/p/41309205) [2]，总结得比较到位。简单来说，当一个类包含虚函数时，不论是继承来的，还是自己定义的，编译器就会为此类自动的新增一个隐藏的成员变量，即虚函数表的指针。虚函数表是类级别的，它在编译时被确定，存储在只读数据段 (.rodata) 中。  
 
 一般情况，c++ 中一个类只有一个虚函数表指针，复杂的情况下，一个类会有好几个虚函数表指针。为了简单起见，这里只模拟一个类只有一个虚函数指针的情形。  
 
@@ -427,3 +427,5 @@ animal_destroy
 # 2. 参考
 
 [1] geeksforgeeks. Difference between #include and #include” ” in C/C++ with Examples. Available at https://www.geeksforgeeks.org/difference-between-include-and-include-in-c-c-with-examples/, 2023-4-22.   
+
+[2] Holy Chen. C++中虚函数、虚继承内存模型. Available at https://zhuanlan.zhihu.com/p/41309205, 2018-08-07.   
