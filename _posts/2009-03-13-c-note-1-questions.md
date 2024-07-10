@@ -138,7 +138,7 @@ typedef struct S {
 
 ## 1.3 struct 使用 typedef 定义别名是否是好的做法？  
 
-在多数情况下并不适合，参照 linux 内核的: [kernel coding-style](https://www.kernel.org/doc/html/latest/process/coding-style.html#typedefs)，里面提到了一些关于 typedef 的 rule。   
+在多数情况下不推荐使用 typedef 给 struct 定义别名，参照 linux 内核的: [kernel coding-style](https://www.kernel.org/doc/html/latest/process/coding-style.html#typedefs)，里面提到了一些关于 typedef 的 rule。   
 
 对于 struct，当它是一个透明的类型，别人可以访问里面的成员时，那么不要用 typedef 来取别名。这样的好处是，使用这样的方式定义变量 `struct SomeType somevar;`，当别人看到 `struct` 时，一下子就知道 `somevar` 是一个 `struct` 类型的，这样更清晰。  
 
