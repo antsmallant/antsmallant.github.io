@@ -215,7 +215,7 @@ c++ 的运行时多态是使用虚函数表实现的，有一篇文章总结得�
 
 ## c99 支持 VLA，那么 c++ 支持吗？ 
 
-[Why aren't variable-length arrays part of the C++ standard?](https://stackoverflow.com/questions/1887097/why-arent-variable-length-arrays-part-of-the-c-standard)
+[Why aren't variable-length arrays part of the C++ standard?](https://stackoverflow.com/questions/1887097/why-arent-variable-length-arrays-part-of-the-c-standard)   
 
 
 ---
