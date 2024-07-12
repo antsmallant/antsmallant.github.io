@@ -421,6 +421,54 @@ animal_destroy
 * [《C 语言实现面向对象（一）：初步实现三个基本特征》](https://schaepher.github.io/2020/03/12/c-oop/)
 * [《使用C语言实现面相对对象三大特性》](https://www.cnblogs.com/Kroner/p/16456733.html)
 
+---
+
+## 1.8 c99 的 VLA 具体是什么？  
+
+VLA 即 variable length array，允许在运行时才确定数组的长度。在 c99 之前，数组的长度需要在编译时确定。在 c99 之后，可以这样定义数组：   
+
+```c
+void func(int n) {
+    int arr[n];
+}
+```  
+
+但要注意：    
+
+1、长度确定后，数组长度也是不可变的。     
+
+2、作用域有要求，file scope 不允许，block scope 或 proto scope 允许，有点细碎，具体可参考 [《c99-draft.html#6.7.5.2》](https://busybox.net/~landley/c99-draft.html#6.7.5.2) 给出的例子：   
+
+>#8 EXAMPLE 4 All declarations of variably modified (VM) types have to be at either block scope or function prototype scope. Array objects declared with the static or extern storage class specifier cannot have a variable length array (VLA) type. However, an object declared with the static storage class specifier can have a VM type (that is, a pointer to a VLA type). Finally, all identifiers declared with a VM type have to be ordinary identifiers and cannot, therefore, be members of structures or unions.
+
+```c
+extern int n;
+int A[n];                                       // Error - file scope VLA.
+extern int (*p2)[n];            // Error - file scope VM.
+int B[100];                             // OK - file scope but not VM.
+
+void fvla(int m, int C[m][m])   // OK - VLA with prototype scope.
+{
+        typedef int VLA[m][m]   // OK - block scope typedef VLA.
+
+        struct tag {
+                int (*y)[n];            // Error - y not ordinary identifier.
+                int z[n];                       // Error - z not ordinary identifier.
+        };
+        int D[m];                               // OK - auto VLA.
+        static int E[m];                // Error - static block scope VLA.
+        extern int F[m];                // Error - F has linkage and is VLA.
+        int (*s)[m];                    // OK - auto pointer to VLA.
+        extern int (*r)[m];             // Error - r had linkage and is
+                                                // a pointer to VLA.
+        static int (*q)[m] = &B; // OK - q is a static block
+                                        // pointer to VLA.
+}
+```
+
+<br/>
+
+参考文章：[《GCC 中零长数组与变长数组》](https://www.cnblogs.com/hazir/p/variable_length_array.html)   
 
 ---
 

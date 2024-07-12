@@ -204,6 +204,22 @@ c++ 的运行时多态是使用虚函数表实现的，有一篇文章总结得�
 
 ---
 
+## constexpr 与 const 的区别是什么？
+
+
+---
+
+## const 相对于 define 有何好处？
+
+---
+
+## c99 支持 VLA，那么 c++ 支持吗？ 
+
+[Why aren't variable-length arrays part of the C++ standard?](https://stackoverflow.com/questions/1887097/why-arent-variable-length-arrays-part-of-the-c-standard)
+
+
+---
+
 ## `auto&` 是一种好的写法吗？
 
 * [C++ auto& vs auto - Stack Overflow](https://stackoverflow.com/questions/29859796/c-auto-vs-auto)
