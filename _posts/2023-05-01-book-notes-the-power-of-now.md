@@ -1,8 +1,8 @@
 ---
 layout: post
 title: "读书笔记：《当下的力量》"
-date: 2024-05-01
-last_modified_at: 2024-05-01
+date: 2023-05-01
+last_modified_at: 2023-05-01
 categories: [读书]
 ---
 
