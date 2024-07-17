@@ -154,7 +154,8 @@ i = t
 
 参照： [https://pkg.go.dev/fmt@go1.22.5#hdr-Printing](https://pkg.go.dev/fmt@go1.22.5#hdr-Printing)   
 
-General:
+General:    
+
 ```
 %v	the value in a default format
 	when printing structs, the plus flag (%+v) adds field names
@@ -163,7 +164,8 @@ General:
 %%	a literal percent sign; consumes no value
 ```
 
-The default format for %v is:
+The default format for %v is:    
+
 ```
 bool:                    %t
 int, int8 etc.:          %d
