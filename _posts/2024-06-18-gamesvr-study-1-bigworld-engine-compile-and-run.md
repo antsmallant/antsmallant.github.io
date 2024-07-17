@@ -252,7 +252,7 @@ systemd=true
 
 2、创建数据库&账号   
 
-```
+```sql
 CREATE DATABASE IF NOT EXISTS bigworld DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;
 
 
@@ -271,7 +271,7 @@ flush privileges;
 1、打开文件 `game\res\bigworld\server\production_defaults.xml`，搜索到 mysql，
 配置相关信息，比如我配置完是这样的：    
 
-```
+```xml
 ...
 		<mysql>
 			<host> 127.0.0.1 </host> <!-- Type: String -->
@@ -325,11 +325,13 @@ sudo service bwmachined2 start
 （这一步看起来有点多余，但是如果不做，bwmachined2 可能会运行异常）            
 
 1、创建目录     
+
 ```bash
 mkdir -p ~/mf/bigworld/server/bin
 ```
 
-2、拷贝文件      
+2、拷贝文件     
+
 ```bash
 cp -R game/bin/server/el7/server/* ~/mf/bigworld/bin/server/
 ```
@@ -340,7 +342,7 @@ cp -R game/bin/server/el7/server/* ~/mf/bigworld/bin/server/
 
 1、在当前用户的 home 目录 (~/) 下创建一个名为 .bwmachined.conf 的文本文件，要注意，文件名是以 . 号开头，内容如下： 
 
-```
+```conf
 /home/ant/mf/bigworld;/home/ant/bigworld2014/game/res/bigworld:/home/ant/bigworld2014/game/res/fantasydemo
 
 [Components]
