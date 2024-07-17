@@ -33,7 +33,9 @@ library 文档: [https://pkg.go.dev/std](https://pkg.go.dev/std)
 
 a tour of go: [https://go.dev/tour/welcome/1](https://go.dev/tour/welcome/1)    
 
-go by example: [https://gobyexample.com/](https://gobyexample.com/)    
+go by example: [https://gobyexample.com/](https://gobyexample.com/)     
+
+go playground: [https://go.dev/play/](https://go.dev/play/)     
  
 
 ---
@@ -203,6 +205,38 @@ complex64 complex128
 2、`for i := range c` 会不断从信道 c 中接收值，则到它被关闭。   
 
 3、信道与文件不同，通常情况下无需关闭它们，只有在必须告诉接收者不再有需要发送的值时才需要，比如终止一个 range 循环。  
+
+---
+
+## 2.10 `...` 的两种用法
+
+1、用于函数的不定参数，比如 `func x(args ...string)`。   
+
+2、用于将 slice 打散，比如这样：    
+
+```go
+    ans := []byte{}
+    nums := []int{10, 20, 30}
+    for _, x := range nums {
+        ans = append(ans, strconv.Itoa(x)...) // strconv.Itoa 的结果是 string，而 string... 是打散成 n 个 byte
+    }
+    fmt.Println(string(ans))
+```
+
+或者这样：  
+
+```go
+func test(nums ...int) {
+	for _, x := range nums {
+		fmt.Println(x)
+	}
+}
+
+func main() {
+	nums := []int{10, 20, 30}
+	test(nums...)  // nums 被打散成 3 个 int，作为入参传给 test
+}
+```
 
 ---
 
