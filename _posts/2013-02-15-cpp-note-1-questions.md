@@ -118,6 +118,28 @@ f(s);    // 拷贝构造一次，得到临时对象
 
 ---
 
+## 1.7 rvo、nrvo、copy elision  
+
+copy elision，即“复制省略”，是编译器的优化技术，包含两个场景：  
+* 纯右值参数复制构造时的 copy elision。   
+* 函数返回值优化（rvo）。   
+
+1、纯右值参数复制构造时的 copy elision 的例子
+
+```cpp
+
+```
+
+
+
+
+
+参考文章：  
+[Copy/move elision: C++ 17 vs C++ 11](https://zhuanlan.zhihu.com/p/379566824)     
+[理解C++编译器中的 Copy elision 和 RVO 优化](https://zhuanlan.zhihu.com/p/703789055)       
+
+---
+
 ## 字节对齐的意义是什么？如何做到字节对齐？    
 
 ---
