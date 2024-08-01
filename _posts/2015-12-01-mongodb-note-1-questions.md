@@ -2,7 +2,7 @@
 layout: post
 title: "mongodb 笔记一：常识、用法"
 date: 2015-12-01
-last_modified_at: 2021-7-10
+last_modified_at: 2024-7-10
 categories: [mongodb]
 tags: [mongodb]
 ---
@@ -54,66 +54,130 @@ ObjectId()
 
 ## 1.4 MongoDB 的管理与命令
 
+参考： [MongoDB | 概念及基础CRUD](https://blog.csdn.net/weixin_38980638/article/details/136994894)  
+
+
 ### 1.4.1 数据库管理 
 
 有3个默认的数据库: admin, local, config。   
 
+
 查看所有数据库    
+
 `show dbs;` 或 `show databases;`   
 
-查看当前数据库     
+
+查看当前数据库    
+
 `db;`    
 
+
 切换数据库   
+
 `use <dbname>;`   
 
-删除当前数据库       
+
+删除当前数据库     
+
 `db.dropDatabase();`     
+
 
 ---
 
 ### 1.4.2 集合管理  
 
 查看所有集合   
+
 `show collections;`     
 
-创建集合
-`db.createCollection("<collectionName>");`  
+
+创建集合   
+
+`db.createCollection("<collection>");`  
+
 
 删除集合    
-`db.<collectionName>.drop();`      
+
+`db.<collection>.drop();`      
+
 
 ---
 
 ### 1.4.3 索引管理
 
+创建索引     
+
+`db.<collection>.createIndex(<key or index spec>, <option>)`    
+
+比如：      
+创建复合索引 `db.abc.createIndex({userid: 1, grade: -1})`，userid 是升序，grade 是降序。  
+
+创建单字段索引 `db.abc.createIndex({score:1})`, 创建了 score 字段的索引，升功率。  
 
 
+查询索引    
+
+`db.<collection>.getIndexes();`   
+
+
+删除索引    
+
+`db.<collection>.dropIndex(<key or index spec>)`     
+
+比如： `db.abc.dropIndex({userid: 1,})`    
+
+
+删除所有索引
+
+`db.<collection>.dropIndexes()`    
+
+---
 
 ### 1.4.4 CRUD   
 
 插入      
 
-`db.<collectionName>.insertOne(<document>)`
-`db.<collectionName>.insertMany([<document>, ..., <document>])`  
+`db.<collection>.insertOne(<document>)`   
+
+`db.<collection>.insertMany([<document>, ..., <document>])`   
 
 `<document>` 是 kv 结构的 table: `{k1:v1, k2:v2, ...}`    
 
 
 查询     
 
-`db.<collectionName>.find({key:value or conditions})`    
+`db.<collection>.find({key:value or conditions})`    
 
 
 更新     
 
-`db.<collectionName>.update({key:value}, {$set, {newkey:newvalue}})`
+`db.<collection>.update({key:value}, {$set, {newkey:newvalue}})`    
 
 
 删除        
-`db.<collectionName>.deleteOne({key:value or conditons})`   
+`db.<collection>.deleteOne({key:value or conditons})`   
 
-`db.<collectionName>.deleteMany({key:value or conditons})`    
+`db.<collection>.deleteMany({key:value or conditons})`    
+
+比如 `db.abc.deleteOne({num:{$lt:50}})`, 删除 abc 集合中，num 字段小于 50 的一个文档。  
+
+
+---
+
+## 1.5 MongoDB 的索引 
+
+参考自： [《MongoDB | 概念及基础CRUD》](https://blog.csdn.net/weixin_38980638/article/details/136994894) [1]
+
+|索引名称 |	简介|
+|--|--|
+|Single Field	      |单字段的 升序/降序 索引|
+|Compound Index	      |复合索引|
+|Multikey Index	      |数组值索引，可以给一个字段值为数组的字段中的一个或多个字段进行索引|
+|Geospatial Index	  |地理坐标索引，提供了2d indexes(平面几何) 和2dsphere indexes(球面几何)|
+|Text Search Indexes  |	支持文本搜索的索引,类似于elasticsearch|
+|Hashed Indexes	      | HASH索引，提供最快的值查询，但不支持范围查询|
+|Clustered Indexes	  |clustered collections支持的index|
+
 
 
 ---
@@ -122,3 +186,4 @@ ObjectId()
 
 # 2. 参考
 
+[1] sevenll07. "MongoDB | 概念及基础CRUD". Available at https://blog.csdn.net/weixin_38980638/article/details/136994894, 2024-3-24.  
