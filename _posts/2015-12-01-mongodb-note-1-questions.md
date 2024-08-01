@@ -180,7 +180,7 @@ ObjectId()
 
 ## 1.5 MongoDB 的索引 
 
-参考自： [《MongoDB | 概念及基础CRUD》](https://blog.csdn.net/weixin_38980638/article/details/136994894) [1]
+参考自： [《MongoDB 概念及基础CRUD》](https://blog.csdn.net/weixin_38980638/article/details/136994894) [1]
 
 |索引名称|简介|
 |--|--|
@@ -200,4 +200,4 @@ ObjectId()
 
 # 2. 参考
 
-[1] sevenll07. "MongoDB | 概念及基础CRUD". Available at https://blog.csdn.net/weixin_38980638/article/details/136994894, 2024-3-24.  
+[1] sevenll07. MongoDB 概念及基础CRUD. Available at https://blog.csdn.net/weixin_38980638/article/details/136994894, 2024-3-24.    
