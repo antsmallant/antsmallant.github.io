@@ -151,7 +151,7 @@ int main() {
 }
 ```
 
-1、对于 c++11 或 c++14，如果关闭编译器的 copy elision 优化，即加上 `-fno-elide-constructors` 选项，则输出是 
+1、对于 c++11 或 c++14，如果关闭编译器的 copy elision 优化，即加上 `-fno-elide-constructors` 选项，则输出是：   
 
 ```
 Call A(int)
