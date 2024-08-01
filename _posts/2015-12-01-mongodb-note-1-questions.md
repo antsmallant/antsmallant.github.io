@@ -66,22 +66,22 @@ ObjectId()
 有3个默认的数据库: admin, local, config。   
 
 
-查看所有数据库    
+1、查看所有数据库    
 
 `show dbs;` 或 `show databases;`   
 
 
-查看当前数据库    
+2、查看当前数据库    
 
 `db;`    
 
 
-切换数据库   
+3、切换数据库   
 
 `use <dbname>;`   
 
 
-删除当前数据库     
+4、删除当前数据库     
 
 `db.dropDatabase();`     
 
@@ -90,17 +90,17 @@ ObjectId()
 
 ### 1.4.2 集合管理  
 
-查看所有集合   
+1、查看所有集合   
 
 `show collections;`     
 
 
-创建集合   
+2、创建集合   
 
 `db.createCollection("<collection>");`  
 
 
-删除集合    
+3、删除集合    
 
 `db.<collection>.drop();`      
 
@@ -113,7 +113,7 @@ ObjectId()
 
 <br/>
 
-创建索引     
+1、创建索引     
 
 `db.<collection>.createIndex(<keys>, <options>)`     
 
@@ -125,19 +125,19 @@ ObjectId()
 创建 text 索引 `db.abc.createIndex({address:"text"})`。  
 
 
-查询索引    
+2、查询索引    
 
 `db.<collection>.getIndexes();`   
 
 
-删除索引    
+3、删除索引    
 
 `db.<collection>.dropIndex(<keys>)`     
 
 比如： `db.abc.dropIndex({userid: 1,})`    
 
 
-删除所有索引
+4、删除所有索引
 
 `db.<collection>.dropIndexes()`    
 
@@ -149,7 +149,7 @@ ObjectId()
 
 <br/>   
 
-插入      
+1、插入      
 
 `db.<collection>.insertOne(<document>)`   
 
@@ -158,17 +158,18 @@ ObjectId()
 `<document>` 是 kv 结构的 table: `{k1:v1, k2:v2, ...}`    
 
 
-查询     
+2、查询     
 
 `db.<collection>.find({key:value or conditions})`    
 
 
-更新     
+3、更新     
 
 `db.<collection>.update({key:value}, {$set, {newkey:newvalue}})`    
 
 
-删除        
+4、删除        
+
 `db.<collection>.deleteOne({key:value or conditons})`   
 
 `db.<collection>.deleteMany({key:value or conditons})`    
