@@ -244,7 +244,7 @@ SomeType return_some_type() {
 
 <br/>   
   
-nrvo 的情况比较复杂，需要分情况讨论。参考自此文章：[《理解C++编译器中的 Copy elision 和 RVO 优化》](https://zhuanlan.zhihu.com/p/703789055)  [3]：  
+nrvo 比较复杂，需要分情况讨论。参考自此文章：[《理解C++编译器中的 Copy elision 和 RVO 优化》](https://zhuanlan.zhihu.com/p/703789055)  [3]：  
 
 1、返回局部变量，如果存在运行时依赖，则不一定会优化，具体要看编译器的实现。  
 
