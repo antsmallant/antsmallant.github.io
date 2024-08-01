@@ -158,13 +158,13 @@ Call A(int)
 Call A(const A&)
 ```
 
-如果不关闭编译器的 copy elision 优化，则输出是
+如果不关闭编译器的 copy elision 优化，则输出是：   
 
 ```
 Call A(int)
 ```
 
-2、对于 c++17，无论是否关闭编译器的 copy elision 优化，输出都是  
+2、对于 c++17，无论是否关闭编译器的 copy elision 优化，输出都是：     
 
 ```
 Call A(int)
