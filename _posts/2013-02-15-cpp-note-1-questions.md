@@ -184,6 +184,7 @@ struct A {
     int x;
     A(int _x) { x = _x; cout << "Call A(int)" << endl; }
     A(const A& a) { x = a.x; cout << "Call A(const A&)" << endl; }
+    A(A&& a) { x = a.x; cout << "Call A(A&&)" << endl; }
 };
 
 A getA() {
@@ -200,8 +201,8 @@ int main() {
 
 ```
 Call A(int)
-Call A(const A&)
-Call A(const A&)
+Call A(A&&)
+Call A(A&&)
 ```
 
 如果不关闭编译器的 copy elision 优化，则输出是： 
@@ -209,6 +210,8 @@ Call A(const A&)
 ```
 Call A(int)
 ```
+
+无论没有定义移动构造函数，则调用拷贝构造函数，可以编译器的 copy elision 可以优先掉移动构造或者拷贝构造。   
 
 2、对于 c++17，无论是否关闭编译器的 copy elision 优化，输出都是：    
 
@@ -233,15 +236,45 @@ SomeType return_some_type() {
 
 这种情况下，编译器可以这样优化，在调用者的栈上构造出 x 这个局部变量，作为参数传为 `return_some_type` 使用，避免需要实际的 return x。  
 
-nrvo 的情况比较复杂，以下情况是明确不会优化的：  
+<br/>   
+  
+nrvo 的情况比较复杂，需要分情况讨论。参考自此文章：[《理解C++编译器中的 Copy elision 和 RVO 优化》](https://zhuanlan.zhihu.com/p/703789055)  [3]：  
 
-1、
+1、返回局部变量，如果存在运行时依赖，则不一定会优化，具体要看编译器的实现。  
 
+比如这样： 
 
+```cpp
+SomeType get(bool flag) {
+    if (flag) {
+        SomeType x;
+        // do some change
+        return x;
+    } else {
+        SomeType y;
+        return y;
+    }
+}
 
+2、返回函数参数，不会优化。  
 
+3、返回全局变量，不会优化。  
 
-参考文章：  
+4、返回值使用 move 转换，不会优化。  
+
+比如这样：  
+
+```cpp
+SomeType get() {
+    SomeType x;
+    return std::move(x);
+}
+```
+
+---
+
+### 1.7.3 拓展阅读  
+
 [《Copy/move elision: C++ 17 vs C++ 11》](https://zhuanlan.zhihu.com/p/379566824)     
 [《理解C++编译器中的 Copy elision 和 RVO 优化》](https://zhuanlan.zhihu.com/p/703789055)       
 
@@ -403,4 +436,6 @@ included; however, in §3.3 below we argue why auto&& is also a forwarding case 
 
 [1] SkyFire. 编译期多态. Available at https://xie.infoq.cn/article/829d74dcd8d19aa613f8da059, 2023-01-28.    
 
-[2] Holy Chen. C++中虚函数、虚继承内存模型. Available at https://zhuanlan.zhihu.com/p/41309205, 2018-08-07.   
+[2] Holy Chen. C++中虚函数、虚继承内存模型. Available at https://zhuanlan.zhihu.com/p/41309205, 2018-08-07.    
+
+[3] jiannanya​. 理解C++编译器中的 Copy elision 和 RVO 优化. Available at https://zhuanlan.zhihu.com/p/703789055, 2024-6-17.  
