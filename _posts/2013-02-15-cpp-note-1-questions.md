@@ -255,6 +255,7 @@ SomeType get(bool flag) {
         return y;
     }
 }
+```
 
 2、返回函数参数，不会优化。  
 
