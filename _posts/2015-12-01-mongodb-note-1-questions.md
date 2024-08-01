@@ -168,14 +168,14 @@ ObjectId()
 
 参考自： [《MongoDB | 概念及基础CRUD》](https://blog.csdn.net/weixin_38980638/article/details/136994894) [1]
 
-|索引名称 |	简介|
+|索引名称|简介|
 |--|--|
 |Single Field	      |单字段的 升序/降序 索引|
 |Compound Index	      |复合索引|
 |Multikey Index	      |数组值索引，可以给一个字段值为数组的字段中的一个或多个字段进行索引|
 |Geospatial Index	  |地理坐标索引，提供了2d indexes(平面几何) 和2dsphere indexes(球面几何)|
-|Text Search Indexes  |	支持文本搜索的索引,类似于elasticsearch|
-|Hashed Indexes	      | HASH索引，提供最快的值查询，但不支持范围查询|
+|Text Search Indexes  |支持文本搜索的索引,类似于elasticsearch|
+|Hashed Indexes	      |HASH索引，提供最快的值查询，但不支持范围查询|
 |Clustered Indexes	  |clustered collections支持的index|
 
 
