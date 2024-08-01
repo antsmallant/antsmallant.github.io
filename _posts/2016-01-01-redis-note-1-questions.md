@@ -101,6 +101,22 @@ size_t lazyfreeGetFreeEffort(robj *key, robj *obj, int dbid) {
 
 ---
 
+## 1.2 redis 各个数据结构的底层实现 
+
+参考：[Redis 常见数据类型和应用场景](https://xiaolincoding.com/redis/data_struct/command.html)    
+
+redis 常用的数据类型有 5 种：String，List，Hash，Set，Zset。还有另外 4 种用得不多的：Bitmap（2.2新增），HyperLogLog（2.8新增），Geo（3.2新增），Stream（5.0新增）。  
+
+
+
+---
+
+## 1.3 redis 的多线程
+
+
+
+---
+
 # 2. 参考
 
 [1] MrSatan. redis之bigkey（看这一篇就够）. Available at https://www.cnblogs.com/szq95716/p/14271108.html, 2021-01-13.    
