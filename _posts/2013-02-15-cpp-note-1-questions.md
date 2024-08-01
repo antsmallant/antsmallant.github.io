@@ -133,9 +133,6 @@ copy elision，即 “复制省略”，是编译器的优化技术，包含两�
 ```
 
 
-
-
-
 参考文章：  
 [Copy/move elision: C++ 17 vs C++ 11](https://zhuanlan.zhihu.com/p/379566824)     
 [理解C++编译器中的 Copy elision 和 RVO 优化](https://zhuanlan.zhihu.com/p/703789055)       
@@ -280,6 +277,15 @@ included; however, in §3.3 below we argue why auto&& is also a forwarding case 
 ---
 
 ## 什么是别名声明？  
+
+---
+
+## std::vector 在长度不足的时候，以什么策略扩容？  
+
+
+---
+
+## c++17 中对于 value categories 做了哪些修改？  
 
 ---
 
