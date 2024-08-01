@@ -123,14 +123,62 @@ f(s);    // 拷贝构造一次，得到临时对象
 copy elision，即 “复制省略”，是编译器的优化技术，包含两个场景：  
 
 * 纯右值参数复制构造时的 copy elision。   
-* 函数返回值优化（rvo）。   
+* 函数返回值优化（ rvo，即 return value optimization ）。   
 
+nrvo 是一种特殊的 rvo，是 name return value optimization，返回的不是临时构造的对象，而是函数中的局部变量。  
 
-1、纯右值参数复制构造时的 copy elision 的例子
+<br/>
+
+在 c++17 之后，强制要求编译器实现 copy elision。  
+在 c++17 之前（c++11/c++14），copy elision 依赖于编译器的具体实现，gcc 是默认支持 copy elision 的。   
+
+以下使用 gcc 13.2.0 。 
+
+一、纯右值参数复制构造时的 copy elision 的例子    
 
 ```cpp
+#include <iostream>
+using namespace std;
+
+struct A {
+    A(int) { cout << "Call A(int)" << endl; }
+    A(const A&) { cout << "Call A(const A&)" << endl; }
+};
+
+int main() {
+    [[maybe_unused]] A a = A(1); // 纯右值复制构造
+    return 0;
+}
+```
+
+1、c++11 或 c++14
+
+如果关闭编译器的 copy elision 优化，即加上 `-fno-elide-constructors` 选项，则输出是 
 
 ```
+Call A(int)
+Call A(const A&)
+```
+
+如果不关闭编译器的 copy elision 优化，则输出是
+
+```
+Call A(int)
+```
+
+2、c++17 
+
+无论是否关闭编译器的 copy elision 优化，输出都是  
+
+```
+Call A(int)
+```
+
+<br/>
+
+二、函数返回值优化（rvo）的例子   
+
+
 
 
 参考文章：  
@@ -145,17 +193,7 @@ c++ 的运行时多态是使用虚函数表实现的，有一篇文章总结得�
 
 ---
 
-## 关于继承的一些常识
-
----
-
-## 什么是虚函数？什么是纯虚函数？
-
----
-
-## 什么是编译时多态？  
-
-参考自：[编译期多态](https://xie.infoq.cn/article/829d74dcd8d19aa613f8da059) [1]。  
+## 1.9 什么是编译时多态？  
 
 编译时多态又称静态多态或类型安全多态，是指在编译期就可以确定函数的实际类型的多态。  
 
@@ -165,13 +203,21 @@ c++ 的运行时多态是使用虚函数表实现的，有一篇文章总结得�
 
 * 函数模板，是一种特殊函数，可以接受一个或多个模板参数作为函数的参数，编译时会将类型参数替换为实际类型。     
 
+参考自：[编译期多态](https://xie.infoq.cn/article/829d74dcd8d19aa613f8da059) [1]。  
 
 ---
 
-## auto 对于运行速度有影响吗？ 
+## 1.10 auto 对于运行速度有影响吗？ 
 
 不会有影响，auto 是编译时推导的。auto 依赖于值的类型进行类型推导，所以使用 auto 声明时必须同时进行初始化。  
 
+---
+
+## 关于继承的一些常识
+
+---
+
+## 什么是虚函数？什么是纯虚函数？
 
 ---
 
