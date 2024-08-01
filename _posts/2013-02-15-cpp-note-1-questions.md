@@ -120,6 +120,8 @@ f(s);    // 拷贝构造一次，得到临时对象
 
 ## 1.7 copy elision、rvo、nrvo
 
+---
+
 ### 1.7.1 copy elision 与 rvo 
 
 copy elision，即 “复制省略”，是编译器的优化技术，包含两个场景：  
