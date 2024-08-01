@@ -118,31 +118,31 @@ f(s);    // 拷贝构造一次，得到临时对象
 
 ---
 
-## 1.7 rvo、nrvo、copy elision  
+## 1.7 copy elision、rvo、nrvo
+
+### 1.7.1 copy elision 与 rvo 
 
 copy elision，即 “复制省略”，是编译器的优化技术，包含两个场景：  
 
 * 纯右值参数复制构造时的 copy elision。   
 * 函数返回值优化（ rvo，即 return value optimization ）。   
 
-nrvo 是一种特殊的 rvo，是 name return value optimization，返回的不是临时构造的对象，而是函数中的局部变量。  
+从 c++17 开始，强制要求编译器实现 copy elision。在 c++17 之前（c++11 / c++14），copy elision 依赖于编译器的具体实现，gcc 是默认支持 copy elision 的。   
 
 <br/>
 
-在 c++17 之后，强制要求编译器实现 copy elision。  
-在 c++17 之前（c++11/c++14），copy elision 依赖于编译器的具体实现，gcc 是默认支持 copy elision 的。   
+**一、纯右值参数复制构造时的 copy elision**       
 
 以下使用 gcc 13.2.0 。 
-
-一、纯右值参数复制构造时的 copy elision 的例子    
 
 ```cpp
 #include <iostream>
 using namespace std;
 
 struct A {
-    A(int) { cout << "Call A(int)" << endl; }
-    A(const A&) { cout << "Call A(const A&)" << endl; }
+    int x;
+    A(int _x) { x = _x; cout << "Call A(int)" << endl; }
+    A(const A& a) { x = a.x; cout << "Call A(const A&)" << endl; }
 };
 
 int main() {
@@ -151,9 +151,7 @@ int main() {
 }
 ```
 
-1、c++11 或 c++14
-
-如果关闭编译器的 copy elision 优化，即加上 `-fno-elide-constructors` 选项，则输出是 
+1、对于 c++11 或 c++14，如果关闭编译器的 copy elision 优化，即加上 `-fno-elide-constructors` 选项，则输出是 
 
 ```
 Call A(int)
@@ -166,9 +164,7 @@ Call A(const A&)
 Call A(int)
 ```
 
-2、c++17 
-
-无论是否关闭编译器的 copy elision 优化，输出都是  
+2、对于 c++17，无论是否关闭编译器的 copy elision 优化，输出都是  
 
 ```
 Call A(int)
@@ -176,7 +172,71 @@ Call A(int)
 
 <br/>
 
-二、函数返回值优化（rvo）的例子   
+**二、函数返回值优化（rvo）**
+
+以下使用 gcc 13.2.0 。   
+
+```cpp
+#include <iostream>
+using namespace std;
+
+struct A {
+    int x;
+    A(int _x) { x = _x; cout << "Call A(int)" << endl; }
+    A(const A& a) { x = a.x; cout << "Call A(const A&)" << endl; }
+};
+
+A getA() {
+    return A(10);
+}
+
+int main() {
+    [[maybe_unused]] A a = getA();
+    return 0;
+}
+```
+
+1、对于 c++11 或 c++14，如果关闭编译器的 copy elision 优化，即加上 `-fno-elide-constructors` 选项，则输出是：  
+
+```
+Call A(int)
+Call A(const A&)
+Call A(const A&)
+```
+
+如果不关闭编译器的 copy elision 优化，则输出是： 
+
+```
+Call A(int)
+```
+
+2、对于 c++17，无论是否关闭编译器的 copy elision 优化，输出都是：    
+
+```
+Call A(int)
+```
+
+---
+
+### 1.7.2 关于 nrvo
+
+rvo 中有一种特殊的场景，叫 nrvo，即 name return value optimization，返回的函数中已经命名的局部变量。c++17 对于 nrvo 没有强制标准，具体优化要看编译器的实现。    
+
+比如这样：    
+
+```cpp
+SomeType return_some_type() {
+    SomeType x;   // x 就是一个 name return value
+    return x;
+}
+```  
+
+这种情况下，编译器可以这样优化，在调用者的栈上构造出 x 这个局部变量，作为参数传为 `return_some_type` 使用，避免需要实际的 return x。  
+
+nrvo 的情况比较复杂，以下情况是明确不会优化的：  
+
+1、
+
 
 
 
