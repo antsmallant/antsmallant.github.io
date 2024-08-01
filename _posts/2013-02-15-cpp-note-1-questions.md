@@ -220,7 +220,7 @@ Call A(int)
 
 ### 1.7.2 关于 nrvo
 
-rvo 中有一种特殊的场景，叫 nrvo，即 name return value optimization，返回的函数中已经命名的局部变量。c++17 对于 nrvo 没有强制标准，具体优化要看编译器的实现。    
+rvo 中有一种特殊的场景，叫 nrvo，即 name return value optimization，返回函数中已经命名的局部变量。c++17 标准对于 nrvo 没有强制规定，具体优化要看编译器的实现。    
 
 比如这样：    
 
