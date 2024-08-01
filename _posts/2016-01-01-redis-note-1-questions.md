@@ -25,7 +25,7 @@ tags: [redis]
 
 这篇文章： [《redis之bigkey（看这一篇就够）》](https://www.cnblogs.com/szq95716/p/14271108.html) [1] 总结得很好。    
 
-**1、redis4.0 以前**   
+### 1.1.1 redis4.0 以前    
 
 在 redis4.0 以前，bigkey 的删除，如果直接使用 del 命令，会阻塞主线程比较久，导致实例响应不了其他命令，大致的估算是每 100w 个 value item，耗时是 1 秒左右（不同设备不现配置性能是不同的）。  
 
@@ -40,7 +40,7 @@ tags: [redis]
 
 <br/>
 
-**2、redis4.0 以后**    
+### 1.1.2 redis4.0 以后 
 
 在 redis4.0 以后，bigkey 的删除，可以使用 unlink 命令代替 del，unlink 一个 bigkey 的时候，redis 根据一定的规则评估释放 value 的耗时，当耗时可能超过阈值时，就会把 value 的释放安排到单纯的线程（bio）中去执行，从而避免阻塞主线程。  
 
