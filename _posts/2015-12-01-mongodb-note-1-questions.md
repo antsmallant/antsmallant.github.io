@@ -19,6 +19,13 @@ tags: [mongodb]
 
 # 1. 常识
 
+## 1.0 mongodb 资料  
+
+MongoDB manual: [https://www.mongodb.com/zh-cn/docs/manual/](https://www.mongodb.com/zh-cn/docs/manual/)   
+
+
+---
+
 ## 1.1 mongodb 支持外键吗？  
 
 mongodb 没有类似于关系数据库的外键机制。   
@@ -53,9 +60,6 @@ ObjectId()
 ---
 
 ## 1.4 MongoDB 的管理与命令
-
-参考： [MongoDB | 概念及基础CRUD](https://blog.csdn.net/weixin_38980638/article/details/136994894)  
-
 
 ### 1.4.1 数据库管理 
 
@@ -103,16 +107,22 @@ ObjectId()
 
 ---
 
-### 1.4.3 索引管理
+### 1.4.3 索引管理   
+
+官方文档：[https://www.mongodb.com/zh-cn/docs/manual/indexes/](https://www.mongodb.com/zh-cn/docs/manual/indexes/)   
+
+<br/>
 
 创建索引     
 
-`db.<collection>.createIndex(<key or index spec>, <option>)`    
+`db.<collection>.createIndex(<keys>, <options>)`     
 
 比如：      
 创建复合索引 `db.abc.createIndex({userid: 1, grade: -1})`，userid 是升序，grade 是降序。  
 
-创建单字段索引 `db.abc.createIndex({score:1})`, 创建了 score 字段的索引，升功率。  
+创建单字段索引 `db.abc.createIndex({score:1})`, 创建了 score 字段的索引，升序。  
+
+创建 text 索引 `db.abc.createIndex({address:"text"})`。  
 
 
 查询索引    
@@ -122,7 +132,7 @@ ObjectId()
 
 删除索引    
 
-`db.<collection>.dropIndex(<key or index spec>)`     
+`db.<collection>.dropIndex(<keys>)`     
 
 比如： `db.abc.dropIndex({userid: 1,})`    
 
@@ -134,6 +144,10 @@ ObjectId()
 ---
 
 ### 1.4.4 CRUD   
+
+官方文档： [https://www.mongodb.com/zh-cn/docs/manual/crud/](https://www.mongodb.com/zh-cn/docs/manual/crud/)    
+
+<br/>   
 
 插入      
 
