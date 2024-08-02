@@ -41,9 +41,9 @@ tags: [lua]
 
 #### 1.1.2.1 数据结构
 
-table 的结构体在 lobject.h 中定义。  
-
 关于 Table 如何存储的，如何解决哈希冲突的，都在下面的代码注释中写明了。  
+
+table 相关的结构体在 lobject.h 中定义。  
 
 ```c
 
@@ -80,8 +80,7 @@ typedef struct Table {
 
 ---
 
-#### 1.1.2.2 查找
-
+#### 1.1.2.2 查询
 
 
 ---
@@ -96,7 +95,11 @@ typedef struct Table {
 
 #### 1.1.2.5 rehash    
 
-`luaH_newkey` 时，找不到空闲的位置来创建新 key 的时候，就会执行 rehash。   
+1、rehash 的时机    
+
+`luaH_newkey` 时，找不到空闲的位置来创建新 key 时，就会执行 rehash，对表执行扩容操作。扩容的时候，需要申请新的内存，然后把原有的数据都拷贝过去。   
+
+下面的代码展示了 rehash 被执行的时机，取自 ltable.c 。  
 
 ```c
 TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
@@ -112,6 +115,11 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
     ...
 }
 ```
+
+<br/>
+
+2、rehash 的算法  
+
 
 
 
