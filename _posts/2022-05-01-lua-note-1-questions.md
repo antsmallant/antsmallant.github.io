@@ -21,17 +21,37 @@ tags: [lua]
 
 --- 
 
-## 1.1 lua table 的底层实现 
+## 1.1 lua table 
 
-1、组成，包含了数组和哈希表两部分。  
+---
 
-2、功能，可支持两大功能：容器，面向对象（通过 metatable）。    
+### 1.1.1 table 的基本信息
+
+1、包含了数组和哈希表两部分。    
+
+2、可支持两大功能：容器，面向对象（通过 metatable）。   
+
+---
  
+### 1.1.2 table 的底层实现
 
+#### 1.1.2.1 数据结构
 
-参考：   
-[深入Lua：Table的实现 - 知乎](https://zhuanlan.zhihu.com/p/97830462)   
-[Lua设计与实现--Table篇 - 知乎](https://zhuanlan.zhihu.com/p/87400150)
+#### 1.1.2.2 查找
+
+#### 1.1.2.3 新增元素
+
+#### 1.1.2.4 迭代
+
+#### 1.1.2.5 rehash    
+
+---
+
+### 1.1.3 table 的拓展阅读
+
+[《深入Lua：Table的实现 - 知乎》](https://zhuanlan.zhihu.com/p/97830462)     
+
+[《Lua设计与实现--Table篇 - 知乎》](https://zhuanlan.zhihu.com/p/87400150)    
 
 
 ---
