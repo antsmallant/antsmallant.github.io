@@ -279,13 +279,13 @@ end
         1)))        
 ```
 
-先尝试 `luaV_fastset`，如果 `luaH_get` 能获得到一个位置，那么就直接 `setobj2t` 即可。`luaH_get` 在以下情况能获得到一个位置：   
+先尝试 `luaV_fastset`，如果 `luaH_get` 能获得到一个有效位置，那么就直接 `setobj2t` 即可。`luaH_get` 在以下情况能获得到一个有效位置：   
 1、key 是正数且在数组部分范围内； 
 2、哈希部分已经存在这样一个 key；  
 
-如果 `luaV_fastset` 失败，就需要在哈希部分创建一个新 key 出来存储，这也就是 `luaV_finishset` 的逻辑。`luaV_finishset` 涉及到一些元表操作，比较复杂，简单来说就是通过 `luaH_newkey` 插入一个新 key，然后 `setobj2t` 给这个位置赋上 value。  
+如果 `luaV_fastset` 失败，就需要在哈希部分创建一个新 key 出来，这也就是 `luaV_finishset` 的逻辑。`luaV_finishset` 涉及到一些元表操作，比较复杂，简单来说就是通过 `luaH_newkey` 在哈希数组上寻找到一个合适的位置，然后 `setobj2t` 给这个位置赋上 value。  
 
-所以，重点逻辑就是看 `luaH_newkey`。  
+`luaH_newkey` 的大体逻辑如下：  
 
 
 
