@@ -208,16 +208,116 @@ static const TValue *getgeneric (Table *t, const TValue *key) {
 
 `mainposition` 就是计算哈希值。先计算哈希值，如果没命中，就链式查找。   
 
-
 ---
 
-#### 1.1.2.4 新增元素
+#### 1.1.2.4 设置或新增键值
+
+像这样的语句：  
+
+```lua
+local t = {}
+t[1] = 1
+t[2.0] = 2
+t["hello"] = 3
+```
+
+lua 翻译成字节码 ( 使用 [https://www.luac.nl/](https://www.luac.nl/) ) 是这样： 
+
+```
+main <input-file.lua:0,0> (5 instructions at ea4cbe26_3dbe05d0)
+0+ params, 2 slots, 1 upvalue, 1 local, 5 constants, 0 functions
+function main(...) --line 1 through 4
+1	NEWTABLE	0 0 0	
+2	SETTABLE	0 -1 -1	; 1 1
+3	SETTABLE	0 -2 -3	; 2.0 2
+4	SETTABLE	0 -4 -5	; "hello" 3
+5	RETURN	0 1	
+
+locals (1)
+index	name	startpc	endpc
+0	t	2	6
+
+upvalues (1)
+index	name	instack	idx	kind
+0	_ENV	true	0	VDKREG (regular)
+
+constants (5)
+index	type	value
+1	number	1
+2	number	2
+3	number	2
+4	string	"hello"
+5	number	3
+end
+```
 
 
+
+主要由两个函数实现：`luaH_setint`，`luaH_newkey`。  
 
 ---
 
 #### 1.1.2.5 遍历
+
+1、遍历使用的函数是 `luaH_next`，整体逻辑是先从头到尾遍历数组部分，之后再遍历哈希部分，`luaH_next` 需要传入一个 key 值，然后计算出下一个 key 和 value。  
+
+这其实就是跟 pairs 相关的，第一次调用 pairs 时，传入的是 table 和一个空的 key 值，即 `k1, v1 = pairs(t, nil)`，第二次就是 `k2, v2 = pairs(t, k1)`，依此类推。 pairs 调用的是 `luaB_next`，最终会调用到 `luaH_next`。   
+
+```c
+int luaH_next (lua_State *L, Table *t, StkId key) {
+  unsigned int i = findindex(L, t, key);  /* find original element */
+  for (; i < t->sizearray; i++) {  /* try first array part */
+    if (!ttisnil(&t->array[i])) {  /* a non-nil value? */
+      setivalue(key, i + 1);
+      setobj2s(L, key+1, &t->array[i]);
+      return 1;
+    }
+  }
+  for (i -= t->sizearray; cast_int(i) < sizenode(t); i++) {  /* hash part */
+    if (!ttisnil(gval(gnode(t, i)))) {  /* a non-nil value? */
+      setobj2s(L, key, gkey(gnode(t, i)));
+      setobj2s(L, key+1, gval(gnode(t, i)));
+      return 1;
+    }
+  }
+  return 0;  /* no more elements */
+}
+```
+
+2、实际上，最关键的逻辑在 `findindex` 里面。  
+
+```c
+/*
+** returns the index of a 'key' for table traversals. First goes all
+** elements in the array part, then elements in the hash part. The
+** beginning of a traversal is signaled by 0.
+*/
+static unsigned int findindex (lua_State *L, Table *t, StkId key) {
+  unsigned int i;
+  if (ttisnil(key)) return 0;  /* first iteration */
+  i = arrayindex(key);
+  if (i != 0 && i <= t->sizearray)  /* is 'key' inside array part? */
+    return i;  /* yes; that's the index */
+  else {
+    int nx;
+    Node *n = mainposition(t, key);
+    for (;;) {  /* check whether 'key' is somewhere in the chain */
+      /* key may be dead already, but it is ok to use it in 'next' */
+      if (luaV_rawequalobj(gkey(n), key) ||
+            (ttisdeadkey(gkey(n)) && iscollectable(key) &&
+             deadvalue(gkey(n)) == gcvalue(key))) {
+        i = cast_int(n - gnode(t, 0));  /* key index in hash table */
+        /* hash elements are numbered after array ones */
+        return (i + 1) + t->sizearray;
+      }
+      nx = gnext(n);
+      if (nx == 0)
+        luaG_runerror(L, "invalid key to 'next'");  /* key not found */
+      else n += nx;
+    }
+  }
+}
+```
 
 ---
 
