@@ -59,7 +59,6 @@ typedef union TKey {
   TValue tvk;
 } TKey;
 
-
 typedef struct Node {
   TValue i_val;
   TKey i_key;
@@ -72,7 +71,7 @@ typedef struct Table {
   unsigned int sizearray;  // 数组部分的长度
   TValue *array;  // 数组部分，实际上就是一个类型为 TValue*，长度为 sizearray 的 c 数组
   Node *node;     // 哈希部分，实际上就是一个类型为 Node*，长度为 2 的 lsizenode 次方的 c 数组
-  Node *lastfree;  // 哈希部分空闲位置的指针，在此之前的才是空闲的，在此之后的都不是，寻找的是从此往前找
+  Node *lastfree;  // 哈希部分空闲位置的指针，在此之前的才是空闲的，寻找时从此往前找
   struct Table *metatable;
   GCObject *gclist;
 } Table;
@@ -80,20 +79,82 @@ typedef struct Table {
 
 ---
 
-#### 1.1.2.2 查询
+#### 1.1.2.2 新建表  
+
+通过 ltable.c 的 `luaH_new` 创建一个新表，可以看到，初始时，表的数组部分跟哈希部分都是空的。   
+
+```c
+Table *luaH_new (lua_State *L) {
+  GCObject *o = luaC_newobj(L, LUA_TTABLE, sizeof(Table));
+  Table *t = gco2t(o);
+  t->metatable = NULL;
+  t->flags = cast_byte(~0);
+  t->array = NULL;
+  t->sizearray = 0;
+  setnodevector(L, t, 0);
+  return t;
+}
+
+static void setnodevector (lua_State *L, Table *t, unsigned int size) {
+  if (size == 0) {  /* no elements to hash part? */
+    t->node = cast(Node *, dummynode);  /* use common 'dummynode' */
+    t->lsizenode = 0;
+    t->lastfree = NULL;  /* signal that it is using dummy node */
+  }
+  else {
+    ...
+  }
+}
+```
+
+---
+
+#### 1.1.2.3 查询
+
+主要执行查询的是 `ltable.c` 里面 `luaH_get` 函数，根据 key 的类型，使用对应的函数进行查询。   
+
+```c
+const TValue *luaH_get (Table *t, const TValue *key) {
+  switch (ttype(key)) {
+    case LUA_TSHRSTR: return luaH_getshortstr(t, tsvalue(key));
+    case LUA_TNUMINT: return luaH_getint(t, ivalue(key));
+    case LUA_TNIL: return luaO_nilobject;
+    case LUA_TNUMFLT: {
+      lua_Integer k;
+      if (luaV_tointeger(key, &k, 0)) /* index is int? */
+        return luaH_getint(t, k);  /* use specialized version */
+      /* else... */
+    }  /* FALLTHROUGH */
+    default:
+      return getgeneric(t, key);
+  }
+}
+```
+
+1、key 为 nil 的，直接返回空对象。    
+
+2、key 为整型或可转为整型的浮点型的，使用 `luaH_getint` 查找。   
+
+
+
+
+3、key 为短字符的，使用 `luaH_getshortstr` 查找：  
+
+4、其他的，都使用 `getgeneric` 查找
+
 
 
 ---
 
-#### 1.1.2.3 新增元素
+#### 1.1.2.4 新增元素
 
 ---
 
-#### 1.1.2.4 遍历
+#### 1.1.2.5 遍历
 
 ---
 
-#### 1.1.2.5 rehash    
+#### 1.1.2.6 rehash    
 
 1、rehash 的时机    
 
@@ -115,6 +176,8 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
     ...
 }
 ```
+
+以上可以看出，table 除非空间不够用了，否则不会触发 rehash，所以即使很多元素设置为 nil，也不会触发 “缩容”。
 
 <br/>
 
