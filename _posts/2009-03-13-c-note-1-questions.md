@@ -181,7 +181,9 @@ c99 开始是合法的，在此之前不合法。
 
 要模拟面向对象，即要实现封装、继承、多态。  
 
-**一、封装**    
+---
+
+### 1.7.1 封装    
 
 封装就是把属性和对属性的操作封装在一个独立的实体中，这种实体在 c++ 称为类。  
 
@@ -233,9 +235,9 @@ int main() {
 说明：    
 1、在这种模拟中，使用函数指针来保存函数，相比于 C++，是一种内存上的额外开销，C++ 对象的内存里不需要保存成员函数指针，它在编译时就能确定。     
 
-<br/>
+---
 
-**二、继承**   
+### 1.7.2 继承
 
 可以在子类里定义一个基类的对象作为变量，并且在重载函数的时候，在重载函数里，选择性的调用基类的函数。  
 
@@ -296,9 +298,9 @@ int main() {
 }
 ```
 
-<br/>
+--- 
 
-**三、多态**   
+### 1.7.3 多态
 
 c++ 的多态有编译时多态，有运行时多态，显然这里我们也不可能实现编译时多态，但运行时多态还是可以进行一定程度的模拟的。c++ 的运行时多态，是使用虚函数表的机制来实现的。  
 
@@ -412,13 +414,16 @@ duck_destroy
 animal_destroy
 ```
 
-<br/>
-<br/> 
+---
 
-有几篇文章可供参考：  
+### 1.7.4 拓展阅读 
 
-* [《C语言实现虚函数/继承/封装》](https://zhuanlan.zhihu.com/p/566782733)
+有几篇文章可供参考：   
+
+* [《C语言实现虚函数/继承/封装》](https://zhuanlan.zhihu.com/p/566782733)  
+
 * [《C 语言实现面向对象（一）：初步实现三个基本特征》](https://schaepher.github.io/2020/03/12/c-oop/)
+
 * [《使用C语言实现面相对对象三大特性》](https://www.cnblogs.com/Kroner/p/16456733.html)
 
 ---
@@ -469,6 +474,24 @@ void fvla(int m, int C[m][m])   // OK - VLA with prototype scope.
 <br/>
 
 参考文章：[《GCC 中零长数组与变长数组》](https://www.cnblogs.com/hazir/p/variable_length_array.html)   
+
+---
+
+## 1.9 指定字段的位数
+
+redis 中有这样的写法： 
+
+```c
+typedef struct redisObject {
+    unsigned type:4;
+    unsigned encoding:4;
+    unsigned lru:LRU_BITS; /* LRU time (relative to global lru_clock) or
+                            * LFU data (least significant 8 bits frequency
+                            * and most significant 16 bits access time). */
+    int refcount;
+    void *ptr;
+} robj;
+```
 
 ---
 
