@@ -477,7 +477,7 @@ void fvla(int m, int C[m][m])   // OK - VLA with prototype scope.
 
 ---
 
-## 1.9 指定字段的位数
+## 1.9 位域 (bit field)
 
 redis 中有这样的写法： 
 
@@ -492,6 +492,8 @@ typedef struct redisObject {
     void *ptr;
 } robj;
 ```
+
+redisObject 结构体中的 type, encoding, lru 实际上是一种位域定义。位域是一种特殊的结构体成员，它限定了使用的位数，不需要一整个字节，语法是 `type fieldname : width`。只有整型或枚举可以用于定义位域。  
 
 ---
 
