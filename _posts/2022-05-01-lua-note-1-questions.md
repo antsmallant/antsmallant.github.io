@@ -51,10 +51,10 @@ table 相关的结构体在 lobject.h 中定义。
 typedef union TKey {
   struct {
     TValuefields;
-    int next;  // nk 与 tvk 相比，只是多了一个 next 字段，此字段用于哈希冲突时，计算冲突节点的所在位置。
-               // lua 也是用开链表来解决哈希冲突，但并不是额外创建新的链表来存储冲突的节点，而是把
-               // 所有节点都存储在哈希数组上。冲突时就在哈希数组上找一个空闲的位置存放冲突节点，
-               // next 实际上就是哈希数组上相对于当前节点的偏移值，要注意，是偏移值，而不是实际下标。  
+    int next;  // nk 与 tvk 相比，只是多了一个 next 字段，此字段用于哈希冲突时，计算冲突节点的位置。
+               // lua 用开链表解决哈希冲突，但并额外创建新的链表来存储冲突节点，而是把所有节点都存储
+               // 在哈希数组上。冲突时就在哈希数组上找一个空闲的位置存放冲突节点，next 实际上就是哈希
+               // 数组上，节点与节点之间的位置偏移量，要注意是偏移量，而不是数组下标。  
   } nk;
   TValue tvk;
 } TKey;
@@ -66,12 +66,12 @@ typedef struct Node {
 
 typedef struct Table {
   CommonHeader;
-  lu_byte flags;  /* 1<<p means tagmethod(p) is not present */
-  lu_byte lsizenode;  // 哈希部分的长度为 2 的 lsizenode
-  unsigned int sizearray;  // 数组部分的长度
-  TValue *array;  // 数组部分，实际上就是一个类型为 TValue*，长度为 sizearray 的 c 数组
-  Node *node;     // 哈希部分，实际上就是一个类型为 Node*，长度为 2 的 lsizenode 次方的 c 数组
-  Node *lastfree;  // 哈希部分空闲位置的指针，在此之前的才是空闲的，寻找时从此往前找
+  lu_byte flags; 
+  lu_byte lsizenode;       
+  unsigned int sizearray;  
+  TValue *array;           // 数组部分，类型为 TValue*，长度为 sizearray 的数组
+  Node *node;              // 哈希部分，类型为 Node*，长度为 2 ^ lsizenode 的数组
+  Node *lastfree;          // 哈希部分空闲位置的指针，在此之前的才是空闲的，寻找时从此往前找
   struct Table *metatable;
   GCObject *gclist;
 } Table;
