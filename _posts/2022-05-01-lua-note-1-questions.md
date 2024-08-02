@@ -51,10 +51,10 @@ table 相关的结构体在 lobject.h 中定义。
 typedef union TKey {
   struct {
     TValuefields;
-    int next;  // nk 与 tvk 相比，只是多了一个 next 字段，此字段用于哈希冲突时，指向冲突节点的所在位置。
+    int next;  // nk 与 tvk 相比，只是多了一个 next 字段，此字段用于哈希冲突时，计算冲突节点的所在位置。
                // lua 也是用开链表来解决哈希冲突，但并不是额外创建新的链表来存储冲突的节点，而是把
                // 所有节点都存储在哈希数组上。冲突时就在哈希数组上找一个空闲的位置存放冲突节点，
-               // 所以 next 实际上就是哈希数组上的一个下标值。  
+               // next 实际上就是哈希数组上相对于当前节点的偏移值，要注意，是偏移值，而不是实际下标。  
   } nk;
   TValue tvk;
 } TKey;
@@ -133,20 +133,87 @@ const TValue *luaH_get (Table *t, const TValue *key) {
 
 1、key 为 nil 的，直接返回空对象。    
 
+<br/>
+
 2、key 为整型或可转为整型的浮点型的，使用 `luaH_getint` 查找。   
 
+```c
+const TValue *luaH_getint (Table *t, lua_Integer key) {
+  /* (1 <= key && key <= t->sizearray) */
+  if (l_castS2U(key) - 1 < t->sizearray)
+    return &t->array[key - 1];
+  else {
+    Node *n = hashint(t, key);
+    for (;;) {  /* check whether 'key' is somewhere in the chain */
+      if (ttisinteger(gkey(n)) && ivalue(gkey(n)) == key)
+        return gval(n);  /* that's it */
+      else {
+        int nx = gnext(n);
+        if (nx == 0) break;
+        n += nx;  // 注意，nx 即是 Key 里的 next 字段，是偏移量
+      }
+    }
+    return luaO_nilobject;
+  }
+}
+```
 
+`luaH_getint` 涉及两部分的查找，如果 key 在 sizearray 范围内，则返回数组部分的。否则，通过 `hashint` 取得 key 的哈希值，从哈希部分查找。上文讲数据结构的时候已经说过，哈希部分是把所有的 node 都放到哈希数组里的，所以在哈希部分查找时，就是先定位到一个位置，如果 key 不相同，就“链式”查找，`n += nx`，此处的 nx 是偏移量。   
 
+<br/>
 
-3、key 为短字符的，使用 `luaH_getshortstr` 查找：  
+3、key 为短字符的，使用 `luaH_getshortstr` 查找。   
 
-4、其他的，都使用 `getgeneric` 查找
+```c
+const TValue *luaH_getshortstr (Table *t, TString *key) {
+  Node *n = hashstr(t, key);
+  lua_assert(key->tt == LUA_TSHRSTR);
+  for (;;) {  /* check whether 'key' is somewhere in the chain */
+    const TValue *k = gkey(n);
+    if (ttisshrstring(k) && eqshrstr(tsvalue(k), key))
+      return gval(n);  /* that's it */
+    else {
+      int nx = gnext(n);
+      if (nx == 0)
+        return luaO_nilobject;  /* not found */
+      n += nx;
+    }
+  }
+}
+```
 
+`luaH_getshortstr` 的实现其实与 `getgeneric` 是差不多的，只不过当了一些判断，可能性能上会高一些。  
+
+逻辑上只涉及哈希部分的查找。先计算哈希值，如果没命中，就链式查找。   
+
+<br/>
+
+4、其他的，都使用 `getgeneric` 查找。  
+
+```c
+static const TValue *getgeneric (Table *t, const TValue *key) {
+  Node *n = mainposition(t, key);
+  for (;;) {  /* check whether 'key' is somewhere in the chain */
+    if (luaV_rawequalobj(gkey(n), key))
+      return gval(n);  /* that's it */
+    else {
+      int nx = gnext(n);
+      if (nx == 0)
+        return luaO_nilobject;  /* not found */
+      n += nx;
+    }
+  }
+}
+```
+
+`mainposition` 就是计算哈希值。先计算哈希值，如果没命中，就链式查找。   
 
 
 ---
 
 #### 1.1.2.4 新增元素
+
+
 
 ---
 
@@ -212,12 +279,15 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
 > t = {10,20,nil,40}
 > #t
 4
+
 > t = {nil,nil,30,nil}
 > #t
 3
+
 > t = {1,nil,nil,nil,nil,nil,7}
 > #t
 7
+
 > t[8] = 8
 > #t
 1
