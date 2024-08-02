@@ -221,7 +221,7 @@ t[2.0] = 2
 t["hello"] = 3
 ```
 
-lua 翻译成字节码 ( 使用 [https://www.luac.nl/](https://www.luac.nl/) ) 是这样： 
+翻译成字节码 ( 使用 [https://www.luac.nl/](https://www.luac.nl/) ) 是这样：   
 
 ```
 main <input-file.lua:0,0> (5 instructions at ea4cbe26_3dbe05d0)
@@ -251,9 +251,41 @@ index	type	value
 end
 ```
 
+`SETTABLE` 对应 lvm.c 里面 `OP_SETTABLE` 的处理逻辑:    
+
+```c
+      vmcase(OP_SETTABLE) {
+        TValue *rb = RKB(i);
+        TValue *rc = RKC(i);
+        settableProtected(L, ra, rb, rc);
+        vmbreak;
+      }
+```    
+
+`settableProtected` 的逻辑是这样的： 
+
+```c
+#define settableProtected(L,t,k,v) { const TValue *slot; \
+  if (!luaV_fastset(L,t,k,slot,luaH_get,v)) \
+    Protect(luaV_finishset(L,t,k,v,slot)); }
+
+#define luaV_fastset(L,t,k,slot,f,v) \
+  (!ttistable(t) \
+   ? (slot = NULL, 0) \
+   : (slot = f(hvalue(t), k), \
+     ttisnil(slot) ? 0 \
+     : (luaC_barrierback(L, hvalue(t), v), \
+        setobj2t(L, cast(TValue *,slot), v), \
+        1)))        
+```
+
+`luaV_fastset` 就是先尝试 `luaH_get`，如果数组部分存在这样一个位置（key 值是正数且在数组部分的范围内），或者哈希部分已经有这个 key 了，那么就直接 `setobj2t` 即可。否则，就需要在哈希部分创建一个新 key 出来存储，这也就是 `luaV_finishset` 的逻辑。   
+
+`luaV_finishset` 涉及到一些元表操作，比较复杂，简单来说就是通过 `luaH_newkey` 插入一个新 key，然后 `setobj2t` 给这个位置赋上 value。  
+
+所以，重点逻辑就是看 `luaH_newkey`。  
 
 
-主要由两个函数实现：`luaH_setint`，`luaH_newkey`。  
 
 ---
 
