@@ -111,7 +111,7 @@ static void setnodevector (lua_State *L, Table *t, unsigned int size) {
 
 #### 1.1.2.3 查询
 
-主要执行查询的是 `ltable.c` 里面 `luaH_get` 函数，根据 key 的类型，使用对应的函数进行查询。   
+主要执行查询的是 `ltable.c` 里面 `luaH_get` 函数。     
 
 ```c
 const TValue *luaH_get (Table *t, const TValue *key) {
@@ -132,6 +132,8 @@ const TValue *luaH_get (Table *t, const TValue *key) {
 ```
 
 <br/>
+
+根据 key 的类型，使用对应的函数进行查询：  
 
 1、key 为 nil 的，直接返回空对象。    
 
