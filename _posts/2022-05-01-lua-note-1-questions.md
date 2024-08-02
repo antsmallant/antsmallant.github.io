@@ -23,6 +23,8 @@ tags: [lua]
 
 ## 1.1 lua table 
 
+以下分析使用 lua-5.3.6。   
+
 ---
 
 ### 1.1.1 table 的基本信息
@@ -35,15 +37,84 @@ tags: [lua]
  
 ### 1.1.2 table 的底层实现
 
+---
+
 #### 1.1.2.1 数据结构
+
+table 的结构体在 lobject.h 中定义。  
+
+关于 Table 如何存储的，如何解决哈希冲突的，都在下面的代码注释中写明了。  
+
+```c
+
+// 注意，key 是一个 union 类型的
+typedef union TKey {
+  struct {
+    TValuefields;
+    int next;  // nk 与 tvk 相比，只是多了一个 next 字段，此字段用于哈希冲突时，指向冲突节点的所在位置。
+               // lua 也是用开链表来解决哈希冲突，但并不是额外创建新的链表来存储冲突的节点，而是把
+               // 所有节点都存储在哈希数组上。冲突时就在哈希数组上找一个空闲的位置存放冲突节点，
+               // 所以 next 实际上就是哈希数组上的一个下标值。  
+  } nk;
+  TValue tvk;
+} TKey;
+
+
+typedef struct Node {
+  TValue i_val;
+  TKey i_key;
+} Node;
+
+typedef struct Table {
+  CommonHeader;
+  lu_byte flags;  /* 1<<p means tagmethod(p) is not present */
+  lu_byte lsizenode;  // 哈希部分的长度为 2 的 lsizenode
+  unsigned int sizearray;  // 数组部分的长度
+  TValue *array;  // 数组部分，实际上就是一个类型为 TValue*，长度为 sizearray 的 c 数组
+  Node *node;     // 哈希部分，实际上就是一个类型为 Node*，长度为 2 的 lsizenode 次方的 c 数组
+  Node *lastfree;  // 哈希部分空闲位置的指针，在此之前的才是空闲的，在此之后的都不是，寻找的是从此往前找
+  struct Table *metatable;
+  GCObject *gclist;
+} Table;
+``` 
+
+---
 
 #### 1.1.2.2 查找
 
+
+
+---
+
 #### 1.1.2.3 新增元素
 
-#### 1.1.2.4 迭代
+---
+
+#### 1.1.2.4 遍历
+
+---
 
 #### 1.1.2.5 rehash    
+
+`luaH_newkey` 时，找不到空闲的位置来创建新 key 的时候，就会执行 rehash。   
+
+```c
+TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
+  ...
+  if (!ttisnil(gval(mp)) || isdummy(t)) {  /* main position is taken? */
+    Node *othern;
+    Node *f = getfreepos(t);  /* get a free place */
+    if (f == NULL) {  /* cannot find a free place? */
+      rehash(L, t, key);  /* grow table */
+      /* whatever called 'newkey' takes care of TM cache */
+      return luaH_set(L, t, key);  /* insert key into grown table */
+    }
+    ...
+}
+```
+
+
+
 
 ---
 
