@@ -281,6 +281,8 @@ end
         1)))        
 ```
 
+<br/>
+
 解决一下 `settableProtected` 的行为：  
 
 1、先尝试 `luaV_fastset`，如果 `luaH_get` 能获得到一个有效位置，那么就直接 `setobj2t` 即可。`luaH_get` 在以下情况能获得到一个有效位置：   
