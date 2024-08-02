@@ -131,11 +131,15 @@ const TValue *luaH_get (Table *t, const TValue *key) {
 }
 ```
 
+<br/>
+
 1、key 为 nil 的，直接返回空对象。    
 
 <br/>
 
 2、key 为整型或可转为整型的浮点型的，使用 `luaH_getint` 查找。   
+
+`luaH_getint` 涉及两部分的查找，如果 key 在 sizearray 范围内，则返回数组部分的。否则，通过 `hashint` 取得 key 的哈希值，从哈希部分查找。上文讲数据结构的时候已经说过，哈希部分是把所有的 node 都放到哈希数组里的，所以在哈希部分查找时，就是先定位到一个位置，如果 key 不相同，就“链式”查找，`n += nx`，此处的 nx 是偏移量。  
 
 ```c
 const TValue *luaH_getint (Table *t, lua_Integer key) {
@@ -156,13 +160,13 @@ const TValue *luaH_getint (Table *t, lua_Integer key) {
     return luaO_nilobject;
   }
 }
-```
-
-`luaH_getint` 涉及两部分的查找，如果 key 在 sizearray 范围内，则返回数组部分的。否则，通过 `hashint` 取得 key 的哈希值，从哈希部分查找。上文讲数据结构的时候已经说过，哈希部分是把所有的 node 都放到哈希数组里的，所以在哈希部分查找时，就是先定位到一个位置，如果 key 不相同，就“链式”查找，`n += nx`，此处的 nx 是偏移量。   
+``` 
 
 <br/>
 
 3、key 为短字符的，使用 `luaH_getshortstr` 查找。   
+
+`luaH_getshortstr` 的实现其实与 `getgeneric` 是差不多的，只不过当了一些判断，可能性能上会高一些。逻辑上只涉及哈希部分的查找。先计算哈希值，如果没命中，就链式查找。   
 
 ```c
 const TValue *luaH_getshortstr (Table *t, TString *key) {
@@ -182,13 +186,11 @@ const TValue *luaH_getshortstr (Table *t, TString *key) {
 }
 ```
 
-`luaH_getshortstr` 的实现其实与 `getgeneric` 是差不多的，只不过当了一些判断，可能性能上会高一些。  
-
-逻辑上只涉及哈希部分的查找。先计算哈希值，如果没命中，就链式查找。   
-
 <br/>
 
-4、其他的，都使用 `getgeneric` 查找。  
+4、其他的，都使用 `getgeneric` 查找。   
+
+`mainposition` 就是计算哈希值。先计算哈希值，如果没命中，就链式查找。   
 
 ```c
 static const TValue *getgeneric (Table *t, const TValue *key) {
@@ -205,8 +207,6 @@ static const TValue *getgeneric (Table *t, const TValue *key) {
   }
 }
 ```
-
-`mainposition` 就是计算哈希值。先计算哈希值，如果没命中，就链式查找。   
 
 ---
 
