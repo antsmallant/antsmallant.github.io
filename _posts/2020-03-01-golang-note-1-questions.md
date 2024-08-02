@@ -80,6 +80,19 @@ c := b[3:] // not ok，会报错，相当于 c := b[3:2]
 c := b[3:cap(b)] // ok，相当于 c := b[3:5]
 ```
 
+8、创建一个二维切片     
+
+```go
+    m := 5
+    n := 6
+
+    vec := make([][]int, m)
+    for i := 0; i < n; i++ {
+        vec[i] = make([]int, n)
+        fmt.Println(vec[i])
+    }
+```
+
 ---
 
 ## 2.3 type 关键字
