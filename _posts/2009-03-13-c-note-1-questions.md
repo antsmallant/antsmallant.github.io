@@ -493,7 +493,9 @@ typedef struct redisObject {
 } robj;
 ```
 
-redisObject 结构体中的 type, encoding, lru 实际上是一种位域定义。位域是一种特殊的结构体成员，它限定了使用的位数，不需要一整个字节，语法是 `type fieldname : width`。只有整型或枚举可以用于定义位域。位域可以单独使用，也可以跟其他成员一起组成结构体。  
+redisObject 结构体中的 type, encoding, lru 实际上是一种位域定义。位域是一种特殊的结构体成员，它限定了使用的位数，不需要一整个字节，语法是 `type fieldname : width`。只有整型或枚举可以用于定义位域。位域可以单独使用，也可以跟其他成员一起组成结构体。[3]     
+
+参考文章：[《C 位域》](https://www.runoob.com/cprogramming/c-bit-fields.html)。   
 
 ---
 
@@ -501,4 +503,6 @@ redisObject 结构体中的 type, encoding, lru 实际上是一种位域定义�
 
 [1] geeksforgeeks. Difference between #include and #include” ” in C/C++ with Examples. Available at https://www.geeksforgeeks.org/difference-between-include-and-include-in-c-c-with-examples/, 2023-4-22.   
 
-[2] Holy Chen. C++中虚函数、虚继承内存模型. Available at https://zhuanlan.zhihu.com/p/41309205, 2018-08-07.   
+[2] Holy Chen. C++中虚函数、虚继承内存模型. Available at https://zhuanlan.zhihu.com/p/41309205, 2018-08-07.     
+
+[3] runoob. C 位域. Available at https://www.runoob.com/cprogramming/c-bit-fields.html.   
