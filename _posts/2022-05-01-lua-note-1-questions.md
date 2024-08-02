@@ -262,7 +262,7 @@ end
       }
 ```    
 
-`settableProtected` 的逻辑是这样的： 
+而 `settableProtected` 的逻辑是这样的： 
 
 ```c
 #define settableProtected(L,t,k,v) { const TValue *slot; \
@@ -279,13 +279,19 @@ end
         1)))        
 ```
 
-先尝试 `luaV_fastset`，如果 `luaH_get` 能获得到一个有效位置，那么就直接 `setobj2t` 即可。`luaH_get` 在以下情况能获得到一个有效位置：   
-1、key 是正数且在数组部分范围内； 
-2、哈希部分已经存在这样一个 key；  
+解决一下 `settableProtected` 的行为：  
 
-如果 `luaV_fastset` 失败，就需要在哈希部分创建一个新 key 出来，这也就是 `luaV_finishset` 的逻辑。`luaV_finishset` 涉及到一些元表操作，比较复杂，简单来说就是通过 `luaH_newkey` 在哈希数组上寻找到一个合适的位置，然后 `setobj2t` 给这个位置赋上 value。  
+1、先尝试 `luaV_fastset`，如果 `luaH_get` 能获得到一个有效位置，那么就直接 `setobj2t` 即可。`luaH_get` 在以下情况能获得到一个有效位置：   
+  1）key 是正数且在数组部分范围内； 
+  2）哈希部分已经存在这样一个 key；  
 
-`luaH_newkey` 的大体逻辑如下：  
+2、如果 `luaV_fastset` 失败，就执行 `luaV_finishset`，`luaV_finishset` 涉及到一些元表操作，比较复杂。简单来说，它会通过 `luaH_newkey` 在哈希数组上寻找到一个合适的位置，然后使用 `setobj2t` 给这个位置赋上 value。  
+
+<br/>
+
+所以，`luaH_newkey` 是关键的逻辑所在，它的行为大致如下：   
+
+
 
 
 
@@ -295,9 +301,11 @@ end
 
 #### 1.1.2.5 遍历
 
-1、遍历使用的函数是 `luaH_next`，整体逻辑是先从头到尾遍历数组部分，之后再遍历哈希部分，`luaH_next` 需要传入一个 key 值，然后计算出下一个 key 和 value。  
+1、遍历使用的函数是 `luaH_next`，`luaH_next` 需要传入一个 key 值作为参数。先通过 `findindex` 计算出此 key 对应的索引值 i。先尝试在数组部分递增索引值以寻找下一个非空的 key，找到则返回；否则在哈希部分递增索引值，则到寻找到下一个非空的 key。  
 
-这其实就是跟 pairs 相关的，第一次调用 pairs 时，传入的是 table 和一个空的 key 值，即 `k1, v1 = pairs(t, nil)`，第二次就是 `k2, v2 = pairs(t, k1)`，依此类推。 pairs 调用的是 `luaB_next`，最终会调用到 `luaH_next`。   
+2、`findindex` 的逻辑是这样的，   
+
+3、lua 默认的 pairs，调用的是 `luaB_next`，最终会调用到 `luaH_next`，pairs 工作的时候，首先是传入 table 和一个空的 key，待第一次返回 key/value 后，再传入的就是 table 和上次迭代得到的 key 了，与 luaH_next 正好一致。  
 
 ```c
 int luaH_next (lua_State *L, Table *t, StkId key) {
@@ -318,11 +326,7 @@ int luaH_next (lua_State *L, Table *t, StkId key) {
   }
   return 0;  /* no more elements */
 }
-```
 
-2、实际上，最关键的逻辑在 `findindex` 里面。  
-
-```c
 /*
 ** returns the index of a 'key' for table traversals. First goes all
 ** elements in the array part, then elements in the hash part. The
