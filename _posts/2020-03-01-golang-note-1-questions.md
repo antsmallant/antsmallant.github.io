@@ -53,13 +53,13 @@ go playground: [https://go.dev/play/](https://go.dev/play/)
 3、数组是值类型，用它传参的时候，是拷贝一份数据的，如果要避免拷贝，可以传递它的指针。[2]    
 >Go’s arrays are values. An array variable denotes the entire array; it is not a pointer to the first array element (as would be the case in C). This means that when you assign or pass around an array value you will make a copy of its contents. (To avoid the copy you could pass a pointer to the array, but then that’s a pointer to an array, not an array.) One way to think about arrays is as a sort of struct but with indexed rather than named fields: a fixed-size composite value.    
 
-4、数组可以这样初始化：  
+4、数组可以这样初始化：   
 
 `b := [2]string {"hello", "world"}`    
 
 或者让编译器帮忙计数： 
 
-`b := [...]string {"hello", "world"}`
+`b := [...]string {"hello", "world"}`    
 
 ---
 
