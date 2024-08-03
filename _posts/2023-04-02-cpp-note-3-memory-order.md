@@ -11,3 +11,6 @@ tags: [c++ cpp]
 {:toc}
 <br/>
 
+## 术语
+
+Cache Coherence：缓存一致性。  
