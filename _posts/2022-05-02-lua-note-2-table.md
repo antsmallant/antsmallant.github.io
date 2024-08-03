@@ -51,7 +51,7 @@ tags: [lua]
 
 ---
 
-# 2.1 底层实现 
+# 2. 底层实现 
 
 以下分析使用 lua-5.3.6，使用 [https://www.luac.nl/](https://www.luac.nl/) 翻译字节码。      
 
@@ -62,7 +62,7 @@ table 的基本信息：
 
 ---
 
-## 2.1.1 数据结构
+## 2.1 数据结构
 
 关于 Table 如何存储的，如何解决哈希冲突的，都在下面的代码注释中写明了。  
 
@@ -102,7 +102,7 @@ typedef struct Table {
 
 ---
 
-## 2.1.2 新建表  
+## 2.2 新建表  
 
 通过 ltable.c 的 `luaH_new` 创建一个新表，可以看到，初始时，表的数组部分跟哈希部分都是空的。   
 
@@ -132,7 +132,7 @@ static void setnodevector (lua_State *L, Table *t, unsigned int size) {
 
 ---
 
-## 2.1.3 查询
+## 2.3 查询
 
 主要执行查询的是 `ltable.c` 里面 `luaH_get` 函数。     
 
@@ -235,7 +235,7 @@ static const TValue *getgeneric (Table *t, const TValue *key) {
 
 ---
 
-## 2.1.4 设置键值
+## 2.4 设置键值
 
 像这样的语句：  
 
@@ -398,7 +398,7 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
 
 ---
 
-## 2.1.5 table 初始化
+## 2.5 table 初始化
 
 像这样初始化一个 table:    
 
@@ -485,7 +485,7 @@ end
 
 ---
 
-## 2.1.6 遍历
+## 2.6 遍历
 
 关于遍历：  
 
@@ -563,7 +563,7 @@ static unsigned int findindex (lua_State *L, Table *t, StkId key) {
 
 ---
 
-## 2.1.7 rehash    
+## 2.7 rehash    
 
 **一、rehash 的时机**         
 
