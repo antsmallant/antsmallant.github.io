@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "游戏数据库常识一：mysql"
+title: "数据库笔记一：mysql"
 date: 2023-06-01
 last_modified_at: 2023-06-01
 categories: [数据库]
