@@ -25,7 +25,7 @@ copy elision，即 “复制省略”，是编译器的优化技术，包含两�
 
 从 c++17 开始，强制要求编译器实现 copy elision。在 c++17 之前（c++11 / c++14），copy elision 依赖于编译器的具体实现，gcc 是默认支持 copy elision 的。   
 
-<br/>
+---
 
 ## 1.1 纯右值参数复制构造时的 copy elision
 
@@ -68,7 +68,7 @@ Call A(int)
 Call A(int)
 ```
 
-<br/>
+---
 
 ## 1.2 函数返回值优化（rvo）
 
