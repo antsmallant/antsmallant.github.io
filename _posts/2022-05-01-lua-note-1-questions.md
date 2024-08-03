@@ -212,7 +212,7 @@ static const TValue *getgeneric (Table *t, const TValue *key) {
 
 ---
 
-#### 1.1.2.4 设置或新增键值
+#### 1.1.2.4 设置键值
 
 像这样的语句：  
 
@@ -296,8 +296,6 @@ end
 所以，`luaH_newkey` 是关键的逻辑所在，它的行为大致如下：   
 
 
-<br/>
-<br/>
 
 ---
 
@@ -360,6 +358,32 @@ void luaH_setint (lua_State *L, Table *t, lua_Integer key, TValue *value) {
 }
 
 ```
+
+<br/>
+<br/>
+
+如果以这样的方式初始化 table:  
+
+```lua
+local t = {1,2, ["hello"]="world"}
+```
+
+则字节码是这样的：  
+
+```
+function main(...) --line 1 through 1
+1	NEWTABLE	0 2 1	
+2	LOADK	1 -1	; 1
+3	LOADK	2 -2	; 2
+4	SETTABLE	0 -3 -4	; "hello" "world"
+5	SETLIST	0 2 1	; 1
+6	RETURN	0 1	
+end
+
+// 以下省略 ...
+```
+
+与上面的相比，只是多了 `SETTABLE` 来设置 "hello" "world" 这一对键值，而 `SETTABLE` 在上一小节已经分析过了，就不赘述了。   
 
 ---
 
