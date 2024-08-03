@@ -296,14 +296,74 @@ end
 所以，`luaH_newkey` 是关键的逻辑所在，它的行为大致如下：   
 
 
-
-
-
-
+<br/>
+<br/>
 
 ---
 
-#### 1.1.2.5 遍历
+#### 1.1.2.5 table 以数组的形式初始化
+
+除了以上讲的，像这样初始化一个 table:    
+
+```lua
+local t = {1,2}
+```
+
+它产生的字节码是:   
+
+```
+function main(...) --line 1 through 1
+1	NEWTABLE	0 2 0	
+2	LOADK	1 -1	; 1
+3	LOADK	2 -2	; 2
+4	SETLIST	0 2 1	; 1
+5	RETURN	0 1	
+
+locals (1)
+index	name	startpc	endpc
+0	t	5	6
+
+upvalues (1)
+index	name	instack	idx	kind
+0	_ENV	true	0	VDKREG (regular)
+
+constants (2)
+index	type	value
+1	number	1
+2	number	2
+end
+```
+
+通过 `SETLIST` 往这个 table 插入 1, 2 这两个元素，它对应的是 `lvm.c` 里面 `OP_SETLIST` 的逻辑，代码比较长，就不罗列了。它内部会调用 table 暴露的接口 `luaH_resizearray` 把 table 的数组部分扩张到足够大的容量，之后再调用 `luaH_setint` 往 table 里面设置数据。   
+
+`luaH_setint` 的处理逻辑是：1、先尝试从数组部分找一个位置，找得到就设置值；2、找不到就通过 `luaH_newkey` 去哈希部分找一个位置，再设置值。    
+
+当然，`OP_SETLIST` 会先扩张数组部分的容量，所以这种情况下 `luaH_setint` 可以把值都设置到数组部分的。   
+
+```c
+void luaH_resizearray (lua_State *L, Table *t, unsigned int nasize) {
+  int nsize = allocsizenode(t);
+  luaH_resize(L, t, nasize, nsize);
+}
+
+void luaH_setint (lua_State *L, Table *t, lua_Integer key, TValue *value) {
+  const TValue *p = luaH_getint(t, key);
+  TValue *cell;
+  if (p != luaO_nilobject)
+    cell = cast(TValue *, p);
+  else {
+    TValue k;
+    setivalue(&k, key);
+    cell = luaH_newkey(L, t, &k);
+  }
+  setobj2t(L, cell, value);
+}
+
+```
+
+---
+
+#### 1.1.2.6 遍历
 
 1、遍历使用的函数是 `luaH_next`，`luaH_next` 需要传入一个 key 值作为参数。先通过 `findindex` 计算出此 key 对应的索引值 i。先尝试在数组部分递增索引值以寻找下一个非空的 key，找到则返回；否则在哈希部分递增索引值，则到寻找到下一个非空的 key。  
 
@@ -365,7 +425,7 @@ static unsigned int findindex (lua_State *L, Table *t, StkId key) {
 
 ---
 
-#### 1.1.2.6 rehash    
+#### 1.1.2.7 rehash    
 
 1、rehash 的时机    
 
