@@ -36,7 +36,7 @@ lua 官方 manual 关于 pairs 的描述：
  
 <br/>   
 
-`pairs` 对应的 api 是 `luaB_pairs`，逻辑如下：   
+`pairs` 对应的 api 是 `luaB_pairs`，它要求传入一个 table 类型的参数 t，逻辑如下：    
 
 1）如果 t 的元表包括 `__pairs` 元方法，则调用此元方法，元方法同样要求返回三个值。        
 2）否则，返回的是三个值：next 函数（`luaB_next`），t，nil。     
