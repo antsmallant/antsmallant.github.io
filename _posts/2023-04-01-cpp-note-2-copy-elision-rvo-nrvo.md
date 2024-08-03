@@ -12,11 +12,11 @@ tags: [c++ cpp]
 <br/>
 
 
-# 1. copy elision、rvo、nrvo
+本文总结 copy elision、rvo、nvro 的概念及关系。   
 
 ---
 
-## 1.1 copy elision 与 rvo 
+# 1. copy elision 与 rvo 
 
 copy elision，即 “复制省略”，是编译器的优化技术，包含两个场景：  
 
@@ -27,7 +27,7 @@ copy elision，即 “复制省略”，是编译器的优化技术，包含两�
 
 <br/>
 
-### 1.1.1 纯右值参数复制构造时的 copy elision
+## 1.1 纯右值参数复制构造时的 copy elision
 
 以下使用 gcc 13.2.0 。 
 
@@ -70,7 +70,7 @@ Call A(int)
 
 <br/>
 
-### 1.1.2 函数返回值优化（rvo）
+## 1.2 函数返回值优化（rvo）
 
 以下使用 gcc 13.2.0 。   
 
@@ -121,7 +121,7 @@ Call A(int)
 
 ---
 
-## 1.2 关于 nrvo
+# 2. 关于 nrvo
 
 rvo 中有一种特殊的场景，叫 nrvo，即 name return value optimization，返回函数中已经命名的局部变量。c++17 标准对于 nrvo 没有强制规定，具体优化要看编译器的实现。    
 
@@ -174,7 +174,7 @@ SomeType get() {
 
 ---
 
-## 1.3 拓展阅读  
+# 3. 拓展阅读  
 
 [《Copy/move elision: C++ 17 vs C++ 11》](https://zhuanlan.zhihu.com/p/379566824)     
 
@@ -182,6 +182,6 @@ SomeType get() {
 
 ---
 
-# 2. 参考
+# 4. 参考
 
 [1] jiannanya​. 理解C++编译器中的 Copy elision 和 RVO 优化. Available at https://zhuanlan.zhihu.com/p/703789055, 2024-6-17.  
