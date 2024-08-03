@@ -336,7 +336,7 @@ end
 
 `luaH_setint` 的处理逻辑是：1、先尝试从数组部分找一个位置，找得到就设置值；2、找不到就通过 `luaH_newkey` 去哈希部分找一个位置，再设置值。    
 
-当然，`OP_SETLIST` 会先扩张数组部分的容量，所以这种情况下 `luaH_setint` 可以把值都设置到数组部分的。   
+当然，`OP_SETLIST` 会先扩张数组部分的容量，所以这种情况下 `luaH_setint` 可以把值都设置到数组部分。   
 
 ```c
 void luaH_resizearray (lua_State *L, Table *t, unsigned int nasize) {
@@ -389,11 +389,21 @@ end
 
 #### 1.1.2.6 遍历
 
-1、遍历使用的函数是 `luaH_next`，`luaH_next` 需要传入一个 key 值作为参数。先通过 `findindex` 计算出此 key 对应的索引值 i。先尝试在数组部分递增索引值以寻找下一个非空的 key，找到则返回；否则在哈希部分递增索引值，则到寻找到下一个非空的 key。  
+关于遍历：  
+
+1、遍历使用的函数是 `luaH_next`，它需要传入 table 和 key 作为参数。逻辑是：    
+  1）通过 `findindex` 计算出此 key 对应的索引值 i。   
+  2）尝试在数组部分递增索引值以寻找下一个非空的 key，找到则返回；否则在哈希部分递增索引值，则到寻找到下一个非空的 key。   
 
 2、`findindex` 的逻辑是这样的，   
 
-3、lua 默认的 pairs，调用的是 `luaB_next`，最终会调用到 `luaH_next`，pairs 工作的时候，首先是传入 table 和一个空的 key，待第一次返回 key/value 后，再传入的就是 table 和上次迭代得到的 key 了，与 luaH_next 正好一致。  
+<br/>
+
+lua 的 `pairs` 函数，调用的是 `luaB_next`，最终会调用到 `luaH_next`。pairs 一般与 for 一起工作，第一次调用时，传入 table 和一个空 key，返回一对非空的 key value，第二次调用时，传入的就是 table 和上次返回的 key 了，依此类推。而 table 和 key 刚好就是 luah_next 需要的参数。 
+
+<br/>
+
+`luaH_next` 和 `findindex` 的代码如下：  
 
 ```c
 int luaH_next (lua_State *L, Table *t, StkId key) {
