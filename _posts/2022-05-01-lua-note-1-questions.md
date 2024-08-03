@@ -23,7 +23,7 @@ tags: [lua]
 
 ## 1.1 lua table 
 
-以下分析使用 lua-5.3.6。   
+以下分析使用 lua-5.3.6，使用 [https://www.luac.nl/](https://www.luac.nl/) 翻译字节码。      
 
 ---
 
@@ -52,9 +52,9 @@ typedef union TKey {
   struct {
     TValuefields;
     int next;  // nk 与 tvk 相比，只是多了一个 next 字段，此字段用于哈希冲突时，计算冲突节点的位置。
-               // lua 用开链表解决哈希冲突，但并额外创建新的链表来存储冲突节点，而是把所有节点都存储
-               // 在哈希数组上。冲突时就在哈希数组上找一个空闲的位置存放冲突节点，next 实际上就是哈希
-               // 数组上，节点与节点之间的位置偏移量，要注意是偏移量，而不是数组下标。  
+               // lua 用开链表法解决哈希冲突，但并不额外创建新的链表来存储冲突节点，而是把所有节点都
+               // 存储在哈希数组上。冲突时就在哈希数组上找一个空闲的位置存放冲突节点，next 实际上就是
+               // 哈希数组上节点与节点之间的位置偏移量，要注意不是数组下标。  
   } nk;
   TValue tvk;
 } TKey;
@@ -223,7 +223,7 @@ t[2.0] = 2
 t["hello"] = 3
 ```
 
-翻译成字节码 ( 使用 [https://www.luac.nl/](https://www.luac.nl/) ) 是这样：   
+翻译成字节码是这样：   
 
 ```
 main <input-file.lua:0,0> (5 instructions at ea4cbe26_3dbe05d0)
@@ -283,17 +283,19 @@ end
 
 <br/>
 
-解决一下 `settableProtected` 的行为：  
+`settableProtected` 的行为：  
 
-1、先尝试 `luaV_fastset`，如果 `luaH_get` 能获得到一个有效位置，那么就直接 `setobj2t` 即可。`luaH_get` 在以下情况能获得到一个有效位置：   
-  1）key 是正数且在数组部分范围内； 
-  2）哈希部分已经存在这样一个 key；  
+1、尝试 `luaV_fastset`，如果 `luaH_get` 能获得到一个有效位置，那么就直接 `setobj2t` 即可。`luaH_get` 在以下情况能获得到一个有效位置：   
+    1）key 是正数且在数组部分范围内；   
+    2）哈希部分已经存在这样一个 key。     
 
-2、如果 `luaV_fastset` 失败，就执行 `luaV_finishset`，`luaV_finishset` 涉及到一些元表操作，比较复杂。简单来说，它会通过 `luaH_newkey` 在哈希数组上寻找到一个合适的位置，然后使用 `setobj2t` 给这个位置赋上 value。  
+2、如果 `luaV_fastset` 失败，就执行 `luaV_finishset`，`luaV_finishset` 涉及到一些元表操作，比较复杂。大体逻辑是：  
+    1）通过 `luaH_newkey` 在哈希数组上寻找到一个合适的位置；   
+    2）使用 `setobj2t` 给这个位置赋上 value。  
 
 <br/>
 
-所以，`luaH_newkey` 是关键的逻辑所在，它的行为大致如下：   
+`luaH_newkey` 的行为：   
 
 
 
