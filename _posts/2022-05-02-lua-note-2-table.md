@@ -433,7 +433,9 @@ end
 
 通过 `SETLIST` 往这个 table 插入 1, 2 这两个元素，它对应的是 `lvm.c` 里面 `OP_SETLIST` 的逻辑，代码比较长，就不罗列了。它内部会调用 table 暴露的接口 `luaH_resizearray` 把 table 的数组部分扩张到足够大的容量，之后再调用 `luaH_setint` 往 table 里面设置数据。   
 
-`luaH_setint` 的处理逻辑是：1、先尝试从数组部分找一个位置，找得到就设置值；2、找不到就通过 `luaH_newkey` 去哈希部分找一个位置，再设置值。    
+`luaH_setint` 的处理逻辑是：   
+1、先尝试从数组部分找一个位置，找得到就设置值；   
+2、找不到就通过 `luaH_newkey` 去哈希部分找一个位置，再设置值。    
 
 当然，`OP_SETLIST` 会先扩张数组部分的容量，所以这种情况下 `luaH_setint` 可以把值都设置到数组部分。   
 
