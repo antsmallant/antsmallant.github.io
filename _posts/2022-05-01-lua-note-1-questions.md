@@ -303,7 +303,72 @@ end
     1.2 是：把自己链接到此 main position 之下。         
 2. 空的，把自己设置进此 main position。  
 
-理解 `luaH_newkey` 行为的关键在于上面讲过的，哈希部分是把所有节点都放到一个数组里的，包括冲突的节点，冲突的节点就是临时找一个空闲位置放，然后用 next 字段连接起来。如果后面占用的这个空闲位置的真正主人找过来了，就再挪一挪，大体如此。   
+理解 `luaH_newkey` 行为的关键在于上面讲过的，哈希部分是把所有节点都放到一个数组里的，包括冲突的节点，冲突的节点就是临时找一个空闲位置放，然后用 next 字段连接起来。如果以后这个空闲位置的真正主人找过来了，就再挪一挪。    
+
+`luaH_newkey` 的代码虽然很长，但挺巧妙的，贴一下：  
+
+```c
+/*
+** inserts a new key into a hash table; first, check whether key's main
+** position is free. If not, check whether colliding node is in its main
+** position or not: if it is not, move colliding node to an empty place and
+** put new key in its main position; otherwise (colliding node is in its main
+** position), new key goes to an empty position.
+*/
+TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
+  Node *mp;
+  TValue aux;
+  if (ttisnil(key)) luaG_runerror(L, "table index is nil");
+  else if (ttisfloat(key)) {
+    lua_Integer k;
+    if (luaV_tointeger(key, &k, 0)) {  /* does index fit in an integer? */
+      setivalue(&aux, k);
+      key = &aux;  /* insert it as an integer */
+    }
+    else if (luai_numisnan(fltvalue(key)))
+      luaG_runerror(L, "table index is NaN");
+  }
+  mp = mainposition(t, key);
+  if (!ttisnil(gval(mp)) || isdummy(t)) {  /* main position is taken? */
+    Node *othern;
+    Node *f = getfreepos(t);  /* get a free place */
+    if (f == NULL) {  /* cannot find a free place? */
+      rehash(L, t, key);  /* grow table */
+      /* whatever called 'newkey' takes care of TM cache */
+      return luaH_set(L, t, key);  /* insert key into grown table */
+    }
+    lua_assert(!isdummy(t));
+    othern = mainposition(t, gkey(mp));
+    if (othern != mp) {  /* is colliding node out of its main position? */
+      /* yes; move colliding node into free position */
+      while (othern + gnext(othern) != mp)  /* find previous */
+        othern += gnext(othern);
+      gnext(othern) = cast_int(f - othern);  /* rechain to point to 'f' */
+      *f = *mp;  /* copy colliding node into free pos. (mp->next also goes) */
+      if (gnext(mp) != 0) {
+        gnext(f) += cast_int(mp - f);  /* correct 'next' */
+        gnext(mp) = 0;  /* now 'mp' is free */
+      }
+      setnilvalue(gval(mp));
+    }
+    else {  /* colliding node is in its own main position */
+      /* new node will go into free position */
+      // 此处相当于自己把自己插入到 main position 之下
+      // 原来： main position -> colliding1 -> colliding2 -> collidingx
+      // 变成： main position -> me -> colliding1 -> colliding2 -> collidingx
+      if (gnext(mp) != 0)
+        gnext(f) = cast_int((mp + gnext(mp)) - f);  /* chain new position */
+      else lua_assert(gnext(f) == 0);
+      gnext(mp) = cast_int(f - mp);
+      mp = f;
+    }
+  }
+  setnodekey(L, &mp->i_key, key);
+  luaC_barrierback(L, t, key);
+  lua_assert(ttisnil(gval(mp)));
+  return gval(mp);
+}
+```
 
 
 ---
