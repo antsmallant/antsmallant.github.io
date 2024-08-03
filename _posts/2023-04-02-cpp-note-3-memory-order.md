@@ -25,15 +25,17 @@ CC 保证对单个地址读写的正确性，SC 保证对多个地址读写的�
 
 # 拓展阅读
 
-[Furion W 如何理解 C++11 的六种 memory order？](https://www.zhihu.com/question/24301047/answer/83422523)       
+[《Furion W 如何理解 C++11 的六种 memory order？》](https://www.zhihu.com/question/24301047/answer/83422523)       
 
-[文礼 如何理解 C++11 的六种 memory order？](https://www.zhihu.com/question/24301047/answer/1193956492)     
+[《文礼 如何理解 C++11 的六种 memory order？》](https://www.zhihu.com/question/24301047/answer/1193956492)     
 
 [《高并发编程--多处理器编程中的一致性问题(上)》](https://zhuanlan.zhihu.com/p/48157076)     
 
 [《高并发编程--多处理器编程中的一致性问题(下)》](https://zhuanlan.zhihu.com/p/48161056)   
 
-[《深入理解volatile》（比较仔细的讲了 MESI) ](https://zhuanlan.zhihu.com/p/397640787)     
+[《深入理解volatile》（比较仔细的讲了 MESI) ](https://zhuanlan.zhihu.com/p/397640787)      
+
+[《为什么程序员需要关心顺序一致性（Sequential Consistency）而不是Cache一致性（Cache Coherence？）》](https://www.parallellabs.com/2010/03/06/why-should-programmer-care-about-sequential-consistency-rather-than-cache-coherence/)
 
 ---
 
