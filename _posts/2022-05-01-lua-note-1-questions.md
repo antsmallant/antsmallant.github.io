@@ -22,11 +22,9 @@ tags: [lua]
 --- 
 
 
-## 1.1 pairs / ipairs 的底层实现 
+## 1.1 pairs 的底层实现 
 
-**pairs**  
-
-官方的 manual 是这样描述的：   
+lua 官方 manual 关于 pairs 的描述：   
 
 >If t has a metamethod __pairs, calls it with t as argument and returns the first three results from the call.     
 
@@ -35,11 +33,30 @@ tags: [lua]
 >    for k,v in pairs(t) do body end    
 
 >will iterate over all key–value pairs of table t.    
+ 
+<br/>   
 
+`pairs` 对应的 api 是 `luaB_pairs`，逻辑如下：   
 
-如果 t 的元表包括 `__pairs` 方法，则使用此方法，否则使用默认的实现。   
+1）如果 t 的元表包括 `__pairs` 元方法，则调用此元方法，元方法同样要求返回三个值。        
+2）否则，返回的是三个值：next 函数（`luaB_next`），t，nil。     
 
-`pairs` 对应的 api 是 `luaB_pairs`，假设 t 是 table，以 pairs(t) 调用的时候，返回的是三个值：next 函数，t，nil。  
+<br/>   
+
+在 for 循环中调用 pairs 的工作过程大致如下：  
+
+假设 t 是 table，以 pairs(t) 调用的时候，返回了 next, t, nil。之后的过程：  
+
+```
+k1, v1 = next(t, nil)   
+k2, v2 = next(t, k1)    
+...
+直到 kn 为 nil。   
+```
+
+<br/>
+
+`luaB_pairs` 的源码：  
 
 ```c
 static int luaB_pairs (lua_State *L) {
@@ -63,16 +80,19 @@ static int pairsmeta (lua_State *L, const char *method, int iszero,
 }
 ```
 
+---
+
+## 1.2 ipairs 的底层实现
 
 
 
 ---
 
-## 1.2 for 的底层实现
+## 1.3 for 的底层实现
 
 ---
 
-## 1.3 for 循环的目标计算
+## 1.4 for 循环的目标计算
 
 1、对于这样的，只计算一次。      
 
