@@ -399,7 +399,9 @@ end
 
 <br/>
 
-lua 的 `pairs` 函数，调用的是 `luaB_next`，最终会调用到 `luaH_next`。pairs 一般与 for 一起工作，第一次调用时，传入 table 和一个空 key，返回一对非空的 key value，第二次调用时，传入的就是 table 和上次返回的 key 了，依此类推。而 table 和 key 刚好就是 luah_next 需要的参数。 
+lua 的 `pairs` 函数，调用的是 `luaB_next`，最终会调用到 `luaH_next`。`pairs` 一般与 `for` 一起工作：第一次调用时，传入 table 和一个空 key，返回一对非空的 key value；第二次调用时，传入的就是 table 和上次返回的 key 了；依此类推。    
+
+而 table 和 key 刚好就是 luah_next 需要的参数。   
 
 <br/>
 
