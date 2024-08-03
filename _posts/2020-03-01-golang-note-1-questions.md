@@ -44,15 +44,18 @@ go playground: [https://go.dev/play/](https://go.dev/play/)
 
 ---
 
-## 2.1 数组
+## 2.1 数组 (array)
 
 1、数组的长度是其类型的一部分，数组不能改变大小。    
 
-2、基本格式是：`[n]type`，如 `var x = [6]int`。  
+2、基本格式是：`[n]type`，如 `var x = [6]int`。   
+
+3、数组是值类型，用它传参的时候，是拷贝一份数据的，如果要避免拷贝，可以传递它的指针。[2]    
+>Go’s arrays are values. An array variable denotes the entire array; it is not a pointer to the first array element (as would be the case in C). This means that when you assign or pass around an array value you will make a copy of its contents. (To avoid the copy you could pass a pointer to the array, but then that’s a pointer to an array, not an array.) One way to think about arrays is as a sort of struct but with indexed rather than named fields: a fixed-size composite value.
 
 ---
 
-## 2.2 切片
+## 2.2 切片 (slice)
 
 参考： [Go Slices: usage and internals](https://go.dev/blog/slices-intro)   
 
@@ -144,11 +147,13 @@ type T struct {
 ```
 
 1、nil 接口值是指这个接口值既无具体值，也无类型。比如底下的 i 就是一个 nil 接口值：   
+
 ```go
 var i I
 ```
 
 2、底层值为 nil 的接口是的指无具体值，但有类型。比如底下的 i 就是一个无具体值的接口，此时 i 的底层值是 nil，但底层类型是 T：   
+
 ```go
 var i I
 var t T
@@ -210,6 +215,12 @@ float32 float64
 
 complex64 complex128
 ```
+
+变量的零值：  
+
+数值类型为 0，   
+布尔类型为 false，  
+字符串为 "" （空字符串）。   
 
 ---
 
@@ -356,3 +367,5 @@ func (r13 rot13Reader) Read(b []byte) (int, error) {
 # 5. 参考
 
 [1] go.dev. Type declarations. Available at https://go.dev/ref/spec#Type_declarations.     
+
+[2] go.dev. Go Slices: usage and internals. Available at https://go.dev/blog/slices-intro, 2011-1-5.  
