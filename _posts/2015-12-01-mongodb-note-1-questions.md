@@ -61,6 +61,8 @@ ObjectId()
 
 ## 1.4 MongoDB 的管理与命令
 
+---
+
 ### 1.4.1 数据库管理 
 
 有3个默认的数据库: admin, local, config。   
