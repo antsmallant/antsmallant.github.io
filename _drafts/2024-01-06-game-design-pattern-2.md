@@ -3,7 +3,7 @@ layout: post
 title: "游戏中的设计模式二"
 date: 2024-01-06
 last_modified_at: 2024-01-06
-categories: [游戏开发]
+categories: [设计模式]
 tags: [设计模式]
 ---
 
