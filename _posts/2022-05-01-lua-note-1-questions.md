@@ -558,6 +558,17 @@ rehash 的逻辑：
 
 最核心的逻辑就是统计分布情况，以及根据分布情况做出的扩容策略。   
 
+统计结果：     
+
+* na，所有整数键的个数
+* nums，所有整数键的分布情况，`nums[i] = number of keys 'k' where 2^(i - 1) < k <= 2^i`
+* totaluse，所有键的个数
+
+`computesizes` 负责计算一个合适的数组容量来存在整数键，一个原则是：此数组部分存放的整数键的数量要超过一半的容量，这样可以确保数组部分不会过于稀疏。而数组部分放不下的整数键，仍然是放到哈希部分那边。     
+
+`luaH_resize` 负责重新分配内存并移动数据，这里面哈希部分的容量计算公式是：`2 ^ ceil(log2(需要放到哈希部分的键个数))`，举个例子，如果是 8 个，则算出来仍是 8，如果是 6，则算出来也是 8。   
+
+
 ```c
 /*
 ** nums[i] = number of keys 'k' where 2^(i - 1) < k <= 2^i
@@ -581,12 +592,6 @@ static void rehash (lua_State *L, Table *t, const TValue *ek) {
   luaH_resize(L, t, asize, totaluse - na);
 }
 ```
-
-
-
-
-
-
 
 ---
 
