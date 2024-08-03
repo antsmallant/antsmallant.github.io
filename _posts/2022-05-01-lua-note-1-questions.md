@@ -341,6 +341,7 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
     othern = mainposition(t, gkey(mp));
     if (othern != mp) {  /* is colliding node out of its main position? */
       /* yes; move colliding node into free position */
+      // 通过链式查找，找到此冲突节点的上一级，再改变这个上一级的 next 域，修正为 f - othern
       while (othern + gnext(othern) != mp)  /* find previous */
         othern += gnext(othern);
       gnext(othern) = cast_int(f - othern);  /* rechain to point to 'f' */
