@@ -622,7 +622,7 @@ static void rehash (lua_State *L, Table *t, const TValue *ek) {
 
 ---
 
-## 2.2 table 的拓展阅读
+# 3. 拓展阅读
 
 [《深入Lua：Table的实现 - 知乎》](https://zhuanlan.zhihu.com/p/97830462)     
 
@@ -630,7 +630,7 @@ static void rehash (lua_State *L, Table *t, const TValue *ek) {
 
 ---
 
-# 3. 参考
+# 4. 参考
 
 
 [1] lua.org. The Length Operator. Available at https://lua.org/manual/5.3/manual.html#3.4.7.     
