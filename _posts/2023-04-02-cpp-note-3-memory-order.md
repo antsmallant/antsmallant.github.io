@@ -11,6 +11,20 @@ tags: [c++ cpp]
 {:toc}
 <br/>
 
-## 术语
+# 术语
 
-Cache Coherence：缓存一致性。  
+Cache Coherence：缓存一致性。    
+
+---
+
+# 
+
+---
+
+# 拓展阅读
+
+仔细讲了 MESI: [深入理解volatile](https://zhuanlan.zhihu.com/p/397640787)     
+
+---
+
+# 参考
