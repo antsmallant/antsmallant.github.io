@@ -538,32 +538,51 @@ static unsigned int findindex (lua_State *L, Table *t, StkId key) {
 
 #### 1.1.2.7 rehash    
 
-1、rehash 的时机    
+**一、rehash 的时机**         
 
-`luaH_newkey` 时，找不到空闲的位置来创建新 key 时，就会执行 rehash，对表执行扩容操作。扩容的时候，需要申请新的内存，然后把原有的数据都拷贝过去。   
+`luaH_newkey` 时，找不到空闲位置来创建新 key 时，就会执行 `rehash`，对存储空间进行扩容。扩容时，申请新内存，然后把旧数据拷贝过去。   
 
-下面的代码展示了 rehash 被执行的时机，取自 ltable.c 。  
-
-```c
-TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
-  ...
-  if (!ttisnil(gval(mp)) || isdummy(t)) {  /* main position is taken? */
-    Node *othern;
-    Node *f = getfreepos(t);  /* get a free place */
-    if (f == NULL) {  /* cannot find a free place? */
-      rehash(L, t, key);  /* grow table */
-      /* whatever called 'newkey' takes care of TM cache */
-      return luaH_set(L, t, key);  /* insert key into grown table */
-    }
-    ...
-}
-```
-
-以上可以看出，table 除非空间不够用了，否则不会触发 rehash，所以即使很多元素设置为 nil，也不会触发 “缩容”。
+所以，只有 table 空间不够用了才会 rehash。那么，即使有很多元素设置为 nil，占用的存储变小了很多，也不会触发 “缩容”。  
 
 <br/>
 
-2、rehash 的算法  
+**二、rehash 的算法**      
+
+rehash 的逻辑：   
+
+1、统计数组部分跟哈希部分的键值分布情况。   
+2、根据分布情况执行扩容策略：申请数组部分和哈希部分的内存。   
+3、把旧数据拷贝到新内存中。   
+
+<br/>
+
+最核心的逻辑就是统计分布情况，以及根据分布情况做出的扩容策略。   
+
+```c
+/*
+** nums[i] = number of keys 'k' where 2^(i - 1) < k <= 2^i
+*/
+static void rehash (lua_State *L, Table *t, const TValue *ek) {
+  unsigned int asize;  /* optimal size for array part */
+  unsigned int na;  /* number of keys in the array part */
+  unsigned int nums[MAXABITS + 1];
+  int i;
+  int totaluse;
+  for (i = 0; i <= MAXABITS; i++) nums[i] = 0;  /* reset counts */
+  na = numusearray(t, nums);  /* count keys in array part */
+  totaluse = na;  /* all those keys are integer keys */
+  totaluse += numusehash(t, nums, &na);  /* count keys in hash part */
+  /* count extra key */
+  na += countint(ek, nums);
+  totaluse++;
+  /* compute new size for array part */
+  asize = computesizes(nums, &na);
+  /* resize the table to new computed sizes */
+  luaH_resize(L, t, asize, totaluse - na);
+}
+```
+
+
 
 
 
