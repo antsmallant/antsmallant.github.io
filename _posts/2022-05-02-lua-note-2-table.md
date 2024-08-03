@@ -51,6 +51,15 @@ tags: [lua]
 
 ---
 
+# 1.2 遍历时删除或新增
+
+遍历 table 的时候，可以修改已经存在的域，也可以清除已经存在的域，但不能新增域，因为这种行为是未定义的。 [2]    
+
+下文中关于底层实现的时候会讲，新增域的时候可能重建表，也可能导致哈希部分的位置调整，导致 key 的位置发生变化，又重新遍历到已经遍历过的域。   
+
+
+---
+
 # 2. 底层实现 
 
 以下分析使用 lua-5.3.6，使用 [https://www.luac.nl/](https://www.luac.nl/) 翻译字节码。      
@@ -636,3 +645,5 @@ static void rehash (lua_State *L, Table *t, const TValue *ek) {
 
 
 [1] lua.org. The Length Operator. Available at https://lua.org/manual/5.3/manual.html#3.4.7.     
+
+[2] lua.org. next. https://lua.org/manual/5.3/manual.html#pdf-next.  
