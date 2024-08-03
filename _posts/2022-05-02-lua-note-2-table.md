@@ -507,14 +507,7 @@ end
 2、`findindex` 的逻辑:  
     1）如果 key 是 nil，返回 0。  
     2）如果 key （经过转换）是正整数，且在数组部分范围内，则返回 key 对应的正整数值。   
-    3）不是以上两种，则计算出 key 对应于哈希部分的位置 i，返回 `i+1+sizearray` (只是一种技巧，让 `luaH_next` 先遍历数组再遍历哈希)   
-
-
-<br/>
-
-lua 的 `pairs` 函数，调用的是 `luaB_next`，最终会调用到 `luaH_next`。`pairs` 一般与 `for` 一起工作：第一次调用时，传入 table 和一个空 key，返回一对非空的 key value；第二次调用时，传入的就是 table 和上次返回的 key 了；依此类推。    
-
-而 table 和 key 刚好就是 luah_next 需要的参数。   
+    3）不是以上两种，则计算出 key 对应于哈希部分的位置 i，返回 `i+1+sizearray` (只是一种技巧，让 `luaH_next` 先遍历数组再遍历哈希)    
 
 <br/>
 
