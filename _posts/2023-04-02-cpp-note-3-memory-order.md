@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "c++ 笔记三：内存模型"
+title: "c++ 笔记三：memory order"
 date: 2023-04-02
 last_modified_at: 2024-07-01
 categories: [c++]
@@ -11,19 +11,29 @@ tags: [c++ cpp]
 {:toc}
 <br/>
 
+本文记录 c++ memory order 相关的要点。  
+
+---
+
 # 术语
 
 Cache Coherence：缓存一致性。    
 
----
-
-# 
+CC 保证对单个地址读写的正确性，SC 保证对多个地址读写的正确性。    
 
 ---
 
 # 拓展阅读
 
-仔细讲了 MESI: [深入理解volatile](https://zhuanlan.zhihu.com/p/397640787)     
+[Furion W 如何理解 C++11 的六种 memory order？](https://www.zhihu.com/question/24301047/answer/83422523)       
+
+[文礼 如何理解 C++11 的六种 memory order？](https://www.zhihu.com/question/24301047/answer/1193956492)     
+
+[《高并发编程--多处理器编程中的一致性问题(上)》](https://zhuanlan.zhihu.com/p/48157076)     
+
+[《高并发编程--多处理器编程中的一致性问题(下)》](https://zhuanlan.zhihu.com/p/48161056)   
+
+[《深入理解volatile》（比较仔细的讲了 MESI) ](https://zhuanlan.zhihu.com/p/397640787)     
 
 ---
 
