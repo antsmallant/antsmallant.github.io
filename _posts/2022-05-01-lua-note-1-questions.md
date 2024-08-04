@@ -138,49 +138,6 @@ static int luaB_ipairs (lua_State *L) {
 
 ---
 
-## 1.4 for 循环的目标计算
-
-1、对于这样的，只计算一次。      
-
-```lua
-local x = {1,2,3,4}
-for i = 1, #x do
-    x[2] = nil
-    x[3] = nil
-    x[4] = nil
-    print(x[i])
-end
-```
-
-输出：   
-
-```
-1
-nil
-nil
-nil
-```
-
-2、对于这样的，则是动态计算的。    
-
-```lua
-local x = {1,2,3,4}
-for k, v in ipairs(x) do
-    x[2] = nil
-    x[3] = nil
-    x[4] = nil
-    print(k, v)
-end
-```
-
-输出： 
-
-```
-1    1
-```
-
----
-
 # 2. 参考
 
 [1] lua.org. pairs (t). Available at https://lua.org/manual/5.3/manual.html#pdf-pairs.   
