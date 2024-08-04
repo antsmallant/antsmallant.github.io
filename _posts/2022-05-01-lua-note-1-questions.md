@@ -136,62 +136,129 @@ static int luaB_ipairs (lua_State *L) {
 
 ## 1.3 for statement 的两种模式
 
-lua manual 关于 for statement 的描述[3]：   
+lua manual 关于 for statement 的描述 [3]：   
 
 >The for statement has two forms: one numerical and one generic.
+>
+>The numerical for loop repeats a block of code while a control variable runs through an arithmetic progression. It has the following syntax:
+>
+>	stat ::= for Name ‘=’ exp ‘,’ exp [‘,’ exp] do block end
+>The block is repeated for name starting at the value of the first exp, until it passes the second exp by steps of the third exp. More precisely, a for statement like
+>
+>     for v = e1, e2, e3 do block end
+>is equivalent to the code:
+>
+>     do
+>       local var, limit, step = tonumber(e1), tonumber(e2), tonumber(e3)
+>       if not (var and limit and step) then error() end
+>       var = var - step
+>       while true do
+>         var = var + step
+>         if (step >= 0 and var > limit) or (step < 0 and var < limit) then
+>           break
+>         end
+>         local v = var
+>         block
+>       end
+>     end
+>Note the following:
+>
+> * All three control expressions are evaluated only once, before the loop starts. They must all result in numbers.
+> * var, limit, and step are invisible variables. The names shown here are for explanatory purposes only.
+> * If the third expression (the step) is absent, then a step of 1 is used.
+> * You can use break and goto to exit a for loop.
+> * The loop variable v is local to the loop body. If you need its value after the loop, assign it to another variable before exiting the loop.
+>   
+>The generic for statement works over functions, called iterators. On each iteration, the iterator function is called to produce a new value, stopping when this new value is nil. The generic for loop has the following syntax:
+>
+>	stat ::= for namelist in explist do block end
+>	namelist ::= Name {‘,’ Name}
+>A for statement like
+>
+>     for var_1, ···, var_n in explist do block end
+>is equivalent to the code:
+>
+>     do
+>       local f, s, var = explist
+>       while true do
+>         local var_1, ···, var_n = f(s, var)
+>         if var_1 == nil then break end
+>         var = var_1
+>         block
+>       end
+>     end
+>Note the following:
+>
+> * explist is evaluated only once. Its results are an iterator function, a state, and an initial value for the first iterator variable.
+> * f, s, and var are invisible variables. The names are here for explanatory purposes only.
+> * You can use break to exit a for loop.
+> * The loop variables var_i are local to the loop; you cannot use their values after the for ends. If you need these values, then assign them to other variables before breaking or exiting the loop.   
 
-The numerical for loop repeats a block of code while a control variable runs through an arithmetic progression. It has the following syntax:
+<br/> 
 
-	stat ::= for Name ‘=’ exp ‘,’ exp [‘,’ exp] do block end
-The block is repeated for name starting at the value of the first exp, until it passes the second exp by steps of the third exp. More precisely, a for statement like
+简单描述，for 有两种模式。  
 
-     for v = e1, e2, e3 do block end
-is equivalent to the code:
+**一、数字迭代**   
 
-     do
-       local var, limit, step = tonumber(e1), tonumber(e2), tonumber(e3)
-       if not (var and limit and step) then error() end
-       var = var - step
-       while true do
-         var = var + step
-         if (step >= 0 and var > limit) or (step < 0 and var < limit) then
-           break
-         end
-         local v = var
-         block
-       end
-     end
-Note the following:
+形式是 `for v = var, limit, step do block end`。   
 
-All three control expressions are evaluated only once, before the loop starts. They must all result in numbers.
-var, limit, and step are invisible variables. The names shown here are for explanatory purposes only.
-If the third expression (the step) is absent, then a step of 1 is used.
-You can use break and goto to exit a for loop.
-The loop variable v is local to the loop body. If you need its value after the loop, assign it to another variable before exiting the loop.
-The generic for statement works over functions, called iterators. On each iteration, the iterator function is called to produce a new value, stopping when this new value is nil. The generic for loop has the following syntax:
+比如    
 
-	stat ::= for namelist in explist do block end
-	namelist ::= Name {‘,’ Name}
-A for statement like
+```lua
+for i = 1, 2, 1 do
+    print(i)
+end
+```
 
-     for var_1, ···, var_n in explist do block end
-is equivalent to the code:
+打印出 
 
-     do
-       local f, s, var = explist
-       while true do
-         local var_1, ···, var_n = f(s, var)
-         if var_1 == nil then break end
-         var = var_1
-         block
-       end
-     end
-Note the following:
+```
+1
+2
+```
 
-explist is evaluated only once. Its results are an iterator function, a state, and an initial value for the first iterator variable.
-f, s, and var are invisible variables. The names are here for explanatory purposes only.
-You can use break to exit a for loop.
-The loop variables var_i are local to the loop; you cannot use their values after the for ends. If you need these values, then assign them to other variables before breaking or exiting the loop.
+
+**二、通用迭代**          
+
+形式是 `for var1, var2, ... varn in explist do block end` 。  
+
+explist 是由三个值构成的，比如 pairs(t) 返回 next、t、nil，其中 next 是迭代函数，t 是表，nil 是初始的键值。    
+
+那么当 t 是一个普通的没有 `__pairs` 元方法的表时， `for k, v in pairs(t) do block end` 与 `for k, v in next, t, nil do block end` 是等价的。   
+
+比如     
+ 
+```lua
+local t = {1,2,3, hello="world"}
+for k, v in next, t, nil do
+    print(k, v)
+end
+```
+
+会打印出     
+
+```
+1	1
+2	2
+3	3
+hello	world
+```
+
+<br/>
+
+这种迭代是通用的，也就是说，explist 只要能返回 迭代函数 f、变量 s、变量 var，for 就会执行这样的等价逻辑：   
+
+```lua
+do
+  local f, s, var = explist
+  while true do
+    local var_1, ···, var_n = f(s, var)
+    if var_1 == nil then break end
+    var = var_1
+    block
+  end
+end
+```
 
 ---
 
@@ -199,4 +266,6 @@ The loop variables var_i are local to the loop; you cannot use their values afte
 
 [1] lua.org. pairs (t). Available at https://lua.org/manual/5.3/manual.html#pdf-pairs.   
 
-[2] lua.org. ipairs (t). Available at https://lua.org/manual/5.3/manual.html#pdf-ipairs.   
+[2] lua.org. ipairs (t). Available at https://lua.org/manual/5.3/manual.html#pdf-ipairs.    
+
+[3] lua.org. For Statement. Available at https://lua.org/manual/5.3/manual.html#3.3.5.    
