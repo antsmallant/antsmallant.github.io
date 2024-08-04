@@ -208,7 +208,7 @@ lua manual 关于 for statement 的描述 [3]：
 
 形式是 `for v = var, limit, step do block end`。   
 
-比如    
+比如：        
 
 ```lua
 for i = 1, 2, 1 do
@@ -216,7 +216,7 @@ for i = 1, 2, 1 do
 end
 ```
 
-打印出 
+打印出：    
 
 ```
 1
@@ -241,7 +241,7 @@ for k, v in next, t, nil do
 end
 ```
 
-会输出：   
+会打印出：   
 
 ```
 1	1
