@@ -53,7 +53,16 @@ tags: [lua]
 
 ## 1.2 遍历时删除或新增
 
-遍历 table 的时候，可以修改已经存在的域，也可以清除已经存在的域，但不能新增域，因为这种行为是未定义的。 [2]    
+来自 lua manual 关于 next 的描述 [2]： 
+>Allows a program to traverse all fields of a table. Its first argument is a table and its second argument is an index in this table. next returns the next index of the table and its associated value. When called with nil as its second argument, next returns an initial index and its associated value. When called with the last index, or with nil in an empty table, next returns nil. If the second argument is absent, then it is interpreted as nil. In particular, you can use next(t) to check whether a table is empty.     
+>     
+>The order in which the indices are enumerated is not specified, even for numeric indices. (To traverse a table in numerical order, use a numerical for.)     
+>      
+>The behavior of next is undefined if, during the traversal, you assign any value to a non-existent field in the table. You may however modify existing fields. In particular, you may clear existing fields.      
+
+<br/>   
+
+遍历 table 的时候，可以修改已经存在的域，也可以清除已经存在的域，但不能新增域，因为这种行为是未定义的。     
 
 下文描述底层实现的时候会提到，新增域可能会重建表，也可能会调整哈希部分的位置，导致 key 的位置发生变化，这样一来可能就会遍历到已经遍历过的域。  
 

@@ -24,29 +24,27 @@ tags: [lua]
 
 ## 1.1 pairs 的底层实现 
 
-lua 官方 manual 关于 pairs 的描述：   
+lua manual 关于 pairs 的描述[1] ：   
 
 >If t has a metamethod __pairs, calls it with t as argument and returns the first three results from the call.     
-
+>          
 >Otherwise, returns three values: the next function, the table t, and nil, so that the construction     
-
->    for k,v in pairs(t) do body end    
-
->will iterate over all key–value pairs of table t.    
+>     
+>     for k,v in pairs(t) do body end     
+>    
+>will iterate over all key–value pairs of table t.       
  
 <br/>   
 
 `pairs` 对应的 api 是 `luaB_pairs`，它要求传入一个 table 类型的参数 t，逻辑如下：    
-
 1）如果 t 的元表包括 `__pairs` 元方法，则调用此元方法，元方法同样要求返回三个值。        
 2）否则，返回的是三个值：next 函数（`luaB_next`），t，nil。     
 
 <br/>   
 
-在 for 循环中调用 pairs 的工作过程大致如下：  
-
-假设 t 是 table，以 pairs(t) 调用的时候，返回了 next, t, nil。之后的过程：  
-
+假设 t 是 table，在 for 循环中调用 pairs(t) 的工作过程大致如下：      
+1）调用 pairs(t) 返回 next, t, nil；      
+2）调用 next 进行迭代，直到返回空的 key；     
 ```
 k1, v1 = next(t, nil)   
 k2, v2 = next(t, k1)    
@@ -84,11 +82,51 @@ static int pairsmeta (lua_State *L, const char *method, int iszero,
 
 ## 1.2 ipairs 的底层实现
 
+lua manual 关于 ipairs 的描述 [2]：   
 
+>Returns three values (an iterator function, the table t, and 0) so that the construction      
+>    
+>     for i,v in ipairs(t) do body end
+>    
+>will iterate over the key–value pairs (1,t[1]), (2,t[2]), ..., up to the first nil value.     
+
+<br/>
+
+与 pairs 不同，1）ipairs 没有对应的元方法 `__ipairs`；2）ipairs 只遍历正整数键，从 1 开始遍历，直到遇到第一个 nil 键。  
+
+与 pairs 相似的，ipairs 也是返回三个值：next, t, 0。它对应的 api 是 `luaB_ipairs`，它的 next 函数对应的是 `ipairsaux`。   
+
+<br/>
+
+for 循环下 ipairs 的工作过程与 pairs 类似。  
+
+<br/>
+
+`luaB_ipairs` 的源码：  
+
+```c
+static int ipairsaux (lua_State *L) {
+  lua_Integer i = luaL_checkinteger(L, 2) + 1;
+  lua_pushinteger(L, i);
+  return (lua_geti(L, 1, i) == LUA_TNIL) ? 1 : 2;
+}
+
+static int luaB_ipairs (lua_State *L) {
+#if defined(LUA_COMPAT_IPAIRS)
+  return pairsmeta(L, "__ipairs", 1, ipairsaux);
+#else
+  luaL_checkany(L, 1);
+  lua_pushcfunction(L, ipairsaux);  /* iteration function */
+  lua_pushvalue(L, 1);  /* state */
+  lua_pushinteger(L, 0);  /* initial value */
+  return 3;
+#endif
+}
+```
 
 ---
 
-## 1.3 for 的底层实现
+## 1.3 for 的两种模式
 
 ---
 
@@ -137,3 +175,6 @@ end
 
 # 2. 参考
 
+[1] lua.org. pairs (t). Available at https://lua.org/manual/5.3/manual.html#pdf-pairs.   
+
+[2] lua.org. ipairs (t). Available at https://lua.org/manual/5.3/manual.html#pdf-ipairs.   
