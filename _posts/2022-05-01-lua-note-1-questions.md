@@ -98,7 +98,15 @@ lua manual 关于 ipairs 的描述 [2]：
 
 <br/>
 
-for 循环下 ipairs 的工作过程与 pairs 类似。  
+假设 t 是 table，在 for 循环中调用 `ipairs(t)` 的工作过程大致如下：      
+1）调用 pairs(t) 返回 next, t, 0；      
+2）调用 next 进行迭代，直到返回空的 key；     
+```
+k1, v1 = next(t, 0)   
+k2, v2 = next(t, k1)    
+...
+直到 kn 为 nil。   
+```
 
 <br/>
 
