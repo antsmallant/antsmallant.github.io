@@ -266,6 +266,8 @@ do
 end
 ```
 
+<br/>   
+
 与 pairs 类似的，`string.gmatch` 也会返回迭代函数，所以也可以与 for 配合工作，比如[4]：       
 
 ```lua
