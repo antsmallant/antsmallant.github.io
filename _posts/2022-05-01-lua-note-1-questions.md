@@ -223,6 +223,7 @@ end
 2
 ```
 
+<br/>
 
 **二、通用迭代**          
 
@@ -273,7 +274,7 @@ end
 ```lua
 s = "hello world from Lua"
 for w in string.gmatch(s, "%a+") do
-print(w)
+    print(w)
 end
 ```
 
@@ -285,7 +286,6 @@ world
 from
 Lua
 ```
-
 
 
 ---
