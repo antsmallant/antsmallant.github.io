@@ -143,9 +143,11 @@ lua manual 关于 for statement 的描述 [3]：
 >The numerical for loop repeats a block of code while a control variable runs through an arithmetic progression. It has the following syntax:
 >
 >	stat ::= for Name ‘=’ exp ‘,’ exp [‘,’ exp] do block end
->The block is repeated for name starting at the value of the first exp, until it passes the second exp by steps of the third exp. More precisely, a for statement like
+>    
+>The block is repeated for name starting at the value of the first exp, until it passes the second exp by steps of the third exp. More precisely, a for statement like     
 >
 >     for v = e1, e2, e3 do block end
+>      
 >is equivalent to the code:
 >
 >     do
@@ -161,6 +163,7 @@ lua manual 关于 for statement 的描述 [3]：
 >         block
 >       end
 >     end
+>     
 >Note the following:
 >
 > * All three control expressions are evaluated only once, before the loop starts. They must all result in numbers.
@@ -173,10 +176,12 @@ lua manual 关于 for statement 的描述 [3]：
 >
 >	stat ::= for namelist in explist do block end
 >	namelist ::= Name {‘,’ Name}
->A for statement like
+>    
+>A for statement like     
 >
 >     for var_1, ···, var_n in explist do block end
->is equivalent to the code:
+>      
+>is equivalent to the code:     
 >
 >     do
 >       local f, s, var = explist
@@ -187,6 +192,7 @@ lua manual 关于 for statement 的描述 [3]：
 >         block
 >       end
 >     end
+>      
 >Note the following:
 >
 > * explist is evaluated only once. Its results are an iterator function, a state, and an initial value for the first iterator variable.
