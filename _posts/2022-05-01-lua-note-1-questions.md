@@ -226,7 +226,7 @@ explist 是由三个值构成的，比如 pairs(t) 返回 next、t、nil，其�
 
 那么当 t 是一个普通的没有 `__pairs` 元方法的表时， `for k, v in pairs(t) do block end` 与 `for k, v in next, t, nil do block end` 是等价的。   
 
-比如     
+比如：       
  
 ```lua
 local t = {1,2,3, hello="world"}
@@ -235,7 +235,7 @@ for k, v in next, t, nil do
 end
 ```
 
-会打印出     
+会输出：   
 
 ```
 1	1
@@ -260,6 +260,26 @@ do
 end
 ```
 
+与 pairs 类似的，`string.gmatch` 也会返回迭代函数，所以也可以与 for 配合工作，比如[4]：       
+
+```lua
+s = "hello world from Lua"
+for w in string.gmatch(s, "%a+") do
+print(w)
+end
+```
+
+输出：   
+
+```
+hello
+world
+from
+Lua
+```
+
+
+
 ---
 
 # 2. 参考
@@ -269,3 +289,5 @@ end
 [2] lua.org. ipairs (t). Available at https://lua.org/manual/5.3/manual.html#pdf-ipairs.    
 
 [3] lua.org. For Statement. Available at https://lua.org/manual/5.3/manual.html#3.3.5.    
+
+[4] lua.org. string.gmatch (s, pattern). Available at https://lua.org/manual/5.3/manual.html#pdf-string.gmatch.   
