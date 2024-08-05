@@ -3,8 +3,8 @@ layout: post
 title: "mongodb 笔记一：常识、用法"
 date: 2015-12-01
 last_modified_at: 2024-7-10
-categories: [mongodb]
-tags: [mongodb]
+categories: [数据库]
+tags: [mongodb 数据库]
 ---
 
 * 目录  

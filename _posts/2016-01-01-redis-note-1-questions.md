@@ -3,8 +3,8 @@ layout: post
 title: "redis 笔记一：常识、用法"
 date: 2016-1-1
 last_modified_at: 2024-7-10
-categories: [redis]
-tags: [redis]
+categories: [数据库]
+tags: [redis 数据库]
 ---
 
 * 目录  
