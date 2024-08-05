@@ -582,7 +582,7 @@ static unsigned int findindex (lua_State *L, Table *t, StkId key) {
 
 `luaH_newkey` 时，找不到空闲位置来创建新 key 时，就会执行 `rehash`，对存储空间进行扩容。扩容时，申请新内存，然后把旧数据拷贝过去。   
 
-所以，只有 table 空间不够用了才会 rehash。那么，即使有很多元素设置为 nil，占用的存储变小了很多，也不会触发 “缩容”。  
+只有 table 空间不够用了才会 rehash，所以即使有很多元素设置为 nil，占用的存储变小了很多，也不会触发 “缩容”。   
 
 <br/>
 
