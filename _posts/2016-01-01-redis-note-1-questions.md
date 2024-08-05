@@ -120,7 +120,7 @@ redis 常用的数据类型有 5 种：String，List，Hash，Set，Zset。还�
 
 ---
 
-## redis 的代码结构
+## redis 源码的代码结构
 
 以 redis-7.0.5 以例。   
 
@@ -130,6 +130,20 @@ redis 常用的数据类型有 5 种：String，List，Hash，Set，Zset。还�
 ---
 
 ## redis 的持久化   
+
+1、有 2 种持久化机制，组合起来，相当于有 3 种：1、aof 日志；2、rdb（快照）；3、aof + rdb 结合。    
+
+2、无论是 aof 还是 rdb，都无法百分百保证不丢数据，即使 aof 的 `appendfsync` 配置项设置成 `Always`，也可能丢数据，因为 redis 并没有使用类似于 wal 的机制，而是简单的先改内存，再写 aof。  
+
+appendfsync 有三个配置值： 
+
+|配置值|意义| 
+|--|--|
+|Always|每次写都立即写回（fsync）|
+|Everysec|每秒写（fsync）|
+|No|由操作系统控制写回时机|
+
+3、
 
 ---
 
