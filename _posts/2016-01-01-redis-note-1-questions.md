@@ -58,56 +58,7 @@ Redis Online Playground: [https://onecompiler.com/redis/](https://onecompiler.co
 
 大致可以理解为 hash/set/sortedset/list 这些的元素个数超过 64 个时，就会异步删除。   
 
-`lazyfreeGetFreeEffort` 的源码在 [https://github.com/redis/redis/blob/unstable/src/lazyfree.c](https://github.com/redis/redis/blob/unstable/src/lazyfree.c)：   
-
-```c
-size_t lazyfreeGetFreeEffort(robj *key, robj *obj, int dbid) {
-    if (obj->type == OBJ_LIST && obj->encoding == OBJ_ENCODING_QUICKLIST) {
-        quicklist *ql = obj->ptr;
-        return ql->len;
-    } else if (obj->type == OBJ_SET && obj->encoding == OBJ_ENCODING_HT) {
-        dict *ht = obj->ptr;
-        return dictSize(ht);
-    } else if (obj->type == OBJ_ZSET && obj->encoding == OBJ_ENCODING_SKIPLIST){
-        zset *zs = obj->ptr;
-        return zs->zsl->length;
-    } else if (obj->type == OBJ_HASH && obj->encoding == OBJ_ENCODING_HT) {
-        dict *ht = obj->ptr;
-        return dictSize(ht);
-    } else if (obj->type == OBJ_STREAM) {
-        size_t effort = 0;
-        stream *s = obj->ptr;
-
-        /* Make a best effort estimate to maintain constant runtime. Every macro
-         * node in the Stream is one allocation. */
-        effort += s->rax->numnodes;
-
-        /* Every consumer group is an allocation and so are the entries in its
-         * PEL. We use size of the first group's PEL as an estimate for all
-         * others. */
-        if (s->cgroups && raxSize(s->cgroups)) {
-            raxIterator ri;
-            streamCG *cg;
-            raxStart(&ri,s->cgroups);
-            raxSeek(&ri,"^",NULL,0);
-            /* There must be at least one group so the following should always
-             * work. */
-            serverAssert(raxNext(&ri));
-            cg = ri.data;
-            effort += raxSize(s->cgroups)*(1+raxSize(cg->pel));
-            raxStop(&ri);
-        }
-        return effort;
-    } else if (obj->type == OBJ_MODULE) {
-        size_t effort = moduleGetFreeEffort(key, obj, dbid);
-        /* If the module's free_effort returns 0, we will use asynchronous free
-         * memory by default. */
-        return effort == 0 ? ULONG_MAX : effort;
-    } else {
-        return 1; /* Everything else is a single allocation. */
-    }
-}
-```
+`lazyfreeGetFreeEffort` 的源码在 [https://github.com/redis/redis/blob/unstable/src/lazyfree.c](https://github.com/redis/redis/blob/unstable/src/lazyfree.c) 。  
 
 ---
 
