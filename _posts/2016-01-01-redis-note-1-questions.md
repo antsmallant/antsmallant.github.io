@@ -115,7 +115,9 @@ size_t lazyfreeGetFreeEffort(robj *key, robj *obj, int dbid) {
 
 参考自：[《Redis 常见数据类型和应用场景》](https://xiaolincoding.com/redis/data_struct/command.html) [2]。    
 
-redis 常用的数据类型有 5 种：String，List，Hash，Set，Zset。    
+1、常用数据类型
+
+常用的有 5 种：String，List，Hash，Set，Zset。    
 
 |数据类型|存储内容|支持的操作|底层实现|
 |--|--|--|--|
@@ -127,12 +129,25 @@ redis 常用的数据类型有 5 种：String，List，Hash，Set，Zset。
 
 <br/>  
 
-还有另外 4 种用得不多的：Bitmap（2.2新增），HyperLogLog（2.8新增），Geo（3.2新增），Stream（5.0新增）。    
+2、其他数据类型    
+
+其他的还有 4 种：Bitmap（2.2新增），HyperLogLog（2.8新增），Geo（3.2新增），Stream（5.0新增）。    
 
 |数据类型|存储内容|支持的操作|底层实现|
 |--|--|--|--|
-|Bitmap|
+|Bitmap|位图，相当于以位级别存储0、1 的数组|设置、获取比特位；获取0或1出现的首个位置；0、1计数；对多个key进行位操作：与、或、非、异或|基于 String类型|
+|HyperLogLog|海量数据的非精确基数统计，误差约为0.81%，可以统计 2^64-1 个元素的基数|添加元素；元素计数；合并多个 HyperLogLog|使用 HyperLogLog 算法，占用空间约 12 KB 左右|
+|Geo|地理位置集合，每个位置包含三个项：longitude、latitude、位置名|添加、获取位置；计算位置的距离；获取指定坐标&半径范围内的位置|基于Sortedset实现，利用Geohash算法把经纬度换算成权重分数|
+|Stream|专门的消息队列，支持自动生成全局唯一id|插入、读取、删除、查询单个消息；读取区间消息；按消费组形式读取消息；消息确认|基数树+listpack|
 
+
+HyperLogLog 可以做的事情是这样的，比如要统计网页的日 uv，即当天的独立用户访问个数，这种是需要对用户去重的。如果使用 set 也可以实现，但问题在于数据量可能会很大，而 HyperLogLog 是基于概率的，会算出字符串的哈希，再经过一些概率算法操弄，就可以用有限的内存占用，实现这种 “基数统计”，说白了就是去重统计。  
+
+<br/>
+
+3、数据类型的使用场景
+
+|数据类型|场景|
 
 
 ---
