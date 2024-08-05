@@ -203,18 +203,18 @@ redis-4.0 开始支持混合持久化，即 aof + rdb。aof 的优点是丢数�
 
 ## 1.6 redis 的多线程
 
-1、截至 redis-7.0，处理命令的线程始终只有一个，只在其他逻辑支持多线程：后台处理、I/O。     
+1、截至 redis-7.0，处理命令的线程始终只有一条，只在其他逻辑支持多线程：后台处理、I/O。     
 
 
 2、发展历史 
 
 redis-2.6 之前，只有一条主线程。  
 
-redis-2.6 之后，引入 2 个后台线程 bio_close_file、bio_aof_fsync，分别负责关闭文件、aof 刷盘。  
+redis-2.6 之后，引入 2 条后台线程 bio_close_file、bio_aof_fsync，分别负责关闭文件、aof 刷盘。    
 
-redis-4.0 之后，引入 1 个新的后台线程，负责异步释放内存，即 bio_lazy_free。  
+redis-4.0 之后，引入 1 条新的后台线程，负责异步释放内存，即 bio_lazy_free。   
 
-redis-6.0 之后，引入 n 条 I/O 线程，负责分担主线程的 I/O 压力，通过配置（io-threads-do-reads yes ； io-threads n）开启，会额外启动 n-1 条 I/O 线程（主线程也算一条 I/O 线程）。  
+redis-6.0 之后，引入 n 条 I/O 线程，负责分担主线程的 I/O 压力，通过配置（io-threads-do-reads yes ； io-threads n）开启，会额外启动 n-1 条 I/O 线程（主线程也算一条 I/O 线程）。   
 
 
 3、小结    
