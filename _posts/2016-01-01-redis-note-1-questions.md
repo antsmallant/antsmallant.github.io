@@ -232,5 +232,4 @@ redis-6.0 之后，引入 n 条 I/O 线程，负责分担主线程的 I/O 压力
 
 [1] MrSatan. redis之bigkey（看这一篇就够）. Available at https://www.cnblogs.com/szq95716/p/14271108.html, 2021-01-13.    
 
-
 [2] xiaolincoding. Redis 线程模型. Available at https://xiaolincoding.com/redis/base/redis_interview.html#redis-%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B.   
