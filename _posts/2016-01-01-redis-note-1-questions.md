@@ -35,6 +35,8 @@ Redis Online Playground: [https://onecompiler.com/redis/](https://onecompiler.co
 
 这篇文章： [《redis之bigkey（看这一篇就够）》](https://www.cnblogs.com/szq95716/p/14271108.html) [1] 总结得很好。    
 
+---
+
 ### 1.1.1 redis4.0 以前    
 
 在 redis4.0 以前，bigkey 的删除，如果直接使用 del 命令，会阻塞主线程比较久，导致实例响应不了其他命令，大致的估算是每 100w 个 value item，耗时是 1 秒左右（不同设备不现配置性能是不同的）。  
@@ -48,7 +50,7 @@ Redis Online Playground: [https://onecompiler.com/redis/](https://onecompiler.co
 |set| 通过 sscan 取出 n 个 item，然后用 srem 分别删除这 n 个item|
 |list| 通过 ltrim 每次删除 n 个元素|
 
-<br/>
+---
 
 ### 1.1.2 redis4.0 以后 
 
