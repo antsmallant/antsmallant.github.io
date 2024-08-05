@@ -115,7 +115,9 @@ size_t lazyfreeGetFreeEffort(robj *key, robj *obj, int dbid) {
 
 参考自：[《Redis 常见数据类型和应用场景》](https://xiaolincoding.com/redis/data_struct/command.html) [2]。    
 
-1、常用数据类型
+---
+
+### 1.2.1 常用数据类型
 
 常用的有 5 种：String，List，Hash，Set，Zset。    
 
@@ -127,9 +129,9 @@ size_t lazyfreeGetFreeEffort(robj *key, robj *obj, int dbid) {
 |Set|字符串的无序集合|添加、获取、删除元素；集合操作：交集、差集、并集|整数集合或哈希表|
 |Zset|又叫 Sorted Set，有序集合，存储字符串与浮点型分数的有序键值对，以分数的大小排序|添加、获取、删除元素；根据分值范围、排名范围、分值获取元素|7.0之前：压缩列表或跳表；7.0之后：listpack 或跳表|
 
-<br/>  
+---
 
-2、其他数据类型    
+### 1.2.2 其他数据类型    
 
 其他的还有 4 种：Bitmap（2.2新增），HyperLogLog（2.8新增），Geo（3.2新增），Stream（5.0新增）。    
 
@@ -143,12 +145,11 @@ size_t lazyfreeGetFreeEffort(robj *key, robj *obj, int dbid) {
 
 HyperLogLog 可以做的事情是这样的，比如要统计网页的日 uv，即当天的独立用户访问个数，这种是需要对用户去重的。如果使用 set 也可以实现，但问题在于数据量可能会很大，而 HyperLogLog 是基于概率的，会算出字符串的哈希，再经过一些概率算法操弄，就可以用有限的内存占用，实现这种 “基数统计”，说白了就是去重统计。  
 
-<br/>
+---
 
-3、数据类型的使用场景
+### 1.2.3 数据类型的使用场景
 
 |数据类型|场景|
-
 
 ---
 
@@ -157,9 +158,6 @@ HyperLogLog 可以做的事情是这样的，比如要统计网页的日 uv，�
 面向用户的数据类型，其底层往往不止使用一种数据结构，redis 会根据数据量的大小，选择性能上最优的数据结构，上面已经讲到了。   
 
 接下来描述几种数据结构的实现。   
-
-
-
 
 ---
 
@@ -176,12 +174,15 @@ HyperLogLog 可以做的事情是这样的，比如要统计网页的日 uv，�
 
 ## 1.5 redis 的持久化   
 
+---
+
 ### 1.5.1 持久化的机制分类
 
 1、有 2 种持久化机制，组合起来，相当于有 3 种：1、aof 日志；2、rdb（快照）；3、aof + rdb 混合。    
 
 2、无论是 aof 还是 rdb，都无法百分百保证不丢数据，即使 aof 的 `appendfsync` 配置项设置成 `Always`，也可能丢数据，因为 redis 并没有使用类似于 wal 的机制，而是简单的先改内存，再写 aof。   
 
+---
 
 ### 1.5.2 aof   
 
@@ -212,6 +213,7 @@ aof 相关的配置是 appendfsync，用于控制 aof 日志刷盘的时机，�
 |Everysec|每秒写（fsync）|
 |No|由操作系统控制写回时机|
 
+---
 
 ### 1.5.3 rdb    
 
@@ -229,6 +231,7 @@ save 60 10000
 
 这里的 save 是 bgsave 的意思，save 900 1 表示 900 秒内有 1 个写入就执行 bgsave；save 300 10 表示 300 秒内有 10 次写入就执行 bgsave，依此类推。  
 
+---
 
 ### 1.5.4 混合持久化 aof + rdb   
 
