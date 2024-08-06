@@ -57,9 +57,9 @@ buffer 用于处理系统两端的速度不平衡，减少短时间内突发 I/O
 
 命名管道可以用于不相关的进程间交换数据。  
 
-<br/>
+---
 
-**1、匿名管道**   
+#### 1.2.1.1 匿名管道
 
 匿名管道通过 `int pipe(int fd[2])` 系统调用创建，创建成功后，`fd[0]` 就表示读端，`fd[1]` 表示写端。   
 
@@ -69,7 +69,7 @@ shell 中类似于 `ps aux | grep mysql` 这样的命令，就是将 ps 的输�
 2、shell fork 出 ps 子进程，利用 dup2 函数，用管道的写端 fd[1] 替换掉 ps 子进程的 stdout；  
 3、shell fork 出 grep 子进程，利用 dup2 函数，用管道的读端 fd[0] 替换掉 grep 子进程的 stdin；    
 
-下面例子来自 [《进程间通信IPC》](https://www.colourso.top/linux-pipefifo/) [3]:  
+下面例子（仅包含 fork 出 ps 子进程的逻辑）来自 [《进程间通信IPC》](https://www.colourso.top/linux-pipefifo/) [3]:  
 
 ```c
 #include <unistd.h>
@@ -124,9 +124,12 @@ int main(){
 
 ```
 
-**2、命名管道**   
+---
 
-命名管道通过 `int mkfifo(const char *pathname, mode_t mode)` 系统调用创建。  
+#### 1.2.1.2 命名管道
+
+命名管道通过 `int mkfifo(const char *pathname, mode_t mode)` 系统调用创建。    
+
 
 ---
 
@@ -145,6 +148,12 @@ int main(){
 2）信号是一种软件中断，比如 `kill <pid>`，就是向指定 pid 的进程发送了 SIGTERM 信号，如果进程没有自己捕捉并处理 SIGTERM 信号，则针对该信号的默认动作是终止，进程将退出。    
 
 在 《UNIX 环境高级编程》这本书里面，并没有把信号归类于 IPC，但它确实是可以作为一种进程间的通信方式来使用。   
+
+---
+
+### 1.2.5 socket 
+
+这个可以使用通用的网络 socket，也可以使用 unix 域 socket。   
 
 ---
 
