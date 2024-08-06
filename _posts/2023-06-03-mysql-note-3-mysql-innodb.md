@@ -15,12 +15,13 @@ tags: [db, mysql]
 
 ---
 
-# 1. buffer pool
+# 1. 既然有了 buffer poll，为何 innodb 的性能远低于 redis ?
 
 参考：   
 姜承尧 《MySQL技术内幕 InnoDB存储引擎（第2版）》    
 [说说你对MySQL InnoDB Buffer Pool的理解](https://zhuanlan.zhihu.com/p/712657254)     
 
+---
 
 # 2. innodb 的页大小为何是 16 kb ? 
 
@@ -32,7 +33,6 @@ tags: [db, mysql]
 ---
 
 # 4. 为什么 innodb 不使用 B* Tree ?
-
 
 ---
 
