@@ -2,7 +2,7 @@
 layout: post
 title: "多线程笔记一：常识、用法"
 date: 2014-03-01
-last_modified_at: 2023-04-01
+last_modified_at: 2024-04-01
 categories: [并发与多线程]
 tags: [并发 同步 多线程]
 ---
@@ -18,6 +18,10 @@ tags: [并发 同步 多线程]
 ---
 
 # 1. 常识
+
+---
+
+## 1.1 锁
 
 
 ---
