@@ -41,6 +41,10 @@ buffer 用于处理系统两端的速度不平衡，减少短时间内突发 I/O
 
 3、信号，《UNIX 环境高级编程（第2版）》 并没有把信号归类为 IPC，但其实也可以算是一种 IPC 方式，可以在第 10 章可以找到详细论述。      
 
+<br/>  
+
+《UNIX 环境高级编程（第2版）》的英文名叫 Advanced Programming in the UNIX Environment，简称 APUE，下文都以 APUE 指代。  
+
 ---
 
 ### 1.2.1 管道
@@ -70,8 +74,8 @@ buffer 用于处理系统两端的速度不平衡，减少短时间内突发 I/O
 shell 中类似于 `ps aux | grep mysql` 这样的命令，就是将 ps 的输出重定向为 grep 的输入，可以使用匿名管道来实现这样的效果。大体做法是： 
 
 1、shell 创建一个匿名管道 fd[2]； 
-2、shell fork 出 ps 子进程，利用 dup2 函数，用管道的写端 fd[1] 替换掉 ps 子进程的 stdout；  
-3、shell fork 出 grep 子进程，利用 dup2 函数，用管道的读端 fd[0] 替换掉 grep 子进程的 stdin；    
+2、shell fork 出 ps 子进程，利用 dup2 函数，用管道的写端 fd[1] 替换掉 ps 子进程的 stdout（同时也关闭管道的读端，因为用不上）；  
+3、shell fork 出 grep 子进程，利用 dup2 函数，用管道的读端 fd[0] 替换掉 grep 子进程的 stdin（同时也关闭管道的写端，因为用不上）；    
 
 下面例子（仅包含 fork 出 ps 子进程的逻辑）来自 [《进程间通信IPC》](https://www.colourso.top/linux-pipefifo/) [3]:  
 
@@ -134,6 +138,25 @@ int main(){
 
 命名管道通过 `int mkfifo(const char *pathname, mode_t mode)` 系统调用创建。    
 
+它有两个用途[2]：  
+1、由 shell 命令使用以便将数据从一条管道线传送到另一条，为此无需创建中间临时文件。  
+2、用于客户端进程与服务端进程结构中，在两者之间传递数据。     
+
+针对 1，APUE 举了一个例子，展示了 FIFO 可以在 shell 中做出非线性的连接。    
+
+```shell
+mkfifo fifo1
+prog3 < fifo1 &
+prog1 < infile | tee fifo1 | prog2
+```
+
+它实现了这样的效果：   
+
+```
+                         -> FIFO -> prog3
+输入文件 -> prog1 -> tee 
+                         -> prog2
+```
 
 ---
 
@@ -161,14 +184,10 @@ int main(){
 
 ---
 
-### 
-
----
-
 # 2. 参考  
 
 [1] Quokka. Cache 和 Buffer 都是缓存，主要区别是什么. Available at https://www.zhihu.com/question/26190832/answer/32387918. 2017-02-15.   
 
-[2] [美]W. Richard Stevens, Stephen A. Rago. UNIX环境高级编程(第2版). 尤晋元, 张亚英, 戚正伟. 北京: 人民邮电出版社, 2006-5(1): 397,233.  
+[2] [美]W. Richard Stevens, Stephen A. Rago. UNIX环境高级编程(第2版). 尤晋元, 张亚英, 戚正伟. 北京: 人民邮电出版社, 2006-5(1): 397,233,413.  
 
 [3] Colourso. 进程间通信IPC. Available at https://www.colourso.top/linux-pipefifo/. 2021-4-4.      
