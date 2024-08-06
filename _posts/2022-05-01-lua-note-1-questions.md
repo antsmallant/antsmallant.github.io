@@ -299,6 +299,20 @@ lua manual 关于 for statement 的描述 [3]：
 
 ---
 
+## 1.4 `_ENV` 与 `_G`  
+
+lua5.2 开始，`_G` 就相当于 `_ENV`，并且 `_ENV` 中包含一个 field `_G` 来指向 `_G`。  
+
+所以，以下的值是相等的： 
+
+```
+_G == _ENV == _ENV['_G'] = _G['_G']
+```
+
+但要注意，`_ENV` 里面并不包含一个名为 `'_ENV'` 的成员，即 `_ENV['_ENV']` 是 nil 的。  
+
+---
+
 # 2. 参考
 
 [1] lua.org. pairs (t). Available at https://lua.org/manual/5.3/manual.html#pdf-pairs.   
