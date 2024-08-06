@@ -41,9 +41,92 @@ buffer 用于处理系统两端的速度不平衡，减少短时间内突发 I/O
 
 ### 1.2.1 管道
 
-管道分匿名管理、具名管道（named pipe）。  
+狭义上，管道指匿名管道（PIPE）。广义上，管道可分匿名管道、命名管道（FIFO）。   
+
+<br/>
+
+匿名管道的特点：  
+
+1）历史上，管道都是半双工的模式，即数据只能在一个方向上流动，虽然有某些系统提供全双工的，但缺乏可移植性。[2]     
+
+2）只能在具有公共祖先的进程间使用，通常的，一个管道由一个进程创建，然后父进程 fork 出子进程，然后父、子进程都可以使用此管道了。   
+
+<br/>
+
+命名管道与匿名管道不同之处：  
+
+命名管道可以用于不相关的进程间交换数据。  
+
+<br/>
+
+**1、匿名管道**   
 
 匿名管道通过 `int pipe(int fd[2])` 系统调用创建，创建成功后，`fd[0]` 就表示读端，`fd[1]` 表示写端。   
+
+shell 中类似于 `ps aux | grep mysql` 这样的命令，就是将 ps 的输出重定向为 grep 的输入，可以使用匿名管道来实现这样的效果。大体做法是： 
+
+1、shell 创建一个匿名管道 fd[2]； 
+2、shell fork 出 ps 子进程，利用 dup2 函数，用管道的写端 fd[1] 替换掉 ps 子进程的 stdout；  
+3、shell fork 出 grep 子进程，利用 dup2 函数，用管道的读端 fd[0] 替换掉 grep 子进程的 stdin；    
+
+下面例子来自 [《进程间通信IPC》](https://www.colourso.top/linux-pipefifo/) [3]:  
+
+```c
+#include <unistd.h>
+#include <sys/types.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <wait.h>
+
+int main(){
+
+    int pipefd[2];
+    int ret = pipe(pipefd);
+    if(ret == -1){
+        perror("pipe");
+        exit(0);
+    }
+
+    pid_t pid = fork();
+
+    if(pid == 0){
+        //子进程
+        close(pipefd[0]);
+
+        //重定向 stdout_fileno -> pipefd[1]
+        dup2(pipefd[1],STDOUT_FILENO);
+
+        execlp("ps","ps","aux",NULL);
+
+        //若执行失败
+        perror("execlp");
+        exit(0);
+    }
+    else if(pid > 0){
+        //父进程
+        close(pipefd[1]);
+
+        char buf[1024] = {0};
+        int len = -1;
+
+        while((len = read(pipefd[0],buf,sizeof(buf))) > 0){
+            printf("%s",buf);
+            memset(buf,0,sizeof(buf));
+        }
+
+        //读完回收子进程
+        wait(NULL);
+    }
+
+    return 0;
+}
+
+```
+
+**2、命名管道**   
+
+命名管道通过 `int mkfifo(const char *pathname, mode_t mode)` 系统调用创建。  
 
 ---
 
@@ -74,3 +157,5 @@ buffer 用于处理系统两端的速度不平衡，减少短时间内突发 I/O
 [1] Quokka. Cache 和 Buffer 都是缓存，主要区别是什么. Available at https://www.zhihu.com/question/26190832/answer/32387918. 2017-02-15.   
 
 [2] [美]W. Richard Stevens, Stephen A. Rago. UNIX环境高级编程(第2版). 尤晋元, 张亚英, 戚正伟. 北京: 人民邮电出版社, 2006-5(1): 397,233.  
+
+[3] Colourso. 进程间通信IPC. Available at https://www.colourso.top/linux-pipefifo/. 2021-4-4.      
