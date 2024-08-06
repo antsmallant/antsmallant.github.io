@@ -22,6 +22,18 @@ tags: [db, mysql]
 [说说你对MySQL InnoDB Buffer Pool的理解](https://zhuanlan.zhihu.com/p/712657254)     
 
 
+# 2. innodb 的页大小为何是 16 kb ? 
+
+
+---
+
+# 3. 从 iops 推算 innodb 的qps
+
+---
+
+# 4. 为什么 innodb 不使用 B* Tree ?
+
+
 ---
 
 # 参考
