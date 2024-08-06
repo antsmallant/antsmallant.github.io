@@ -120,15 +120,23 @@ Stream 虽然是专门实现的消息队列，但始终谈不上专业。首先�
 |Hash|缓存带有多个field的对象|
 |Set|点赞、共同关注、抽奖|
 |Zset|排行榜|
-|Bitmap|签到统计；判断用户登录态；连续签到用户总数|
+|Bitmap|签到统计；判断用户登录态；统计连续签到用户总数|
 |HyperLogLog|百万级以上的网页uv计数|
 |Geo|LBS 类的应用：附近的人，附近的车|
 |Stream|专业一点的消息队列，不太严谨的场合下可以使用|
 
 
+<br/>   
+
+**Zset score 精度的问题**   
+
+score 是用 64 位的 double 存储的，按照 IEEE 754 浮点数标准。它能精确表示的整数范围是 `-(2^53) ~ +(2^53)`，即 -9007199254740992 ~ 9007199254740992 。[3]  
+
+在游戏排行榜中，策划给出的要求往往是这样，如果分数相同，则等级高的排名先前；如果等级相同，则 ...。这种情况下，往往是需要把这些多个维度的数据映射到 score 这单一个值上。我们能做的也只是尽量，毕竟就只有 53 个位。  
+
 <br/>
 
-Bitmap 统计连续签到用户总数的具体做法：   
+**Bitmap 统计连续签到用户总数**       
 
 假设要统计连续 3 天签到的用户，则分为 3 个 key 来存：sign_day1, sign_day2, sign_day3，这其中每个用户 id 映射到 sign_dayx 中的某个 bit 位，比如 `setbit sign_day1 1001 1` 就设置了第 1 天 id 为 1001 的人签到。    
 
@@ -161,7 +169,7 @@ Bitmap 统计连续签到用户总数的具体做法：
 
 ## 1.5 redis 的持久化   
 
-参考自：[《Redis 持久化》](https://xiaolincoding.com/redis/base/redis_interview.html#redis-%E6%8C%81%E4%B9%85%E5%8C%96)[3]。 
+参考自：[《Redis 持久化》](https://xiaolincoding.com/redis/base/redis_interview.html#redis-%E6%8C%81%E4%B9%85%E5%8C%96)[4]。 
 
 ---
 
@@ -254,7 +262,7 @@ redis-6.0 之后，引入 n 条 I/O 线程，负责分担主线程的 I/O 压力
 
 3、小结    
 
-从 redis-6.0 开始，默认情况下，redis-server 会创建 7 条线程[4]：   
+从 redis-6.0 开始，默认情况下，redis-server 会创建 7 条线程[5]：   
 
 * 1 条主线程：redis-server，负责处理命令，及部分 I/O；   
 * 3 条后台线程：bio_close_file、bio_aof_fsync、bio_lazy_free，分别负责异步关闭文件，异步 aof 刷盘，异步释放内存；     
@@ -269,6 +277,9 @@ redis-6.0 之后，引入 n 条 I/O 线程，负责分担主线程的 I/O 压力
 
 [2] xiaolincoding. Redis 常见数据类型和应用场景. Available at https://xiaolincoding.com/redis/data_struct/command.html.  
 
-[3] xiaolincoding. Redis 持久化. Available at https://xiaolincoding.com/redis/base/redis_interview.html#redis-%E6%8C%81%E4%B9%85%E5%8C%96.   
+[3] redis.io. zadd. Available at https://redis.io/docs/latest/commands/zadd/.    
 
-[4] xiaolincoding. Redis 线程模型. Available at https://xiaolincoding.com/redis/base/redis_interview.html#redis-%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B.   
+[4] xiaolincoding. Redis 持久化. Available at https://xiaolincoding.com/redis/base/redis_interview.html#redis-%E6%8C%81%E4%B9%85%E5%8C%96.   
+
+[5] xiaolincoding. Redis 线程模型. Available at https://xiaolincoding.com/redis/base/redis_interview.html#redis-%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B.   
+
