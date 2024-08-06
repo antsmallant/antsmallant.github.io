@@ -25,6 +25,15 @@ userdata 是完全由 lua gc 管理的一块内存，而 lightuserdata 只保存
 
 # 2. userdata 的例子
 
+参考： 
+
+[Lua中的userdata](https://blog.csdn.net/qq826364410/article/details/88672091)      
+
+[lua源码编译及与C/C++交互调用细节剖析](https://zhuanlan.zhihu.com/p/395277828)    
+
+[细说lua的userdata与C++的交互](https://zhuanlan.zhihu.com/p/396407350)    
+
+
 
 ---
 

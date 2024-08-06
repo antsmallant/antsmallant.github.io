@@ -286,7 +286,14 @@ public:
 
 ## 3.2 A Cross-Platform Memory Leak Detector
 
-[A Cross-Platform Memory Leak Detector](http://wyw.dcweb.cn/leakage.htm)
+[A Cross-Platform Memory Leak Detector](http://wyw.dcweb.cn/leakage.htm)   
+
+--
+
+## 3.3 Google ASan
+
+[Google ASan内存诊断工具简单讨论与分析](https://zhuanlan.zhihu.com/p/600142193)    
+
 
 ---
 
