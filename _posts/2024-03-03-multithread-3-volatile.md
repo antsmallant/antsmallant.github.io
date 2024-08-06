@@ -120,7 +120,7 @@ void consumer_thread()
 
 上文提到 volatile 无法阻止 reordering，但并不是所有 volatile 的实现都无法阻止，这取决于不同的编译器实现，有些编译器实现就通过插入屏障（barrier）的方式来阻止 reordering，比如说 Microsoft 的编译器。  
 
-microsoft 在这篇文章《volatile (C++)》[3] 介绍了 volatile 的两个编译器选项： 
+microsoft 在这篇文章[《volatile (C++)》](https://learn.microsoft.com/en-us/cpp/cpp/volatile-cpp?view=msvc-170&viewFallbackFrom=vs-2019) [3] 介绍了 volatile 的两个编译器选项：   
 
 * 当使用 `/volatile:iso` 选项的时候，volatile 就只能用于硬件访问 (hardware access)，即 memory mapped i/o，不应该把它用于跨线程编程。    
 
@@ -136,8 +136,9 @@ microsoft 在这篇文章《volatile (C++)》[3] 介绍了 volatile 的两个编
 
 
 翻译过来就是：   
-写一个 volatile 修饰的变量时，在写之前对其他 global 或 static 变量的访问确保发生在此之前。  
-读一个 volatile 修改的变量时，在读之前对其他 global 或 static 变量的访问确保发生在此之前。  
+
+1、写一个 volatile 修饰的变量时，在写之前对其他 global 或 static 变量的访问确保发生在此之前。   
+2、读一个 volatile 修改的变量时，在读之前对其他 global 或 static 变量的访问确保发生在此之前。  
 
 这样一来确实可以解决上面的问题二，也就是说微软编译器通过增强 volatile，把问题一、二都解决了。  
 
