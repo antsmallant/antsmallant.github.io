@@ -19,6 +19,8 @@ tags: [mongodb 数据库]
 
 # 1. 常识
 
+---
+
 ## 1.0 mongodb 资料  
 
 MongoDB manual: [https://www.mongodb.com/zh-cn/docs/manual/](https://www.mongodb.com/zh-cn/docs/manual/)   
