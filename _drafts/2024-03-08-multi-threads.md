@@ -33,6 +33,7 @@ NOTE: **还没写完，要处理的信息量太大了。**
 
 
 ### C++11 完善的多线程支持
+
 上文中我们把问题暴露出来了，接下来需要探讨一下解决办法了。  
 
 volatile 实际上只能阻止编译器优化，就不要让它再来帮忙多线程编程了，它应该只做 memory mapped i/o 的工作。  
@@ -113,6 +114,7 @@ quote: [http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#Discu
 
 
 ## c 没有明确规定的内存模型，是如何在多线程下工作的？
+
 可以使用内存屏障吗？
 
 
@@ -120,6 +122,7 @@ quote: [http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#Discu
 
 
 ## 多线程的初衷
+
 是快。  
 
 但是加了一系列限制之后，它还够快吗？这是一个值得思考的问题。  
@@ -139,6 +142,7 @@ from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.cs
 
 
 ## java or C# 中的内存模型
+
 何为 JMM ？ 
 
 [如何理解java中的volatile、happen-before、以及重排序的关系？](https://www.zhihu.com/question/499586720/answer/2350034212)
@@ -169,6 +173,7 @@ from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.cs
 ---
 
 # todo
+
 * 补充完整条件变量以及自旋锁
 * 补充 linux 下各种原语的 pthread 版本
 * 搞清楚锁的作用域范围的描述是否准确
@@ -180,6 +185,7 @@ from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.cs
 ---
 
 # 拓展阅读
+
 * Vincent Gramoli. More than You Ever Wanted to Know about Synchronization
  Synchrobench, Measuring the Impact of the Synchronization on Concurrent Algorithms. Available at https://perso.telecom-paristech.fr/kuznetso/INF346-2015/slides/gramoli-ppopp15.pdf, 2015.  
 
@@ -193,6 +199,7 @@ from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.cs
 ---
 
 # 总结
+
 * 多线程编程简直是个屎坑，除非你掌握了足够多并且足够新的知识，轻易不要挑战它。   
 
 ---

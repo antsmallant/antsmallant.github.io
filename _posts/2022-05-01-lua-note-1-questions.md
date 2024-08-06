@@ -301,7 +301,7 @@ lua manual 关于 for statement 的描述 [3]：
 
 ## 1.4 `_ENV` 与 `_G`  
 
-lua5.2 开始，`_G` 就相当于 `_ENV`，并且 `_ENV` 中包含一个 field `_G` 来指向 `_G`。  
+1、lua5.2 开始，`_G` 就相当于 `_ENV`，并且 `_ENV` 中包含一个 field `_G` 来指向 `_G`。  
 
 所以，以下的值是相等的： 
 
@@ -309,7 +309,41 @@ lua5.2 开始，`_G` 就相当于 `_ENV`，并且 `_ENV` 中包含一个 field `
 _G == _ENV == _ENV['_G'] = _G['_G']
 ```
 
-但要注意，`_ENV` 里面并不包含一个名为 `'_ENV'` 的成员，即 `_ENV['_ENV']` 是 nil 的。  
+<br/>
+
+2、lua 在遇到 `_G` 的时候是这样处理的，去 `_ENV` 表中查找名为 `_G` 的元素。  
+
+比如这样的语句：  
+
+```lua
+print(_G)
+```
+
+翻译成字节码是这样的：   
+
+```
+function main(...) --line 1 through 1
+1	GETTABUP	0 0 -1	; _ENV "print"
+2	GETTABUP	1 0 -2	; _ENV "_G"
+3	CALL	0 2 1	
+4	RETURN	0 1	
+
+upvalues (1)
+index	name	instack	idx	kind
+0	_ENV	true	0	VDKREG (regular)
+
+constants (2)
+index	type	value
+1	string	"print"
+2	string	"_G"
+end
+```
+
+`_ENV` 是这段代码的 upvalue，`GETTABUP	1 0 -2	; _ENV "_G"` 就表示从 `_ENV` 这个类型为 table 的 upvalue 中获取名字为 `_G` 的成员。  
+
+<br/>
+
+3、但要注意，`_ENV` 里面并不包含一个名为 `'_ENV'` 的成员，即 `_ENV['_ENV']` 是 nil 的。  
 
 ---
 
