@@ -202,6 +202,16 @@ prog1 < infile | tee fifo1 | prog2
 
 在 《UNIX 环境高级编程》这本书里面，并没有把信号归类于 IPC，但它确实是可以作为一种进程间的通信方式来使用。   
 
+---
+
+## 1.3 XSI
+
+XSI 是 X/Open 组织对 unix 接口定义的一套标准 (X/OPEN System Interface)。   
+
+但目前使用得比较多的是 POSIX（POrtable Operating System Interface），它并不局限于 Unix，其他的一些操作系统也支持 Posix，包括 windows，dec。  
+
+另外还有一个 SUS，即 Single UNIX Specification，它相当于 POSIX 的超集，定义了一些额外附加的接口。   
+
 
 ---
 
