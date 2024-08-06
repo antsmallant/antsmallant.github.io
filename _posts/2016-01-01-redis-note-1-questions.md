@@ -93,11 +93,21 @@ Redis Online Playground: [https://onecompiler.com/redis/](https://onecompiler.co
 |Bitmap|位图，相当于以位级别存储0、1 的数组|设置、获取比特位；获取0或1出现的首个位置；0、1计数；对多个key进行位操作：与、或、非、异或|基于 String 类型|
 |HyperLogLog|海量数据的非精确基数统计，误差约为0.81%，可以统计 2^64-1 个元素的基数|添加元素；元素计数；合并多个 HyperLogLog|使用 HyperLogLog 算法，占用空间约 12 KB 左右|
 |Geo|地理位置集合，每个位置包含三个项：longitude、latitude、位置名|添加、获取位置；计算位置的距离；获取指定坐标&半径范围内的位置|基于Sortedset实现，利用Geohash算法把经纬度换算成权重分数|
-|Stream|专门的消息队列，支持自动生成全局唯一id|插入、读取、删除、查询单个消息；读取区间消息；按消费组形式读取消息；消息确认|基数树+listpack|
+|Stream|相对靠谱的消息队列，支持自动生成全局唯一id|插入、读取、删除、查询单个消息；读取区间消息；按消费组形式读取消息；消息确认|基数树+listpack|
 
 <br/>
 
+**关于 HyperLogLog**   
+
 HyperLogLog 可以做的事情是这样的，比如要统计网页的日 uv，即当天的独立用户访问个数，这种是需要对用户去重的。如果使用 set 也可以实现，但问题在于数据量可能会很大，而 HyperLogLog 是基于概率的，会算出字符串的哈希，再经过一些概率算法操弄，就可以用有限的内存占用，实现这种有损的 “基数统计”，说白了就是去重统计。误差约为0.81%，在海量数据的场景下，这种误差应当是可以接受的。    
+
+<br/>
+
+**关于 Stream**    
+
+Stream 虽然是专门实现的消息队列，但始终谈不上专业。首先，它可能会丢消息，因为 redis 的 aof 本身就做不到可靠的持久化，更不用说它不支持多副本写入，单点挂了就挂了。其次，消息堆积能力受限于内存，内存不足直接 oom 了。    
+
+所以，Stream 只能用于一些不是很追求可靠性的场景，即使崩了也无所谓的那种。正经的消息队列还是用回 RabbitMQ、kafka 之类的。  
 
 ---
 
@@ -106,28 +116,27 @@ HyperLogLog 可以做的事情是这样的，比如要统计网页的日 uv，�
 |数据类型|场景|
 |--|--|
 |String|缓存对象；计数；分布式锁；共享 session 信息|
-|List|简易的消息队列|
+|List|简易的消息队列，完全不考虑可靠性的情况下可以使用|
 |Hash|缓存带有多个field的对象|
 |Set|点赞、共同关注、抽奖|
 |Zset|排行榜|
 |Bitmap|签到统计；判断用户登录态；连续签到用户总数|
 |HyperLogLog|百万级以上的网页uv计数|
 |Geo|LBS 类的应用：附近的人，附近的车|
-
+|Stream|专业一点的消息队列，不太严谨的场合下可以使用|
 
 
 <br/>
 
-Bitmap 的连续签到用户总数的具体做法说明一下：  
+Bitmap 统计连续签到用户总数的具体做法：   
 
-假设要统计连续 3 天签到的用户，则分为 3 个 key 来存：sign_day1, sign_day2, sign_day3，这其中每个用户 id 映射到 sign_dayx 中的某个 bit 位，比如 `setbit sign_day1 1001 1` 就设置了第一天 id 为 1001 的人签到了。   
+假设要统计连续 3 天签到的用户，则分为 3 个 key 来存：sign_day1, sign_day2, sign_day3，这其中每个用户 id 映射到 sign_dayx 中的某个 bit 位，比如 `setbit sign_day1 1001 1` 就设置了第 1 天 id 为 1001 的人签到。    
 
-之后，使用 `bitop and sign_stat sign_day1 sign_day2 sign_day3` 将这3天的统计进行位与的操作并把结果存放到 key 为 sign_stat 的 bitmap 中，如果一个用户连续3天都签到，那么他那个 bit 的位与结果就是 1。  
+之后，使用 `bitop and sign_stat sign_day1 sign_day2 sign_day3` 将这3天的统计进行位与的操作并把结果存放到 sign_stat 中。如果一个用户连续 3 天都签到，那么他那个 bit 的位与结果就是 1。  
 
-这时候统计 sign_stat 中 1 的个数即是连续 3 天都签到的用户个数：`bitcount sign_stat`。  
+这时候统计 sign_stat 中 1 的个数即是连续 3 天都签到的用户个数：`bitcount sign_stat`。   
 
 <br/>
-
 
 ---
 
