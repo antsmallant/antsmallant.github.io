@@ -118,7 +118,7 @@ void consumer_thread()
 
 # 4. 某些编译器赋予 volatile 额外的能力
 
-上文提到 volatile 无法阻止 reordering，但并不是所有 volatile 的实现都无法阻止，这取决于不同的编译器实现，有些编译器实现就通过插入屏障（barrier）的方向来阻止 reordering，比如说 Microsoft 的编译器。  
+上文提到 volatile 无法阻止 reordering，但并不是所有 volatile 的实现都无法阻止，这取决于不同的编译器实现，有些编译器实现就通过插入屏障（barrier）的方式来阻止 reordering，比如说 Microsoft 的编译器。  
 
 microsoft 在这篇文章《volatile (C++)》[3] 介绍了 volatile 的两个编译器选项： 
 
