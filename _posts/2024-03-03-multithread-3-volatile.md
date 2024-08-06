@@ -144,6 +144,8 @@ microsoft 在这篇文章[《volatile (C++)》](https://learn.microsoft.com/en-u
 
 但是，尽管有这种额外实现，我们仍然不应该依赖它，因为这样会严重制约我们代码的可移植性。   
 
+<br/>
+
 除了 Microsoft 的编译器，其他编译器对于 volatile 的处理也有其他问题，比如以下帖子和文章讲的：    
 
 * [《Curious thing about the volatile keyword in C++》](https://www.reddit.com/r/cpp/comments/592sui/curious_thing_about_the_volatile_keyword_in_c/) [4]  
