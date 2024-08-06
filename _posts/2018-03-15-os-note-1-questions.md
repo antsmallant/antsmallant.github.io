@@ -147,7 +147,7 @@ int main(){
 
 针对 1，APUE 举了一个例子，展示了 FIFO 可以在 shell 中做出非线性的连接。    
 
-```shell
+```bash
 mkfifo fifo1
 prog3 < fifo1 &
 prog1 < infile | tee fifo1 | prog2
