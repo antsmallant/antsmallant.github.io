@@ -131,6 +131,26 @@ https://zhuanlan.zhihu.com/p/653864005
 
 ```c
 
+// 初始化
+int pthread_mutexattr_init(pthread_mutexattr_t *attr);
+
+// 销毁
+int pthread_mutexattr_destroy(pthread_mutexattr_t *attr);
+
+// get/set shared 参数，用于控制是否可跨进程使用，选项包括： 
+//   PTHREAD_PROCESS_SHARED   互斥锁可以跨进程使用
+//   PTHREAD_PROCESS_PRIVATE  互斥锁只能在初始化线程所在的进程内部使用
+int pthread_mutexattr_getshared(const pthread_mutexattr_t *attr, int *pshared);
+int pthread_mutexattr_setshared(pthread_mutexattr_t *attr, int *pshared);
+
+// https://docs.oracle.com/cd/E19253-01/819-7051/sync-45513/index.html  
+// get/set type 参数，用于死锁检测相关，选项包括：  
+//    PTHREAD_MUTEX_NOMAL      标准锁，第1次加锁成功后，再次加锁会失败并阻塞（即死锁了）
+//    PTHREAD_MUTEX_ERRORCHECK 检错锁，第1次加锁成功后，再次加锁会失败并返回错误信息
+//    PTHREAD_MUTEX_RECURSIVE  递归锁，第1次加锁成功后，再次加锁会成功（每加1次锁，计数器加1，所以再次加锁后，计数器变为2了）
+//    PTHREAD_MUTEX_DEFAULT    默认锁，第1次加锁成功后，再次加锁会产生不确定的行为
+int pthread_mutexattr_gettype(const pthread_mutexattr_t *attr, int *type);
+int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int *type);
 
 ```
 
