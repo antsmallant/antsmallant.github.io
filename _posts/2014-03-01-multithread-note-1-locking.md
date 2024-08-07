@@ -35,10 +35,32 @@ tags: [并发 同步 多线程]
 
 ---
 
-# 2. 与锁相关的概念  
+# 2. 一些相关的概念  
+
+参考自：[《高并发编程--线程同步》](https://zhuanlan.zhihu.com/p/51813695) [1]。   
+
+**critical section**   
+
+访问共享资源的代码片段就是临界区。    
 
 
+**race condition**   
 
+多个执行体（线程或进程）进入临界区，修改共享的资源的场景就叫 race condition。    
+
+
+**indeterminate**    
+
+多个执行体同时进入临界区操作共享资源，其执行结果是不可预料的。   
+
+
+**mutual exclusive**    
+
+mutex 的来源，代表一种互斥机制，用来保证只有一个线程可以进入临界区，这种情况下不会出现 race condition，并且结果是 deterministic。  
+
+<br/>   
+
+所以，锁的基本任务就是实现 mutual exclusive。[2]   
 
 ---
 
@@ -83,6 +105,8 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 
 ---
 
-# 2. 参考
+# 5. 参考
 
-[1] 高并发编程--线程同步. Available at https://zhuanlan.zhihu.com/p/51813695, 2019-01-04.    
+[1] 三四. 高并发编程--线程同步. Available at https://zhuanlan.zhihu.com/p/51813695, 2019-01-04.    
+
+[2] Arpaci Dusseau. Operating-Systems: Three-Easy-Pieces. Available at https://pages.cs.wisc.edu/~remzi/OSTEP/threads-locks.pdf.   
