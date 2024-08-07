@@ -109,7 +109,22 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 
 ---
 
-# 2. 参考
+# 2. 死锁
+
+---
+
+## 2.1 产生死锁的原因
+
+
+---
+
+## 2.2 避免死锁 
+
+
+
+---
+
+# 3. 参考
 
 [1] 三四. 高并发编程--线程同步. Available at https://zhuanlan.zhihu.com/p/51813695, 2019-01-04.    
 
