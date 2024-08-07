@@ -25,7 +25,7 @@ tags: [lua]
 
 3、userdata 通过 `void *lua_newuserdata(lua_State *L, size_t size);` 创建；而 lightuserdata 通过 `void lua_pushlightuserdata(lua_State *L, void *p);` 创建。   
 
-4、userdata 是一个对象，它只与自身相等；而 lightuserdata 是一个 c 指针值，它与所有表示相等指针值的 lightuserdata 都相等，这也是它的一个重要用法，用于相等性判断，通过 lightuserdata 查找 lua 中的 c 对象。    
+4、userdata 是一个对象，它只与自身相等；而 lightuserdata 是一个 c 指针值，它与所有表示相同指针值的 lightuserdata 都相等，这也是它的一个重要用法，用于相等性判断，通过 lightuserdata 查找 lua 中的 c 对象。    
 
 ---
 
