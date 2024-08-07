@@ -33,6 +33,12 @@ tags: [并发 同步 多线程]
 
 自旋锁使用的场景主要是明确等待锁的时间会非常短，短到 cpu 空转的代价比线程切换的代价都要低很多。   
 
+---
+
+# 2. 与锁相关的概念  
+
+
+
 
 ---
 
@@ -79,3 +85,4 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 
 # 2. 参考
 
+[1] 高并发编程--线程同步. Available at https://zhuanlan.zhihu.com/p/51813695, 2019-01-04.    

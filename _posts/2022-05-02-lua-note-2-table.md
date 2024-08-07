@@ -648,4 +648,4 @@ static void rehash (lua_State *L, Table *t, const TValue *ek) {
 
 [1] lua.org. The Length Operator. Available at https://lua.org/manual/5.3/manual.html#3.4.7.     
 
-[2] lua.org. next. https://lua.org/manual/5.3/manual.html#pdf-next.  
+[2] lua.org. next. https://lua.org/manual/5.3/manual.html#pdf-next.    

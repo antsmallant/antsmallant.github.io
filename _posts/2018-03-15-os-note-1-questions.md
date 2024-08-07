@@ -237,8 +237,8 @@ XSI 是 X/Open 组织对 unix 接口定义的一套标准 (X/OPEN System Interfa
 
 # 2. 参考  
 
-[1] Quokka. Cache 和 Buffer 都是缓存，主要区别是什么. Available at https://www.zhihu.com/question/26190832/answer/32387918. 2017-02-15.   
+[1] Quokka. Cache 和 Buffer 都是缓存，主要区别是什么. Available at https://www.zhihu.com/question/26190832/answer/32387918, 2017-02-15.   
 
 [2] [美]W. Richard Stevens, Stephen A. Rago. UNIX环境高级编程(第2版). 尤晋元, 张亚英, 戚正伟. 北京: 人民邮电出版社, 2006-5(1): 397,233,413.  
 
-[3] Colourso. 进程间通信IPC. Available at https://www.colourso.top/linux-pipefifo/. 2021-4-4.      
+[3] Colourso. 进程间通信IPC. Available at https://www.colourso.top/linux-pipefifo/, 2021-4-4.      
