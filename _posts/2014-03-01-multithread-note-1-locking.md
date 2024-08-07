@@ -100,7 +100,7 @@ pthread 的
 
 mutex，或者称互斥量，是多线程最常用的锁。pthread 的 mutex 实现，支持进程内和进程间的互斥。   
 
-**一、进程内**    
+**一、进程内使用互斥锁**    
 
 进程内互斥很简单，调用 api 即可。   
 
@@ -134,7 +134,7 @@ int pthread_mutex_trylock(pthread_mutex_t *mutex);
 
 <br/>
 
-**二、进程间**    
+**二、进程间使用互斥锁**    
 
 进程间大体实现是把 pthread_mutex 放到一块共享内存上，大家都可以访问得到。具体做法可以参考这篇文章：[《多进程共享的pthread_mutex_t》](https://blog.csdn.net/ld_long/article/details/135732039) [3]。    
 
