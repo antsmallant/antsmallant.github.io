@@ -27,11 +27,11 @@ tags: [并发 同步 多线程]
 
 <br/>
 
-悲观锁就是狭义上的锁了，根据加锁失败后的处理方式，可分为两大类型：阻塞型的锁（blocking）锁和自旋锁（spin lock）。  
+悲观锁就是狭义上的锁了，根据加锁失败后的处理方式，可分为两大类型：blocking 和 spinning。   
 
-阻塞型的锁，加锁失败时，线程挂起，等待操作系统在加锁成功时将自己唤醒。  
+blocking 类型的，加锁失败时，线程挂起，等待操作系统在加锁成功时将自己唤醒。互斥锁、信号量、条件变量、读写锁都属于此类型。  
 
-自旋锁，加锁失败时，不挂起，会忙等待，不断尝试重新加锁，直到成功。   
+spinning 类型的，加锁失败时，不挂起，会忙等待（busy waiting），不断尝试重新加锁，直到成功。自旋锁（spin lock）就属于此类型。     
 
 <br/>  
 
@@ -43,22 +43,24 @@ tags: [并发 同步 多线程]
 
 参考自：[《高并发编程--线程同步》](https://zhuanlan.zhihu.com/p/51813695) [1]。   
 
-**critical section**   
+<br/>
+
+* critical section   
 
 访问共享资源的代码片段就是临界区。    
 
 
-**race condition**   
+* race condition  
 
 多个执行体（线程或进程）进入临界区，修改共享的资源的场景就叫 race condition。    
 
 
-**indeterminate**    
+* indeterminate
 
 多个执行体同时进入临界区操作共享资源，其执行结果是不可预料的。   
 
 
-**mutual exclusive**    
+* mutual exclusive
 
 mutex 的来源，代表一种互斥机制，用来保证只有一个线程可以进入临界区，这种情况下不会出现 race condition，并且结果是 deterministic。  
 
