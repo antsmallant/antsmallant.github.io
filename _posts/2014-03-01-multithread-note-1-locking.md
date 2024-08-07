@@ -86,7 +86,11 @@ mutex 的来源，代表一种互斥机制，用来保证只有一个线程可�
 
 ### 1.4.1 信号量
 
-信号量是可以多进程使用的锁。比如在使用共享内存进行 IPC 的时候，信号量可以实现对共享内存的互斥访问。  
+信号量可以在多进程间使用，它是 linux 提供的一种机制。比如在使用共享内存进行 IPC 的时候，信号量可以实现对共享内存的互斥访问。  
+
+pthread 的
+
+
 
 
 
@@ -94,7 +98,42 @@ mutex 的来源，代表一种互斥机制，用来保证只有一个线程可�
 
 ### 1.4.2 互斥锁
 
-mutex，或者称互斥量，是多线程最常用的锁。
+mutex，或者称互斥量，是多线程最常用的锁。pthread 的 mutex 实现，支持进程内和进程间的互斥。   
+
+**一、进程内**    
+
+进程内互斥很简单，调用 api 即可。   
+
+api 大致如下：  
+
+```c
+
+```
+
+<br/>
+
+**二、进程间**    
+
+进程间大体实现是把 pthread_mutex 放到一块共享内存上，大家都可以访问得到。具体做法可以参考这篇文章：[《多进程共享的pthread_mutex_t》](https://blog.csdn.net/ld_long/article/details/135732039) [3]。    
+
+大致过程如下：  
+
+
+
+不过，这里又分两种情况，父子进程和不相干进程。   
+
+父子进程很简单，不需要考虑谁负责创建互斥锁的问题。而不相干进程就复杂了，需要处理好谁负责创建的问题，如果任一进程都要能创建，那么这里又存在互斥的问题了，有点套娃。  
+
+这篇文章 [《用pthread进行进程间同步》](https://www.cnblogs.com/my_life/articles/4538461.html) [4] 介绍了一种不相干进程间互斥的创建互斥锁的做法。大意是利用 link 这个系统调用，原子的把 shm_open 创建出来的共享内存 link 到 `/dev/shm` 中。  
+
+link 系统调用是 linux 原子操作文件的最底层指令，可以保证原子，并且处于 link 操作的进程被中途 kill 掉，linux 内核也会保证完成这次调用。 关键代码：  
+
+```c
+
+```
+
+
+
 
 
 ---
@@ -152,3 +191,7 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 [1] 三四. 高并发编程--线程同步. Available at https://zhuanlan.zhihu.com/p/51813695, 2019-01-04.    
 
 [2] Arpaci Dusseau. Operating-Systems: Three-Easy-Pieces. Available at https://pages.cs.wisc.edu/~remzi/OSTEP/threads-locks.pdf.   
+
+[3] ?-ldl. 多进程共享的pthread_mutex_t. Available at https://blog.csdn.net/ld_long/article/details/135732039, 2024-1-21.     
+
+[4] bw_0927. 用pthread进行进程间同步. Available at https://www.cnblogs.com/my_life/articles/4538461.html, 2015-5-29.  
