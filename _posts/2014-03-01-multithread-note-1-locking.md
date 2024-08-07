@@ -104,9 +104,31 @@ mutex，或者称互斥量，是多线程最常用的锁。pthread 的 mutex 实
 
 进程内互斥很简单，调用 api 即可。   
 
-api 大致如下：  
+pthread_mutex 的 api 大致如下：   
 
 ```c
+// 初始化 mutex
+// mutexattr 可以为 NULL，表示使用默认设置，大部分情况下也是这样使用的
+int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr);  
+
+// 销毁 mutex
+int pthread_mutex_destroy(pthread_mutex_t *mutex);
+
+// 获取锁，如果失败则挂起，阻塞则到成功
+int pthread_mutex_lock(pthread_mutex_t *mutex);
+
+// 释放锁
+int pthread_mutex_unlock(pthread_mutex_t *mutex);
+
+// 尝试加锁，如果失败不挂起，直接返回失败
+int pthread_mutex_trylock(pthread_mutex_t *mutex);
+
+```
+
+有时候需要设置 mutexattr，可以使用以下的 api：  
+
+```c
+
 
 ```
 
