@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "多线程编程三：对 volatile 的误解"
+title: "多线程编程二：对 volatile 的误解"
 date: 2024-03-03
 last_modified_at: 2024-03-03
 categories: [并发与多线程]
