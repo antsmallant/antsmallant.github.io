@@ -15,11 +15,19 @@ tags: [并发 同步 多线程]
 
 ---
 
-# 1. 锁 
+# 1. 资料
+
+pthread 的官方文档：[https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/pthread.h.html](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/pthread.h.html)    
+
+
 
 ---
 
-## 1.1 锁的分类
+# 2. 锁 
+
+---
+
+## 2.1 锁的分类
 
 整体上可以分为悲观锁与乐观锁，悲观锁假定冲突很频繁，在访问前必须先加上锁，乐观锁假定冲突概率很低，可以先访问，等出现冲突了再做处理。  
 
@@ -39,7 +47,7 @@ spinning 类型的，加锁失败时，不挂起，会忙等待（busy waiting�
 
 ---
 
-## 1.2 一些相关概念  
+## 2.2 一些相关概念  
 
 参考自：[《高并发编程--线程同步》](https://zhuanlan.zhihu.com/p/51813695) [1]。   
 
@@ -70,7 +78,7 @@ mutex 的来源，代表一种互斥机制，用来保证只有一个线程可�
 
 ---
 
-## 1.3 锁的底层实现
+## 2.3 锁的底层实现
 
 各种锁的底层实现基本上都是操作系统提供的某种原子操作，而操作系统也是依赖 cpu 提供的原子机制。   
 
@@ -78,25 +86,24 @@ mutex 的来源，代表一种互斥机制，用来保证只有一个线程可�
 
 ---
 
-## 1.4 blocking 类型的锁 
+## 2.4 blocking 类型的锁 
 
-阻塞型的锁可以分为好几种，多个操作系统大同小异，以 linux 系统为例。包括信号量、互斥锁、条件变量、读写锁。  
-
----
-
-### 1.4.1 信号量
-
-信号量可以在多进程间使用，它是 linux 提供的一种机制。比如在使用共享内存进行 IPC 的时候，信号量可以实现对共享内存的互斥访问。  
-
-pthread 的
-
-
-
-
+阻塞型的锁可以分为好几种，多个操作系统大同小异，以 linux 系统为例，包括：信号量、互斥锁、条件变量、读写锁。  
 
 ---
 
-### 1.4.2 互斥锁
+### 2.4.1 信号量 (semaphore)
+
+信号量可以跨进程使用，POSIX 定义了相关的接口，并不是 pthread 的一部分，但是多数的 unix 系统在 pthread 的实现中包含了信号量。[3]    
+
+
+
+
+
+
+---
+
+### 2.4.2 互斥锁 (mutex)
 
 mutex，或者称互斥量，是多线程最常用的锁。pthread 的 mutex 实现，支持进程内和进程间的互斥。   
 
@@ -137,22 +144,53 @@ int pthread_mutexattr_init(pthread_mutexattr_t *attr);
 // 销毁
 int pthread_mutexattr_destroy(pthread_mutexattr_t *attr);
 
-// get/set shared 参数，用于控制是否可跨进程使用，选项包括： 
-//   PTHREAD_PROCESS_SHARED   互斥锁可以跨进程使用
-//   PTHREAD_PROCESS_PRIVATE  互斥锁只能在初始化线程所在的进程内部使用
+// get/set shared 参数，用于控制是否可跨进程使用，选项包括：
+//   PTHREAD_PROCESS_PRIVATE  只能进程内使用（默认情况）
+//   PTHREAD_PROCESS_SHARED   可以跨进程使用
 int pthread_mutexattr_getshared(const pthread_mutexattr_t *attr, int *pshared);
 int pthread_mutexattr_setshared(pthread_mutexattr_t *attr, int *pshared);
 
-// https://docs.oracle.com/cd/E19253-01/819-7051/sync-45513/index.html  
 // get/set type 参数，用于死锁检测相关，选项包括：  
-//    PTHREAD_MUTEX_NOMAL      标准锁，第1次加锁成功后，再次加锁会失败并阻塞（即死锁了）
-//    PTHREAD_MUTEX_ERRORCHECK 检错锁，第1次加锁成功后，再次加锁会失败并返回错误信息
-//    PTHREAD_MUTEX_RECURSIVE  递归锁，第1次加锁成功后，再次加锁会成功（每加1次锁，计数器加1，所以再次加锁后，计数器变为2了）
-//    PTHREAD_MUTEX_DEFAULT    默认锁，第1次加锁成功后，再次加锁会产生不确定的行为
+//    PTHREAD_MUTEX_NORMAL     标准，第1次加锁成功后，再次加锁会失败并阻塞（即死锁了）   
+//    PTHREAD_MUTEX_RECURSIVE  递归，第1次加锁成功后，再次加锁会成功（每加1次锁，计数器加1，此时计数器变为2了）
+//    PTHREAD_MUTEX_ERRORCHECK 检错，第1次加锁成功后，再次加锁会失败并返回错误信息 
+//      
+// 默认值是 PTHREAD_MUTEX_DEFAULT，不同系统可能会使用以上的不同值，需要具体测试一下   
 int pthread_mutexattr_gettype(const pthread_mutexattr_t *attr, int *type);
 int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int *type);
 
 ```
+
+`pthread_mutexattr_gettype` 与 `pthread_mutexattr_settype` 的具体信息可参照以下文档：  
+[《pthread_mutexattr_gettype(3) - Linux man page》](https://linux.die.net/man/3/pthread_mutexattr_gettype)     
+[《pthread_mutexattr_settype(3) - Linux man page》](https://linux.die.net/man/3/pthread_mutexattr_settype)      
+
+要测试当前系统 `PTHREAD_MUTEX_DEFAULT` 是什么值，可以使用这段代码：   
+
+```cpp
+// test_attr.cpp
+#include <pthread.h>
+#include <iostream>
+
+int main() {
+    std::cout << "PTHREAD_MUTEX_NORMAL     = " << PTHREAD_MUTEX_NORMAL << std::endl;
+    std::cout << "PTHREAD_MUTEX_RECURSIVE  = " << PTHREAD_MUTEX_RECURSIVE << std::endl;
+    std::cout << "PTHREAD_MUTEX_ERRORCHECK = " << PTHREAD_MUTEX_ERRORCHECK << std::endl;
+    std::cout << "PTHREAD_MUTEX_DEFAULT    = " << PTHREAD_MUTEX_DEFAULT << std::endl;
+    return 0;
+}
+```
+
+编译&运行： `g++ test_attr.cpp && ./a.out`。在我的系统（win10 + wsl2 + ubuntu22.04）上运行结果如下：   
+
+```
+PTHREAD_MUTEX_NORMAL     = 0
+PTHREAD_MUTEX_RECURSIVE  = 1
+PTHREAD_MUTEX_ERRORCHECK = 2
+PTHREAD_MUTEX_DEFAULT    = 0
+```
+
+即我的系统上，PTHREAD_MUTEX_DEFAULT 相当于 PTHREAD_MUTEX_NORMAL 。  
 
 <br/>
 
@@ -161,7 +199,7 @@ int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int *type);
 https://www.zhihu.com/question/66733477/answer/2167257604
 
 
-进程间大体实现是把 pthread_mutex 放到一块共享内存上，大家都可以访问得到。具体做法可以参考这篇文章：[《多进程共享的pthread_mutex_t》](https://blog.csdn.net/ld_long/article/details/135732039) [3]。    
+进程间大体实现是把 pthread_mutex 放到一块共享内存上，大家都可以访问得到。具体做法可以参考这篇文章：[《多进程共享的pthread_mutex_t》](https://blog.csdn.net/ld_long/article/details/135732039) [4]。    
 
 大致过程如下：  
 
@@ -171,7 +209,7 @@ https://www.zhihu.com/question/66733477/answer/2167257604
 
 父子进程很简单，不需要考虑谁负责创建互斥锁的问题。而不相干进程就复杂了，需要处理好谁负责创建的问题，如果任一进程都要能创建，那么这里又存在互斥的问题了，有点套娃。  
 
-这篇文章 [《用pthread进行进程间同步》](https://www.cnblogs.com/my_life/articles/4538461.html) [4] 介绍了一种不相干进程间互斥的创建互斥锁的做法。大意是利用 link 这个系统调用，原子的把 shm_open 创建出来的共享内存 link 到 `/dev/shm` 中。  
+这篇文章 [《用pthread进行进程间同步》](https://www.cnblogs.com/my_life/articles/4538461.html) [5] 介绍了一种不相干进程间互斥的创建互斥锁的做法。大意是利用 link 这个系统调用，原子的把 shm_open 创建出来的共享内存 link 到 `/dev/shm` 中。  
 
 link 系统调用是 linux 原子操作文件的最底层指令，可以保证原子，并且处于 link 操作的进程被中途 kill 掉，linux 内核也会保证完成这次调用。 关键代码：  
 
@@ -185,22 +223,21 @@ link 系统调用是 linux 原子操作文件的最底层指令，可以保证�
 
 ---
 
-## 1.5 spinning 类型的锁
+## 2.5 spinning 类型的锁
 
 spinning 类型的只有 spin lock 了。  
 
 ---
 
-### 1.5.1 自旋锁
-
+### 2.5.1 自旋锁
 
 pthread 提供的 spin lock 的 api 包括如下：  
 
 ```c
 
 // 初始化锁，pshared 有两个选项：
-// PTHREAD_PROCESS_PRIVATE 只允许同进程内使用此锁；
-// PTHREAD_PROCESS_SHARE 允许多进程使用此锁；  
+// PTHREAD_PROCESS_PRIVATE 允许进程内使用
+// PTHREAD_PROCESS_SHARE   允许跨进程使用
 int pthread_spin_init(pthread_spinlock_t *lock, int pshared); 
                                                               
 // 销毁锁        
@@ -214,31 +251,37 @@ int pthread_spin_trylock(pthread_spinlock_t *lock);
 
 // 释放锁
 int pthread_spin_unlock(pthread_spinlock_t *lock);  
-```
+```  
+
+与 pthread_mutex 类似，如果要让 pthread_spin 跨进程使用，即使用 PTHREAD_PROCESS_SHARE 模式，`pthread_spinlock_t` 需要分配在共享内存上，具体做法参照上文的 pthread_mutex 。  
 
 ---
 
-# 2. 死锁
+# 3. 死锁
 
 ---
 
-## 2.1 产生死锁的原因
-
-
----
-
-## 2.2 避免死锁 
-
+## 3.1 产生死锁的原因
 
 
 ---
 
-# 3. 参考
+## 3.2 避免死锁 
+
+
+
+---
+
+# 4. 参考
 
 [1] 三四. 高并发编程--线程同步. Available at https://zhuanlan.zhihu.com/p/51813695, 2019-01-04.    
 
 [2] Arpaci Dusseau. Operating-Systems: Three-Easy-Pieces. Available at https://pages.cs.wisc.edu/~remzi/OSTEP/threads-locks.pdf.   
 
-[3] ?-ldl. 多进程共享的pthread_mutex_t. Available at https://blog.csdn.net/ld_long/article/details/135732039, 2024-1-21.     
+[3] Allen B. Downey. POSIX Semaphores. Available at https://eng.libretexts.org/Bookshelves/Computer_Science/Operating_Systems/Think_OS_-_A_Brief_Introduction_to_Operating_Systems_(Downey)/11%3A_Semaphores_in_C/11.01%3A_POSIX_Semaphores.   
 
-[4] bw_0927. 用pthread进行进程间同步. Available at https://www.cnblogs.com/my_life/articles/4538461.html, 2015-5-29.  
+[4] ?-ldl. 多进程共享的pthread_mutex_t. Available at https://blog.csdn.net/ld_long/article/details/135732039, 2024-1-21.     
+
+[5] bw_0927. 用pthread进行进程间同步. Available at https://www.cnblogs.com/my_life/articles/4538461.html, 2015-5-29.   
+
+ 
