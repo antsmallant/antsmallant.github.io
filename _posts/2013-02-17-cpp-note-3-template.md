@@ -17,6 +17,8 @@ tags: [c++ cpp]
 
 # 1. 模板
 
+---
+
 ## 1.1 资料
 
 《C++ Templates (第2版·英文版)》: [https://book.douban.com/subject/30226708/](https://book.douban.com/subject/30226708/)   
@@ -167,6 +169,41 @@ This is a partial template 1 2
 ---
 
 ## 1.5 typename 与 class 关键字的区别
+
+1、作为模板参数时，二者的含义是相当的。  
+
+`template<typename T>` 与 `template<class T>` 是等价的。   
+
+2、typename 的额外用途  
+
+用于声明它后面的一串字符串是类型，而不是其他的。  
+
+比如这样： 
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class A {
+    typedef int LType;
+public:
+    A() {
+        A::LType a = 100;
+        cout << a << endl;
+    }
+};
+
+int main() {
+    A();
+    return 0;
+}
+```
+
+像上面的代码，可能在有些编译器编译得过，有些编译不过，`A::LType` 是有歧义的，它可以指代 A 的下属类型，也可以指代 A 的静态变量。如果我们要明确的告诉编译器，`A::LType` 是一个类型，就可以这样写： `typename A::LType a = 100;`。  
+
+类似的，经常在一些库里面看到函数的入参前面加了 typename 关键字，它的作用就是表面后面跟着的是类型，而不是其他的。   
+
+另外，还有这样的写法：`typedef typename vector<T>::size_type size_type;`，这里的含义就是 typedef 定义了一个名为 size_type 的别名，它指代 `typename vector<T>::size_type`。typename 的作用就是声明这东西是类型 `vector<T>::size_type`，而不是其他的。  
 
 ---
 
