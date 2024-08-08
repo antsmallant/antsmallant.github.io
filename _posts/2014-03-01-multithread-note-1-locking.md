@@ -144,7 +144,9 @@ int pthread_mutex_trylock(pthread_mutex_t *mutex);
 
 有时候需要设置 mutexattr，可以使用以下的 api：  
 
-https://zhuanlan.zhihu.com/p/653864005
+https://zhuanlan.zhihu.com/p/653864005   
+
+https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html  
 
 ```c
 
@@ -211,10 +213,10 @@ PTHREAD_MUTEX_DEFAULT    = 0
 
 #### 2.4.2.2 父子进程间使用互斥锁
 
-https://www.zhihu.com/question/66733477/answer/2167257604
+https://www.zhihu.com/question/66733477/answer/2167257604   
 
 
-进程间大体实现是把 pthread_mutex 放到一块共享内存上，大家都可以访问得到。具体做法可以参考这篇文章：[《多进程共享的pthread_mutex_t》](https://blog.csdn.net/ld_long/article/details/135732039) [4]。    
+进程间大体实现是把 `pthread_mutex_t` 放到一块共享内存上，大家都可以访问得到。具体做法可以参考这篇文章：[《多进程共享的pthread_mutex_t》](https://blog.csdn.net/ld_long/article/details/135732039) [4]。    
 
 大致过程如下：  
 
