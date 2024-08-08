@@ -190,7 +190,9 @@ int main() {
 }
 ```
 
-编译&运行： `g++ test_attr.cpp && ./a.out`。在我的系统（win10 + wsl2 + ubuntu22.04）上运行结果如下：   
+代码保存为：`test_attr.cpp`，编译&运行： `g++ test_attr.cpp && ./a.out`。  
+
+在我的系统（win10 + wsl2 + ubuntu22.04）上运行结果如下：   
 
 ```
 PTHREAD_MUTEX_NORMAL     = 0
@@ -199,7 +201,7 @@ PTHREAD_MUTEX_ERRORCHECK = 2
 PTHREAD_MUTEX_DEFAULT    = 0
 ```
 
-即我的系统上，PTHREAD_MUTEX_DEFAULT 相当于 PTHREAD_MUTEX_NORMAL 。  
+可见，在我的系统上 PTHREAD_MUTEX_DEFAULT 相当于 PTHREAD_MUTEX_NORMAL 。  
 
 <br/>
 
