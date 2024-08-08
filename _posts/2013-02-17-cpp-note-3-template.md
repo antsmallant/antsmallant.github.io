@@ -25,7 +25,7 @@ tags: [c++ cpp]
 
 ---
 
-## 1.2 模板特化 (template specilization)
+## 1.2 模板特化 (template specialization)
 
 或者叫模板特例化，是指为某个模板类或函数定义专门的实现，以处理特定类型参数的情况。  
 
@@ -70,7 +70,7 @@ template<> class A<SomeType> {};
 
 ---
 
-## 1.3 模板偏特化 (partial specilization)
+## 1.3 模板偏特化 (partial specialization)
 
 模板偏特化是模板特化的一种特殊情况，也叫模板部分特化。只对部分模板参数进行特化。  
 
@@ -78,13 +78,15 @@ template<> class A<SomeType> {};
 
 1、函数模板没有偏特化   
 
-c++ 暂时不支持函数模板的偏特化。  
+c++ 暂时不支持函数模板的偏特化。[1]   
+
+大部分情况下，可能用重载解决问题。  
 
 <br/>
 
 2、类模板有偏特化    
 
-比如这样：  
+例子：    
 
 
 ---
@@ -105,3 +107,5 @@ c++ 暂时不支持函数模板的偏特化。
 ---
 
 # 2. 参考
+
+[1] 五车书管. 函数模板的重载，偏特化，和全特化. Available at https://zhuanlan.zhihu.com/p/314340244, 2020-11-26.   
