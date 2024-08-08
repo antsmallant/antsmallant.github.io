@@ -41,7 +41,7 @@ using namespace std;
 
 template<typename T>
 void p(T t) {
-    cout << "this is general type " << t << endl;
+    cout << "This is general type " << t << endl;
 }
 
 template<>
@@ -56,6 +56,13 @@ int main() {
 }
 ```
 
+输出： 
+
+```
+This is general type 10
+This is a int type 20
+```
+
 <br/>
 
 2、类模板特化
@@ -63,9 +70,37 @@ int main() {
 写法与函数模板特化类似：    
 
 ```cpp
-template<typename T> class A {};
+#include <iostream>
+using namespace std;
 
-template<> class A<SomeType> {};
+template<typename T1, typename T2>
+class A {
+    T1 t1;
+    T2 t2;
+public:
+    A(T1 _t1, T2 _t2) : t1(_t1), t2(_t2) { cout << "This is a normal template " << t1 << " " << t2 << endl; }
+};
+
+template<>
+class A<int, int> {
+    int t1;
+    int t2;
+public:
+    A(int _t1, int _t2) : t1(_t1), t2(_t2) { cout << "This is a specialization template " << t1 << " " << t2 << endl; }
+};
+
+int main() {
+    A<char, int> a('a', 10);
+    A<int, int> b(1, 2);
+    return 0;
+}
+```
+
+输出： 
+
+```
+This is a normal template a 10
+This is a specialization template 1 2
 ```
 
 ---
@@ -87,6 +122,40 @@ c++ 暂时不支持函数模板的偏特化。[1]
 2、类模板有偏特化    
 
 例子：    
+
+```cpp
+#include <iostream>
+using namespace std;
+
+template<typename T1, typename T2>
+class A {
+    T1 t1;
+    T2 t2;
+public:
+    A(T1 _t1, T2 _t2) : t1(_t1), t2(_t2) { cout << "This is a normal template " << t1 << " " << t2 << endl; }
+};
+
+template<typename T2>
+class A<int, T2> {
+    int t1;
+    T2 t2;
+public:
+    A(int _t1, T2 _t2) : t1(_t1), t2(_t2) { cout << "This is a partial template " << t1 << " " << t2 << endl; }
+};
+
+int main() {
+    A<char, int> a('a', 10);
+    A<int, int> b(1, 2);
+    return 0;
+}
+```
+
+输出：  
+
+```
+This is a normal template a 10
+This is a partial template 1 2
+```
 
 
 ---
