@@ -58,6 +58,48 @@ template<> class A<SomeType> {};
 
 ## 1.2 模板偏特化 (partial specilization)
 
+是模板特化的一种特殊情况，也叫模板部分特化。只对部分模板参数进行特化。  
+
+比如函数模板偏特化：  
+
+```cpp
+
+#include <iostream>
+using namespace std;
+
+template<typename T1, typename T2>
+void p(T1 t1, T2 t2) {
+    cout << "This is a general template " << t1 << " " << t2 <<  endl;
+}
+
+template<typename T2>
+void p(int t1, T2 t2) {
+    cout << "This is a partial template " << t1 << " " << t2 <<  endl;
+}
+
+int main() {
+    p(10, 20);
+    p(10, 20.1);
+    p(10.1, 20);
+    return 0;
+}
+
+```
+
+输出： 
+
+```
+This is a partial template 10 20
+This is a partial template 10 20.1
+This is a general template 10.1 20
+```
+
+类模板偏特化也是类似的，不举例了。  
+
+---
+
+## 1.3 typename 与 class 关键字的区别
+
 
 ---
 
