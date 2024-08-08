@@ -208,6 +208,8 @@ PTHREAD_MUTEX_DEFAULT    = 0
 
 可见，在我的系统上 PTHREAD_MUTEX_DEFAULT 相当于 PTHREAD_MUTEX_NORMAL 。  
 
+---
+
 #### 2.4.2.2 父子进程间使用互斥锁
 
 https://www.zhihu.com/question/66733477/answer/2167257604   
@@ -354,7 +356,7 @@ spinning 类型的只有 spin lock 了。
 
 ### 2.5.1 自旋锁 (spin lock)
 
-pthread 提供的 spin lock 的 api 包括如下：  
+pthread 提供的 spin lock 的 api 如下：  
 
 ```c
 
