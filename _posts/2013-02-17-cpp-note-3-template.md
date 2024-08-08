@@ -105,6 +105,52 @@ This is a normal template a 10
 This is a specialization template 1 2
 ```
 
+3、类模板只特例化成员
+
+可以不特例化整个类，而特例化类中的某些成员，比如这样：  
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+template<typename T>
+class A {
+    T t;
+public:
+    A(T _t) : t(_t) {}
+    void p() { cout << "normal version of p : " << t << endl; }
+};
+
+template<>
+void A<int>::p() {
+    cout << "int version of p : " << t << endl;
+}
+
+int main() {
+    A<string> a("hello");
+    a.p();
+
+    A<double> b(1.23);
+    b.p();
+
+    A<int> c(100);
+    c.p();
+
+    return 0;
+}
+```
+
+输出：  
+
+```
+normal version of p : hello
+normal version of p : 1.23
+int version of p : 100
+```
+
+只在模板参数为 `int` 的时候调用特别版本的函数 `p`。   
+
 ---
 
 ## 1.3 模板偏特化 (partial specialization)
@@ -113,7 +159,7 @@ This is a specialization template 1 2
 
 <br/>
 
-1、函数模板没有偏特化   
+1、函数模板不支持偏特化   
 
 c++ 暂时不支持函数模板的偏特化。[1]   
 
@@ -121,7 +167,7 @@ c++ 暂时不支持函数模板的偏特化。[1]
 
 <br/>
 
-2、类模板有偏特化    
+2、类模板支持偏特化    
 
 例子：    
 
