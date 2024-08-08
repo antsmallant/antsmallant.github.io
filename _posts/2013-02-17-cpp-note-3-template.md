@@ -209,6 +209,22 @@ int main() {
 
 ## 1.6 万能引用与完美转发
 
+万能引用，即 Universal References。 
+
+在 c++17 的标准里面已经将这种用法标准化为 “转发引用” (forwarding reference) 了。    
+
+参考 [https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4164.pdf](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4164.pdf)。  
+
+>In the absence of our giving this construct a distinct name, the community has been trying to make one. 
+The one that is becoming popular is “universal reference.” [1] Unfortunately, as discussed in §3.1 below, 
+this is not an ideal name, and we need to give better guidance to a suitable name.   
+>    
+>The name that has the most support in informal discussions among committee members, including the 
+authors, is “forwarding reference.” Interestingly, Meyers himself initially introduced the term “forward
+ing reference” in his original “Universal References” talk, [2] but decided to go with “universal references” 
+because at the time he did not think that “forwarding references” reflected the fact that auto&& was also 
+included; however, in §3.3 below we argue why auto&& is also a forwarding case and so is rightly included. 
+
 
 ---
 
