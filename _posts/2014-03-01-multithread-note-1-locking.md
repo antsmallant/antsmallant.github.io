@@ -325,6 +325,7 @@ int main()
 
 代码保存为：`test_mutex_in_multi_process.c`，编译&运行：`gcc test_mutex_in_multi_process.c && ./a.out` 。
 
+---
 
 #### 2.4.2.3 不相干的进程间使用互斥锁
 
