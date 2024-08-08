@@ -17,11 +17,23 @@ tags: [c++ cpp]
 
 # 1. 模板
 
-## 1.1 模板特化 (template specilization)
+## 1.1 资料
 
-是指为某个模板类或函数定义专门的实现，以处理特定类型参数的情况。  
+《C++ Templates (第2版·英文版)》: [https://book.douban.com/subject/30226708/](https://book.douban.com/subject/30226708/)   
 
-比如函数模板特化： 
+《c++ Templates 第2版的中文翻译》：[https://github.com/Walton1128/CPP-Templates-2nd--](https://github.com/Walton1128/CPP-Templates-2nd--)
+
+---
+
+## 1.2 模板特化 (template specilization)
+
+或者叫模板特例化，是指为某个模板类或函数定义专门的实现，以处理特定类型参数的情况。  
+
+特化的本质是实例化一个模板。   
+
+<br/>
+
+1、函数模板特化  
 
 ```cpp
 #include <iostream>
@@ -29,24 +41,26 @@ using namespace std;
 
 template<typename T>
 void p(T t) {
-    cout << "this is general type" << endl;
+    cout << "this is general type " << t << endl;
 }
 
 template<>
 void p<int>(int i) {
-    cout << "This is a int " << i << endl;
+    cout << "This is a int type " << i << endl;
 }
 
 int main() {
-    p<float>(10.0);
-    p<int>(20);
+    p(10.0);
+    p(20);
     return 0;
 }
 ```
 
 <br/>
 
-类模板特化的写法也类似：   
+2、类模板特化
+
+写法与函数模板特化类似：    
 
 ```cpp
 template<typename T> class A {};
@@ -56,49 +70,36 @@ template<> class A<SomeType> {};
 
 ---
 
-## 1.2 模板偏特化 (partial specilization)
+## 1.3 模板偏特化 (partial specilization)
 
-是模板特化的一种特殊情况，也叫模板部分特化。只对部分模板参数进行特化。  
+模板偏特化是模板特化的一种特殊情况，也叫模板部分特化。只对部分模板参数进行特化。  
 
-比如函数模板偏特化：  
+<br/>
 
-```cpp
+1、函数模板没有偏特化   
 
-#include <iostream>
-using namespace std;
+c++ 暂时不支持函数模板的偏特化。  
 
-template<typename T1, typename T2>
-void p(T1 t1, T2 t2) {
-    cout << "This is a general template " << t1 << " " << t2 <<  endl;
-}
+<br/>
 
-template<typename T2>
-void p(int t1, T2 t2) {
-    cout << "This is a partial template " << t1 << " " << t2 <<  endl;
-}
+2、类模板有偏特化    
 
-int main() {
-    p(10, 20);
-    p(10, 20.1);
-    p(10.1, 20);
-    return 0;
-}
+比如这样：  
 
-```
-
-输出： 
-
-```
-This is a partial template 10 20
-This is a partial template 10 20.1
-This is a general template 10.1 20
-```
-
-类模板偏特化也是类似的，不举例了。  
 
 ---
 
-## 1.3 typename 与 class 关键字的区别
+## 1.4 类模板的优先级
+
+全特化版本 > 偏特化版本 > 正常版本
+
+---
+
+## 1.5 typename 与 class 关键字的区别
+
+---
+
+## 1.6 万能引用与完美转发
 
 
 ---
