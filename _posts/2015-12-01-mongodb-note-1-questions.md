@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "mongodb 笔记一：常识、用法"
+title: "mongodb 笔记一：常识"
 date: 2015-12-01
 last_modified_at: 2024-7-10
 categories: [数据库]
