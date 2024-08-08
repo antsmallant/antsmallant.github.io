@@ -225,11 +225,99 @@ https://www.zhihu.com/question/66733477/answer/2167257604
 参考代码 [4]： 
 
 ```c
+// test_mutex_in_multi_process.c
 
+#include <pthread.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>  //open
+#include <sys/mman.h>
+#include <string.h>
+
+int id;
+
+int main()
+{
+    int fd=open("test_shared_lock_a",O_RDWR|O_CREAT,0777);
+    int result=ftruncate(fd,sizeof(pthread_mutex_t)+sizeof(pthread_mutexattr_t)+sizeof(int)*40);
+
+    pthread_mutex_t *mutex=(pthread_mutex_t *)mmap(NULL,sizeof(pthread_mutex_t)+sizeof(pthread_mutexattr_t)+sizeof(int)*40,PROT_READ|PROT_WRITE,MAP_SHARED,fd,0);
+    memset(mutex,0,sizeof(pthread_mutex_t)+sizeof(pthread_mutexattr_t)+sizeof(int)*40);
+
+    int* num=(int*)((char*)mutex+sizeof(pthread_mutex_t)+sizeof(pthread_mutexattr_t));
+    for(int i=0;i<40;i++)
+    {
+        num[i]=0;
+    }
+
+    /* 下面四行，pthread_mutexattr_t没有放在共享内存中。*/
+    pthread_mutexattr_t* attr=NULL;
+    pthread_mutexattr_t s;
+    attr=&s;
+    pthread_mutexattr_init(attr);
+    pthread_mutexattr_setpshared(attr, PTHREAD_PROCESS_SHARED);
+
+	// 上面7行如果都注释，则为不使用attr初始化mutex。
+    pthread_mutex_init(mutex,attr);
+
+	//创建39个子进程。并且每个进程获得一个id。
+    for(int i=0;i<39;i++)
+    {
+        id=i+1;
+        int pid=fork();
+        if(pid==0)
+        {
+            break;
+        }
+        else
+        {
+            if(id==39)
+            {
+                id=0;
+            }
+        }
+    }
+
+    //每个进程报告自己的pid。
+    printf("%d report!\n",getpid());
+
+    //if(id!=0)
+    {
+        //开始检测是否有多个进程同时进入临界区。
+        int j=1;
+        while(j-->0)
+        {
+            printf("%d try to lock!\n",getpid());
+            pthread_mutex_lock(mutex);
+            printf("%d get lock\n",getpid());
+            //拿到锁后，在对应位置做标记，表示自己进入临界区。
+            num[id]=1;
+            int sum=0;
+            for(int i=0;i<40;i++)
+            {
+            sum+=num[i];
+            }
+            if(sum>1)
+            {
+                printf("%d lock_failed!\n",getpid()); //如果有两个进程同时进入临界区,sum必定大于0。
+            }
+            else
+            {
+                printf("%d test_ok\n",getpid());  //如果sum为1,说明只有一个进程进入临界区。
+            }
+            num[id]=0;
+            sleep(1);
+            pthread_mutex_unlock(mutex);
+        }
+    }
+
+    return 0;
+}
 ```
 
+代码保存为：`test_mutex_in_multi_process.c`，编译&运行：`gcc test_mutex_in_multi_process.c && ./a.out` 。
 
-
+<br/>
 
 不过，这里又分两种情况，父子进程和不相干进程。   
 
