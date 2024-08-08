@@ -16,6 +16,7 @@ tags: [game, battle]
 # 战斗系统是干什么的？
 
 # 战斗系统的构成
+
 * 技能系统
 * buff系统
 
@@ -24,12 +25,14 @@ tags: [game, battle]
 
 
 # ECS
+
 关于 ECS 的定义[1]
 >ECS架构看起来就是这样子的。先有个World，它是系统（译注，这里的系统指的是ECS中的S，不是一般意义上的系统，为了方便阅读，下文统称System）和实体(Entity)的集合。而实体就是一个ID，这个ID对应了组件(Component)的集合。组件用来存储游戏状态并且没有任何的行为(Behavior)。System有行为但是没有状态。  
 
 ---
 
 # todo
+
 * 行为树： https://www.cnblogs.com/KillerAery/p/10007887.html
 * 行为树： https://indienova.com/indie-game-development/ai-behavior-trees-how-they-work/
 * 基于行为树的战斗系统应该是什么样的？
@@ -48,4 +51,5 @@ tags: [game, battle]
 ---
 
 # 参考
+
 [1] kevinan. 暴雪Tim Ford：《守望先锋》架构设计与网络同步. Available at https://www.sohu.com/a/148848770_466876, 2017-6.    
