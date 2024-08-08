@@ -112,6 +112,8 @@ mutex，或者称互斥量，是多线程最常用的锁。pthread 的 mutex 实
 
 跨进程使用会有些复杂，需要把 `pthread_mutex_t` 创建在一块共享内存上，使得多个进程都可以访问它。而这里又分两种情况，父子进程和不相干进程。父子进程相对简单些，不需要考虑谁负责创建互斥锁的问题。而不相干进程就复杂了，需要处理好谁负责创建的问题，如果任一进程都要能创建，那么这里又存在互斥的问题了。具体的做法下文详细展开。   
 
+https://www.zhihu.com/question/66733477/answer/1267625567
+
 ---
 
 #### 2.4.2.1 单进程内使用互斥锁
@@ -210,10 +212,7 @@ PTHREAD_MUTEX_DEFAULT    = 0
 
 ---
 
-#### 2.4.2.2 父子进程间使用互斥锁
-
-https://www.zhihu.com/question/66733477/answer/2167257604   
-
+#### 2.4.2.2 父子进程间使用互斥锁   
 
 进程间大体实现是把 `pthread_mutex_t` 放到一块共享内存上，大家都可以访问得到。具体做法可以参考这篇文章：[《多进程共享的pthread_mutex_t》](https://blog.csdn.net/ld_long/article/details/135732039) [4]。    
 
@@ -228,6 +227,8 @@ https://www.zhihu.com/question/66733477/answer/2167257604
 4、构造并初始化一个 `pthread_mutexattr_t` 类型的属性结构体 `attr`，这个变量不需要放在共享内存中；调用 `pthread_mutexattr_setshared` 将 attr 的 shared 属性设置为 `PTHREAD_PROCESS_SHARED`，即可跨进程使用。  
 
 5、调用 `pthread_mutex_init`，以 `attr` 初始化 `pmutex`，即 `pthread_mutex_init(pmutex, &attr)`。  
+
+<br/>
 
 参考代码 [4]： 
 
@@ -383,6 +384,9 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 ---
 
 # 3. 死锁
+
+[死锁与死锁避免算法](https://blog.csdn.net/K346K346/article/details/136306132?spm=1001.2014.3001.5501)   
+
 
 ---
 

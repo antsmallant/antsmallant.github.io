@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "操作系统笔记一：常识、用法"
+title: "操作系统笔记一：常识"
 date: 2018-03-15
 last_modified_at: 2024-04-01
 categories: [操作系统]
