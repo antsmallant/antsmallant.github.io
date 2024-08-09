@@ -62,7 +62,7 @@ spinning 类型，加锁失败时，不挂起，会进入忙等待（busy waitin
 
 * critical section   
 
-访问共享资源的代码片段就是临界区。    
+访问共享资源的代码片段就是临界区（critical section）。    
 
 
 * race condition  
@@ -72,7 +72,7 @@ spinning 类型，加锁失败时，不挂起，会进入忙等待（busy waitin
 
 * indeterminate
 
-多个执行体同时进入临界区操作共享资源，其执行结果是不可预料的。   
+多个执行体同时进入临界区操作共享资源，其执行结果是不可预料的（indeterminate）。   
 
 
 * mutual exclusive
@@ -81,7 +81,7 @@ mutex 的来源，代表一种互斥机制，用来保证只有一个线程可�
 
 <br/>   
 
-所以，锁的基本任务就是实现 mutual exclusive。[2]   
+所以，锁的基本任务就是实现 mutual exclusive。[2]    
 
 ---
 
@@ -581,25 +581,33 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 
 ---
 
-# 3. 死锁
+# 3. 一些底层问题
+
+---
+
+## 3.1 关于 futex
+
+---
+
+# 4. 死锁
 
 [死锁与死锁避免算法](https://blog.csdn.net/K346K346/article/details/136306132?spm=1001.2014.3001.5501)   
 
 
 ---
 
-## 3.1 产生死锁的原因
+## 4.1 产生死锁的原因
 
 
 ---
 
-## 3.2 避免死锁 
+## 4.2 避免死锁 
 
 
 
 ---
 
-# 4. 参考
+# 5. 参考
 
 [1] 三四. 高并发编程--线程同步. Available at https://zhuanlan.zhihu.com/p/51813695, 2019-01-04.    
 
