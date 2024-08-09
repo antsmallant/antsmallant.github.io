@@ -23,7 +23,7 @@ tags: [算法]
 
 ## 1.1 红黑树
 
-参考：[wikipedia 红黑树](https://zh.wikipedia.org/wiki/%E7%BA%A2%E9%BB%91%E6%A0%91) 。      
+参考：[wikipedia 红黑树](https://zh.wikipedia.org/wiki/%E7%BA%A2%E9%BB%91%E6%A0%91) [1]。      
 
 Red-black tree，是一种自平衡二叉查找树，典型用途是实现关联数组，1972 年由鲁道夫.贝尔发明，被称为 “对称二叉 B 树”。有着良好的最坏情况运行时间，可以在 O(logn) 时间内完成查找、插入、删除。     
 
@@ -49,3 +49,5 @@ Red-black tree，是一种自平衡二叉查找树，典型用途是实现关联
 ---
 
 # 参考
+
+[1] wikipedia. 红黑树. Available at https://zh.wikipedia.org/wiki/%E7%BA%A2%E9%BB%91%E6%A0%91.    
