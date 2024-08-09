@@ -214,19 +214,19 @@ PTHREAD_MUTEX_DEFAULT    = 0
 
 #### 2.4.2.2 父子进程间使用互斥锁   
 
-进程间大体实现是把 `pthread_mutex_t` 放到一块共享内存上，大家都可以访问得到。具体做法可以参考这篇文章：[《多进程共享的pthread_mutex_t》](https://blog.csdn.net/ld_long/article/details/135732039) [4]。    
+进程间大体实现是把 `pthread_mutex_t` 放到一块共享内存上，并且要把 mutex 的 shared 属性设置为 `PTHREAD_PROCESS_SHARED`。   
 
-大致过程如下：  
+具体做法参考这篇文章：[《多进程共享的pthread_mutex_t》](https://blog.csdn.net/ld_long/article/details/135732039) [4]。大致过程如下：   
 
 1、要有一块多进程可以访问的共享内存。   
 
-2、共享内存划出一段大小刚好可容纳 `pthread_mutex_t` 的内存区域，记为 `mutex_reserve`，这块内存初始化为全 0（必须的，`pthread_mutex_init` 要求 init 的那块内存为 全 0）。 
+2、共享内存划出一段大小刚好可容纳 `pthread_mutex_t` 的内存区域，记为 `mutex_reserve`，这块内存初始化为全 0（必须的，`pthread_mutex_init` 要求 init 的那块内存为 全 0）。   
 
-3、用一个 `pthread_mutex_t` 指针类型的变量 `pmutex` 指向这块内存。  
+3、用一个 `pthread_mutex_t` 指针类型的变量 `pmutex` 指向这块内存。    
 
-4、构造并初始化一个 `pthread_mutexattr_t` 类型的属性结构体 `attr`，这个变量不需要放在共享内存中；调用 `pthread_mutexattr_setshared` 将 attr 的 shared 属性设置为 `PTHREAD_PROCESS_SHARED`，即可跨进程使用。  
+4、构造并初始化一个 `pthread_mutexattr_t` 类型的属性结构体 `attr`，这个变量不需要放在共享内存中；调用 `pthread_mutexattr_setshared` 将 attr 的 shared 属性设置为 `PTHREAD_PROCESS_SHARED` 。    
 
-5、调用 `pthread_mutex_init`，以 `attr` 初始化 `pmutex`，即 `pthread_mutex_init(pmutex, &attr)`。  
+5、调用 `pthread_mutex_init`，以 `attr` 初始化 `pmutex`，即 `pthread_mutex_init(pmutex, &attr)`。    
 
 <br/>
 
