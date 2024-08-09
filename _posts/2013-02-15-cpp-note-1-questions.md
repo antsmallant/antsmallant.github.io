@@ -265,8 +265,6 @@ int main() {
 
 ---
 
-## 什么是虚函数？什么是纯虚函数？
-
 ---
 
 ## extern 的作用是什么？  
@@ -324,6 +322,10 @@ int main() {
 
 [Why aren't variable-length arrays part of the C++ standard?](https://stackoverflow.com/questions/1887097/why-arent-variable-length-arrays-part-of-the-c-standard)   
 
+
+---
+
+## 什么是虚函数？什么是纯虚函数？
 
 ---
 

@@ -512,16 +512,30 @@ int main()
 
 不相干的进程间使用互斥锁，也像父子进程那样，需要把 `pthread_mutex_t` 放在共享内存上，但不相干进程需要额外解决互斥锁的创建问题：谁创建？如何原子的创建？
 
-这篇文章 [《用pthread进行进程间同步》](https://www.cnblogs.com/my_life/articles/4538461.html) [5] 介绍了一种不相干进程间安全的创建互斥锁的做法。大意是利用 `link` 系统调用，原子的把 `shm_open` 创建出来的共享内存 `link` 到 `/dev/shm` 中。  
+这篇文章 [《用pthread进行进程间同步》](https://www.cnblogs.com/my_life/articles/4538461.html) [5] 介绍了一种不相干进程间安全的创建互斥锁的做法。大意是利用 `link` 系统调用，原子的把 `shm_open` 创建出来的共享内存 `link` 到 `/dev/shm` 中。   
 
-`link` 是 linux 原子操作文件的最底层指令，可以保证原子性，并且正在执行 link 的进程如果意外退出，linux 内核也会保证完成此次调用。   
+`/dev/shm` 是一个 mount 了的文件系统，里面放了一堆通过 `shm_open` 新建的共享内存。   
+
+`link` 是 linux 原子操作文件的最底层指令，可以保证原子性，并且正在执行 `link` 的进程如果意外退出，linux 内核也会保证完成此次调用。   
 
 关键代码：  
 
 ```c
+// 1、创建共享内存的副本
+shm_open("ourshm_tmp");
 
+// 2、尝试原子的把副本 link 为正式的
+if (0 == link("/dev/shm/ourshm_tmp", "/dev/shm/ourshm")) {
+    // 2.1、创建成功
+} else {
+    // 2.2、创建失败，因为别人已经创建了
+}
 
+// 3、无论成功与否，都要删除副本
+shm_unlink("/dev/shm/ourshm_tmp");  
 ```
+
+其他的就跟上面的在父子进程间创建互斥锁是同样的操作了。    
 
 ---
 
