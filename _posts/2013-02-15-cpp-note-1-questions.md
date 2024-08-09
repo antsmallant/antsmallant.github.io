@@ -187,7 +187,7 @@ int main() {
 
 5、拓展阅读
 
-[C/C++内存对齐详解](https://zhuanlan.zhihu.com/p/30007037)    
+[《C/C++内存对齐详解》](https://zhuanlan.zhihu.com/p/30007037)    
 
 ---
 
