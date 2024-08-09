@@ -235,6 +235,37 @@ XSI 是 X/Open 组织对 unix 接口定义的一套标准 (X/OPEN System Interfa
 
 ---
 
+## 1.4 共享内存
+
+创建共享内存有几种方式。  
+
+参考： 
+[两种Linux共享内存](https://blog.jqian.net/post/linux-shm.html)      
+[Linux: shm_xx系列函数使用详解](https://blog.csdn.net/weixin_45842280/article/details/136384000)    
+[shmget和shm_open的区别，分别写一个示例代码](https://www.5axxw.com/questions/simple/o2t5lg)    
+
+---
+
+### 1.4.1 mmap   
+ 
+
+---
+
+### 1.4.2 shmget    
+
+---
+
+### 1.4.3 shm_open
+
+---
+
+### 1.4.4 shmget 与 shm_open 的区别  
+
+
+
+
+---
+
 # 2. 参考  
 
 [1] Quokka. Cache 和 Buffer 都是缓存，主要区别是什么. Available at https://www.zhihu.com/question/26190832/answer/32387918, 2017-02-15.   
