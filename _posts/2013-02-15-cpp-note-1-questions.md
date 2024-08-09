@@ -42,6 +42,7 @@ f(nullptr);   // ok
 ## 1.2 什么情况下编译器会对参数进行隐式类型转换以保证函数调用成功？   
 
 编译器进行隐式类型转换，即是要生成一个临时对象，有两个前提：    
+
 1、实参是可以隐式转换成目标类型的；   
 2、参数是通过 by const reference 或 by value 的方式传递的；    
 
@@ -61,7 +62,6 @@ int main() {
     f3(str);  // not ok, compile error occurs
     return 0;
 }
-
 ```
 
 ---
