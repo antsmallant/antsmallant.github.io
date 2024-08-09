@@ -52,6 +52,6 @@ Red-black tree，是一种自平衡二叉查找树，典型用途是实现关联
 
 ---
 
-# 参考
+# 2. 参考
 
 [1] wikipedia. 红黑树. Available at https://zh.wikipedia.org/wiki/%E7%BA%A2%E9%BB%91%E6%A0%91.    
