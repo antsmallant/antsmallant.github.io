@@ -232,6 +232,8 @@ PTHREAD_MUTEX_DEFAULT    = 0
 
 参考代码1 [4]： 
 
+这段代码并不是直接用 shm* 那套 api 创建共享内存，而是直接创建一个文件，然后用 mmap 把文件映射到内存，以此实现共享内存。   
+
 ```c
 // pthread_mutex_in_father_son_process.c
 
@@ -303,7 +305,7 @@ int main()
             int sum=0;
             for(int i=0;i<40;i++)
             {
-            sum+=num[i];
+                sum+=num[i];
             }
             if(sum>1)
             {
@@ -328,6 +330,8 @@ int main()
 <br/>
 
 参考代码2 [6]:  
+
+这段代码使用 shm* 的 api 创建共享内存。  
 
 ```c
 // save as : pthread_mutex_in_father_son_process2.c
@@ -485,6 +489,9 @@ int main()
 
 代码保存为：`pthread_mutex_in_father_son_process2.c`，编译&运行：`gcc pthread_mutex_in_father_son_process2.c && ./a.out` 。   
 
+<br/>
+
+关于 mmap 和 shm* 创建共享内存的具体做法，可参照此文章： [《共享内存进阶指南：深入学习mmap和shm*的用法与技巧》](https://zhuanlan.zhihu.com/p/659036359)。  
 
 ---
 
