@@ -118,7 +118,66 @@ f(s);    // 拷贝构造一次，得到临时对象
 
 ---
 
-## 1.7 关于继承的一些常识
+## 1.7 数据对齐的意义是什么？如何做到数据对齐？    
+
+国内的叫法：内存对齐、字节对齐，但准确的说应该是数据结构对齐（Data structure alignment），在 wikipedia [3] 上只有 Data structure alignment 的词条，并没有 memory alignment 或 byte alignment。 
+
+在《深入理解计算机系统》里是写作 data alignment，译为数据对齐[4]。  
+
+1、对齐的意义   
+
+可以提高内存系统的性能。假设一个处理器总是从内存中取 8 个字节，对于一个 8 字节的 double 类型，如果它的存储地址是 8 的倍数，那么一次内存操作就可以把它取出来了，否则就需要 2 次，并且还需要对内存数据进行裁剪、拼凑，才能得到想要的这个数据。   
+
+无论是否对齐，x86-64 硬件都能正常工作，但 intel 的建议是尽量对齐以提高内存系统的性能。[4]    
+
+2、c++ 对齐的原则    
+
+对齐的基本原则是任何 K 字节的对象的起始地址必须是 K 的倍数。[4]   
+
+在 c++ 中，各类型的对齐原则如下：  
+
+|K|类型|
+|--|--|
+|1|char|
+|2|short|
+|4|int,float|
+|8|long,double,char*|
+
+
+在 struct 或 class 中，对齐原则可归纳为：  
+
+* struct 内部成员的 offset 必须为 min(成员size, 对齐系数) 的整数倍
+* struct 总体大小必须为 min(最宽成员size, 对齐系数) 的整数倍
+* struct 自身的 offset 必须为 min(最宽成员size, 对齐系数) 的整数倍
+
+
+3、设置对齐系数   
+
+在 gcc 中可以使用 `#pragma pack(n)` 设置对齐系数，比如设置为 4，`#pragma pack(4)`。   
+
+
+4、获取类型的对齐值    
+
+c 可以使用 `_Alignof`，c++ 可以使用 `alignof`。  
+
+比如这样：  
+
+```cpp
+#include <iostream>
+using namespace std;
+
+struct A {
+    char c;
+    int a;
+    double X;
+};
+
+int main() {
+    cout << sizeof(A) << endl;
+    cout << alignof(A) << endl;
+    return 0;
+}
+```
 
 ---
 
@@ -148,19 +207,17 @@ c++ 的运行时多态是使用虚函数表实现的，有一篇文章总结得�
 
 ---
 
-## 1.11 std::vector 在长度不足的时候，以什么策略扩容？  
+## 1.11 std::vector 的扩容和缩容策略各是什么？  
 
+1、扩容策略    
 gcc 是按 2 倍的容量扩容，据说 vs 是按 1.5 倍的。  
 另外，gcc 的 resize 也是按 2 倍的策略扩容的，网上有文章说是按需扩容，但实测并不是，仍然是按 2 倍的策略扩的。  
+
+2、缩容策略    
 
 ---
 
 ## 什么是虚函数？什么是纯虚函数？
-
----
-
-## 字节对齐的意义是什么？如何做到字节对齐？    
-
 
 ---
 
@@ -250,3 +307,7 @@ gcc 是按 2 倍的容量扩容，据说 vs 是按 1.5 倍的。
 [1] SkyFire. 编译期多态. Available at https://xie.infoq.cn/article/829d74dcd8d19aa613f8da059, 2023-01-28.    
 
 [2] Holy Chen. C++中虚函数、虚继承内存模型. Available at https://zhuanlan.zhihu.com/p/41309205, 2018-08-07.    
+
+[3] wikipedia. Data structure alignment. Available at https://en.wikipedia.org/wiki/Data_structure_alignment.  
+
+[4] [美]Randal E. Bryant, David R. O'Hallaron. 深入理解计算机系统(原书第3版). 龚奕利, 贺莲. 北京: 机械工业出版社, 2022-6(1): 189.      
