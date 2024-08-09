@@ -19,6 +19,16 @@ tags: [并发 同步 多线程]
 
 pthread 的官方文档：[https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/pthread.h.html](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/pthread.h.html)    
 
+pthread linux api 文档：[https://man7.org/linux/man-pages/man0/pthread.h.0p.html](https://man7.org/linux/man-pages/man0/pthread.h.0p.html)    
+
+
+备用文档：  
+
+https://www.zhihu.com/question/66733477/answer/1267625567  
+
+https://zhuanlan.zhihu.com/p/653864005   
+
+https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html  
 
 
 ---
@@ -112,8 +122,6 @@ mutex，或者称互斥量，是多线程最常用的锁。pthread 的 mutex 实
 
 跨进程使用会有些复杂，需要把 `pthread_mutex_t` 创建在一块共享内存上，使得多个进程都可以访问它。而这里又分两种情况，父子进程和不相干进程。父子进程相对简单些，不需要考虑谁负责创建互斥锁的问题。而不相干进程就复杂了，需要处理好谁负责创建的问题，如果任一进程都要能创建，那么这里又存在互斥的问题了。具体的做法下文详细展开。   
 
-https://www.zhihu.com/question/66733477/answer/1267625567
-
 ---
 
 #### 2.4.2.1 单进程内使用互斥锁
@@ -143,10 +151,6 @@ int pthread_mutex_trylock(pthread_mutex_t *mutex);
 
 有时候需要设置 mutexattr，可以使用以下的 api：  
 
-https://zhuanlan.zhihu.com/p/653864005   
-
-https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html  
-
 ```c
 
 // 初始化
@@ -169,6 +173,9 @@ int pthread_mutexattr_setshared(pthread_mutexattr_t *attr, int *pshared);
 // 默认值是 PTHREAD_MUTEX_DEFAULT，不同系统可能会使用以上的不同值，需要具体测试一下   
 int pthread_mutexattr_gettype(const pthread_mutexattr_t *attr, int *type);
 int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int *type);
+
+// ... 
+// 还有一些其他的 api，具体看 pthread 的文档
 
 ```
 
@@ -325,7 +332,8 @@ int main()
 }
 ```
 
-代码保存为：`pthread_mutex_in_father_son_process.c`，编译&运行：`gcc pthread_mutex_in_father_son_process.c && ./a.out` 。   
+代码保存为：`pthread_mutex_in_father_son_process.c`。   
+编译&运行：`gcc pthread_mutex_in_father_son_process.c && ./a.out` 。     
 
 <br/>
 
@@ -487,7 +495,8 @@ int main()
 }
 ```
 
-代码保存为：`pthread_mutex_in_father_son_process2.c`，编译&运行：`gcc pthread_mutex_in_father_son_process2.c && ./a.out` 。   
+代码保存为：`pthread_mutex_in_father_son_process2.c`。    
+编译&运行：`gcc pthread_mutex_in_father_son_process2.c && ./a.out` 。     
 
 <br/>
 
