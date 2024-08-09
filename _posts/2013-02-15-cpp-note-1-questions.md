@@ -243,10 +243,6 @@ gcc 是按 2 倍的容量扩容，据说 vs 是按 1.5 倍的。
 
 ---
 
-## volatile 的作用是什么？  
-
----
-
 ## xvalue 具体是怎么形成的？
 
 ---
@@ -306,13 +302,10 @@ gcc 是按 2 倍的容量扩容，据说 vs 是按 1.5 倍的。
 
 ## c++17 中对于 value categories 做了哪些修改？  
 
----
-
-# 2. 用法
 
 ---
 
-# 3. 参考
+# 2. 参考
 
 [1] SkyFire. 编译期多态. Available at https://xie.infoq.cn/article/829d74dcd8d19aa613f8da059, 2023-01-28.    
 
