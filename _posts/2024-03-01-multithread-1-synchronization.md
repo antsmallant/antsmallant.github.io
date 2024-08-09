@@ -37,9 +37,12 @@ tags: [并发 同步 多线程]
 同步这个词在很多场合都有用到，表达的意思各不相同，我在另一篇文章[《网络常识二：同步、异步、阻塞、非阻塞》](https://blog.antsmallant.top/2024/01/11/network-2-synchronous-asynchronous-blocking-nonblocking) [5] 已经做了一些介绍。  
 
 回到这个词本身，在 Wikipedia[6]里，是这么介绍它的：   
+
 >Thread synchronization is defined as a mechanism which ensures that two or more concurrent processes or threads do not simultaneously execute some particular program segment known as critical section. Processes' access to critical section is controlled by using synchronization techniques.   
 
 词条里还提到，两种需要同步的场景：1、相互排斥的资源访问；2、需要顺序控制的资源访问，这两种场合大概就是中文互联网老是提到的 “互斥” 与 “同步” 吧。  
+
+这两个词，换个说法会好一些: 竞争 (competition) 与 协同(cooperation)。   
 
 以前我也没这么较真的，但看过 Martin Kleppmann 的那篇《Please stop calling databases CP or AP》[7]之后，觉得人云亦云是要不得的，要坚定的把基本事实弄清楚，才能建立正确的认知。   
 

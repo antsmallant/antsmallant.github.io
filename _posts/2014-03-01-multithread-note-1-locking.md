@@ -37,7 +37,7 @@ https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html
 
 ---
 
-## 2.1 锁的分类
+## 2.1 锁的分类及应用场景
 
 整体上可以分为悲观锁与乐观锁，悲观锁假定冲突很频繁，在访问前必须先加上锁，乐观锁假定冲突概率很低，可以先访问，等出现冲突了再做处理。  
 
@@ -50,6 +50,14 @@ https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html
 blocking 类型，加锁失败时，线程挂起，会阻塞直到加锁成功被操作系统重新唤醒。信号量、互斥锁、条件变量、读写锁都属于此类型。  
 
 spinning 类型，加锁失败时，不挂起，会进入忙等待（busy waiting），不断尝试重新加锁，直到成功。自旋锁（spin lock）就属于此类型，使用的场景主要是明确等待锁的时间会非常短，短到 cpu 空转的代价比线程切换的代价都要低很多。       
+
+<br/>
+
+锁主要用于两大场景，一个是 competition（竞争），另一个是 cooperation（协同）。  
+
+competition 是指多个执行体需要操作共享资源，但同时只允许一个执行体进行操作。   
+
+cooperation 是指一些执行体依赖于另一些执行体的执行结果，比如消费者依赖于生产者的生产物。  
 
 
 ---
@@ -593,6 +601,11 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 
 [死锁与死锁避免算法](https://blog.csdn.net/K346K346/article/details/136306132?spm=1001.2014.3001.5501)   
 
+[mit6.005 Software Construction Reading 23: Locks and Synchronization](https://web.mit.edu/6.005/www/fa15/classes/23-locks/)
+
+[https://web.mit.edu/6.005/www/fa15/classes/20-thread-safety/](https://web.mit.edu/6.005/www/fa15/classes/20-thread-safety/)   
+
+[https://web.mit.edu/6.005/www/fa15/classes/19-concurrency/](https://web.mit.edu/6.005/www/fa15/classes/19-concurrency/)
 
 ---
 
