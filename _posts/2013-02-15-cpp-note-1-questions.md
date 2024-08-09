@@ -220,10 +220,35 @@ c++ 的运行时多态是使用虚函数表实现的，有一篇文章总结得�
 ## 1.11 std::vector 的扩容和缩容策略各是什么？  
 
 1、扩容策略    
+
 gcc 是按 2 倍的容量扩容，据说 vs 是按 1.5 倍的。  
 另外，gcc 的 resize 也是按 2 倍的策略扩容的，网上有文章说是按需扩容，但实测并不是，仍然是按 2 倍的策略扩的。  
 
+
 2、缩容策略    
+
+vector 不会主动缩容，需要使用某些技巧来释放。即创建一个匿名 vector 对象来承接现有的数据，然后再 swap。比如这样：  
+
+```cpp
+// vector_shrink.cpp
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    vector<int> a(100, 1);
+    printf("before, size:%ld, cap:%ld\n", a.size(), a.capacity());
+    
+    a.resize(5);
+    printf("after resize, size:%ld, cap:%ld\n", a.size(), a.capacity());
+    
+    vector<int>(a).swap(a);
+    printf("after shrink, size:%ld, cap:%ld\n", a.size(), a.capacity());
+    return 0;
+}
+```
+
 
 ---
 
