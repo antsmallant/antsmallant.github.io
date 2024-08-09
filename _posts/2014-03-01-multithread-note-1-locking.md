@@ -171,12 +171,14 @@ int pthread_mutexattr_setshared(pthread_mutexattr_t *attr, int *pshared);
 //    PTHREAD_MUTEX_ERRORCHECK 检错，第1次加锁成功后，再次加锁会失败并返回错误信息 
 //      
 // 默认值是 PTHREAD_MUTEX_DEFAULT，不同系统可能会使用以上的不同值，需要具体测试一下   
+// 可参考文档： https://linux.die.net/man/3/pthread_mutexattr_gettype
+//             https://linux.die.net/man/3/pthread_mutexattr_settype
 int pthread_mutexattr_gettype(const pthread_mutexattr_t *attr, int *type);
 int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int *type);
 
 // get/set robust 参数，用于处理持有锁的线程死掉的情况，选项包括： 
 //    PTHREAD_MUTEX_STALLED    默认，不作特别处理，持有锁的线程死掉后，如果没其他线程可以解锁，将导致死锁
-//    PTHREAD_MUTEX_ROBUST     健壮，持有锁的线程死掉后，第二个阻塞在 acquire 或尝试 acquire 的线程将收到 EOWNERDEAD 的返回。此时它可以做一些处理：调用 
+//    PTHREAD_MUTEX_ROBUST     健壮，持有锁的线程死掉后，第二个阻塞在 acquire 或尝试 acquire 的线程将收到 EOWNERDEAD 的通知。此时它可以做一些处理：调用 
 //                                  pthread_mutex_consistent 设置 mutex 为 consistent 的，然后调用 pthread_mutex_unlock 使这个锁可以恢复正常使用。 
 //                             
 // 可参考文档： https://pubs.opengroup.org/onlinepubs/9699919799/functions/pthread_mutexattr_setrobust.html  
@@ -187,13 +189,6 @@ int pthread_mutexattr_setrobust(pthread_mutexattr_t *attr, int *robust);
 // 还有一些其他的 api，具体看 pthread 的文档
 
 ```
-
-<br/>
-
-`pthread_mutexattr_gettype` 与 `pthread_mutexattr_settype` 的具体信息可参照以下文档：  
-
-[《pthread_mutexattr_gettype(3) - Linux man page》](https://linux.die.net/man/3/pthread_mutexattr_gettype)     
-[《pthread_mutexattr_settype(3) - Linux man page》](https://linux.die.net/man/3/pthread_mutexattr_settype)      
 
 <br/>
 
@@ -524,6 +519,7 @@ int main()
 关键代码：  
 
 ```c
+
 
 ```
 
