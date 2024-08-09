@@ -499,9 +499,11 @@ int main()
 
 不相干的进程间使用互斥锁，也像父子进程那样，需要把 `pthread_mutex_t` 放在共享内存上，但不相干进程需要额外解决互斥锁的创建问题：谁创建？如何原子的创建？
 
-这篇文章 [《用pthread进行进程间同步》](https://www.cnblogs.com/my_life/articles/4538461.html) [5] 介绍了一种不相干进程间互斥的创建互斥锁的做法。大意是利用 link 这个系统调用，原子的把 shm_open 创建出来的共享内存 link 到 `/dev/shm` 中。  
+这篇文章 [《用pthread进行进程间同步》](https://www.cnblogs.com/my_life/articles/4538461.html) [5] 介绍了一种不相干进程间安全的创建互斥锁的做法。大意是利用 `link` 系统调用，原子的把 `shm_open` 创建出来的共享内存 `link` 到 `/dev/shm` 中。  
 
-link 系统调用是 linux 原子操作文件的最底层指令，可以保证原子，并且处于 link 操作的进程被中途 kill 掉，linux 内核也会保证完成这次调用。 关键代码：  
+`link` 是 linux 原子操作文件的最底层指令，可以保证原子性，并且正在执行 link 的进程如果意外退出，linux 内核也会保证完成此次调用。   
+
+关键代码：  
 
 ```c
 
