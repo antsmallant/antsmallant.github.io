@@ -230,10 +230,10 @@ PTHREAD_MUTEX_DEFAULT    = 0
 
 <br/>
 
-参考代码 [4]： 
+参考代码1 [4]： 
 
 ```c
-// test_mutex_in_multi_process.c
+// pthread_mutex_in_father_son_process.c
 
 #include <pthread.h>
 #include <stdio.h>
@@ -323,7 +323,168 @@ int main()
 }
 ```
 
-代码保存为：`test_mutex_in_multi_process.c`，编译&运行：`gcc test_mutex_in_multi_process.c && ./a.out` 。
+代码保存为：`pthread_mutex_in_father_son_process.c`，编译&运行：`gcc pthread_mutex_in_father_son_process.c && ./a.out` 。   
+
+<br/>
+
+参考代码2 [6]:  
+
+```c
+// save as : pthread_mutex_in_father_son_process2.c
+// compile and run: gcc pthread_mutex_in_father_son_process2.c && ./a.out
+
+#include <stdio.h>
+#include <pthread.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/shm.h>
+#include <sys/wait.h>
+#include <string.h>
+
+int main()
+{
+    pid_t pid;
+    int shmid;
+    int* shmptr;
+    int* tmp;
+
+    int err;
+    pthread_mutexattr_t mattr;
+    //创建mutex的属性
+    if((err = pthread_mutexattr_init(&mattr)) < 0)
+    {
+        printf("mutex addr init error:%s\n", strerror(err));
+        exit(1);
+    }
+
+    //让mutex可以同步多个进程
+    //mutex的默认属性是同步线程的，所有必须要有此行代码
+    if((err = pthread_mutexattr_setpshared(&mattr, PTHREAD_PROCESS_SHARED)) < 0)
+    {
+        printf("mutex addr get shared error:%s\n", strerror(err));
+        exit(1);
+    }
+
+    //注意：这里是个大坑，这里的mutex必须是用共享内存的方式创建，目的是父进程和子进程可以共用此mutex。
+    //否则，父进程的mutex就是父进程的，子进程的mutex就是子进程的，不能达到同步的作用。
+    pthread_mutex_t* m;
+    int mid = shmget(IPC_PRIVATE, sizeof(pthread_mutex_t), 0600);
+    m = (pthread_mutex_t*)shmat(mid, NULL, 0);
+
+    //使用mutex的属性，创建mutex
+    if((err = pthread_mutex_init(m, &mattr)) < 0)
+    {
+        printf("mutex mutex init error:%s\n", strerror(err));
+        exit(1);
+    }
+
+    //创建一个共享内存区域，让父进程和子进程往里写数据。
+    if((shmid = shmget(IPC_PRIVATE, 1000, IPC_CREAT | 0600)) < 0)
+    {
+        perror("shmget error");
+        exit(1);
+    }
+
+    //取得指向共享内存的指针
+    if((shmptr = shmat(shmid, 0, 0)) == (void*)-1)
+    {
+        perror("shmat error");
+        exit(1);
+    }
+
+    tmp = shmptr;
+
+    //创建一个共享内存，保存上面共享内存的指针
+    int shmid2;
+    int** shmptr2;
+    if((shmid2 = shmget(IPC_PRIVATE, 20, IPC_CREAT | 0600)) < 0)
+    {
+        perror("shmget2 error");
+        exit(1);
+    }
+
+    //取得指向共享内存的指针
+    if((shmptr2 = shmat(shmid2, 0, 0)) == (void*)-1)
+    {
+        perror("shmat2 error");
+        exit(1);
+    }
+    //让shmptr2指向共享内存id为shmid的首地址。
+    *shmptr2 = shmptr;
+
+    if((pid = fork()) < 0)
+    {
+        perror("fork error");
+        exit(1);
+    }
+
+    if(pid == 0)
+    {
+        //从此处开始给mutex加锁，如果加锁成功，则此期间，父进程无法取得锁
+        if((err = pthread_mutex_lock(m)) < 0)
+        {
+            printf("lock error:%s\n", strerror(err));
+            exit(1);
+        }
+        for(int i = 0; i < 30; ++i)
+        {
+            **shmptr2 = i;
+            (*shmptr2)++;
+        }
+
+        if((err = pthread_mutex_unlock(m)) < 0)
+        {
+            printf("unlock error:%s\n", strerror(err));
+            exit(1);
+        }
+        exit(0);
+
+    }
+    else
+    {
+        //从此处开始给mutex加锁，如果加锁成功，则此期间，子进程无法取得锁
+        if((err = pthread_mutex_lock(m)) < 0)
+        {
+            printf("lock error:%s\n", strerror(err));
+            exit(1);
+        }
+        for(int i = 10; i < 42; ++i)
+        {
+            **shmptr2 = i;
+            (*shmptr2)++;
+        }
+        if((err = pthread_mutex_unlock(m)) < 0)
+        {
+            printf("unlock error:%s\n", strerror(err));
+            exit(1);
+        }
+    }
+
+    //销毁子进程
+    wait(NULL);
+
+    //查看共享内存的值
+    for(int i = 0; i < 62; ++i)
+    {
+        printf("%d ", tmp[i]);
+    }
+
+    printf("\n");
+
+    //销毁mutex的属性
+    pthread_mutexattr_destroy(&mattr);
+    //销毁mutex
+    pthread_mutex_destroy(m);
+
+    exit(0);
+
+    return 0;
+}
+```
+
+代码保存为：`pthread_mutex_in_father_son_process2.c`，编译&运行：`gcc pthread_mutex_in_father_son_process2.c && ./a.out` 。   
+
 
 ---
 
@@ -413,4 +574,4 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 
 [5] bw_0927. 用pthread进行进程间同步. Available at https://www.cnblogs.com/my_life/articles/4538461.html, 2015-5-29.   
 
- 
+[6] 小石王. 使用mutex同步多进程. Available at https://www.cnblogs.com/xiaoshiwang/p/12582531.html, 2020-3-27.   
