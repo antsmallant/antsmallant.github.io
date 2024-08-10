@@ -423,9 +423,7 @@ PTHREAD_MUTEX_DEFAULT    = 0
 
 <br/>
 
-参考代码1 [4]： 
-
-这段代码并不是直接用 shm* 那套 api 创建共享内存，而是直接创建一个文件，然后用 mmap 把文件映射到内存，以此实现共享内存。   
+示例代码1，参考自此文 [《多进程共享的pthread_mutex_t》](https://blog.csdn.net/ld_long/article/details/135732039) [4]，这段代码并不是直接用 shm* 那套 api 创建共享内存，而是直接创建一个文件，然后用 mmap 把文件映射到内存，以此实现共享内存。   
 
 ```c
 // pthread_mutex_in_father_son_process.c
@@ -523,9 +521,7 @@ int main()
 
 <br/>
 
-参考代码2 [6]:  
-
-这段代码使用 shm* 的 api 创建共享内存。  
+示例代码2，参考自此文：[《使用mutex同步多进程》](https://www.cnblogs.com/xiaoshiwang/p/12582531.html) [6]，这段代码使用 shm* 的 api 创建共享内存。      
 
 ```c
 // save as : pthread_mutex_in_father_son_process2.c
