@@ -21,6 +21,8 @@ tags: [并发 同步 多线程]
 
 * spurious wakeup，条件变量需要使用 while 循环进行 wait。  
 
+* what is monitor?  
+
 
 
 
@@ -44,7 +46,11 @@ https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html
 
 ---
 
-# 2. 同步原语
+# 2. 同步
+
+---
+
+# 3. 同步原语
 
 
 

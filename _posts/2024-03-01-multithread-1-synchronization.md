@@ -37,7 +37,7 @@ tags: [并发 同步 多线程]
 
 同步这个词在很多场合都有用到，表达的意思各不相同，我在另一篇文章[《网络常识二：同步、异步、阻塞、非阻塞》](https://blog.antsmallant.top/2024/01/11/network-2-synchronous-asynchronous-blocking-nonblocking) [5] 已经做了一些介绍。  
 
-回到这个词本身，在 Wikipedia[6]里，是这么介绍它的：   
+回到这个词本身，在 Wikipedia 关于 [《synchronization》](https://en.wikipedia.org/wiki/Synchronization_(computer_science)) 的词条里[6]，是这么介绍它的：   
 
 >Thread synchronization is defined as a mechanism which ensures that two or more concurrent processes or threads do not simultaneously execute some particular program segment known as critical section. Processes' access to critical section is controlled by using synchronization techniques.   
 
