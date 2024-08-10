@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "多线程笔记一：锁"
+title: "并发笔记一：同步原语"
 date: 2014-03-01
 last_modified_at: 2024-04-01
 categories: [并发与多线程]
@@ -11,7 +11,18 @@ tags: [并发 同步 多线程]
 {:toc}
 <br/>
 
-记录多线程中锁相关的常识。  
+记录同步原语
+
+---
+
+# 0. todo
+
+* pthread mutex，未挂有锁的线程 unlock 了被其他线程持有的锁，会发生什么事情？   
+
+* spurious wakeup，条件变量需要使用 while 循环进行 wait。  
+
+
+
 
 ---
 
@@ -33,7 +44,21 @@ https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html
 
 ---
 
+# 2. 同步原语
+
+
+
 # 2. 锁 
+
+锁是什么？锁是实现同步（synchronization）的一种技术。   
+
+同步是什么？
+
+此处不应该局限于线程或进程，可以用执行体来代替。   
+
+[mit6.005 — Software Construction Reading 20: Thread Safety](https://web.mit.edu/6.005/www/fa15/classes/20-thread-safety/)    
+
+[mit6.005 Software Construction Reading 23: Locks and Synchronization](https://web.mit.edu/6.005/www/fa15/classes/23-locks/)    
 
 ---
 
