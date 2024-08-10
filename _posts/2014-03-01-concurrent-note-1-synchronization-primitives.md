@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "并发笔记一：同步原语"
+title: "并发笔记一：同步及同步原语"
 date: 2014-03-01
 last_modified_at: 2024-04-01
 categories: [并发与多线程]
@@ -11,20 +11,7 @@ tags: [并发 同步 多线程]
 {:toc}
 <br/>
 
-记录同步原语
-
----
-
-# 0. todo
-
-* pthread mutex，未挂有锁的线程 unlock 了被其他线程持有的锁，会发生什么事情？   
-
-* spurious wakeup，条件变量需要使用 while 循环进行 wait。  
-
-* what is monitor?  
-
-
-
+记录并发中同步相关的知识，包括同步的概念，同步要解决的问题，同步原语。   
 
 ---
 
@@ -44,56 +31,31 @@ https://zhuanlan.zhihu.com/p/653864005
 https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html  
 
 
+**todo**  
+
+* pthread mutex，未挂有锁的线程 unlock 了被其他线程持有的锁，会发生什么事情？   
+
+* spurious wakeup，条件变量需要使用 while 循环进行 wait。  
+
+* what is monitor?  
+
 ---
 
 # 2. 同步
 
 ---
 
-# 3. 同步原语
+## 2.1 同步的概念
 
+同步，即 synchronization，在 wikipedia 上，[synchronization](https://en.wikipedia.org/wiki/Synchronization_(computer_science)) 词条 [7] 的解释是：
 
+>
 
-# 2. 锁 
+翻译过来就是：。   
 
-锁是什么？锁是实现同步（synchronization）的一种技术。   
+当谈到同步的时候，不必拘泥于进程或线程，只要是并发的情况下，多个执行体，基本上都需要通过同步来进行沟通执行的顺序。   
 
-同步是什么？
-
-此处不应该局限于线程或进程，可以用执行体来代替。   
-
-[mit6.005 — Software Construction Reading 20: Thread Safety](https://web.mit.edu/6.005/www/fa15/classes/20-thread-safety/)    
-
-[mit6.005 Software Construction Reading 23: Locks and Synchronization](https://web.mit.edu/6.005/www/fa15/classes/23-locks/)    
-
----
-
-## 2.1 锁的分类及应用场景
-
-整体上可以分为悲观锁与乐观锁，悲观锁假定冲突很频繁，在访问前必须先加上锁，乐观锁假定冲突概率很低，可以先访问，等出现冲突了再做处理。  
-
-严格来说，乐观锁并不是传统意义上的锁，它只是利用了诸如版本号之类的机制，可以在冲突出现的时候识别出来并做相应的处理，算是一种“无锁编程”。    
-
-<br/>
-
-悲观锁就是狭义上的锁了，根据加锁失败后的处理方式，可分为两大类型：blocking 和 spinning。   
-
-blocking 类型，加锁失败时，线程挂起，会阻塞直到加锁成功被操作系统重新唤醒。信号量、互斥锁、条件变量、读写锁都属于此类型。  
-
-spinning 类型，加锁失败时，不挂起，会进入忙等待（busy waiting），不断尝试重新加锁，直到成功。自旋锁（spin lock）就属于此类型，使用的场景主要是明确等待锁的时间会非常短，短到 cpu 空转的代价比线程切换的代价都要低很多。       
-
-<br/>
-
-锁主要用于两大场景，一个是 competition（竞争），另一个是 cooperation（协同）。  
-
-competition 是指多个执行体需要操作共享资源，但同时只允许一个执行体进行操作。   
-
-cooperation 是指一些执行体依赖于另一些执行体的执行结果，比如消费者依赖于生产者的生产物。  
-
-
----
-
-## 2.2 一些相关概念  
+<br/>  
 
 参考自：[《高并发编程--线程同步》](https://zhuanlan.zhihu.com/p/51813695) [1]。   
 
@@ -124,7 +86,56 @@ mutex 的来源，代表一种互斥机制，用来保证只有一个线程可�
 
 ---
 
-## 2.3 锁的底层实现
+## 2.2 同步要解决的问题
+
+同步需要解决的问题，可以分为两大类：竞争 (competition) 与协同 (cooperation)：   
+
+1）竞争，指的就是多个执行体都要操作共享资源，但同时只允许一个执行体进行操作。  
+
+2）协同，指的就是一些执行体需要依赖另一些执行体的执行结果，典型的如生产者-消费者问题，就是需要协同的场景。   
+
+<br/>
+
+国内有不少文章会把这两类问题写成 “互斥” 和 “同步”，我觉得这种叫法很糟糕，太容易引起混淆了，本来就有 “互斥锁”、“synchronization” 这些术语了。所以，我觉得用竞争和协同来描述会更好很多。    
+
+---
+
+## 2.2 同步原语
+
+同步原语就是操作系统提供的用于解决同步问题的技术手段。  
+
+1）competition 问题可使用的原语一般是使用锁，锁包含了二元信号量、互斥锁、共享/排他锁。   
+
+2）cooperation 问题可使用的原语包括条件变量、多元信号量。   
+
+---
+
+## 2.3 锁
+
+[mit6.005 — Software Construction Reading 20: Thread Safety](https://web.mit.edu/6.005/www/fa15/classes/20-thread-safety/)    
+[mit6.005 Software Construction Reading 23: Locks and Synchronization](https://web.mit.edu/6.005/www/fa15/classes/23-locks/)    
+
+锁是同步原语的一种，它一个很宽泛的概念，它要解决的主要就是竞争问题。有各种各样的锁，用于解决各种细分问题。  
+
+---
+
+### 2.3.1 锁的分类及应用场景
+
+整体上可以分为悲观锁与乐观锁，悲观锁假定冲突很频繁，在访问前必须先加上锁，乐观锁假定冲突概率很低，可以先访问，等出现冲突了再做处理。  
+
+严格来说，乐观锁并不是传统意义上的锁，它只是利用了诸如版本号之类的机制，可以在冲突出现的时候识别出来并做相应的处理，算是一种“无锁编程”。    
+
+<br/>
+
+悲观锁就是狭义上的锁了，根据加锁失败后的处理方式，可分为两大类型：blocking 和 spinning。   
+
+blocking 类型，加锁失败时，线程挂起，会阻塞直到加锁成功被操作系统重新唤醒。信号量、互斥锁、条件变量、读写锁都属于此类型。  
+
+spinning 类型，加锁失败时，不挂起，会进入忙等待（busy waiting），不断尝试重新加锁，直到成功。自旋锁（spin lock）就属于此类型，使用的场景主要是明确等待锁的时间会非常短，短到 cpu 空转的代价比线程切换的代价都要低很多。       
+
+---
+
+### 2.3.2 锁的底层实现
 
 各种锁的底层实现基本上都是操作系统提供的某种原子操作，而操作系统也是依赖 cpu 提供的原子机制。   
 
@@ -132,13 +143,13 @@ mutex 的来源，代表一种互斥机制，用来保证只有一个线程可�
 
 ---
 
-## 2.4 blocking 类型的锁 
+### 2.3.3 blocking 类型的锁 
 
 阻塞型的锁可以分为好几种，多个操作系统大同小异，以 linux 系统为例，包括：信号量、互斥锁、条件变量、读写锁。  
 
 ---
 
-### 2.4.1 信号量 (semaphore)
+#### 2.3.3.1 信号量 (semaphore)
 
 信号量是由 POSIX 定义的，并不是 pthread 的一部分，但是多数的类 unix 系统在 pthread 的实现中包含了信号量。[3]    
 
@@ -153,7 +164,7 @@ mutex 的来源，代表一种互斥机制，用来保证只有一个线程可�
 
 ---
 
-### 2.4.2 互斥锁 (mutex)
+#### 2.3.3.2 互斥锁 (mutex)
 
 mutex，或者称互斥量，是多线程最常用的锁。pthread 的 mutex 实现，支持进程内和进程间的互斥。看起来，它就像只有 0, 1 两个值的信号量。  
 
@@ -163,7 +174,7 @@ mutex，或者称互斥量，是多线程最常用的锁。pthread 的 mutex 实
 
 ---
 
-#### 2.4.2.1 单进程内使用互斥锁
+##### 2.3.3.2.1 单进程内使用互斥锁
 
 进程内互斥很简单，调用 api 即可。   
 
@@ -262,7 +273,7 @@ PTHREAD_MUTEX_DEFAULT    = 0
 
 ---
 
-#### 2.4.2.2 父子进程间使用互斥锁   
+##### 2.3.3.2.2 父子进程间使用互斥锁   
 
 进程间大体实现是把 `pthread_mutex_t` 放到一块共享内存上，并且要把 mutex 的 shared 属性设置为 `PTHREAD_PROCESS_SHARED`。   
 
@@ -547,7 +558,7 @@ int main()
 
 ---
 
-#### 2.4.2.3 不相干的进程间使用互斥锁
+##### 2.3.3.2.3 不相干的进程间使用互斥锁
 
 不相干的进程间使用互斥锁，也像父子进程那样，需要把 `pthread_mutex_t` 放在共享内存上，但不相干进程需要额外解决互斥锁的创建问题：谁创建？如何原子的创建？
 
@@ -578,11 +589,7 @@ shm_unlink("/dev/shm/ourshm_tmp");
 
 ---
 
-### 2.4.3 条件变量 (condition var)
-
----
-
-### 2.4.4 读写锁 (rwlock)
+### 2.3.4 读写锁 (rwlock)
 
 ---
 
@@ -617,6 +624,11 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 ```  
 
 与 pthread_mutex 类似，如果要让 pthread_spin 跨进程使用，即使用 PTHREAD_PROCESS_SHARE 模式，`pthread_spinlock_t` 需要分配在共享内存上，具体做法参照上文的 pthread_mutex 。  
+
+---
+
+### 2.2.2 条件变量 (condition var)
+
 
 ---
 
@@ -664,3 +676,5 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 [5] bw_0927. 用pthread进行进程间同步. Available at https://www.cnblogs.com/my_life/articles/4538461.html, 2015-5-29.   
 
 [6] 小石王. 使用mutex同步多进程. Available at https://www.cnblogs.com/xiaoshiwang/p/12582531.html, 2020-3-27.   
+
+[7] Wikipedia. Synchronization (computer science). Available at https://en.wikipedia.org/wiki/Synchronization_(computer_science).   
