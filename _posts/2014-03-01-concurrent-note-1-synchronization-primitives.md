@@ -180,14 +180,17 @@ https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html
 int sem_init(sem_t *sem, int pshared, unsigned int value); 
 
 // 销毁信号量
+// 文档： https://man7.org/linux/man-pages/man3/sem_destroy.3.html
 int sem_destroy(sem_t *sem);  
 
 // 释放信号量，信号量值加 1
 // return: 0 for success, -1 for error
+// 文档： https://man7.org/linux/man-pages/man3/sem_post.3.html
 int sem_post(sem_t *sem);  
 
 // 获取信号量，信号量 0 时阻塞，大于 0 时减 1
 // return: 0 for success, -1 for error
+// 文档： https://man7.org/linux/man-pages/man3/sem_wait.3.html
 int sem_wait(sem_t *sem);
 ```
 
@@ -229,13 +232,14 @@ int main() {
 
 ```c
 // 参数：
-//    addr，指定了映射被放置的虚拟地址，如果为NULL，内核会为映射选一个合适的地址
+//    addr，指定了映射起始地址；如果为NULL，内核会选择一个合适的地址来创建映射，这是最可移植的做法
 //    length，指定了映射的字节数
 //    prot，位掩码，指定了映射内存的保护空间属性，可读写即为 PROT_READ|PROT_WRITE
 //    flags，控制映射操作各个方面选项的位掩码，共享映射且没有对应文件的匿名映射即 MAP_SHARED|MAP_ANONYMOUS
 //    fd，用于文件映射的，匿名映射可以填 -1
 //    offset，用于文件映射的，匿名映射可以填 0
-// Return: starting address of mapping on success, or MAP_FAILED on error
+// Return: 成功时，返回映射地址的指针；失败时，返回 MAP_FAILED，即((void*)-1)  
+// 文档： https://man7.org/linux/man-pages/man2/mmap.2.html
 void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
 ```
 
