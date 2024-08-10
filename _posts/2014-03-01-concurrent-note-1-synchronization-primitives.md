@@ -51,9 +51,9 @@ https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html
 
 >synchronization is the task of coordinating multiple processes to join up or handshake at a certain point, in order to reach an agreement or commit to a certain sequence of action.   
 
-翻译过来就是：。   
+翻译过来就是：同步是通过协调多个进程的行为，使得它们按某种约定的顺序进行执行。  
 
-当谈到同步的时候，不必拘泥于进程或线程，只要是并发的情况下，多个执行体，基本上都需要通过同步来进行沟通执行的顺序。   
+当谈到同步的时候，不必拘泥于进程或线程，在并发的情况下，进程或线程都可以称为执行体，用执行体来称呼各个相对独立的执行逻辑就行。   
 
 <br/>  
 
@@ -87,6 +87,10 @@ mutex 的来源，代表一种互斥机制，用来保证只有一个线程可�
 1）竞争，指的就是多个执行体都要操作共享资源，但同时只允许一个执行体进行操作。  
 
 2）协同，指的就是一些执行体需要依赖另一些执行体的执行结果，典型的如生产者-消费者问题，就是需要协同的场景。   
+
+<br/>
+
+可以看得出来，这两个问题与上文中同步的概念关系密切，只有让多个执行体按特定的顺序执行，才能避免竞争问题，才能实现协同。  
 
 <br/>
 
