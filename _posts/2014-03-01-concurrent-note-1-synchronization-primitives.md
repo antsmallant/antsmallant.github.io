@@ -267,18 +267,7 @@ int sem_unlink(const char* name);
 
 其他的 `sem_post` 和 `sem_wait` 与无命名信号量是一样的用法。  
 
-示例代码，参考自此文 [《Linux系统编程学习笔记——进程间的同步：信号量、互斥锁、信号》](https://zhuanlan.zhihu.com/p/649647971) [10]。  
-
-
-```c
-// process1.c
-
-
-```
-
-```c
-//process2.c
-```
+有名信号量是随内核存在的，如果我们不调用 `sem_unlink` 删除它，它将一直存在，直到内核重启。  
 
 ---
 
