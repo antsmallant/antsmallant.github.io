@@ -22,6 +22,11 @@ pthread 的官方文档：[https://pubs.opengroup.org/onlinepubs/9699919799/base
 pthread linux api 文档：[https://man7.org/linux/man-pages/man0/pthread.h.0p.html](https://man7.org/linux/man-pages/man0/pthread.h.0p.html)    
 
 
+[mit6.005 — Software Construction Reading 20: Thread Safety](https://web.mit.edu/6.005/www/fa15/classes/20-thread-safety/)    
+
+[mit6.005 — Software Construction Reading 23: Locks and Synchronization](https://web.mit.edu/6.005/www/fa15/classes/23-locks/)    
+
+
 备用文档：  
 
 https://www.zhihu.com/question/66733477/answer/1267625567  
@@ -73,9 +78,9 @@ https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html
 
 同步需要解决的问题，可以分为两大类：竞争 (competition) 与协同 (cooperation)：   
 
-1）竞争，指的就是多个执行体都要操作共享资源，但同时只允许一个执行体进行操作。  
+1）竞争，指的是多个执行体都要操作共享资源，但同时只允许一个执行体进行操作。  
 
-2）协同，指的就是一些执行体需要依赖另一些执行体的执行结果，典型的如生产者-消费者问题，就是需要协同的场景。   
+2）协同，指的是一些执行体需要依赖另一些执行体的执行结果，典型的如生产者-消费者问题，就是需要协同的场景。   
 
 可以看得出来，这两个问题与上文中同步的概念关系密切，只有让多个执行体按特定的顺序执行，才能避免竞争问题，才能实现协同。  
 
@@ -96,9 +101,6 @@ https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html
 ---
 
 # 3. 同步原语--锁
-
-[mit6.005 — Software Construction Reading 20: Thread Safety](https://web.mit.edu/6.005/www/fa15/classes/20-thread-safety/)    
-[mit6.005 Software Construction Reading 23: Locks and Synchronization](https://web.mit.edu/6.005/www/fa15/classes/23-locks/)    
 
 锁是同步原语的一种，它一个很宽泛的概念，它要解决的主要就是竞争问题，实现 mutual exclusive [2]。  
 
@@ -148,6 +150,8 @@ https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html
 
 ### 3.3.1 信号量 (semaphore)
 
+#### 3.3.1.1 信号量的基本信息   
+
 信号量是由 POSIX 定义的，并不是 pthread 的一部分，但是多数的类 unix 系统在 pthread 的实现中包含了信号量。[3]    
 
 信号量是一个大于等于 0 的值，sem_post 时，此量加 1；sem_wait 时，此量大于 0 则减 1，此量等于 0 则阻塞等待。   
@@ -157,11 +161,100 @@ https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html
 1）限定取值范围为 0 和 1 的时候，称之为二元信号量，表现上类似于互斥锁，可以解决竞争问题。       
 2）不限定取值范围，称之为多元信号量，它可以对资源进行计数，表现上类似于条件变量，可以解决像生产者-消费者的之类的协同问题。   
 
-以 c 中使用信号量，需要包含 `semaphore.h` 头文件，它的接口大致如下[9]：   
+
+在实现上，信号量分两种，一种未命名信号量，另一种是命名信号量。   
+
+---
+
+#### 3.3.1.2 未命名信号量（unnamed semaphore）
+
+通过以下 api 可以创建并使用未命名信号量，需要包含 `semaphore.h` 头文件，它的接口大致如下[9]：   
 
 ```c
+// 初始化信号量
+// 参数：
+//   pshared，0 表示进程内使用；非 0 表示跨进程使用
+//   value，信号量的初值
+// return: 0 for success, -1 for error
+// 文档： https://man7.org/linux/man-pages/man3/sem_init.3.html
+int sem_init(sem_t *sem, int pshared, unsigned int value); 
 
+// 销毁信号量
+int sem_destroy(sem_t *sem);  
+
+// 释放信号量，信号量值加 1
+// return: 0 for success, -1 for error
+int sem_post(sem_t *sem);  
+
+// 获取信号量，信号量 0 时阻塞，大于 0 时减 1
+// return: 0 for success, -1 for error
+int sem_wait(sem_t *sem);
 ```
+
+未命名信号量可以用于进程内，也可以用于跨进程（fork出来的进程），这取决于 init 时的 pshared 参数。  
+
+当要将它用于跨进程时，这些进程需要都能访问到 sem_t 变量，所以，一般是把这个变量放到共享内存上，这样一来，fork 出来的进程或不相干的进程都可以透过共享内存访问到这个变量。此处给出一个例子，代码参考自此文 [《Linux系统编程学习笔记——进程间的同步：信号量、互斥锁、信号》](https://zhuanlan.zhihu.com/p/649647971) [10]。  
+
+```c
+#include <stdio.h>
+#include <semaphore.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/mman.h>
+
+int main() {
+    sem_t *sem_id = NULL;
+    pid_t pid;
+    sem_id = mmap(NULL, sizeof(sem_t), PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, -1, 0);
+    sem_init(sem_id, 1, 1);
+    pid = fork();
+    if (pid > 0) {
+        while (1) {
+            sem_wait(sem_id);
+            printf("This is parent process\n");
+            sleep(1);
+        }
+    } else if (0 == pid) {
+        while (1) {
+            printf("This is child process\n");
+            sleep(5);
+            sem_post(sem_id);
+        }
+    }
+    return 0;
+}
+```
+
+关于 mmap，需要包含头文件 `sys/mman.h`，它的函数原型大致如下：   
+
+```c
+// 参数：
+//    addr，指定了映射被放置的虚拟地址，如果为NULL，内核会为映射选一个合适的地址
+//    length，指定了映射的字节数
+//    prot，位掩码，指定了映射内存的保护空间属性，可读写即为 PROT_READ|PROT_WRITE
+//    flags，控制映射操作各个方面选项的位掩码，共享映射且没有对应文件的匿名映射即 MAP_SHARED|MAP_ANONYMOUS
+//    fd，用于文件映射的，匿名映射可以填 -1
+//    offset，用于文件映射的，匿名映射可以填 0
+// Return: starting address of mapping on success, or MAP_FAILED on error
+void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
+```
+
+<br/>
+
+在父子进程间或不相干进程间使用未命名信号量，其做法与互斥锁都是相似的，更具体的做法可以参照的互斥锁。但实际上，如果要跨进程使用信号量，使用下面的命名信号量更方便。  
+
+---
+
+#### 3.3.1.3 命名信号量（named semaphore）
+
+
+
+---
+
+#### 3.3.1.4 信号量拓展阅读
+
+* [Semaphores in Process Synchronization](https://www.geeksforgeeks.org/semaphores-in-process-synchronization/) 
+* [How to use POSIX semaphores in C language](https://www.geeksforgeeks.org/use-posix-semaphores-c/)
 
 ---
 
@@ -666,8 +759,6 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 
 ## 6.2 避免死锁 
 
-
-
 ---
 
 # 7. 参考
@@ -689,3 +780,5 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 [8] 勇敢的菜鸡. Mysql锁机制 - 锁类型. Available at https://blog.csdn.net/qq_39679639/article/details/127351187, 2022-10-16.    
 
 [9] geeksforgeeks. How to use POSIX semaphores in C language. Available at https://www.geeksforgeeks.org/use-posix-semaphores-c/, 2020-12-11.    
+
+[10] 若影​. Linux系统编程学习笔记——进程间的同步：信号量、互斥锁、信号. Available at https://zhuanlan.zhihu.com/p/649647971, 2023-8-12.     
