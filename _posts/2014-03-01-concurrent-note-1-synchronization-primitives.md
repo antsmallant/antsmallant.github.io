@@ -803,7 +803,11 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 
 ---
 
-## 7.1 
+## 7.1 哲学家就餐问题
+
+---
+
+## 7.2 生产者消费者问题
 
 ---
 
@@ -839,3 +843,5 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 * spurious wakeup，条件变量需要使用 while 循环进行 wait。  《Linux 多线程服务端编程》p41
 
 * what is monitor?  https://en.wikipedia.org/wiki/Monitor_(synchronization)#
+
+* named semaphore 如何保证被 unlink 掉？  
