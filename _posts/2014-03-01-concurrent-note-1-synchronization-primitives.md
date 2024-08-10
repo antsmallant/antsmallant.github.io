@@ -4,7 +4,7 @@ title: "并发笔记一：同步及同步原语"
 date: 2014-03-01
 last_modified_at: 2024-04-01
 categories: [并发与多线程]
-tags: [并发 同步 多线程]
+tags: [并发 同步 同步原语 锁 多线程]
 ---
 
 * 目录  
@@ -113,7 +113,15 @@ mutex 的来源，代表一种互斥机制，用来保证只有一个线程可�
 
 锁是同步原语的一种，它一个很宽泛的概念，它要解决的主要就是竞争问题，实现 mutual exclusive [2]。  
 
-有各种各样的锁，用于解决各种细分问题。  
+有各种各样的锁，用于解决各种细分问题。本文主要讲操作系统提供的锁，但除此之外，数据库的底层实现中，也有不少锁的概念，比如 innnodb 中，就有这些锁 [8]：  
+
+共享锁（Shared Locks）和排它锁（Exclusive Locks）  
+意向锁（Intention Locks）   
+记录锁（Record Locks）   
+间隙锁（Gap Locks）   
+临界锁（Next-Key Locks）   
+插入单身锁（Insert Intension Locks）   
+自增锁（AUTO-INC Locks）   
 
 ---
 
@@ -676,3 +684,5 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 [6] 小石王. 使用mutex同步多进程. Available at https://www.cnblogs.com/xiaoshiwang/p/12582531.html, 2020-3-27.   
 
 [7] Wikipedia. Synchronization (computer science). Available at https://en.wikipedia.org/wiki/Synchronization_(computer_science).   
+
+[8] 勇敢的菜鸡. Mysql锁机制 - 锁类型. Available at https://blog.csdn.net/qq_39679639/article/details/127351187, 2022-10-16.    
