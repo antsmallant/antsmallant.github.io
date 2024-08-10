@@ -49,7 +49,7 @@ https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html
 
 同步，即 synchronization，在 wikipedia 上，[synchronization](https://en.wikipedia.org/wiki/Synchronization_(computer_science)) 词条 [7] 的解释是：
 
->
+>synchronization is the task of coordinating multiple processes to join up or handshake at a certain point, in order to reach an agreement or commit to a certain sequence of action.   
 
 翻译过来就是：。   
 
@@ -57,9 +57,7 @@ https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html
 
 <br/>  
 
-参考自：[《高并发编程--线程同步》](https://zhuanlan.zhihu.com/p/51813695) [1]。   
-
-<br/>
+与同步相关的基本概念包括（参考自：[《高并发编程--线程同步》](https://zhuanlan.zhihu.com/p/51813695) [1]）：  
 
 * critical section   
 
@@ -79,10 +77,6 @@ https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html
 * mutual exclusive
 
 mutex 的来源，代表一种互斥机制，用来保证只有一个线程可以进入临界区，这种情况下不会出现 race condition，并且结果是 deterministic。  
-
-<br/>   
-
-所以，锁的基本任务就是实现 mutual exclusive。[2]    
 
 ---
 
@@ -115,7 +109,9 @@ mutex 的来源，代表一种互斥机制，用来保证只有一个线程可�
 [mit6.005 — Software Construction Reading 20: Thread Safety](https://web.mit.edu/6.005/www/fa15/classes/20-thread-safety/)    
 [mit6.005 Software Construction Reading 23: Locks and Synchronization](https://web.mit.edu/6.005/www/fa15/classes/23-locks/)    
 
-锁是同步原语的一种，它一个很宽泛的概念，它要解决的主要就是竞争问题。有各种各样的锁，用于解决各种细分问题。  
+锁是同步原语的一种，它一个很宽泛的概念，它要解决的主要就是竞争问题，实现 mutual exclusive [2]。  
+
+有各种各样的锁，用于解决各种细分问题。  
 
 ---
 
@@ -145,11 +141,11 @@ spinning 类型，加锁失败时，不挂起，会进入忙等待（busy waitin
 
 ## 3.3 blocking 类型的锁 
 
-阻塞型的锁可以分为好几种，多个操作系统大同小异，以 linux 系统为例，包括：信号量、互斥锁、条件变量、读写锁。  
+阻塞型的锁可以分为好几种，多个操作系统大同小异，以 linux 系统为例，包括：二元信号量、互斥锁、读写锁。  
 
 ---
 
-### 3.3.1 信号量 (semaphore)
+### 3.3.1 二元信号量 (semaphore)
 
 信号量是由 POSIX 定义的，并不是 pthread 的一部分，但是多数的类 unix 系统在 pthread 的实现中包含了信号量。[3]    
 
