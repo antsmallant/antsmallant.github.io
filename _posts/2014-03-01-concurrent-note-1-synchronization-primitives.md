@@ -110,7 +110,7 @@ mutex 的来源，代表一种互斥机制，用来保证只有一个线程可�
 
 ---
 
-## 2.3 锁
+# 3. 同步原语--锁
 
 [mit6.005 — Software Construction Reading 20: Thread Safety](https://web.mit.edu/6.005/www/fa15/classes/20-thread-safety/)    
 [mit6.005 Software Construction Reading 23: Locks and Synchronization](https://web.mit.edu/6.005/www/fa15/classes/23-locks/)    
@@ -119,7 +119,7 @@ mutex 的来源，代表一种互斥机制，用来保证只有一个线程可�
 
 ---
 
-### 2.3.1 锁的分类及应用场景
+## 3.1 锁的分类及应用场景
 
 整体上可以分为悲观锁与乐观锁，悲观锁假定冲突很频繁，在访问前必须先加上锁，乐观锁假定冲突概率很低，可以先访问，等出现冲突了再做处理。  
 
@@ -135,7 +135,7 @@ spinning 类型，加锁失败时，不挂起，会进入忙等待（busy waitin
 
 ---
 
-### 2.3.2 锁的底层实现
+## 3.2 锁的底层实现
 
 各种锁的底层实现基本上都是操作系统提供的某种原子操作，而操作系统也是依赖 cpu 提供的原子机制。   
 
@@ -143,13 +143,13 @@ spinning 类型，加锁失败时，不挂起，会进入忙等待（busy waitin
 
 ---
 
-### 2.3.3 blocking 类型的锁 
+## 3.3 blocking 类型的锁 
 
 阻塞型的锁可以分为好几种，多个操作系统大同小异，以 linux 系统为例，包括：信号量、互斥锁、条件变量、读写锁。  
 
 ---
 
-#### 2.3.3.1 信号量 (semaphore)
+### 3.3.1 信号量 (semaphore)
 
 信号量是由 POSIX 定义的，并不是 pthread 的一部分，但是多数的类 unix 系统在 pthread 的实现中包含了信号量。[3]    
 
@@ -164,7 +164,7 @@ spinning 类型，加锁失败时，不挂起，会进入忙等待（busy waitin
 
 ---
 
-#### 2.3.3.2 互斥锁 (mutex)
+### 3.3.2 互斥锁 (mutex)
 
 mutex，或者称互斥量，是多线程最常用的锁。pthread 的 mutex 实现，支持进程内和进程间的互斥。看起来，它就像只有 0, 1 两个值的信号量。  
 
@@ -174,7 +174,7 @@ mutex，或者称互斥量，是多线程最常用的锁。pthread 的 mutex 实
 
 ---
 
-##### 2.3.3.2.1 单进程内使用互斥锁
+#### 3.3.2.1 单进程内使用互斥锁
 
 进程内互斥很简单，调用 api 即可。   
 
@@ -273,7 +273,7 @@ PTHREAD_MUTEX_DEFAULT    = 0
 
 ---
 
-##### 2.3.3.2.2 父子进程间使用互斥锁   
+#### 3.3.2.2 父子进程间使用互斥锁   
 
 进程间大体实现是把 `pthread_mutex_t` 放到一块共享内存上，并且要把 mutex 的 shared 属性设置为 `PTHREAD_PROCESS_SHARED`。   
 
@@ -558,7 +558,7 @@ int main()
 
 ---
 
-##### 2.3.3.2.3 不相干的进程间使用互斥锁
+#### 3.3.2.3 不相干的进程间使用互斥锁
 
 不相干的进程间使用互斥锁，也像父子进程那样，需要把 `pthread_mutex_t` 放在共享内存上，但不相干进程需要额外解决互斥锁的创建问题：谁创建？如何原子的创建？
 
@@ -589,17 +589,17 @@ shm_unlink("/dev/shm/ourshm_tmp");
 
 ---
 
-### 2.3.4 读写锁 (rwlock)
+### 3.3.3 读写锁 (rwlock)
 
 ---
 
-## 2.5 spinning 类型的锁
+## 3.4 spinning 类型的锁
 
 spinning 类型的只有 spin lock 了。  
 
 ---
 
-### 2.5.1 自旋锁 (spin lock)
+### 3.4.1 自旋锁 (spin lock)
 
 pthread 提供的 spin lock 的 api 如下：  
 
@@ -627,20 +627,20 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 
 ---
 
-### 2.2.2 条件变量 (condition var)
+# 4. 同步原语--条件变量
 
 
 ---
 
-# 3. 一些底层问题
+# 5. 一些底层问题
 
 ---
 
-## 3.1 关于 futex
+## 5.1 关于 futex
 
 ---
 
-# 4. 死锁
+# 6. 死锁
 
 [死锁与死锁避免算法](https://blog.csdn.net/K346K346/article/details/136306132?spm=1001.2014.3001.5501)   
 
@@ -652,18 +652,18 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 
 ---
 
-## 4.1 产生死锁的原因
+## 6.1 产生死锁的原因
 
 
 ---
 
-## 4.2 避免死锁 
+## 6.2 避免死锁 
 
 
 
 ---
 
-# 5. 参考
+# 7. 参考
 
 [1] 三四. 高并发编程--线程同步. Available at https://zhuanlan.zhihu.com/p/51813695, 2019-01-04.    
 
