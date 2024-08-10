@@ -149,6 +149,8 @@ tags: [并发 同步 同步原语 锁 多线程]
 
 在实现上，信号量分两种，一种未命名信号量，另一种是命名信号量。   
 
+信号量相关的 overview 文档： [https://man7.org/linux/man-pages/man7/sem_overview.7.html](https://man7.org/linux/man-pages/man7/sem_overview.7.html) 。   
+
 ---
 
 #### 3.3.1.2 未命名信号量（unnamed semaphore）
@@ -181,7 +183,9 @@ int sem_wait(sem_t *sem);
 
 未命名信号量可以用于进程内，也可以用于跨进程（fork出来的进程），这取决于 init 时的 pshared 参数。  
 
-当要将它用于跨进程时，这些进程需要都能访问到 sem_t 变量，所以，一般是把这个变量放到共享内存上，这样一来，fork 出来的进程或不相干的进程都可以透过共享内存访问到这个变量。此处给出一个例子，代码参考自此文 [《Linux系统编程学习笔记——进程间的同步：信号量、互斥锁、信号》](https://zhuanlan.zhihu.com/p/649647971) [10]。  
+当要将它用于跨进程时，这些进程需要都能访问到 sem_t 变量，所以，一般是把这个变量放到共享内存上，这样一来，fork 出来的进程或不相干的进程都可以透过共享内存访问到这个变量。  
+
+示例代码，参考自此文 [《Linux系统编程学习笔记——进程间的同步：信号量、互斥锁、信号》](https://zhuanlan.zhihu.com/p/649647971) [10]。  
 
 ```c
 #include <stdio.h>
@@ -236,7 +240,45 @@ void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
 
 #### 3.3.1.3 命名信号量（named semaphore）
 
+这种信号量拥有一个名字，通过 `sem_open` 创建，不相关的进程能够访问同一个信号量。  
 
+相关的 api 如下： 
+
+```c
+// 创建或打开一个信号量
+// 参数：
+//    name，信号量的名称
+//    oflag，位掩码，O_CREAT 打开信号量，如果不存在则创建；O_CREAT|O_EXCL 创建新信号量，如果已经存在则失败；
+//    mode，信号量的权限
+//    value，信号量的初值
+// Return: 成功则返回信号量的指针，否则返回 SEM_FAILED
+// 文档：  https://man7.org/linux/man-pages/man3/sem_open.3.html
+sem_t* sem_open(const char *name, int oflag, /*mode_t mode, unsigned int value*/);
+
+// 关闭信号量，一个进程打开信号量时，系统会记录这种关联，close 则是删除这种关联，但并不是删除信号量
+// Return：成则返回 0，失败返回 -1
+// 文档：  https://man7.org/linux/man-pages/man3/sem_close.3.html
+int sem_close(sem_t *sem);
+
+// 删除信号量与这个 name 的关联，系统此时会把信号量标记为待 destroy 的，当所有打开的进程都关闭此信号量时，则会 destroy 掉
+// 文档：  https://man7.org/linux/man-pages/man3/sem_unlink.3.html
+int sem_unlink(const char* name);
+```
+
+其他的 `sem_post` 和 `sem_wait` 与无命名信号量是一样的用法。  
+
+示例代码，参考自此文 [《Linux系统编程学习笔记——进程间的同步：信号量、互斥锁、信号》](https://zhuanlan.zhihu.com/p/649647971) [10]。  
+
+
+```c
+// process1.c
+
+
+```
+
+```c
+//process2.c
+```
 
 ---
 
