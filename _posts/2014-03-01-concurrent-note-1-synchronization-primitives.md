@@ -240,8 +240,8 @@ void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
 
 #### 3.3.1.4 信号量拓展阅读
 
-* [Semaphores in Process Synchronization](https://www.geeksforgeeks.org/semaphores-in-process-synchronization/) 
-* [How to use POSIX semaphores in C language](https://www.geeksforgeeks.org/use-posix-semaphores-c/)
+* [《Semaphores in Process Synchronization》](https://www.geeksforgeeks.org/semaphores-in-process-synchronization/) 
+* [《How to use POSIX semaphores in C language》](https://www.geeksforgeeks.org/use-posix-semaphores-c/)
 
 ---
 
