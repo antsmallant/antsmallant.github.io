@@ -18,7 +18,7 @@ permalink: /about/
 
 <br/>
 
-笔记或文章代表了我的认知。无论读过多少材料，如果没有输出，始终无法真正成为认知，所以我选择把它们尽量有条理的写出来。   
+笔记或文章代表了我的认知。无论读过多少材料，如果没有输出，很难形成真正的认知，所以我选择把它们尽量有条理的写出来。   
 
 <br/>
 
@@ -40,4 +40,3 @@ permalink: /about/
 |blog|[https://blog.antsmallant.top](https://blog.antsmallant.top/)|
 |知乎|[https://www.zhihu.com/people/antsmallant/posts](https://www.zhihu.com/people/antsmallant/posts)|
 |csdn|[https://blog.csdn.net/antsmall?type=blog](https://blog.csdn.net/antsmall?type=blog)|
-|email|[antsmall@qq.com](mailto:antsmall@qq.com)|
