@@ -695,6 +695,14 @@ shm_unlink("/dev/shm/ourshm_tmp");
 
 参考：[Semaphores vs. mutexes](https://en.wikipedia.org/wiki/Semaphore_(programming)#Semaphores_vs._mutexes)    
 
+>A mutex is a locking mechanism that sometimes uses the same basic implementation as the binary semaphore. However, they differ in how they are used. While a binary semaphore may be colloquially referred to as a mutex, a true mutex has a more specific use-case and definition, in that only the task that locked the mutex is supposed to unlock it. This constraint aims to handle some potential problems of using semaphores:
+>
+>1. Priority inversion: If the mutex knows who locked it and is supposed to unlock it, it is possible to promote the priority of that task whenever a higher-priority task starts waiting on the mutex.
+>2. Premature task termination: Mutexes may also provide deletion safety, where the task holding the mutex cannot be accidentally deleted. [citation needed]
+>3. Termination deadlock: If a mutex-holding task terminates for any reason, the OS can release the mutex and signal waiting tasks of this condition.
+>4. Recursion deadlock: a task is allowed to lock a reentrant mutex multiple times as it unlocks it an equal number of times.
+>5. Accidental release: An error is raised on the release of the mutex if the releasing task is not its owner.   
+
 ---
 
 ## 3.4 spinning 类型的锁
@@ -727,7 +735,7 @@ int pthread_spin_trylock(pthread_spinlock_t *lock);
 int pthread_spin_unlock(pthread_spinlock_t *lock);  
 ```  
 
-与 pthread_mutex 类似，如果要让 pthread_spin 跨进程使用，即使用 PTHREAD_PROCESS_SHARE 模式，`pthread_spinlock_t` 需要分配在共享内存上，具体做法参照上文的 pthread_mutex 。  
+与互斥锁类似，如果要让自旋锁跨进程使用，则 `pthread_spinlock_t` 也需要分配在共享内存上，具体做法参照上文的互斥锁 。  
 
 ---
 
