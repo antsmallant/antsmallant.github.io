@@ -312,7 +312,7 @@ int pthread_mutexattr_setpshared(pthread_mutexattr_t *attr, int *pshared);
 //      
 // 默认值是 PTHREAD_MUTEX_DEFAULT，不同系统可能会使用以上的不同值，需要具体测试一下   
 //
-// 文档： https://man7.org/linux/man-pages/man3/pthread_mutexattr_gettype.3p.html  
+// 文档： https://man7.org/linux/man-pages/man3/pthread_mutexattr_gettype.3.html
 int pthread_mutexattr_gettype(const pthread_mutexattr_t *attr, int *type);
 int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int *type);
 
