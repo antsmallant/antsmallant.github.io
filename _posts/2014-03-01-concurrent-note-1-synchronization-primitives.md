@@ -656,7 +656,9 @@ int main()
 
 `/dev/shm` 是一个 mount 了的文件系统，里面放了一堆通过 `shm_open` 新建的共享内存。   
 
-`link` 是 linux 原子操作文件的最底层指令，可以保证原子性，并且正在执行 `link` 的进程如果意外退出，linux 内核也会保证完成此次调用。   
+`link` 是 linux 原子操作文件的最底层指令，可以保证原子性，并且正在执行 `link` 的进程如果意外退出，linux 内核也会保证完成此次调用。 
+
+`link` 参考文档： https://man7.org/linux/man-pages/man2/link.2.html 。     
 
 关键代码：  
 
@@ -712,18 +714,23 @@ pthread 提供的 spin lock 的 api 如下：
 // 初始化锁，pshared 有两个选项：
 // PTHREAD_PROCESS_PRIVATE 允许进程内使用
 // PTHREAD_PROCESS_SHARE   允许跨进程使用
+// 文档： https://man7.org/linux/man-pages/man3/pthread_spin_init.3.html
 int pthread_spin_init(pthread_spinlock_t *lock, int pshared); 
                                                               
 // 销毁锁        
+// 文档： https://man7.org/linux/man-pages/man3/pthread_spin_init.3.html
 int pthread_spin_destroy(pthread_spinlock_t *lock); 
 
 // 加锁，如果失败，则自旋直到成功
+// 文档： https://man7.org/linux/man-pages/man3/pthread_spin_lock.3.html
 int pthread_spin_lock(pthread_spinlock_t *lock);    
 
 // 尝试加锁，成功或失败都立即返回，根据返回值判断结果  
+// 文档： https://man7.org/linux/man-pages/man3/pthread_spin_lock.3.html
 int pthread_spin_trylock(pthread_spinlock_t *lock); 
 
 // 释放锁
+// 文档： https://man7.org/linux/man-pages/man3/pthread_spin_unlock.3.html
 int pthread_spin_unlock(pthread_spinlock_t *lock);  
 ```  
 
@@ -765,7 +772,15 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 
 ---
 
-# 7. 参考
+# 7. 经典同步问题的解法
+
+---
+
+## 7.1 
+
+---
+
+# 8. 参考
 
 [1] 三四. 高并发编程--线程同步. Available at https://zhuanlan.zhihu.com/p/51813695, 2019-01-04.    
 
@@ -790,7 +805,7 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 
 ---
 
-# 8. todo
+# 9. todo
 
 * pthread mutex，未挂有锁的线程 unlock 了被其他线程持有的锁，会发生什么事情？   
 
