@@ -41,7 +41,7 @@ XSI 是 X/Open 组织对 unix 接口定义的一套标准 (X/OPEN System Interfa
 
 ---
 
-## 1.3 共享内存
+## 1.3 linux 下的共享内存
 
 创建共享内存有几种方式。  
 
