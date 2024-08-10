@@ -31,13 +31,13 @@ https://zhuanlan.zhihu.com/p/653864005
 https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html  
 
 
-**todo**  
+**todo**    
 
 * pthread mutex，未挂有锁的线程 unlock 了被其他线程持有的锁，会发生什么事情？   
 
-* spurious wakeup，条件变量需要使用 while 循环进行 wait。  
+* spurious wakeup，条件变量需要使用 while 循环进行 wait。  《Linux 多线程服务端编程》p41
 
-* what is monitor?  
+* what is monitor?  https://en.wikipedia.org/wiki/Monitor_(synchronization)#
 
 ---
 
@@ -161,14 +161,18 @@ mutex 的来源，代表一种互斥机制，用来保证只有一个线程可�
 
 信号量是由 POSIX 定义的，并不是 pthread 的一部分，但是多数的类 unix 系统在 pthread 的实现中包含了信号量。[3]    
 
-信号量的本质是原子的对一个整数进行加减，当这个整数的取值限定为 0 和 1 的时候，就相当于一个互斥锁。   
+信号量是一个大于等于 0 的值，sem_post 时，此量加 1；sem_wait 时，此量大于 0 则减 1，此量等于 0 则阻塞等待。   
 
-它的接口大致如下[9]：   
+信号量的这种机制，可以用来解决竞争问题，也可以用来解决协同问题：   
+
+1）限定取值范围为 0 和 1 的时候，称之为二元信号量，表现上类似于互斥锁，可以解决竞争问题。       
+2）不限定取值范围，称之为多元信号量，它可以对资源进行计数，表现上类似于条件变量，可以解决像生产者-消费者的之类的协同问题。   
+
+以 c 中使用信号量，需要包含 `semaphore.h` 头文件，它的接口大致如下[9]：   
 
 ```c
 
 ```
-
 
 ---
 
@@ -598,6 +602,12 @@ shm_unlink("/dev/shm/ourshm_tmp");
 ---
 
 ### 3.3.3 读写锁 (rwlock)
+
+---
+
+### 3.3.4 信号量与互斥锁的对比   
+
+参考：[Semaphores vs. mutexes](https://en.wikipedia.org/wiki/Semaphore_(programming)#Semaphores_vs._mutexes)    
 
 ---
 
