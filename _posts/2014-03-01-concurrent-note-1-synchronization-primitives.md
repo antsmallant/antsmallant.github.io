@@ -17,30 +17,15 @@ tags: [并发 同步 同步原语 锁 多线程]
 
 # 1. 资料
 
-pthread 的官方文档：[https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/pthread.h.html](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/pthread.h.html)    
+* pthread 的官方文档：[https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/pthread.h.html](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/pthread.h.html)    
 
-pthread linux api 文档：[https://man7.org/linux/man-pages/man0/pthread.h.0p.html](https://man7.org/linux/man-pages/man0/pthread.h.0p.html)    
+* pthread linux api 文档：[https://man7.org/linux/man-pages/man0/pthread.h.0p.html](https://man7.org/linux/man-pages/man0/pthread.h.0p.html)    
 
+* [高并发编程--线程同步](https://zhuanlan.zhihu.com/p/51813695)     
 
-[mit6.005 — Software Construction Reading 20: Thread Safety](https://web.mit.edu/6.005/www/fa15/classes/20-thread-safety/)    
+* [mit6.005 — Software Construction Reading 20: Thread Safety](https://web.mit.edu/6.005/www/fa15/classes/20-thread-safety/)    
 
-[mit6.005 — Software Construction Reading 23: Locks and Synchronization](https://web.mit.edu/6.005/www/fa15/classes/23-locks/)    
-
-
-备用文档：  
-
-https://www.zhihu.com/question/66733477/answer/1267625567  
-
-https://zhuanlan.zhihu.com/p/653864005   
-
-
-**todo**    
-
-* pthread mutex，未挂有锁的线程 unlock 了被其他线程持有的锁，会发生什么事情？   
-
-* spurious wakeup，条件变量需要使用 while 循环进行 wait。  《Linux 多线程服务端编程》p41
-
-* what is monitor?  https://en.wikipedia.org/wiki/Monitor_(synchronization)#
+* [mit6.005 — Software Construction Reading 23: Locks and Synchronization](https://web.mit.edu/6.005/www/fa15/classes/23-locks/)    
 
 ---
 
@@ -799,3 +784,14 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 [9] geeksforgeeks. How to use POSIX semaphores in C language. Available at https://www.geeksforgeeks.org/use-posix-semaphores-c/, 2020-12-11.    
 
 [10] 若影​. Linux系统编程学习笔记——进程间的同步：信号量、互斥锁、信号. Available at https://zhuanlan.zhihu.com/p/649647971, 2023-8-12.     
+
+
+---
+
+# 8. todo
+
+* pthread mutex，未挂有锁的线程 unlock 了被其他线程持有的锁，会发生什么事情？   
+
+* spurious wakeup，条件变量需要使用 while 循环进行 wait。  《Linux 多线程服务端编程》p41
+
+* what is monitor?  https://en.wikipedia.org/wiki/Monitor_(synchronization)#
