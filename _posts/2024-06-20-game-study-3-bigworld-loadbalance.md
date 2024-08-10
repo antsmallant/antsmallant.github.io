@@ -179,7 +179,7 @@ CellAppMgr::metaLoadBalance()
 
 ## 4.5 cpu 负载（cpu load）的计算
 
-负载不是简单的使用 entity 的数量来衡量的，而是精细到每个 entity 的 cpu load。每个 entity 上面都有一个 profiler，在涉及到具体的 entity 处理的地方，基本上都调用这个 profiler 进入 profiling。  
+负载不是简单的使用 entity 的数量来衡量的，而是精细到每个 entity 的 cpu load。每个 entity 上面都有一个 profiler，在涉及到具体的 entity 处理的地方，基本上都调用这个 profiler 进行 profiling。  
 
 以下讨论的是 cellapp 目录下的类。  
 
