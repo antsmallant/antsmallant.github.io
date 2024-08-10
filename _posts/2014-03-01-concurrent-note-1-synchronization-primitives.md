@@ -113,7 +113,9 @@ mutex 的来源，代表一种互斥机制，用来保证只有一个线程可�
 
 锁是同步原语的一种，它一个很宽泛的概念，它要解决的主要就是竞争问题，实现 mutual exclusive [2]。  
 
-有各种各样的锁，用于解决各种细分问题。本文主要讲操作系统提供的锁，但除此之外，数据库的底层实现中，也有不少锁的概念，比如 innnodb 中，就有这些锁 [8]：  
+有各种各样的锁，用于解决各种细分问题。本文主要讲操作系统提供的锁，但除此之外，数据库的底层实现中，也有不少锁的概念。   
+
+比如 innnodb 中，就有这些锁 [8]：  
 
 共享锁（Shared Locks）和排它锁（Exclusive Locks）  
 意向锁（Intention Locks）   
@@ -159,9 +161,9 @@ mutex 的来源，代表一种互斥机制，用来保证只有一个线程可�
 
 信号量是由 POSIX 定义的，并不是 pthread 的一部分，但是多数的类 unix 系统在 pthread 的实现中包含了信号量。[3]    
 
-信号量可以跨进程使用。  
+信号量的本质是原子的对一个整数进行加减，当这个整数的取值限定为 0 和 1 的时候，就相当于一个互斥锁。   
 
-它的接口大致如下：  
+它的接口大致如下[9]：   
 
 ```c
 
@@ -686,3 +688,5 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 [7] Wikipedia. Synchronization (computer science). Available at https://en.wikipedia.org/wiki/Synchronization_(computer_science).   
 
 [8] 勇敢的菜鸡. Mysql锁机制 - 锁类型. Available at https://blog.csdn.net/qq_39679639/article/details/127351187, 2022-10-16.    
+
+[9] geeksforgeeks. How to use POSIX semaphores in C language. Available at https://www.geeksforgeeks.org/use-posix-semaphores-c/, 2020-12-11.    
