@@ -33,8 +33,6 @@ https://www.zhihu.com/question/66733477/answer/1267625567
 
 https://zhuanlan.zhihu.com/p/653864005   
 
-https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html  
-
 
 **todo**    
 
@@ -279,8 +277,11 @@ mutex，或者称互斥量，是多线程最常用的锁。pthread 的 mutex 实
 pthread_mutex 的 api 大致如下：   
 
 ```c
+// 以下几个 api 的文档都在： https://man7.org/linux/man-pages/man3/pthread_mutex_init.3.html
+
 // 初始化 mutex
-// mutexattr 可以为 NULL，表示使用默认设置，大部分情况下也是这样使用的
+// 参数：
+//     mutexattr，指定 mutex 的属性，为 NULL 时使用默认设置，大部分情况下也是这样使用的
 int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr);  
 
 // 销毁 mutex
@@ -302,16 +303,20 @@ int pthread_mutex_trylock(pthread_mutex_t *mutex);
 ```c
 
 // 初始化
+// 文档： https://man7.org/linux/man-pages/man3/pthread_mutexattr_init.3.html
 int pthread_mutexattr_init(pthread_mutexattr_t *attr);
 
 // 销毁
+// 文档： https://man7.org/linux/man-pages/man3/pthread_mutexattr_init.3.html
 int pthread_mutexattr_destroy(pthread_mutexattr_t *attr);
 
 // get/set shared 参数，用于控制是否可跨进程使用，选项包括：
 //   PTHREAD_PROCESS_PRIVATE  只能进程内使用（默认情况）
 //   PTHREAD_PROCESS_SHARED   可以跨进程使用
-int pthread_mutexattr_getshared(const pthread_mutexattr_t *attr, int *pshared);
-int pthread_mutexattr_setshared(pthread_mutexattr_t *attr, int *pshared);
+// 
+// 文档： https://man7.org/linux/man-pages/man3/pthread_mutexattr_getpshared.3.html
+int pthread_mutexattr_getpshared(const pthread_mutexattr_t *attr, int *pshared);
+int pthread_mutexattr_setpshared(pthread_mutexattr_t *attr, int *pshared);
 
 // get/set type 参数，用于死锁检测相关，选项包括：  
 //    PTHREAD_MUTEX_NORMAL     标准，第1次加锁成功后，再次加锁会失败并阻塞（即死锁了）   
@@ -319,8 +324,8 @@ int pthread_mutexattr_setshared(pthread_mutexattr_t *attr, int *pshared);
 //    PTHREAD_MUTEX_ERRORCHECK 检错，第1次加锁成功后，再次加锁会失败并返回错误信息 
 //      
 // 默认值是 PTHREAD_MUTEX_DEFAULT，不同系统可能会使用以上的不同值，需要具体测试一下   
-// 可参考文档： https://linux.die.net/man/3/pthread_mutexattr_gettype
-//             https://linux.die.net/man/3/pthread_mutexattr_settype
+//
+// 文档： https://man7.org/linux/man-pages/man3/pthread_mutexattr_gettype.3p.html  
 int pthread_mutexattr_gettype(const pthread_mutexattr_t *attr, int *type);
 int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int *type);
 
@@ -329,7 +334,7 @@ int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int *type);
 //    PTHREAD_MUTEX_ROBUST     健壮，持有锁的线程死掉后，第二个阻塞在 acquire 或尝试 acquire 的线程将收到 EOWNERDEAD 的通知。此时它可以做一些处理：调用 
 //                                  pthread_mutex_consistent 设置 mutex 为 consistent 的，然后调用 pthread_mutex_unlock 使这个锁可以恢复正常使用。 
 //                             
-// 可参考文档： https://pubs.opengroup.org/onlinepubs/9699919799/functions/pthread_mutexattr_setrobust.html  
+// 文档： https://man7.org/linux/man-pages/man3/pthread_mutexattr_setrobust.3.html  
 int pthread_mutexattr_getrobust(const pthread_mutexattr_t *attr, int *robust);
 int pthread_mutexattr_setrobust(pthread_mutexattr_t *attr, int *robust);
 
