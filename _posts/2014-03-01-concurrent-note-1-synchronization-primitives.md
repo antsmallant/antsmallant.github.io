@@ -851,9 +851,13 @@ int pthread_cond_timedwait(pthread_cond_t* cond, pthread_mutex_t *mutex,
 
 条件变量的作用就是发信号，而不是互斥。它不提供互斥，所以需要一个互斥量来同步对共享数据的访问（包括等待的谓词）[14]。   
 
-为什么不将互斥量作为条件变量的一部分来创建？  
+为什么不将互斥量作为条件变量的一部分来创建？[14]   
+1) 互斥量不仅与条件变量一起使用，还要单独使用；  
+2) 通常一个互斥量可以与多个条件变量相关。  
 
+而条件变量应该只与一个谓词相关，如果将一个条件变量与多个谓词相关，或者多个条件变量与一个谓词相关，就可能引发竞争问题或死锁问题。[14]    
 
+解释一下谓词，像下面的伪码中，判断队列是否为空的语句就是一个谓词。   
 
 条件变量的一般编程模式如下面的伪码：    
 
@@ -880,12 +884,16 @@ pthread_mutex_unlock(&mutex);
 // 销毁信号 （不必释放通过 PTHREAD_COND_INITIALIZER 宏初始化的静态初始化的条件变量）
 ```
 
+对于等待信号的一方，应该总是在循环里测试谓词，以避免程序错误、多处理器竞争、假唤醒。 
 
-**spurious wakeups**   
 
-《Posix多线程程序设计》
+**假唤醒**  
 
-https://en.wikipedia.org/wiki/Spurious_wakeup
+英文写作 spurious wakeups，与惊群现象有点相似，它的表现是当你在某个条件变量上等待时，等待可能（偶然地）返回而没有其他线程广播或发送该条件变量。  
+
+其原因是 “在某些多处理器系统中，使用条件唤醒完全可预测将极大的减低所有条件变量操作的速度”[14]。   
+
+wikipedia 对应的词条：[https://en.wikipedia.org/wiki/Spurious_wakeup](https://en.wikipedia.org/wiki/Spurious_wakeup)。  
 
 ---
 
