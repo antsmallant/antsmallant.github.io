@@ -985,3 +985,5 @@ https://zhuanlan.zhihu.com/p/642858416
 * what is monitor?  https://en.wikipedia.org/wiki/Monitor_(synchronization)#  实际上就是 condition var?  
 
 * named semaphore 如何保证被 unlink 掉？  
+
+* 替换引用，整理引用。  
