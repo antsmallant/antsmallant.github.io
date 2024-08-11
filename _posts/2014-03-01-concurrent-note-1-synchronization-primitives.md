@@ -980,9 +980,7 @@ https://zhuanlan.zhihu.com/p/642858416
 
 # 9. todo
 
-* pthread mutex，未挂有锁的线程 unlock 了被其他线程持有的锁，会发生什么事情？   
-
-* spurious wakeup，条件变量需要使用 while 循环进行 wait。  《Linux 多线程服务端编程》p41
+* pthread mutex，未持有锁的线程 unlock 了被其他线程持有的锁，会发生什么事情？   
 
 * what is monitor?  https://en.wikipedia.org/wiki/Monitor_(synchronization)#  实际上就是 condition var?  
 
