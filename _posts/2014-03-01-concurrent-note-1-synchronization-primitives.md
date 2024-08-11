@@ -708,6 +708,44 @@ shm_unlink("/dev/shm/ourshm_tmp");
 
 ---
 
+#### 3.3.2.4 陈硕关于互斥锁使用的原则 
+
+本节参考自陈硕的《Linux 多线程服务端编程（使用 muduo C++ 网络库）》[11]。   
+
+主要原则：   
+
+* 用 RAII 手法封装 mutex 的创建、销毁、加锁、解锁。   
+* 只使用非递归的 mutex。  
+* 不手工调用 lock 和 unlock，一切交给栈上的 guard 对象（即用 RAII 手法封装的）。  
+* 每次构造 Guard 对象上，思考调用栈上已经持有的锁，防止因加锁顺序不同导致死锁。   
+
+次要原则：   
+
+* 不使用跨进程的 mutex，进程间只使用 tcp sockets。  
+* 加锁、解锁在同一个线程，线程 a 不要去 unlock 线程 b 加锁的 mutex（RAII 自动保证）。
+* 别忘了解锁（RAII 自动保证）。  
+* 不重复解锁（RAII 自动保证）。  
+* 必要的时候可以考虑用 PTHREAD_MUTEX_ERRORCHECK 来排错。  
+
+---
+
+#### 3.3.2.5 为何建议只使用非递归的 mutex
+
+本节参考自陈硕的《Linux 多线程服务端编程（使用 muduo C++ 网络库）》[11]。    
+
+recursive mutex 与 non-recursive mutex 的区别在于同一个线程可以对 non-recursive mutex 重复加锁。如果对 recursive mutex 重复加锁，会立即导致死锁。  
+
+虽然 recursive mutex 用起来更方便，不用考虑一个线程会自己把自己锁死了。但是它可能会隐藏代码里的一些问题，典型的你以为拿到一个锁就能修改共享对象，谁知外层逻辑也已经拿到了锁，也正在修改同个对象。  
+
+死锁问题比偶然的 crash 更容易调试，比如： 1）把线程的调用栈打印出来看；2）使用 PTHREAD_MUTEX_ERRORCHECK 选项进行排错。  
+
+Pthreads 的权威专家，《Programming with POSIX Threads》的作者 David Butenhof 也排斥使用 recursive mutex，他说[13]： 
+
+>Fist, implementation of efficient and reliable threaded code resolves around one simple and basic principle: follow your design. That implies, of course, that you have a design, and that you understand it.    
+>A correct and well understood design does not require recursive mutexes.  
+
+---
+
 ### 3.3.3 读写锁 (rwlock)
 
 ---
@@ -768,6 +806,8 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 # 4. 同步原语--条件变量
 
 
+
+
 ---
 
 # 5. 一些底层问题
@@ -775,6 +815,8 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 ---
 
 ## 5.1 关于 futex
+
+Linux 的 pthread mutex 采用 futex [12] 实现，不必每次加锁、解锁都陷入系统调用，效率较高。  
 
 ---
 
@@ -833,6 +875,11 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 
 [10] 若影​. Linux系统编程学习笔记——进程间的同步：信号量、互斥锁、信号. Available at https://zhuanlan.zhihu.com/p/649647971, 2023-8-12.     
 
+[11] 陈硕. Linux 多线程服务端编程. 北京: 电子工业出版社, 2013-3(2):32,33.   
+
+[12] Ulrich Drepper. Ulrich Drepper. Available at https://www.akkadia.org/drepper/futex.pdf, 2011-11-5.   
+
+[13] David Butenhof. Recursive mutexes by David Butenhof. Available at http://zaval.org/resources/library/butenhof1.html, 2005-5-17.  
 
 ---
 
