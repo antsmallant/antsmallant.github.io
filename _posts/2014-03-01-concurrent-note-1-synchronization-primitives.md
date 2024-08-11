@@ -980,6 +980,10 @@ https://zhuanlan.zhihu.com/p/642858416
 
 # 9. todo
 
+* 补完读写锁
+
+* 补完 c++ 相关的同步原语
+
 * pthread mutex，未持有锁的线程 unlock 了被其他线程持有的锁，会发生什么事情？   
 
 * what is monitor?  https://en.wikipedia.org/wiki/Monitor_(synchronization)#  实际上就是 condition var?  
