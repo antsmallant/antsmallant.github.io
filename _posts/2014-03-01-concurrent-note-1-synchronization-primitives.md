@@ -820,9 +820,7 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 
 条件变量是用来通知共享数据状态信息的，比如可以使用条件变量来通知队列已空、或队列非空、或任何其他需要由线程处理的共享数据状态。[14] 它能用于实现协同的逻辑，其同步语义是等待。  
 
-pthread 提供了条件变量，但要注意，`pthread_cond_wait` 本身不是原子操作，所以它需要配合互斥锁来使用，即 `pthread_mutex`。  
-
-pthread_cond 相关的 api 如下：   
+pthread 提供了条件变量，相关的 api 如下：   
 
 ```c
 #include <pthread.h>
