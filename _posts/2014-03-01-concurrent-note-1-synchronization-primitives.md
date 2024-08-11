@@ -155,9 +155,11 @@ tags: [并发 同步 同步原语 锁 多线程]
 
 #### 3.3.1.2 未命名信号量（unnamed semaphore）
 
-通过以下 api 可以创建并使用未命名信号量，需要包含 `semaphore.h` 头文件，它的接口大致如下[9]：   
+通过以下 api 可以创建并使用未命名信号量，它的接口大致如下[9]：   
 
 ```c
+#include <semaphore.h>
+
 // 初始化信号量
 // 参数：
 //   pshared，0 表示进程内使用；非 0 表示跨进程使用
@@ -217,9 +219,11 @@ int main() {
 }
 ```
 
-关于 mmap，需要包含头文件 `sys/mman.h`，它的函数原型大致如下：   
+mmap 的函数原型大致如下：   
 
 ```c
+#include <sys/mman.h>
+
 // 参数：
 //    addr，指定了映射起始地址；如果为NULL，内核会选择一个合适的地址来创建映射，这是最可移植的做法
 //    length，指定了映射的字节数
@@ -245,6 +249,8 @@ void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
 相关的 api 如下： 
 
 ```c
+#include <semaphore.h>
+
 // 创建或打开一个信号量
 // 参数：
 //    name，信号量的名称
@@ -295,6 +301,8 @@ mutex，或者称互斥量，是多线程最常用的锁。pthread 的 mutex 实
 pthread_mutex 的 api 大致如下：   
 
 ```c
+#include <pthread.h>
+
 // 以下几个 api 的文档都在： https://man7.org/linux/man-pages/man3/pthread_mutex_init.3.html
 
 // 初始化 mutex
@@ -319,6 +327,7 @@ int pthread_mutex_trylock(pthread_mutex_t *mutex);
 有时候需要设置 mutexattr，可以使用以下的 api：  
 
 ```c
+#include <pthread.h>
 
 // 初始化
 // 文档： https://man7.org/linux/man-pages/man3/pthread_mutexattr_init.3.html
@@ -333,8 +342,8 @@ int pthread_mutexattr_destroy(pthread_mutexattr_t *attr);
 //   PTHREAD_PROCESS_SHARED   可以跨进程使用
 // 
 // 文档： https://man7.org/linux/man-pages/man3/pthread_mutexattr_getpshared.3.html
-int pthread_mutexattr_getpshared(const pthread_mutexattr_t *attr, int *pshared);
-int pthread_mutexattr_setpshared(pthread_mutexattr_t *attr, int *pshared);
+int pthread_mutexattr_getpshared(const pthread_mutexattr_t *restrict attr, int *restrict pshared);
+int pthread_mutexattr_setpshared(pthread_mutexattr_t *attr, int pshared);
 
 // get/set type 参数，用于死锁检测相关，选项包括：  
 //    PTHREAD_MUTEX_NORMAL     标准，第1次加锁成功后，再次加锁会失败并阻塞（即死锁了）   
@@ -343,18 +352,19 @@ int pthread_mutexattr_setpshared(pthread_mutexattr_t *attr, int *pshared);
 //      
 // 默认值是 PTHREAD_MUTEX_DEFAULT，不同系统可能会使用以上的不同值，需要具体测试一下   
 //
-// 文档： https://man7.org/linux/man-pages/man3/pthread_mutexattr_gettype.3.html
-int pthread_mutexattr_gettype(const pthread_mutexattr_t *attr, int *type);
-int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int *type);
+// 文档： https://man7.org/linux/man-pages/man3/pthread_mutexattr_settype.3p.html
+//        https://man7.org/linux/man-pages/man3/pthread_mutexattr_gettype.3p.html
+int pthread_mutexattr_gettype(const pthread_mutexattr_t *restrict attr, int *restrict type);
+int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type);
 
 // get/set robust 参数，用于处理持有锁的线程死掉的情况，选项包括： 
 //    PTHREAD_MUTEX_STALLED    默认，不作特别处理，持有锁的线程死掉后，如果没其他线程可以解锁，将导致死锁
 //    PTHREAD_MUTEX_ROBUST     健壮，持有锁的线程死掉后，第二个阻塞在 acquire 或尝试 acquire 的线程将收到 EOWNERDEAD 的通知。此时它可以做一些处理：调用 
 //                                  pthread_mutex_consistent 设置 mutex 为 consistent 的，然后调用 pthread_mutex_unlock 使这个锁可以恢复正常使用。 
 //                             
-// 文档： https://man7.org/linux/man-pages/man3/pthread_mutexattr_setrobust.3.html  
-int pthread_mutexattr_getrobust(const pthread_mutexattr_t *attr, int *robust);
-int pthread_mutexattr_setrobust(pthread_mutexattr_t *attr, int *robust);
+// 文档： https://man7.org/linux/man-pages/man3/pthread_mutexattr_getrobust.3.html  
+int pthread_mutexattr_getrobust(const pthread_mutexattr_t *attr, int *robustness);
+int pthread_mutexattr_setrobust(pthread_mutexattr_t *attr, int robustness);
 
 // ... 
 // 还有一些其他的 api，具体看 pthread 的文档
@@ -775,6 +785,7 @@ spinning 类型的只有 spin lock 了。
 pthread 提供的 spin lock 的 api 如下：  
 
 ```c
+#include <pthread.h>
 
 // 初始化锁，pshared 有两个选项：
 // PTHREAD_PROCESS_PRIVATE 允许进程内使用
@@ -805,7 +816,27 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 
 # 4. 同步原语--条件变量
 
+条件变量用于实现协同的逻辑，其同步语义是等待。  
 
+pthread 提供了条件变量，但要注意，`pthread_cond_wait` 本身不是原子操作，所以它需要配合互斥锁来使用，即 `pthread_mutex`。  
+
+pthread_cond 相关的 api 如下：  
+
+```c
+#include <pthread.h>
+
+// 文档都在： https://man7.org/linux/man-pages/man3/pthread_cond_init.3.html  
+
+// 初始化
+int pthread_cond_init(pthread_cond_t *cond);  
+
+// 销毁
+int pthread_cond_destroy(pthread_cond_t *cond);
+
+
+```
+
+spurious wakeups 是指
 
 
 ---
