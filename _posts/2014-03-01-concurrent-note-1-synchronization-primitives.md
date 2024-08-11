@@ -758,6 +758,8 @@ Pthreads 的权威专家，《Programming with POSIX Threads》的作者 David B
 
 ### 3.3.3 读写锁 (rwlock)
 
+https://www.zhihu.com/question/66733477/answer/1267625567
+
 ---
 
 ### 3.3.4 信号量与互斥锁的对比   
@@ -897,13 +899,19 @@ wikipedia 对应的词条：[https://en.wikipedia.org/wiki/Spurious_wakeup](http
 
 ---
 
-# 5. 一些底层问题
+# 5. 其他一些问题
 
 ---
 
 ## 5.1 关于 futex
 
 Linux 的 pthread mutex 采用 futex [12] 实现，不必每次加锁、解锁都陷入系统调用，效率较高。  
+
+---
+
+## 5.2 c++ 提供的同步原语
+
+https://zhuanlan.zhihu.com/p/642858416 
 
 ---
 
