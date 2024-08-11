@@ -820,7 +820,7 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 
 pthread 提供了条件变量，但要注意，`pthread_cond_wait` 本身不是原子操作，所以它需要配合互斥锁来使用，即 `pthread_mutex`。  
 
-pthread_cond 相关的 api 如下：  
+pthread_cond 相关的 api 如下：   
 
 ```c
 #include <pthread.h>
@@ -833,8 +833,21 @@ int pthread_cond_init(pthread_cond_t *cond);
 // 销毁
 int pthread_cond_destroy(pthread_cond_t *cond);
 
+// 发送一个信号（唤醒一个等待中的线程）
+int pthread_cond_signal(pthread_cond_t *cond);
 
+// 广播信号（唤醒所有等待中的线程）
+int pthread_cond_broadcast(pthread_cond_t *cond);
+
+// 等待
+int pthread_cond_wait(pthread_cond_t* cond, pthread_mutex_t *mutex);
+
+// 带超时的等待
+int pthread_cond_timedwait(pthread_cond_t* cond, pthread_mutex_t *mutex,
+                        const struct timespec *abstime);
 ```
+
+
 
 spurious wakeups 是指
 
