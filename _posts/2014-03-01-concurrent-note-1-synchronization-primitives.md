@@ -816,7 +816,7 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 
 # 4. 同步原语--条件变量
 
-条件变量用于实现协同的逻辑，其同步语义是等待。  
+条件变量是用来通知共享数据状态信息的，比如可以使用条件变量来通知队列已空、或队列非空、或任何其他需要由线程处理的共享数据状态。[14] 它能用于实现协同的逻辑，其同步语义是等待。  
 
 pthread 提供了条件变量，但要注意，`pthread_cond_wait` 本身不是原子操作，所以它需要配合互斥锁来使用，即 `pthread_mutex`。  
 
@@ -827,8 +827,10 @@ pthread_cond 相关的 api 如下：
 
 // 文档都在： https://man7.org/linux/man-pages/man3/pthread_cond_init.3.html  
 
+pthread_cond_t cond = PTHREAD_COND_INITIALIZER;  
+
 // 初始化
-int pthread_cond_init(pthread_cond_t *cond);  
+int pthread_cond_init(pthread_cond_t *cond, pthread_condattr_t *cond_attr);  
 
 // 销毁
 int pthread_cond_destroy(pthread_cond_t *cond);
@@ -847,10 +849,43 @@ int pthread_cond_timedwait(pthread_cond_t* cond, pthread_mutex_t *mutex,
                         const struct timespec *abstime);
 ```
 
+条件变量的作用就是发信号，而不是互斥。它不提供互斥，所以需要一个互斥量来同步对共享数据的访问（包括等待的谓词）[14]。   
+
+为什么不将互斥量作为条件变量的一部分来创建？  
 
 
-spurious wakeups 是指
 
+条件变量的一般编程模式如下面的伪码：    
+
+```c
+// 初始化
+pthread_cond_t cond = PTHREAD_COND_INITIALIZER;  
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+queue q;  // 扮演共享数据
+
+// 发送信号
+pthread_mutex_lock(&mutex);
+q.enque(...)  // add something to queue
+pthread_cond_signal(&cond);
+pthread_mutex_unlock(&mutex);
+
+// 等待信号
+pthread_mutex_lock(&mutex);
+while (q.empty()) {  // 在循环里判断条件，避免 Spurious wakeups 问题
+    pthread_cond_wait(&cond, &mutex); // wait 返回时 lock 住 mutex，wait 阻塞时释放 mutex
+}
+q.pop(...)  // get something from queue
+pthread_mutex_unlock(&mutex);
+
+// 销毁信号 （不必释放通过 PTHREAD_COND_INITIALIZER 宏初始化的静态初始化的条件变量）
+```
+
+
+**spurious wakeups**   
+
+《Posix多线程程序设计》
+
+https://en.wikipedia.org/wiki/Spurious_wakeup
 
 ---
 
@@ -923,7 +958,9 @@ Linux 的 pthread mutex 采用 futex [12] 实现，不必每次加锁、解锁�
 
 [12] Ulrich Drepper. Ulrich Drepper. Available at https://www.akkadia.org/drepper/futex.pdf, 2011-11-5.   
 
-[13] David Butenhof. Recursive mutexes by David Butenhof. Available at http://zaval.org/resources/library/butenhof1.html, 2005-5-17.  
+[13] David R. Butenhof. Recursive mutexes by David Butenhof. Available at http://zaval.org/resources/library/butenhof1.html, 2005-5-17.  
+
+[14] [美]David R. Butenhof. POSIX多线程程序设计. 于磊, 曾刚. 北京: 中国电力出版社, 2003-4.  
 
 ---
 
@@ -933,6 +970,6 @@ Linux 的 pthread mutex 采用 futex [12] 实现，不必每次加锁、解锁�
 
 * spurious wakeup，条件变量需要使用 while 循环进行 wait。  《Linux 多线程服务端编程》p41
 
-* what is monitor?  https://en.wikipedia.org/wiki/Monitor_(synchronization)#
+* what is monitor?  https://en.wikipedia.org/wiki/Monitor_(synchronization)#  实际上就是 condition var?  
 
 * named semaphore 如何保证被 unlink 掉？  
