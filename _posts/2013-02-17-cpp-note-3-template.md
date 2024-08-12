@@ -284,9 +284,45 @@ included; however, in §3.3 below we argue why auto&& is also a forwarding case 
 示例[2]：  
 
 ```cpp
+template<class T>
+int f(T&& x) {                     // x 是万能引用
+    return g(std::forward<T>(x));  // 可以被转发
+}
 
+int main() {
+    int i;
+    f(i);    // 参数是左值，调用 f<int&>(int&)，std::forward<int&>(x) 是左值
+    f(0);    // 参数是右值，调用 f<int>(int&&)，std::forward<int>(x) 是右值
+}
+
+template<class T>
+int g(const T&& x);  // x 不是万能引用，因为 const T 不是 cv-unqualified（即无 const/volatile 修饰）的
+
+template<class T>
+struct A {
+    template<class U>
+    A(T&& x, U&& y, int* p);  // x 不是万能引用，因为 T 不是构造函数的模板参数
+                              // y 是万能引用
+}
+
+万能引用的两个判断标准： 
+1）必须是类型推导；   
+2）形式上必须是 T&&； 
+
+像这样就不是类型推导[4]:   
+
+```cpp
+void f(Widget&& param);
 ```
 
+像这样就是严格的 `T&&` 形式[4]：   
+
+```cpp
+template<class T>
+void f(std::vector<T>&& param); // param 不是万能引用，是右值引用
+```
+
+<br/>
 
 * 场景二：`auto&&`     
 
@@ -384,7 +420,7 @@ c++11 之后是合法的，c++11 引入了对于 reference-to-reference 的处�
 
 有一点必须说的，上面说的引用的引用，我们在日常开发中是不能声明的，但编译器却可以特殊的语境中产生引用的引用，上面的模板实例化就是这样的语境之一。[4]    
 
-引用折叠发生在四种情形下[4]：模板实例化，auto 类型生成，创建和运用 typedef 和别名声明，decltype。  
+引用折叠发生在四种情形下[4]：模板实例化；auto 类型生成；创建和运用 typedef 和别名声明；decltype。  
 
 ---
 
