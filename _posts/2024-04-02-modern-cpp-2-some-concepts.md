@@ -398,6 +398,8 @@ const 作用于 stl 的 iterator 时，`const std::vector<string>::iterator iter
 
 也就是说 `const int * p;` 与 `int const * p;` 是一样的， `const int i;` 与 `int const i;` 是一样的。  
 
+特别的，可以在 `*` 号的左右可放一个 const，分别表示所指之物以及指针变量本身都是 const 的，比如这样 `int const * const pa = &a;`。  
+
 3、const 作用于类成员函数   
 
 表明此成员函数不会改变类成员的值。 此时 const 是放在成员函数参数的末尾，并且声明处跟定义处都要写上。    
