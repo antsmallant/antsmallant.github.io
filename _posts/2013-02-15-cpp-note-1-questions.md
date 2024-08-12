@@ -346,11 +346,17 @@ const-volatile-qualified  ：同时被 const / volatile 修饰的
 
 * `auto&` 是一种好的写法吗？
 
-* [C++ auto& vs auto - Stack Overflow](https://stackoverflow.com/questions/29859796/c-auto-vs-auto)
+
+* auto& vs auto
+
+[C++ auto& vs auto - Stack Overflow](https://stackoverflow.com/questions/29859796/c-auto-vs-auto)
 
 
 * 什么是别名声明？  
 
+即 using。可以代替 typedef，用起来更直观，可以省掉不少麻烦。  
+
+https://www.cnblogs.com/wickedpriest/p/14696909.html
 
 
 * c++17 中对于 value categories 做了哪些修改？  

@@ -259,7 +259,7 @@ int main() {
 
 ### 1.6.1 万能引用
 
-万能引用 (universal reference) 是 c++11 才引入的，在 c++17 的标准里面已经将这种用法标准化为 “转发引用” (forwarding reference) 了[3]，引用如下：    
+万能引用 (universal reference) 是 c++11 才引入的，在 c++17 的标准里面已经将这种用法标准化为 “转发引用” (forwarding reference) [3]，引用如下：    
 
 >In the absence of our giving this construct a distinct name, the community has been trying to make one. 
 The one that is becoming popular is “universal reference.” Unfortunately, as discussed in §3.1 below, 
@@ -273,11 +273,48 @@ included; however, in §3.3 below we argue why auto&& is also a forwarding case 
 
 <br/>
 
-万能引用是一种特别的引用，它能够保留函数参数的 value category，使得可以通过 `std::forward` 转发函数参数的 value category[2]。不要以为 `&&` 只用于右值引用，它也被用于万能引用，理解了这一点很关键，不然会被搞得很糊涂。   
+万能引用是一种特别的引用，它能够保留函数参数的 value category，使得可以通过 `std::forward` 转发函数参数的 value category[2]。不要以为 `&&` 只用于右值引用，它也被用于表示万能引用，理解这一点很关键，不然会被搞得很糊涂。   
 
-万能引用目前有两种场景。   
+万能引用目前有两种场景：       
 
-场景一：
+* 场景一：作为函数模板的形参    
+
+精确的定义是：“function parameter of a function template declared as rvalue reference to cv-unqualified type template parameter of that same function template”[2]。  
+
+实际上，就是这种形式的：  
+
+```cpp
+template<class T>
+inf f(T&& x) {
+    return g(std::forward<T>(x));
+}
+
+int i = 10;
+f(i);  
+```
+
+对于这样的调用： 
+
+```cpp
+int i = 10;
+f(i);
+```
+
+此时实际上 T 被匹配为 `int&`， 调用的是这样的一个模板实例 `f<int&>(int& && x);`，但这样子 "reference-to-reference" （引用的引用） 有意义吗？ `int& && x` 是合法的吗？  
+
+c++11 之后是合法的，c++11 引入了对于 reference-to-reference 的处理，在模板实例化的时候，进行 "reference collasping"（引用折叠），对 `int& && x` 进行处理后的结果是 `int& x`，即消除掉 `&&`。  
+
+实际上，左值与右值组合起来共用4种，`& &&`、`& &`、`&& &&`、`&& &`，上面是属于 `& &&`。这里面的折叠规则是这样的，只有 `&& &&` 是折叠成 `&&` 的，其他三种都是折叠成 `&`。举例： 
+
+`int& && x`  折叠成 `int & x`； 
+`int& & x`   折叠成 `int & x`；
+`int&& & x`  折叠成 `int & x`； 
+`int&& && x` 折叠成 `int && x`；   
+
+
+
+* 场景二：`auto&&`     
+
 
 
 <br/> 
@@ -291,6 +328,37 @@ included; however, in §3.3 below we argue why auto&& is also a forwarding case 
 
 ### 1.6.2 完美转发 
 
+完美转发是为了帮助撰写接受任意实参的函数模板，并将其转发到其他函数，目标函数会接受到与转发函数所接受的完全相同的实参[4]。也就是说，它能够转发形参的 value category。  
+
+value category 是一个一直存在的概念，任何一个变量都有两大属性：1）basic type ；2）value category。 value category 经过 c++11 规范后，包括左值、右值、将亡值、纯右值、广义左值这些概念。   
+
+实现完美转发依赖于函数 `std::forward`，它的工作逻辑是这样的：如果入参的 value category 右值引用，它就强制转换为右值引用并返回，否则，它不做转换。  
+
+理解这一点的前提是要知道，形参总是左值，只不过它的类型是右值引用。比如这样：  
+
+```cpp
+void f(T&& t) {
+    g(t);  // 此时调用的是 g(T& t) 版本; 因为 t 作为形参，它本身就是个左值。  
+}
+
+void g(T& t) {
+    std::cout << "g 左值引用版本" << std::endl;
+}
+
+void g(T&& t) {
+    std::cout << "g 右值引用版本" << std::endl;
+}
+```
+
+要能够调用 `g(T&& t)`，需要这样：  
+
+```cpp
+void f(T&& t) {
+    g(std::forward(t));   // std::forward 进行了强制类型转换，返回了右值引用
+}
+```
+
+`std::forward` 与 `std::move` 的行为很像，都是将表达式强制转换为右值引用，但前者是有条件的，只会把原本是右值引用的表达式强制转换为右值引用，而后者是无条件的。  
 
 ---
 
@@ -301,3 +369,5 @@ included; however, in §3.3 below we argue why auto&& is also a forwarding case 
 [2] cppreference. Forwarding references. Available at https://en.cppreference.com/w/cpp/language/reference#Forwarding_references.   
 
 [3] open-std. Forwarding References. https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4164.pdf.   
+
+[4] [美]Scott Meyers. Effective Modern C++(中文版). 高博. 北京: 中国电力出版社, 2018-4.  

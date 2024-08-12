@@ -86,7 +86,7 @@ std::unique_ptr<int> p1(new int(10));
     auto p2(p1.release());   
 ```
 
-2、用 std::move 触发移动构造或移动拷贝     
+2、用 `std::move` 触发移动构造或移动拷贝     
 ```cpp
     auto p1 = std::make_unique<int>(10);
     auto p2(std::move(p1));  // 触发移动构造
@@ -133,8 +133,7 @@ auto rawptr = p1.release();
 
 **作为参数**   
 
-多数情况下，函数传参并不涉及所有权管理，所以并不太需要使用 std::unique_ptr 来作为参数，使用引用或者裸指针会更合理一些。  
-
+多数情况下，函数传参并不涉及所有权管理，所以并不太需要使用 `std::unique_ptr` 来作为参数，使用引用或者裸指针会更合理一些。  
 
 但也有些情况下是可以使用的，比如生产和消费的场景。  
 
