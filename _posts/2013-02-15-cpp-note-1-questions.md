@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "c++ 笔记一：常识"
+title: "c++ 笔记一：常识与术语"
 date: 2013-02-15
 last_modified_at: 2023-04-01
 categories: [c++]
@@ -258,90 +258,22 @@ int main() {
 }
 ```
 
+---
+
+# 2. 术语
 
 ---
 
-# 2. todo
+## 2.1 cv-unqualified
 
----
+cv-unqualified 指没有被 const 或 volatile 修饰的类型[5]，比如基础类型 int / float/ double / nullptr_t，或复合类型 enum / struct / class 等。  
 
----
+除了 function type 和 reference type 之外的类型，基本上都属于以下中的一种：   
 
-## extern 的作用是什么？  
-
-参考：[c++全局变量extern](https://zhuanlan.zhihu.com/p/658392228)    
-
----
-
-## static 的作用是什么？
-
-参考：[C/C++ 中的static关键字](https://zhuanlan.zhihu.com/p/37439983)    
-
----
-
-## xvalue 具体是怎么形成的？
-
----
-
-## 什么情况下会用到右值引用？返回右值引用意味着什么？
-
----
-
-## 为什么 string literal 是一种 lvalue？
-
----
-
-## 初始化列表是什么意思？   
-
----
-
-## 什么是结构化绑定？有性能损耗吗？  
-
----
-
-## 什么是 emplace_back ？它的作用是什么？ 
-
-
----
-
-## type_traits 的作用是什么？  
-
-
----
-
-## constexpr 与 const 的区别是什么？
-
-
----
-
-## const 相对于 define 有何好处？
-
----
-
-## c99 支持 VLA，那么 c++ 支持吗？ 
-
-[Why aren't variable-length arrays part of the C++ standard?](https://stackoverflow.com/questions/1887097/why-arent-variable-length-arrays-part-of-the-c-standard)   
-
-
----
-
-## 什么是虚函数？什么是纯虚函数？
-
----
-
-## `auto&` 是一种好的写法吗？
-
-* [C++ auto& vs auto - Stack Overflow](https://stackoverflow.com/questions/29859796/c-auto-vs-auto)
-
----
-
-## 什么是别名声明？  
-
-
----
-
-## c++17 中对于 value categories 做了哪些修改？  
-
+cv-unqualified            ：没有 const 或 volatile 修饰的    
+const-qualified           ：被 const 修饰的     
+volatile-qualified        ：被 volatile 修饰的    
+const-volatile-qualified  ：同时被 const / volatile 修饰的      
 
 ---
 
@@ -354,3 +286,71 @@ int main() {
 [3] wikipedia. Data structure alignment. Available at https://en.wikipedia.org/wiki/Data_structure_alignment.  
 
 [4] [美]Randal E. Bryant, David R. O'Hallaron. 深入理解计算机系统(原书第3版). 龚奕利, 贺莲. 北京: 机械工业出版社, 2022-6(1): 189.      
+
+[5] cppreference. cv (const and volatile) type qualifiers. Available at https://en.cppreference.com/w/cpp/language/cv.   
+
+
+---
+
+
+# todo
+
+* extern 的作用是什么？  
+
+参考：[c++全局变量extern](https://zhuanlan.zhihu.com/p/658392228)    
+
+
+* static 的作用是什么？
+
+参考：[C/C++ 中的static关键字](https://zhuanlan.zhihu.com/p/37439983)    
+
+
+* xvalue 具体是怎么形成的？
+
+
+* 什么情况下会用到右值引用？返回右值引用意味着什么？
+
+
+* 为什么 string literal 是一种 lvalue？
+
+
+* 初始化列表是什么意思？   
+
+
+* 什么是结构化绑定？有性能损耗吗？  
+
+
+* 什么是 emplace_back ？它的作用是什么？ 
+
+
+
+* type_traits 的作用是什么？  
+
+
+
+* constexpr 与 const 的区别是什么？
+
+
+
+* const 相对于 define 有何好处？
+
+
+* c99 支持 VLA，那么 c++ 支持吗？ 
+
+[Why aren't variable-length arrays part of the C++ standard?](https://stackoverflow.com/questions/1887097/why-arent-variable-length-arrays-part-of-the-c-standard)   
+
+
+
+* 什么是虚函数？什么是纯虚函数？
+
+
+* `auto&` 是一种好的写法吗？
+
+* [C++ auto& vs auto - Stack Overflow](https://stackoverflow.com/questions/29859796/c-auto-vs-auto)
+
+
+* 什么是别名声明？  
+
+
+
+* c++17 中对于 value categories 做了哪些修改？  

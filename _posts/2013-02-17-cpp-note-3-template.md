@@ -255,6 +255,16 @@ int main() {
 
 ## 1.6 万能引用与完美转发
 
+万能引用 (universal reference) 是 c++11 才引入的，现在又叫转发引用 (forwarding reference)。它的写法形式类似这样： 
+
+```cpp
+template<typename T>
+SomeType f(T&& param);
+``
+
+跟右值引用的 `&&` 雷同了，虽然不是完全没关系，但为了好理解，应该把它当成两件事。  
+
+
 https://zhuanlan.zhihu.com/p/99524127 
 
 万能引用，即 Universal References。 
