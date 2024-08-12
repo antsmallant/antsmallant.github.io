@@ -255,33 +255,41 @@ int main() {
 
 ## 1.6 万能引用与完美转发
 
-万能引用 (universal reference) 是 c++11 才引入的，现在又叫转发引用 (forwarding reference)。它的写法形式类似这样： 
+---
 
-```cpp
-template<typename T>
-SomeType f(T&& param);
-``
+### 1.6.1 万能引用
 
-跟右值引用的 `&&` 雷同了，虽然不是完全没关系，但为了好理解，应该把它当成两件事。  
-
-
-https://zhuanlan.zhihu.com/p/99524127 
-
-万能引用，即 Universal References。 
-
-在 c++17 的标准里面已经将这种用法标准化为 “转发引用” (forwarding reference) 了。    
-
-参考 [https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4164.pdf](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4164.pdf)。  
+万能引用 (universal reference) 是 c++11 才引入的，在 c++17 的标准里面已经将这种用法标准化为 “转发引用” (forwarding reference) 了[3]，引用如下：    
 
 >In the absence of our giving this construct a distinct name, the community has been trying to make one. 
-The one that is becoming popular is “universal reference.” [1] Unfortunately, as discussed in §3.1 below, 
+The one that is becoming popular is “universal reference.” Unfortunately, as discussed in §3.1 below, 
 this is not an ideal name, and we need to give better guidance to a suitable name.   
 >    
 >The name that has the most support in informal discussions among committee members, including the 
 authors, is “forwarding reference.” Interestingly, Meyers himself initially introduced the term “forward
-ing reference” in his original “Universal References” talk, [2] but decided to go with “universal references” 
+ing reference” in his original “Universal References” talk, but decided to go with “universal references” 
 because at the time he did not think that “forwarding references” reflected the fact that auto&& was also 
-included; however, in §3.3 below we argue why auto&& is also a forwarding case and so is rightly included. 
+included; however, in §3.3 below we argue why auto&& is also a forwarding case and so is rightly included.   
+
+<br/>
+
+万能引用是一种特别的引用，它能够保留函数参数的 value category，使得可以通过 `std::forward` 转发函数参数的 value category[2]。不要以为 `&&` 只用于右值引用，它也被用于万能引用，理解了这一点很关键，不然会被搞得很糊涂。   
+
+万能引用目前有两种场景。   
+
+场景一：
+
+
+<br/> 
+
+**拓展阅读**   
+
+* [Universal References in C++11 -- Scott Meyers](https://isocpp.org/blog/2012/11/universal-references-in-c11-scott-meyers)   
+* [C++中的万能引用和完美转发](https://theonegis.github.io/cxx/C-%E4%B8%AD%E7%9A%84%E4%B8%87%E8%83%BD%E5%BC%95%E7%94%A8%E5%92%8C%E5%AE%8C%E7%BE%8E%E8%BD%AC%E5%8F%91/)   
+
+---
+
+### 1.6.2 完美转发 
 
 
 ---
@@ -289,3 +297,7 @@ included; however, in §3.3 below we argue why auto&& is also a forwarding case 
 # 2. 参考
 
 [1] 五车书管. 函数模板的重载，偏特化，和全特化. Available at https://zhuanlan.zhihu.com/p/314340244, 2020-11-26.   
+
+[2] cppreference. Forwarding references. Available at https://en.cppreference.com/w/cpp/language/reference#Forwarding_references.   
+
+[3] open-std. Forwarding References. https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4164.pdf.   
