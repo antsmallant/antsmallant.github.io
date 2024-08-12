@@ -283,7 +283,7 @@ included; however, in §3.3 below we argue why auto&& is also a forwarding case 
 
 示例[2]：  
 
-```
+```cpp
 
 ```
 
@@ -347,11 +347,11 @@ void g(T&& t) {
 ```cpp
 template<typename T>
 void f(T&& t) {
-    g(std::forward(t));   // std::forward 进行了强制类型转换，返回了右值引用
+    g(std::forward(t));   // std::forward 转发了 t 的 value category，如果 t 确实是一个右值
 }
 ```
 
-`std::forward` 与 `std::move` 的行为很像，都是将表达式强制转换为右值引用，但前者是有条件的，只会把原本是右值引用的表达式强制转换为右值引用，而后者是无条件的。  
+`std::forward` 与 `std::move` 的行为很像，都是将表达式强制转换为右值引用。但前者是有条件的，只会把原本是右值引用的表达式强制转换为右值引用，而后者是无条件的。  
 
 ---
 
@@ -384,11 +384,7 @@ c++11 之后是合法的，c++11 引入了对于 reference-to-reference 的处�
 
 有一点必须说的，上面说的引用的引用，我们在日常开发中是不能声明的，但编译器却可以特殊的语境中产生引用的引用，上面的模板实例化就是这样的语境之一。[4]    
 
-引用折叠发生在四种情形下[4]：   
-模板实例化  
-auto 类型生成   
-创建和运用 typedef 和别名声明   
-decltype   
+引用折叠发生在四种情形下[4]：模板实例化，auto 类型生成，创建和运用 typedef 和别名声明，decltype。  
 
 ---
 
