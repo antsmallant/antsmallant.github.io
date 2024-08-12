@@ -281,42 +281,32 @@ included; however, in §3.3 below we argue why auto&& is also a forwarding case 
 
 精确的定义是：“function parameter of a function template declared as rvalue reference to cv-unqualified type template parameter of that same function template”[2]。  
 
-实际上，就是这种形式的：  
+示例[2]：  
 
-```cpp
-template<class T>
-inf f(T&& x) {
-    return g(std::forward<T>(x));
-}
-
-int i = 10;
-f(i);  
 ```
 
-对于这样的调用： 
-
-```cpp
-int i = 10;
-f(i);
 ```
-
-此时实际上 T 被匹配为 `int&`， 调用的是这样的一个模板实例 `f<int&>(int& && x);`，但这样子 "reference-to-reference" （引用的引用） 有意义吗？ `int& && x` 是合法的吗？  
-
-c++11 之后是合法的，c++11 引入了对于 reference-to-reference 的处理，在模板实例化的时候，进行 "reference collasping"（引用折叠），对 `int& && x` 进行处理后的结果是 `int& x`，即消除掉 `&&`。  
-
-实际上，左值与右值组合起来共用4种，`& &&`、`& &`、`&& &&`、`&& &`，上面是属于 `& &&`。这里面的折叠规则是这样的，只有 `&& &&` 是折叠成 `&&` 的，其他三种都是折叠成 `&`。举例： 
-
-`int& && x`  折叠成 `int & x`； 
-`int& & x`   折叠成 `int & x`；
-`int&& & x`  折叠成 `int & x`； 
-`int&& && x` 折叠成 `int && x`；   
-
-有一点必须说的，上面说的引用的引用，我们在日常开发中是不能声明的，但编译器却可以特殊的语境中产生引用的引用，上面的模板实例化就是这样的语境之一。[4]    
 
 
 * 场景二：`auto&&`     
 
+`auto&&` 除了花括号初始化的情况之外都是万能引用。 
 
+示例[2]：  
+
+```cpp
+auto && vec = foo();      // vec 是万能引用，foo() 可能是左值或右值
+auto i = std::begin(vec); // 正常工作，无论 vec 最终是左值引用或是右值引用
+(*i)++;                   // 正常工作，无论 vec 最终是左值引用或是右值引用
+
+g(std::forward<decltype(vec)>(vec)); // 转发（保留了 vec 的值类别）
+
+for (auto&& x : f()) {
+    // x 是万能引用，这是使用 for range 遍历的通用形式
+}
+
+auto&& z = {1, 2, 3}; // 不是万能引用，这是初始值列表的特殊情况
+```
 
 <br/> 
 
@@ -333,11 +323,12 @@ c++11 之后是合法的，c++11 引入了对于 reference-to-reference 的处�
 
 value category 是一个一直存在的概念，任何一个变量都有两大属性：1）basic type ；2）value category。 value category 经过 c++11 规范后，包括左值、右值、将亡值、纯右值、广义左值这些概念。   
 
-实现完美转发依赖于函数 `std::forward`，它的工作逻辑是这样的：如果入参的 value category 右值引用，它就强制转换为右值引用并返回，否则，它不做转换。  
+实现完美转发依赖于函数 `std::forward`，它的工作逻辑是这样的：如果入参的 value category 是右值，它就强制转换为右值引用并返回，否则，它不做转换。  
 
-理解这一点的前提是要知道，形参总是左值，只不过它的类型是右值引用。比如这样：  
+理解这一点的前提是要知道，形参总是左值，只不过它的类型是右值引用。比如这样：   
 
 ```cpp
+template<typename T>
 void f(T&& t) {
     g(t);  // 此时调用的是 g(T& t) 版本; 因为 t 作为形参，它本身就是个左值。  
 }
@@ -354,12 +345,50 @@ void g(T&& t) {
 要能够调用 `g(T&& t)`，需要这样：  
 
 ```cpp
+template<typename T>
 void f(T&& t) {
     g(std::forward(t));   // std::forward 进行了强制类型转换，返回了右值引用
 }
 ```
 
 `std::forward` 与 `std::move` 的行为很像，都是将表达式强制转换为右值引用，但前者是有条件的，只会把原本是右值引用的表达式强制转换为右值引用，而后者是无条件的。  
+
+---
+
+### 1.6.3 引用折叠
+
+其实引用折叠才是最关键的，不知道或不理解引用折叠，永远无法理解 `std::forward` 是怎么工作的。   
+
+对于这种形式：  
+
+```cpp
+template<class T>
+inf f(T&& x) {
+    return g(std::forward<T>(x));
+}
+
+int i = 10;
+f(i);  
+```
+
+此时实际上 T 是被匹配为 `int&`， 调用的是这样的一个模板实例 `f<int&>(int& && x);`，但这样子 "reference-to-reference" （引用的引用） 有意义吗？ `int& && x` 是合法的吗？  
+
+c++11 之后是合法的，c++11 引入了对于 reference-to-reference 的处理，在模板实例化的时候，进行 "reference collasping"（引用折叠），对 `int& && x` 进行处理后的结果是 `int& x`，即消除掉 `&&`。  
+
+实际上，左值与右值组合起来共用4种，`& &&`、`& &`、`&& &&`、`&& &`，上面是属于 `& &&`。这里面的折叠规则是这样的，只有 `&& &&` 是折叠成 `&&` 的，其他三种都是折叠成 `&`。举例： 
+
+`int& && x`  折叠成 `int & x`； 
+`int& & x`   折叠成 `int & x`；
+`int&& & x`  折叠成 `int & x`； 
+`int&& && x` 折叠成 `int && x`；   
+
+有一点必须说的，上面说的引用的引用，我们在日常开发中是不能声明的，但编译器却可以特殊的语境中产生引用的引用，上面的模板实例化就是这样的语境之一。[4]    
+
+引用折叠发生在四种情形下[4]：   
+模板实例化  
+auto 类型生成   
+创建和运用 typedef 和别名声明   
+decltype   
 
 ---
 
