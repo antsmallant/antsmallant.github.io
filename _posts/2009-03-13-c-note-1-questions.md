@@ -252,6 +252,12 @@ redisObject 结构体中的 type, encoding, lru 实际上是一种位域定义�
 
 ---
 
+## 1.10 c 实现 sizeof 
+
+https://www.cnblogs.com/fuhaots2009/p/3429183.html 
+
+---
+
 # 2. 参考
 
 [1] geeksforgeeks. Difference between #include and #include” ” in C/C++ with Examples. Available at https://www.geeksforgeeks.org/difference-between-include-and-include-in-c-c-with-examples/, 2023-4-22.   
