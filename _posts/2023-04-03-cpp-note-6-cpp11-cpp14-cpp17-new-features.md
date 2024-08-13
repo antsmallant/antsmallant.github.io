@@ -98,6 +98,11 @@ specification: [https://en.cppreference.com/w/cpp/language/noexcept](https://en.
 
 ---
 
+## 2.2 std::array
+
+
+---
+
 # 3. c++14 新的语言特性
 
 ---
