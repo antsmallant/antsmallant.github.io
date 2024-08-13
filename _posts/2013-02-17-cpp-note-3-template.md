@@ -165,6 +165,21 @@ c++ 暂时不支持函数模板的偏特化。[1]
 
 大部分情况下，可以用重载解决问题。  
 
+比如这样：  
+
+```cpp
+template<typename T, typename U>
+void f(T t, U u);
+
+// 重载
+template<typename T>
+void f(T t, int a);
+```
+
+更具体的信息可以参考：
+* Herb Sutter 的这篇文章：[Why Not Specialize Function Templates?](http://www.gotw.ca/publications/mill17.htm) [5]。   
+* [为什么函数模板没有偏特化？](https://blog.csdn.net/feng__shuai/article/details/125426105)
+
 <br/>
 
 2、类模板支持偏特化    
@@ -461,3 +476,5 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 [3] open-std. Forwarding References. https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4164.pdf.   
 
 [4] [美]Scott Meyers. Effective Modern C++(中文版). 高博. 北京: 中国电力出版社, 2018-4.  
+
+[5] Herb Sutter. Why Not Specialize Function Templates. Available at http://www.gotw.ca/publications/mill17.htm, 2001-7.   
