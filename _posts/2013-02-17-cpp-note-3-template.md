@@ -247,7 +247,7 @@ template<class T>  // (a) 第一个 base template
 void f( T );
 
 template<>
-void f<>(int *);   // (c) 模式 a 的特化
+void f<>(int *);   // (c) 模式 a 的全特化（full specialization 或 explicit specialization)
 
 template<class T>  // (b) 第二个 base template，重载了 (a)
 void f( T* );
@@ -258,7 +258,14 @@ int *p;
 f ( p );           // 调用 (b)！因为重载决议会忽略特化版本，即（c），所以先在（a）和（b）中选择，此时（b）刚好符合
 ```
 
-他的解释是，特化的版本不会参与重载，只有 base template (即未特化) 参与重载，所以首先是从 2 个 base template 中选择了合适的，即（b）。  
+他的解释是，特化的版本不会参与重载决议，只有 base template (即未特化) 参与重载决议，所以首先是从 2 个 base template 中选择最合适的，即（b）。  
+
+如果想要让你写的 “特化模板” 确保被使用，那就不要用模板，直接写一个非模板函数，它肯定会被确保首先使用。  
+
+对此，他给出了两个建议[5]：  
+
+1）不要写模板的特化版本，写一个非模板函数，即普通函数。   
+2）把函数包在 struct 里面，当成一个 static 函数，可以利用类的特化或偏特化能力，绕开函数模板的重载决议问题。  
 
 
 <br/>
