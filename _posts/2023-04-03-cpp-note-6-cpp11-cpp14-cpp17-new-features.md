@@ -60,10 +60,17 @@ c++17 是一个 "中" 版本，它本来应该是一个 major 版本的，不过
 
 # 1.3 noexcept
 
-有两个用法，一个是作为标识符 (specifier)，一个是作为运算符 (operator)。作为标识符的时候是表明此函数不会抛出异常，作为运算符的时候是判断一个函数是否会抛出异常。
+有两个用法，一个是作为标识符 (specifier)，一个是作为运算符 (operator)。作为标识符的时候是表明此函数不会抛出异常，作为运算符的时候是判断一个函数是否会抛出异常。   
 
-noexcept 作为标识符的 specification: https://en.cppreference.com/w/cpp/language/noexcept_spec 。  
-noexcept 作为运算符的 specification: https://en.cppreference.com/w/cpp/language/noexcept 。 
+1、作为标识符    
+
+specification: [https://en.cppreference.com/w/cpp/language/noexcept_spec](https://en.cppreference.com/w/cpp/language/noexcept_spec) 。  
+
+<br/>
+
+2、作为运算符的   
+
+specification: [https://en.cppreference.com/w/cpp/language/noexcept](https://en.cppreference.com/w/cpp/language/noexcept) 。 
 
 ---
 
@@ -75,7 +82,7 @@ noexcept 作为运算符的 specification: https://en.cppreference.com/w/cpp/lan
 
 ---
 
-# 2. 新的库特性
+# 2. c++11 新的库特性
 
 ---
 
@@ -83,6 +90,26 @@ noexcept 作为运算符的 specification: https://en.cppreference.com/w/cpp/lan
 
 ---
 
-# 3. 参考
+# 3. c++14 新的语言特性
+
+---
+
+# 4. c++14 新的库特性
+
+---
+
+# 5. c++17 新的语言特性
+
+---
+
+# 6. c++17 新的库特性
+
+---
+
+# 7. 拓展阅读
+
+---
+
+# 8. 参考
 
 [1] Bjarne Stroustrup. c++11：感觉像是门新语言. Cpp-Club. Available at : https://github.com/Cpp-Club/Cxx_HOPL4_zh/blob/main/04.md, 2023-6-11.   
