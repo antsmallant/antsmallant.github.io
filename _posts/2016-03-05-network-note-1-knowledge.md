@@ -17,6 +17,12 @@ tags: [网络]
 
 # 1. 常识
 
+---
+
 ## 1.1 什么是零拷贝？  
 
 参考： [什么是零拷贝？](https://xiaolincoding.com/os/8_network_system/zero_copy.html#_9-1-%E4%BB%80%E4%B9%88%E6%98%AF%E9%9B%B6%E6%8B%B7%E8%B4%9D)
+
+---
+
+# 2. 参考
