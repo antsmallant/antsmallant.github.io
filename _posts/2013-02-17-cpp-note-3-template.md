@@ -65,6 +65,10 @@ This is general type 10
 This is a int type 20
 ```
 
+函数模板的匹配优先级：  
+
+非模板 > 特化模板 > 普通模板。    
+
 <br/>
 
 2、类模板特化
