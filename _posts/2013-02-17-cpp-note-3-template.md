@@ -433,7 +433,7 @@ c++11 引入了对于 reference-to-reference 的处理，在模板实例化的�
 
 **拓展阅读**  
 
-* 《modern effective c++》[4] 的条款 28，此书有纸质版，也有网友翻译的版本，见：[https://github.com/CnTransGroup/EffectiveModernCppChinese](https://github.com/CnTransGroup/EffectiveModernCppChinese) 。    
+* 《modern effective c++》[4] 的条款 28，此书有纸质版，也有网友翻译的版本，见：[条款二十八：理解引用折叠](https://github.com/CnTransGroup/EffectiveModernCppChinese/blob/master/src/5.RRefMovSemPerfForw/item28.md) 。    
 
 ---
 
