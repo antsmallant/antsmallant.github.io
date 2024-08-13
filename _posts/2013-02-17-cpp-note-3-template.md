@@ -176,9 +176,16 @@ template<typename T>
 void f(T t, int a);
 ```
 
-更具体的信息可以参考：
+关于为什么函数模板没有偏特化的，可以参考这两篇文章：   
+
 * Herb Sutter 的这篇文章：[Why Not Specialize Function Templates?](http://www.gotw.ca/publications/mill17.htm) [5]。   
-* [为什么函数模板没有偏特化？](https://blog.csdn.net/feng__shuai/article/details/125426105)
+
+* [为什么函数模板没有偏特化？](https://blog.csdn.net/feng__shuai/article/details/125426105)   
+
+
+关于如何让函数模板支持类似偏特化的效果，可以参考：   
+
+* [C++函数模板的偏特化](https://zhuanlan.zhihu.com/p/268600376)   
 
 <br/>
 
