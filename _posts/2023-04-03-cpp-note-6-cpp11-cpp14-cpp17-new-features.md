@@ -29,7 +29,7 @@ c++17 是一个 "中" 版本，它本来应该是一个 major 版本的，不过
 
 ---
 
-# 1.1 概览[1]
+## 1.1 概览[1]
 
 * 内存模型——一个高效的为现代硬件设计的底层抽象，作为描述并发的基础
 * auto 和 decltype——避免类型名称的不必要重复
@@ -53,12 +53,12 @@ c++17 是一个 "中" 版本，它本来应该是一个 major 版本的，不过
 
 ---
 
-# 1.2 initializer_list
+## 1.2 initializer_list
 
 
 ---
 
-# 1.3 noexcept
+## 1.3 noexcept
 
 有两个用法，一个是作为标识符 (specifier)，一个是作为运算符 (operator)。作为标识符的时候是表明此函数不会抛出异常，作为运算符的时候是判断一个函数是否会抛出异常。   
 
@@ -74,19 +74,25 @@ specification: [https://en.cppreference.com/w/cpp/language/noexcept](https://en.
 
 ---
 
-# 1.4 auto
+## 1.4 auto
 
 ---
 
-# 1.5 decltype
+## 1.5 decltype
 
 ---
 
-# 1.6 override
+## 1.6 override
 
 ---
 
-# 1.7 final
+## 1.7 final
+
+---
+
+## 1.8 强类型枚举 enum class
+
+
 
 ---
 
