@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "mysql 笔记三：innodb"
+title: "mysql 笔记二：innodb"
 date: 2023-06-03
 last_modified_at: 2023-06-03
 categories: [数据库]
@@ -11,11 +11,13 @@ tags: [db, mysql]
 {:toc}
 <br/>
 
-记录 innodb 的一些底层实现方法。  
+记录 innodb 的一些底层实现。  
 
 ---
 
-# 1. 既然有了 buffer poll，为何 innodb 的性能远低于 redis ?
+# 1. innodb
+
+# 1.1 既然有了 buffer poll，为何 innodb 的性能远低于 redis ?
 
 参考：   
 姜承尧 《MySQL技术内幕 InnoDB存储引擎（第2版）》    
@@ -23,17 +25,17 @@ tags: [db, mysql]
 
 ---
 
-# 2. innodb 的页大小为何是 16 kb ? 
+## 1.2 innodb 的页大小为何是 16 kb ? 
 
 
 ---
 
-# 3. 从 iops 推算 innodb 的qps
+## 1.3 从 iops 推算 innodb 的qps
 
 ---
 
-# 4. 为什么 innodb 不使用 B* Tree ?
+## 1.4 为什么 innodb 不使用 B* Tree ?
 
 ---
 
-# 参考
+# 2. 参考
