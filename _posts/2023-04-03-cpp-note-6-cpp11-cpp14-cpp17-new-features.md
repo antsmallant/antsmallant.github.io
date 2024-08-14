@@ -29,7 +29,7 @@ tags: [c++ cpp]
 
 ---
 
-## 1.1 概览
+## 概览
 
 参考自：[《c++11：感觉像是门新语言》](https://github.com/Cpp-Club/Cxx_HOPL4_zh/blob/main/04.md) [1]。   
 
@@ -358,11 +358,11 @@ f(nullptr);  // 调用 f(int*)
 
 ---
 
-## 2.1 概览
+## 概览
 
 ---
 
-## 2.2 std::array
+## std::array
 
 
 ---
