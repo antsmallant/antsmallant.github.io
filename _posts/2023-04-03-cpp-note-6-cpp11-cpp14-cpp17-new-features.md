@@ -88,7 +88,7 @@ f(nullptr);  // 调用 f(int*)
 
 值得指出的是，这篇文章 [《modern-cpp-features/CPP11.md》](https://github.com/AnthonyCalandra/modern-cpp-features/blob/master/CPP11.md#nullptr) 或 wikipedia 的词条 [《c++11/Null pointer constant and type》](https://en.wikipedia.org/wiki/C%2B%2B11#Null_pointer_constant) 都写到： "nullptr itself is of type std::nullptr_t and can be implicitly converted into pointer types, and unlike NULL, not convertible to integral types except bool"。  
 
-但实际上，这与最终的标准 [cppreference std::nullptr_t](https://en.cppreference.com/w/cpp/types/nullptr_t) 是有出入的，`nullptr_t` 并不支持隐性转换到 `bool` 类型。    
+但实际上，这与最终的标准 [《cppreference std::nullptr_t》](https://en.cppreference.com/w/cpp/types/nullptr_t) 是有出入的，`nullptr_t` 并不支持隐性转换到 `bool` 类型。    
 
 >std::nullptr_t is the type of the null pointer literal `nullptr`. It is a distinct type that is not itself a pointer type or a pointer to member type. Prvalues of this type are null pointer constants, and may be implicitly converted to any pointer and pointer to member type.   
 
