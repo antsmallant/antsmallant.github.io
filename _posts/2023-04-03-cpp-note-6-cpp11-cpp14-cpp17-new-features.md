@@ -185,6 +185,12 @@ auto y = flopscomps(x, 3);          // 不好：flopscomps() 返回的是什么�
 
 ---
 
+## lambda 表达式
+
+
+
+---
+
 ## noexcept
 
 有两个用法，一个是作为标识符 (specifier)，一个是作为运算符 (operator)。作为标识符的时候是表明此函数不会抛出异常，作为运算符的时候是判断一个函数是否会抛出异常。   
@@ -291,7 +297,7 @@ LP64 表示 long、pointer 的宽度是 64 位。
 
 ### 万能引用
 
-万能引用 (universal reference) 是 c++11 才引入的，在 c++17 的标准里面已经将这种用法标准化为 “转发引用” (forwarding reference) [3]，引用如下：    
+万能引用 (universal reference) 是 c++11 引入的，在 c++17 的标准里面已经将这种用法标准化为 “转发引用” (forwarding reference) [3]，引用如下：    
 
 >In the absence of our giving this construct a distinct name, the community has been trying to make one. 
 The one that is becoming popular is “universal reference.” Unfortunately, as discussed in §3.1 below, 
