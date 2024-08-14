@@ -55,12 +55,27 @@ tags: [c++ cpp]
 
 ---
 
-## 1.2 initializer_list
+## 强类型枚举 enum class
+
+放在最前，这是我期待的特性，以前写 enum 的时候，就觉得特别不好，现在好了，非常对味。   
+
+解决了 c style enum 的问题：隐式转换、无法指定基础类型、作用域污染。enum class 的用法是这样 [7]：  
+
+```cpp
+// 指定基础类型为 `unsigned int`
+enum class Color : unsigned int { Red = 0xff0000, Green = 0xff00, Blue = 0xff };
+// `Red` / `Green` 与 Color 中的定义不冲突
+enum class Alert : bool { Red, Green };
+
+Color c = Color::Red;  
+```
+
+## initializer_list
 
 
 ---
 
-## 1.3 noexcept
+## noexcept
 
 有两个用法，一个是作为标识符 (specifier)，一个是作为运算符 (operator)。作为标识符的时候是表明此函数不会抛出异常，作为运算符的时候是判断一个函数是否会抛出异常。   
 
@@ -76,35 +91,27 @@ specification: [https://en.cppreference.com/w/cpp/language/noexcept](https://en.
 
 ---
 
-## 1.4 auto
+## auto
 
 ---
 
-## 1.5 decltype
+## decltype
 
 ---
 
-## 1.6 override
+## override
 
 ---
 
-## 1.7 final
+## final
 
 ---
 
-## 1.8 强类型枚举 enum class
-
-这是我期待的特性了，以前写 enum 的时候，就觉得特别不好，现在好了，非常对味。  
-
-
+## 万能引用与完美转发
 
 ---
 
-## 1.9 万能引用与完美转发
-
----
-
-### 1.9.1 万能引用
+### 万能引用
 
 万能引用 (universal reference) 是 c++11 才引入的，在 c++17 的标准里面已经将这种用法标准化为 “转发引用” (forwarding reference) [3]，引用如下：    
 
@@ -202,7 +209,7 @@ auto&& z = {1, 2, 3}; // 不是万能引用，这是初始值列表的特殊情�
 
 ---
 
-### 1.9.2 完美转发 
+### 完美转发 
 
 完美转发是为了帮助撰写接受任意实参的函数模板，并将其转发到其他函数，目标函数会接受到与转发函数所接受的完全相同的实参[4]。也就是说，它能够转发形参的 value category。  
 
@@ -240,7 +247,7 @@ void f(T&& t) {
 
 ---
 
-### 1.9.3 引用折叠
+### 引用折叠
 
 其实引用折叠才是最关键的，不知道或不理解引用折叠，永远无法理解 `std::forward` 是怎么工作的。   
 
@@ -299,7 +306,7 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 
 ---
 
-## 1.10 long long
+## long long
 
 正式加入 long long，表示 (at leatst) 64 位的整数。整数类型及对应的宽度规定如下，参考自 [cppreference types](https://en.cppreference.com/w/cpp/language/types) [5]：  
 
@@ -329,7 +336,7 @@ LP64 表示 long、pointer 的宽度是 64 位。
 
 ---
 
-## 1.11 nullptr
+## nullptr
 
 nullptr 是 c++11 新引入的空指针值，用于代替 c style 的 NULL 宏，以解决 NULL 相关的歧义问题。    
 
@@ -395,3 +402,5 @@ f(nullptr);  // 调用 f(int*)
 [5] cppreference. types. Available at https://en.cppreference.com/w/cpp/language/types.    
 
 [6] wikipedia. 64-bit computing. Available at https://en.wikipedia.org/wiki/64-bit_computing#64-bit_data_models.    
+
+[7] AnthonyCalandra. C++11. Available at https://github.com/AnthonyCalandra/modern-cpp-features/blob/master/CPP11.md.    
