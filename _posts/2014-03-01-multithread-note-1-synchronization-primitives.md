@@ -470,7 +470,7 @@ PTHREAD_MUTEX_DEFAULT    = 0
 
 `link` 是 linux 原子操作文件的最底层指令，可以保证原子性，并且正在执行 `link` 的进程如果意外退出，linux 内核也会保证完成此次调用。 
 
-`link` 参考文档： https://man7.org/linux/man-pages/man2/link.2.html 。     
+`link` 参考文档： [https://man7.org/linux/man-pages/man2/link.2.html](https://man7.org/linux/man-pages/man2/link.2.html) 。     
 
 关键代码：  
 
