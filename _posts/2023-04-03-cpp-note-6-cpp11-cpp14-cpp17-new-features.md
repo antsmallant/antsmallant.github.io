@@ -303,6 +303,7 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/cpp-integral-type-width.png"/>
 </div>
+<center>图x：整数类型及其宽度规定</center>
 <br/>
 
 LP32 / LP64 之类的代表 data model，规定如下，参考自 [wikipedia 64-bit data models](https://en.wikipedia.org/wiki/64-bit_computing#64-bit_applications) [6]:   
@@ -311,6 +312,7 @@ LP32 / LP64 之类的代表 data model，规定如下，参考自 [wikipedia 64-
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/cpp-integral-64bit-data-model.png"/>
 </div>
+<center>图x：整数数据模型</center>
 <br/>
 
 I 表示 int，L 表示 long，LL 表示 long long，P 表示 pointer。  
@@ -323,7 +325,9 @@ LP64 表示 long、pointer 的宽度是 64 位。
 
 ---
 
-## 1.11 std::nullptr_t
+## 1.11 nullptr
+
+用以代替
 
 
 
