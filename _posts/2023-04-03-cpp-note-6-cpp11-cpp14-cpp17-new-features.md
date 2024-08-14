@@ -126,6 +126,17 @@ sum({});      // 结果是 0
 
 ---
 
+
+---
+
+## auto
+
+---
+
+## decltype
+
+---
+
 ## noexcept
 
 有两个用法，一个是作为标识符 (specifier)，一个是作为运算符 (operator)。作为标识符的时候是表明此函数不会抛出异常，作为运算符的时候是判断一个函数是否会抛出异常。   
@@ -142,19 +153,36 @@ specification: [https://en.cppreference.com/w/cpp/language/noexcept](https://en.
 
 ---
 
-## auto
-
----
-
-## decltype
-
----
-
 ## override
 
 ---
 
-## final
+## final 标识符
+
+用于标识一个虚函数不能被重写 (override)，或者标识一个类不能被继承 (inherited from)。 
+
+示例1，final 修改虚函数 [7]：
+
+```cpp
+struct A {
+    virtual void f();
+};
+
+struct B {
+    virtual void f() final;
+};
+
+struct C : public B {
+    virtual void f(); // 报错，f 在 B 中被标识为 final，不能被重写
+}
+```
+
+示例2，final 修改类 [7]:  
+
+```cpp
+struct A final {};
+struct B : A {}; // 报错，A 已经标为 final 了，不能被继承
+```
 
 ---
 
