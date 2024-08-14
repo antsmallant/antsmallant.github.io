@@ -180,6 +180,44 @@ SomeType get() {
 
 还有意义，因为 copy elision 并不总是有效，特别 nrvo 的场景。  
 
+比如这样，编译器也做不出优化，编译器版本是： g++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0，默认采用的 c++ 版本是 `#define __cplusplus 201703L`。  
+
+```cpp
+#include <iostream>
+
+struct A {
+    int x;
+    A(int _x) : x(_x) { std::cout << "A() " << _x << std::endl; }
+    A(const A& other) : x(other.x) { std::cout << "A(A&) " << other.x << std::endl; }
+    A(A&& other) : x(other.x) { std::cout << "A(A&&) " << other.x << std::endl; }
+    ~A() { std::cout << "~A() " << x << std::endl; }
+};
+
+A f(int x) {
+    A a(300);
+    if (x == 0)
+        return A(0);
+    else if (x == 1)
+        return A(1);
+    else
+        return a;
+}
+
+int main() {
+    A a = f(50/3);
+    return 0;
+}
+```
+
+输出： 
+
+```
+A() 300
+A(A&&) 300
+~A() 300
+~A() 300
+```
+
 ---
 
 # 4. 拓展阅读  
