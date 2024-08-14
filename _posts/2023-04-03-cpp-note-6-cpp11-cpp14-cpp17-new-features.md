@@ -136,6 +136,36 @@ specification: [https://en.cppreference.com/w/cpp/language/noexcept](https://en.
 
 ---
 
+## long long
+
+正式加入 long long，表示 (at leatst) 64 位的整数。整数类型及对应的宽度规定如下，参考自 [cppreference types](https://en.cppreference.com/w/cpp/language/types) [5]：  
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/cpp-integral-type-width.png"/>
+</div>
+<center>图x：整数类型及其宽度规定</center>
+<br/>
+
+LP32 / LP64 之类的代表 data model，规定如下，参考自 [wikipedia 64-bit data models](https://en.wikipedia.org/wiki/64-bit_computing#64-bit_applications) [6]:   
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/cpp-integral-64bit-data-model.png"/>
+</div>
+<center>图x：整数数据模型</center>
+<br/>
+
+I 表示 int，L 表示 long，LL 表示 long long，P 表示 pointer。  
+
+LP32 表示 long、pointer 的宽度是 32 位。    
+ILP32 表示 int、long、pointer 的宽度是 32 位。   
+ILP64 表示 int、long、pointer 的宽度是 64 位。  
+LLP64 表示 long long、pointer 的宽度是 64 位。  
+LP64 表示 long、pointer 的宽度是 64 位。  
+
+---
+
 ## 万能引用与完美转发
 
 ---
@@ -332,37 +362,6 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 **拓展阅读**  
 
 * 《modern effective c++》[4] 的条款 28，此书有纸质版，也有网友翻译的版本，见：[条款二十八：理解引用折叠](https://github.com/CnTransGroup/EffectiveModernCppChinese/blob/master/src/5.RRefMovSemPerfForw/item28.md) 。    
-
----
-
-## long long
-
-正式加入 long long，表示 (at leatst) 64 位的整数。整数类型及对应的宽度规定如下，参考自 [cppreference types](https://en.cppreference.com/w/cpp/language/types) [5]：  
-
-<br/>
-<div align="center">
-<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/cpp-integral-type-width.png"/>
-</div>
-<center>图x：整数类型及其宽度规定</center>
-<br/>
-
-LP32 / LP64 之类的代表 data model，规定如下，参考自 [wikipedia 64-bit data models](https://en.wikipedia.org/wiki/64-bit_computing#64-bit_applications) [6]:   
-
-<br/>
-<div align="center">
-<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/cpp-integral-64bit-data-model.png"/>
-</div>
-<center>图x：整数数据模型</center>
-<br/>
-
-I 表示 int，L 表示 long，LL 表示 long long，P 表示 pointer。  
-
-LP32 表示 long、pointer 的宽度是 32 位。    
-ILP32 表示 int、long、pointer 的宽度是 32 位。   
-ILP64 表示 int、long、pointer 的宽度是 64 位。  
-LLP64 表示 long long、pointer 的宽度是 64 位。  
-LP64 表示 long、pointer 的宽度是 64 位。  
-
 
 ---
 
