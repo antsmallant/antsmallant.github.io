@@ -153,7 +153,28 @@ specification: [https://en.cppreference.com/w/cpp/language/noexcept](https://en.
 
 ---
 
-## override
+## 显式指定虚函数 override
+
+显式的指定此函数重写了基类的虚函数。用于确保：1）此函数是虚函数，2）正在重写基类对应的虚函数。  
+
+示例[7]：  
+
+```cpp
+struct A {
+    virtual void foo();
+    void bar();
+    virtual ~A(); 
+};
+
+struct B : A {
+    void foo() override; // 正确，B::foo 重写了 A::foo
+    void bar() override; // 错误，A::bar 不是一个虚函数
+    void baz() override; // 错误，A::baz 不存在
+    ~B() override;       // 正确，override 也可以特别的虚函数，比如虚析构
+};
+```
+
+另外，`override` 不是关键字，所以可以用它作为变量名，比如 `int override = 40;`。  
 
 ---
 
