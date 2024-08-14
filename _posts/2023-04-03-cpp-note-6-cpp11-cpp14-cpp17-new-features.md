@@ -94,6 +94,10 @@ specification: [https://en.cppreference.com/w/cpp/language/noexcept](https://en.
 
 ## 1.8 强类型枚举 enum class
 
+这是我期待的特性了，以前写 enum 的时候，就觉得特别不好，现在好了，非常对味。  
+
+
+
 ---
 
 ## 1.9 万能引用与完美转发
