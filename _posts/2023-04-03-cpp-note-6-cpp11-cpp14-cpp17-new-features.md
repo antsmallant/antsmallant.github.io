@@ -129,6 +129,14 @@ sum({});      // 结果是 0
 
 
 
+使用 `auto` 的原则：能一眼看出是什么类型的就用 `auto`，否则不用。比如 Stroustrup 举的这个例子[1]： 
+
+```cpp
+auto n = 1;  // 很好：n 是 int
+auto x = make_unique<Gadget>(arg);  // 很好：x 是 std::unique_ptr<Gadget>
+auto y = flopscomps(x, 3);          // 不好：flopscomps() 返回的是什么东西？  
+```
+
 ---
 
 ## decltype

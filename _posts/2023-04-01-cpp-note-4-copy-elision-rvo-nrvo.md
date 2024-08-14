@@ -172,7 +172,17 @@ SomeType get() {
 
 ---
 
-# 3. 拓展阅读  
+# 3. 问题探讨
+
+---
+
+## 3.1 有了 copy elision，移动构造还有意义吗？ 
+
+还有意义，因为 copy elision 并不总是有效，特别 nrvo 的场景。  
+
+---
+
+# 4. 拓展阅读  
 
 [《Copy/move elision: C++ 17 vs C++ 11》](https://zhuanlan.zhihu.com/p/379566824)     
 
@@ -180,6 +190,6 @@ SomeType get() {
 
 ---
 
-# 4. 参考
+# 5. 参考
 
 [1] jiannanya​. 理解C++编译器中的 Copy elision 和 RVO 优化. Available at https://zhuanlan.zhihu.com/p/703789055, 2024-6-17.  
