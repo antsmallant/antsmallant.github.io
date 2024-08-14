@@ -492,6 +492,14 @@ Defect Report 的缩写，即缺陷报告。
 
 ---
 
+## 4.3 wording
+
+wording 可以理解为技术规范、法律文件、合同、政策声明或任何正式文档中确切的表述或措辞。在 c++ 的语言标准提案中，指的即是对特定概念的精确表述。  
+
+比如这个 [Wording for guaranteed copy elision through simplified value categories](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0135r1.html) 。 
+
+---
+
 # 5. 参考  
 
 [1] cppreference. Expressions. Available at https://en.cppreference.com/w/cpp/language/expressions.   
