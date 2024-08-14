@@ -24,33 +24,33 @@ tags: [c++]
 
 # 1. 智能指针
 
-c++11 中共有四种智能指针，std::auto_ptr, std::unique_ptr, std::shared_ptr, std::weak_ptr。    
+c++11 中共有四种智能指针，`std::auto_ptr`, `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr`。    
 
-std::auto_ptr 是 c++98 时代的产物，其他几个都是 c++11 新引入的。  
-
----
-
-## 1.1 std::auto_ptr
-
-std::auto_ptr 是 c++98 残留的特性，在 c++11 被弃用 (deprecated ) 了，在 c++17 被移除了[1] 。  
-
-可以使用 c++11 新引入的 std::unique_ptr 代替 std::auto_ptr。  
+`std::auto_ptr` 是 c++98 时代的产物，其他几个都是 c++11 新引入的。  
 
 ---
 
-## 1.2 std::unique_ptr   
+## 1.1 `std::auto_ptr`
 
-它用于管理具备专属所有权的资源，意思是 std::unique_ptr 独享它指向的对象，不允许多个 std::unique_ptr 指向同个资源。   
+`std::auto_ptr` 是 c++98 残留的特性，在 c++11 被弃用 (deprecated ) 了，在 c++17 被移除了[1] 。  
 
-在条件合适的场景下，智能指针首选 std::unique_ptr，原因是它开销小，不像 std::shared_ptr 那样需要原子的维护引用计数。std::unique_ptr 的开销几乎与裸指针相当，在离开作用域的时候能自动释放内存，避免内存泄漏，所以能用 std::unique_ptr 就尽量使用。  
+可以使用 c++11 新引入的 `std::unique_ptr` 代替 `std::auto_ptr`。  
+
+---
+
+## 1.2 `std::unique_ptr`   
+
+它用于管理具备专属所有权的资源，意思是 `std::unique_ptr` 独享它指向的对象，不允许多个 `std::unique_ptr` 指向同个资源。   
+
+在条件合适的场景下，智能指针首选 `std::unique_ptr`，原因是它开销小，不像 `std::shared_ptr` 那样需要原子的维护引用计数。`std::unique_ptr` 的开销几乎与裸指针相当，在离开作用域的时候能自动释放内存，避免内存泄漏，所以能用 `std::unique_ptr` 就尽量使用。  
 
 ---
 
 ### 1.2.1 构造和移动   
 
-std::unique_ptr 的构造往往是伴随着资源占有权的转移的，所以放在一起讲。  
+`std::unique_ptr` 的构造往往是伴随着资源占有权的转移的，所以放在一起讲。  
 
-std::unique_ptr 是不允许复制的，像这样复制是不行的： 
+`std::unique_ptr` 是不允许复制的，像这样复制是不行的： 
 
 ```cpp
 std::unique_ptr<int> p1 = std::make_unique<int>(10);
@@ -63,12 +63,13 @@ std::unique_ptr<int> p2 = p1;  // 不行的，禁止这样做
 
 如果单纯的创建资源并占有资源，有两种方式：  
 
-1、使用 make_unique
+1、使用 `make_unique`
+
 ```cpp
 auto p1 = std::make_unique<int>(10);
 ```
 
-2、使用 new
+2、使用 `new`
 
 ```cpp
 std::unique_ptr<int> p1(new int(10));
@@ -81,12 +82,14 @@ std::unique_ptr<int> p1(new int(10));
 虽然不能复制，但可以被移动，有好几种移动方式。   
 
 1、用 release 释放控制并返回裸指针     
+
 ```cpp
     auto p1 = std::make_unique<int>(10);
     auto p2(p1.release());   
 ```
 
 2、用 `std::move` 触发移动构造或移动拷贝     
+
 ```cpp
     auto p1 = std::make_unique<int>(10);
     auto p2(std::move(p1));  // 触发移动构造
@@ -94,6 +97,7 @@ std::unique_ptr<int> p1(new int(10));
 ```
 
 3、用 release 释放控制，后者用 reset 重置      
+
 ```cpp
     auto p1 = std::make_unique<int>(10);
     std::unique_ptr<int> p2;
@@ -107,12 +111,14 @@ std::unique_ptr<int> p1(new int(10));
 **销毁的方式**    
  
 1、直接置空，这种情况下，会直接销毁资源。    
+
 ```cpp
 auto p1 = std::make_unique<int>(10);
 p1 = nullptr;
 ```
 
 2、调用 reset，这种情况下，会直接销毁资源。        
+
 ```cpp
 auto p1 = std::make_unique<int>(10);
 p1.reset();
@@ -121,7 +127,8 @@ p1.reset();
 **释放的方式**    
 
 1、调用 release，这种情况下，不是销毁资源，是放弃占有资源，返回一个裸指针。 
-这种要特别注意了，应该是结合资源转移来使用，而不是把 release 当成销毁资源的方式。         
+这种要特别注意了，应该是结合资源转移来使用，而不是把 release 当成销毁资源的方式。      
+
 ```cpp
 auto p1 = std::make_unique<int>(10);
 auto rawptr = p1.release();
@@ -144,9 +151,9 @@ auto rawptr = p1.release();
 
 **注意事项** 
 
-1、优先使用 std::make_shared，而非直接使用 new   
+1、优先使用 `std::make_shared`，而非直接使用 `new`   
 
-2、不要用裸指针初始化多个 shared_ptr   
+2、不要用裸指针初始化多个 `shared_ptr`   
 比如这样：  
 
 ```cpp
@@ -155,8 +162,8 @@ auto rawptr = p1.release();
     std::shared_ptr<std::string> b {sp};  // not ok, do not do this
 ```  
 
-3、容器中的 shared_ptr 要及时 erase   
-这个挺容易漏掉的，如果没有及时 erase，就会一直引用着，不会释放。    
+3、容器中的 `shared_ptr` 要及时 `erase`   
+这个挺容易漏掉的，如果没有及时 `erase`，就会一直引用着，不会释放。    
 
 
 ---
@@ -192,6 +199,7 @@ auto rawptr = p1.release();
 ## 2.4 优先使用 `make_` 函数初始化智能指针
 
 以上例子刻意用 std::make_unique 来构造 p1，而不是像这样：   
+
 ```cpp
 std::unique_ptr<int> p1(new int(10));
 ```
@@ -201,19 +209,19 @@ std::unique_ptr<int> p1(new int(10));
 1、使用 new 版本的，需要把类型写两次，比如上面就写了两次 int。  
 
 2、避免潜在的内存泄漏，《Effective Modern C++》[3] 里举了一个例子，类似这样的一种调用，`process(std::shared_ptr<Widget>(new Widget), compute());`，如果编译器生成出来的操作时序是：  
-a） 实施 new Widget    
-b） 执行 compute    
-c） 运行 std::shared_ptr 构造函数     
+a） 实施 `new Widget`   
+b） 执行 `compute`    
+c） 运行 `std::shared_ptr` 构造函数     
 
-如果 compute 执行异常，那么 new 出来的 Widget 也就内存泄漏了。  
+如果 `compute` 执行异常，那么 `new` 出来的 `Widget` 也就内存泄漏了。  
 
-第 2 点归结起来就是说，函数的参数求值允许交错，如果在 new 和构造 unique_ptr 之间插入了另一个参数的求值，并且这个参数的求值过程抛异常了，那么 new 出来的东西就内存泄漏了。 
+第 2 点归结起来就是说，函数的参数求值允许交错，如果在 `new` 和构造 `unique_ptr` 之间插入了另一个参数的求值，并且这个参数的求值过程抛异常了，那么 `new` 出来的东西就内存泄漏了。 
 
 <br/>
 
-make 系列函数还包括 std::allocate_shared，它与 std::make_shared 类似，只不过它的第一个实参是个动态内存分配器 [3]。 
+make 系列函数还包括 `std::allocate_shared`，它与 `std::make_shared` 类似，只不过它的第一个实参是个动态内存分配器 [3]。 
 
-btw，std::make_unique 是在 c++14 才被引入的，c++11 时只有 std::make_shared。 
+btw，`std::make_unique` 是在 c++14 才被引入的，c++11 时只有 `std::make_shared`。 
 
 ---
 
