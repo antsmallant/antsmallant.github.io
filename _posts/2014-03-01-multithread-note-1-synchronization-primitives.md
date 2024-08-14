@@ -666,7 +666,7 @@ pthread_mutex_unlock(&mutex);
 
 英文写作 spurious wakeups，与惊群现象有点相似，它的表现是当你在某个条件变量上等待时，等待可能（偶然地）返回而没有其他线程广播或发送该条件变量。  
 
-其原因是 “在某些多处理器系统中，使用条件唤醒完全可预测将极大的减低所有条件变量操作的速度”[14]。   
+其原因是 “在某些多处理器系统中，使条件唤醒完全可预测将极大的减低所有条件变量操作的速度”[14]。   
 
 wikipedia 对应的词条：[https://en.wikipedia.org/wiki/Spurious_wakeup](https://en.wikipedia.org/wiki/Spurious_wakeup)。  
 
