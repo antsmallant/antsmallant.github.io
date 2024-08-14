@@ -194,17 +194,18 @@ struct A {
 };
 
 A f(int x) {
-    A a(300);
+    A a(x);
     if (x == 0)
         return A(0);
     else if (x == 1)
         return A(1);
-    else
+    else {
         return a;
+    }
 }
 
 int main() {
-    A a = f(50/3);
+    A a = f(300);
     return 0;
 }
 ```
