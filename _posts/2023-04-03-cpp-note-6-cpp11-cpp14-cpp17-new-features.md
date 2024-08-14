@@ -94,7 +94,34 @@ f(nullptr);  // 调用 f(int*)
 
 ---
 
-## initializer_list
+## initializer list
+
+初始值列表，对应的标准库类型是 `std::initializer_list`，头文件是 `<initializer_list>`。  
+
+它是一个代表数组的轻量级包装器，通常用于构造函数或函数参数中，以允许传递一个初始化元素列表。可以用花括号初始化来构造 `initializer_list`，比如 `{1,2,3}` 就创建了一个数字序列，它的类型为 `std::initializer_list<int>`。 
+
+示例代码[7]：
+
+```cpp
+int sum(const std::initializer_list<int>& list) {
+    int total = 0;
+    for (auto& e : list) {
+        total += e;
+    }
+    return total;
+}
+
+auto list = {1,2,3};  // list 推导出来的类型是 std::initializer_list<int>
+sum(list);    // 结果是 6
+sum({1,2,3}); // 结果是 6
+sum({});      // 结果是 0
+```
+
+有了 `initializer_list` 之后，标准库的一些容器就可以支持使用这种类型来构造，比如 `std::vector`，在 c++11 后，加入了这样的构造函数，`vector( std::initializer_list<T> init, const Allocator& alloc = Allocator() )`。  
+
+可以这样构造一个 `vector` ：`std::vector<int> v {1,2,3}` 或 `std::vector<int> v = {1,2,3}`，效果都一样。  
+
+另外，要注意，`initializer_list` 中的值都是常量。  
 
 
 ---
