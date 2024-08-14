@@ -70,6 +70,8 @@ enum class Alert : bool { Red, Green };
 Color c = Color::Red;  
 ```
 
+---
+
 ## initializer_list
 
 
