@@ -593,6 +593,10 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 
 # 4. 同步原语--条件变量
 
+---
+
+## 4.1 条件变量的 api 及用法
+
 条件变量是用来通知共享数据状态信息的，比如可以使用条件变量来通知队列已空、或队列非空、或任何其他需要由线程处理的共享数据状态。[14] 它能用于实现协同的逻辑，其同步语义是等待。  
 
 pthread 提供了条件变量，相关的 api 如下：   
@@ -627,6 +631,7 @@ int pthread_cond_timedwait(pthread_cond_t* cond, pthread_mutex_t *mutex,
 条件变量的作用就是发信号，而不是互斥。它不提供互斥，所以需要一个互斥量来同步对共享数据的访问（包括等待的谓词）[14]。   
 
 为什么不将互斥量作为条件变量的一部分来创建？[14]   
+
 1) 互斥量不仅与条件变量一起使用，还要单独使用；  
 2) 通常一个互斥量可以与多个条件变量相关。  
 
@@ -661,14 +666,43 @@ pthread_mutex_unlock(&mutex);
 
 对于等待信号的一方，应该总是在循环里测试谓词，以避免程序错误、多处理器竞争、假唤醒。 
 
+---
 
-**假唤醒**  
+## 4.2 虚假唤醒问题
 
-英文写作 spurious wakeups，与惊群现象有点相似，它的表现是当你在某个条件变量上等待时，等待可能（偶然地）返回而没有其他线程广播或发送该条件变量。  
+虚假唤醒，即 "spurious wakeups"，与惊群现象有点相似，它的表现是一条线程在某个条件变量上 `pthread_cond_wait` 时，等待可能（偶然地）返回而没有其他线程广播或发送该条件变量[14]。  
 
-其原因是 “在某些多处理器系统中，使条件唤醒完全可预测将极大的减低所有条件变量操作的速度”[14]。   
+David R. Butenhof 在《Posix多线程程序设计》中的解释是 “在某些多处理器系统中，使条件唤醒完全可预测将极大的减低所有条件变量操作的速度”[14]。   
 
-wikipedia 对应的词条：[https://en.wikipedia.org/wiki/Spurious_wakeup](https://en.wikipedia.org/wiki/Spurious_wakeup)。  
+然而这个解释过于简单，没有讲清楚具体原因。而 wikipedia 对应的词条：[《Spurious_wakeup》](https://en.wikipedia.org/wiki/Spurious_wakeup) 以及 opengroup 上关于 spurious wakeups 的解释 [《pthread_cond_broadcast, pthread_cond_signal — broadcast or signal a condition》](https://pubs.opengroup.org/onlinepubs/9799919799/)，看起来都不靠谱。  
+
+反而知乎上邱昊宇的这个回答 [《为什么条件锁会产生虚假唤醒现象（spurious wakeup）？》](https://www.zhihu.com/question/271521213/answer/363337814) ，看起来比较有道理。他的解释引用如下：  
+
+1、没有 signal 或 broadcast，但仍然被唤醒了，这是一个系统底层实现的问题：   
+
+>pthread 的条件等待 `pthread_cond_wait` 是使用阻塞的系统调用实现的，这些阻塞的系统调用在进程被信号中断后，通常会中止阻塞，直接返回 EINTR 错误。  
+>
+>同样是阻塞系统调用，你从 `read` 拿到 EINTR 错误后可以直接决定重试，因为这通常不影响它本身的语义。而条件变量等待则不能，因为本线程拿到 EINTR 错误和重新调用 futex 等待之间，可能别的线程已经通过 `pthread_cond_signal` 或者 `pthread_cond_broadcast` 发过通知了。 
+>所以，虚假唤醒的一个可能性是条件变量的等待被信号中断。   
+
+2、有 signal 或 broadcast，但唤醒后，发现等待的条件不成立，这是一个线程调度的问题：   
+>由于线程调度的原因，被条件变量唤醒的线程在本线程内真正执行【加锁并返回】前，另一个线程插了进来，完整地进行了一套【拿锁、改条件、还锁】的操作。  
+
+
+第 2 点，按照 David R. Butenhof 书中[14]对于 "spurious wakeups" 的描述来看，算不上虚假唤醒，应该只是一种 “多处理器竞争问题”。   
+
+这篇文章 [《Spurious wake-ups in Win32 condition variables》](https://devblogs.microsoft.com/oldnewthing/20180201-00/?p=97946) 描述了 windows 下的虚假唤醒问题，文章中把上面第 2 点称为 "stolen wake-up"。    
+
+<br/>
+
+等有空还是要亲自看一下 pthread 的源码，看看 `pthread_cond_wait`，`pthread_cond_signal` 的具体实现。  
+或许先看下这篇文章：[深入了解glibc的条件变量](https://blog.csdn.net/qq_31442743/article/details/131548997)      
+
+---
+
+## 4.3 唤醒丢失问题
+
+https://zhuanlan.zhihu.com/p/652823880
 
 ---
 
@@ -721,39 +755,7 @@ https://zhuanlan.zhihu.com/p/642858416
 
 ---
 
-# 8. 参考
-
-[1] 三四. 高并发编程--线程同步. Available at https://zhuanlan.zhihu.com/p/51813695, 2019-01-04.    
-
-[2] Arpaci Dusseau. Operating-Systems: Three-Easy-Pieces. Available at https://pages.cs.wisc.edu/~remzi/OSTEP/threads-locks.pdf.   
-
-[3] Allen B. Downey. POSIX Semaphores. Available at https://eng.libretexts.org/Bookshelves/Computer_Science/Operating_Systems/Think_OS_-_A_Brief_Introduction_to_Operating_Systems_(Downey)/11%3A_Semaphores_in_C/11.01%3A_POSIX_Semaphores.   
-
-[4] ?-ldl. 多进程共享的pthread_mutex_t. Available at https://blog.csdn.net/ld_long/article/details/135732039, 2024-1-21.     
-
-[5] bw_0927. 用pthread进行进程间同步. Available at https://www.cnblogs.com/my_life/articles/4538461.html, 2015-5-29.   
-
-[6] 小石王. 使用mutex同步多进程. Available at https://www.cnblogs.com/xiaoshiwang/p/12582531.html, 2020-3-27.   
-
-[7] Wikipedia. Synchronization (computer science). Available at https://en.wikipedia.org/wiki/Synchronization_(computer_science).   
-
-[8] 勇敢的菜鸡. Mysql锁机制 - 锁类型. Available at https://blog.csdn.net/qq_39679639/article/details/127351187, 2022-10-16.    
-
-[9] geeksforgeeks. How to use POSIX semaphores in C language. Available at https://www.geeksforgeeks.org/use-posix-semaphores-c/, 2020-12-11.    
-
-[10] 若影​. Linux系统编程学习笔记——进程间的同步：信号量、互斥锁、信号. Available at https://zhuanlan.zhihu.com/p/649647971, 2023-8-12.     
-
-[11] 陈硕. Linux 多线程服务端编程. 北京: 电子工业出版社, 2013-3(2):32,33.   
-
-[12] Ulrich Drepper. Ulrich Drepper. Available at https://www.akkadia.org/drepper/futex.pdf, 2011-11-5.   
-
-[13] David R. Butenhof. Recursive mutexes by David Butenhof. Available at http://zaval.org/resources/library/butenhof1.html, 2005-5-17.  
-
-[14] [美]David R. Butenhof. POSIX多线程程序设计. 于磊, 曾刚. 北京: 中国电力出版社, 2003-4.  
-
----
-
-# 9. 示例代码
+# 8. 示例代码
 
 ---
 
@@ -1012,3 +1014,33 @@ int main()
     return 0;
 }
 ```
+
+# 9. 参考
+
+[1] 三四. 高并发编程--线程同步. Available at https://zhuanlan.zhihu.com/p/51813695, 2019-01-04.    
+
+[2] Arpaci Dusseau. Operating-Systems: Three-Easy-Pieces. Available at https://pages.cs.wisc.edu/~remzi/OSTEP/threads-locks.pdf.   
+
+[3] Allen B. Downey. POSIX Semaphores. Available at https://eng.libretexts.org/Bookshelves/Computer_Science/Operating_Systems/Think_OS_-_A_Brief_Introduction_to_Operating_Systems_(Downey)/11%3A_Semaphores_in_C/11.01%3A_POSIX_Semaphores.   
+
+[4] ?-ldl. 多进程共享的pthread_mutex_t. Available at https://blog.csdn.net/ld_long/article/details/135732039, 2024-1-21.     
+
+[5] bw_0927. 用pthread进行进程间同步. Available at https://www.cnblogs.com/my_life/articles/4538461.html, 2015-5-29.   
+
+[6] 小石王. 使用mutex同步多进程. Available at https://www.cnblogs.com/xiaoshiwang/p/12582531.html, 2020-3-27.   
+
+[7] Wikipedia. Synchronization (computer science). Available at https://en.wikipedia.org/wiki/Synchronization_(computer_science).   
+
+[8] 勇敢的菜鸡. Mysql锁机制 - 锁类型. Available at https://blog.csdn.net/qq_39679639/article/details/127351187, 2022-10-16.    
+
+[9] geeksforgeeks. How to use POSIX semaphores in C language. Available at https://www.geeksforgeeks.org/use-posix-semaphores-c/, 2020-12-11.    
+
+[10] 若影​. Linux系统编程学习笔记——进程间的同步：信号量、互斥锁、信号. Available at https://zhuanlan.zhihu.com/p/649647971, 2023-8-12.     
+
+[11] 陈硕. Linux 多线程服务端编程. 北京: 电子工业出版社, 2013-3(2):32,33.   
+
+[12] Ulrich Drepper. Ulrich Drepper. Available at https://www.akkadia.org/drepper/futex.pdf, 2011-11-5.   
+
+[13] David R. Butenhof. Recursive mutexes by David Butenhof. Available at http://zaval.org/resources/library/butenhof1.html, 2005-5-17.  
+
+[14] [美]David R. Butenhof. POSIX多线程程序设计. 于磊, 曾刚. 北京: 中国电力出版社, 2003-4.  
