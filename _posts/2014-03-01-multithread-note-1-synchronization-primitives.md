@@ -520,7 +520,7 @@ shm_unlink("/dev/shm/ourshm_tmp");
 
 recursive mutex 与 non-recursive mutex 的区别在于同一个线程可以对 non-recursive mutex 重复加锁。如果对 recursive mutex 重复加锁，会立即导致死锁。  
 
-虽然 recursive mutex 用起来更方便，不用考虑一个线程把自己锁死了。但是它可能会隐藏代码里的一些问题，典型的你以为拿到一个锁就能修改共享对象，谁知外层逻辑也已经拿到了锁，也正在修改同个对象。  
+虽然 recursive mutex 用起来更方便，不用考虑一个线程把自己锁死了。但是它可能会隐藏代码里的一些问题，比如你以为拿到一个锁就能修改共享对象，谁知外层逻辑也已经拿到了锁，也正在修改同个对象。  
 
 死锁问题比偶然的 crash 更容易调试，比如： 1）把线程的调用栈打印出来看；2）使用 PTHREAD_MUTEX_ERRORCHECK 选项进行排错。  
 
