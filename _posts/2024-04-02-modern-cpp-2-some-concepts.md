@@ -86,25 +86,33 @@ printf("0x%x\n", &(a=5));   // 在我本机上输出 0x500d58
 
 ## 1.4 定义时初始化 vs 赋值
 
-上面讲赋值表达式的时候已经提及了，定义时初始化与赋值是不同的，不能混为一谈。这个很重要，因为不同场景调用的函数是不同的，定义时初始化调用的是拷贝构造函数，而赋值调用的是赋值运算符函数。    
+上面讲赋值表达式的时候已经提及了，定义时初始化与赋值是不同的，不能混为一谈。这个很重要，因为不同场景调用的函数是不同的，定义时初始化调用的是构造函数（带参数的构造函数或者拷贝构造函数），而赋值调用的是赋值运算符函数（`operator =`）。    
 
 ```cpp
-class Dt {
-private:
-    int a;
-public:
+#include <iostream>
 
-    Dt() { a=100; }
-    Dt(int v) { a = v; } 
-    Dt(const Dt& other) { std::cout << "copy constuct" << std::endl; this->a = other.a;}  // 拷贝构造函数
-    Dt& operator = (const Dt& other) { std::cout << "operator = " << std::endl; this->a = other.a;} // 赋值运算符函数
+struct Dt {
+    int a;
+
+    // 默认构造函数
+    Dt() { a=100; std::cout << "Dt(), a = " << a << std::endl;} 
+
+    // 带参数构造函数
+    Dt(int v) : a(v)  { std::cout << "Dt(int), a = " << v << std::endl; } 
+
+    // 拷贝构造函数
+    Dt(const Dt& other) { std::cout << "Dt(const Dt&), a = " << other.a << std::endl; this->a = other.a; }  
+
+    // 赋值运算符函数
+    Dt& operator = (const Dt& other) { std::cout << "operator=(const Dt&), a = " << other.a << std::endl; this->a = other.a; return *this; }  
 };
 
 int main() {
     Dt b(1);
     Dt c(2);
-    Dt a = b;  // 定义时初始化，调用的是拷贝构造函数
-    a = c;     // 赋值，调用的是赋值运算符函数，如果有重载则使用重载的，否则使用系统默认生成的（只会做浅拷贝）
+    Dt a = b;  // 定义时初始化，调用的是拷贝构造函数 Dt(const Dt&)
+    Dt d = 10; // 定义时初始化，调用的是带参数的构造函数 Dt(int)
+    a = c;     // 赋值，调用的是赋值运算符函数 operator=(const Dt&) ，如果有重载则使用重载的，否则使用系统默认生成的（只会做浅拷贝）
     return 0;
 }
 ```
