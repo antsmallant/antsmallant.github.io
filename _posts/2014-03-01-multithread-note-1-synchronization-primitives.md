@@ -440,257 +440,16 @@ PTHREAD_MUTEX_DEFAULT    = 0
 
 示例代码1，参考自此文 [《多进程共享的pthread_mutex_t》](https://blog.csdn.net/ld_long/article/details/135732039) [4]，这段代码并不是直接用 shm* 那套 api 创建共享内存，而是直接创建一个文件，然后用 mmap 把文件映射到内存，以此实现共享内存。   
 
-```c
-// pthread_mutex_in_father_son_process.c
-
-#include <pthread.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <fcntl.h>  //open
-#include <sys/mman.h>
-#include <string.h>
-
-int id;
-
-int main()
-{
-    int fd=open("test_shared_lock_a",O_RDWR|O_CREAT,0777);
-    int result=ftruncate(fd,sizeof(pthread_mutex_t)+sizeof(pthread_mutexattr_t)+sizeof(int)*40);
-
-    pthread_mutex_t *mutex=(pthread_mutex_t *)mmap(NULL,sizeof(pthread_mutex_t)+sizeof(pthread_mutexattr_t)+sizeof(int)*40,PROT_READ|PROT_WRITE,MAP_SHARED,fd,0);
-    memset(mutex,0,sizeof(pthread_mutex_t)+sizeof(pthread_mutexattr_t)+sizeof(int)*40);
-
-    int* num=(int*)((char*)mutex+sizeof(pthread_mutex_t)+sizeof(pthread_mutexattr_t));
-    for(int i=0;i<40;i++)
-    {
-        num[i]=0;
-    }
-
-    /* 下面四行，pthread_mutexattr_t没有放在共享内存中。*/
-    pthread_mutexattr_t* attr=NULL;
-    pthread_mutexattr_t s;
-    attr=&s;
-    pthread_mutexattr_init(attr);
-    pthread_mutexattr_setpshared(attr, PTHREAD_PROCESS_SHARED);
-
-	// 上面7行如果都注释，则为不使用attr初始化mutex。
-    pthread_mutex_init(mutex,attr);
-
-	//创建39个子进程。并且每个进程获得一个id。
-    for(int i=0;i<39;i++)
-    {
-        id=i+1;
-        int pid=fork();
-        if(pid==0)
-        {
-            break;
-        }
-        else
-        {
-            if(id==39)
-            {
-                id=0;
-            }
-        }
-    }
-
-    //每个进程报告自己的pid。
-    printf("%d report!\n",getpid());
-
-    //if(id!=0)
-    {
-        //开始检测是否有多个进程同时进入临界区。
-        int j=1;
-        while(j-->0)
-        {
-            printf("%d try to lock!\n",getpid());
-            pthread_mutex_lock(mutex);
-            printf("%d get lock\n",getpid());
-            //拿到锁后，在对应位置做标记，表示自己进入临界区。
-            num[id]=1;
-            int sum=0;
-            for(int i=0;i<40;i++)
-            {
-                sum+=num[i];
-            }
-            if(sum>1)
-            {
-                printf("%d lock_failed!\n",getpid()); //如果有两个进程同时进入临界区,sum必定大于0。
-            }
-            else
-            {
-                printf("%d test_ok\n",getpid());  //如果sum为1,说明只有一个进程进入临界区。
-            }
-            num[id]=0;
-            sleep(1);
-            pthread_mutex_unlock(mutex);
-        }
-    }
-
-    return 0;
-}
-```
+代码太长，附在文后：[9.1 pthread_mutex_in_father_son_process](#91-pthread_mutex_in_father_son_process)。
 
 代码保存为：`pthread_mutex_in_father_son_process.c`。   
-编译&运行：`gcc pthread_mutex_in_father_son_process.c && ./a.out` 。     
+编译&运行：`gcc pthread_mutex_in_father_son_process.c && ./a.out`。     
 
 <br/>
 
-示例代码2，参考自此文：[《使用mutex同步多进程》](https://www.cnblogs.com/xiaoshiwang/p/12582531.html) [6]，这段代码使用 shm* 的 api 创建共享内存。      
+示例代码2，参考自此文：[《使用mutex同步多进程》](https://www.cnblogs.com/xiaoshiwang/p/12582531.html) [6]，这段代码使用 shm* 的 api 创建共享内存。    
 
-```c
-// save as : pthread_mutex_in_father_son_process2.c
-// compile and run: gcc pthread_mutex_in_father_son_process2.c && ./a.out
-
-#include <stdio.h>
-#include <pthread.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/shm.h>
-#include <sys/wait.h>
-#include <string.h>
-
-int main()
-{
-    pid_t pid;
-    int shmid;
-    int* shmptr;
-    int* tmp;
-
-    int err;
-    pthread_mutexattr_t mattr;
-    //创建mutex的属性
-    if((err = pthread_mutexattr_init(&mattr)) < 0)
-    {
-        printf("mutex addr init error:%s\n", strerror(err));
-        exit(1);
-    }
-
-    //让mutex可以同步多个进程
-    //mutex的默认属性是同步线程的，所有必须要有此行代码
-    if((err = pthread_mutexattr_setpshared(&mattr, PTHREAD_PROCESS_SHARED)) < 0)
-    {
-        printf("mutex addr get shared error:%s\n", strerror(err));
-        exit(1);
-    }
-
-    //注意：这里是个大坑，这里的mutex必须是用共享内存的方式创建，目的是父进程和子进程可以共用此mutex。
-    //否则，父进程的mutex就是父进程的，子进程的mutex就是子进程的，不能达到同步的作用。
-    pthread_mutex_t* m;
-    int mid = shmget(IPC_PRIVATE, sizeof(pthread_mutex_t), 0600);
-    m = (pthread_mutex_t*)shmat(mid, NULL, 0);
-
-    //使用mutex的属性，创建mutex
-    if((err = pthread_mutex_init(m, &mattr)) < 0)
-    {
-        printf("mutex mutex init error:%s\n", strerror(err));
-        exit(1);
-    }
-
-    //创建一个共享内存区域，让父进程和子进程往里写数据。
-    if((shmid = shmget(IPC_PRIVATE, 1000, IPC_CREAT | 0600)) < 0)
-    {
-        perror("shmget error");
-        exit(1);
-    }
-
-    //取得指向共享内存的指针
-    if((shmptr = shmat(shmid, 0, 0)) == (void*)-1)
-    {
-        perror("shmat error");
-        exit(1);
-    }
-
-    tmp = shmptr;
-
-    //创建一个共享内存，保存上面共享内存的指针
-    int shmid2;
-    int** shmptr2;
-    if((shmid2 = shmget(IPC_PRIVATE, 20, IPC_CREAT | 0600)) < 0)
-    {
-        perror("shmget2 error");
-        exit(1);
-    }
-
-    //取得指向共享内存的指针
-    if((shmptr2 = shmat(shmid2, 0, 0)) == (void*)-1)
-    {
-        perror("shmat2 error");
-        exit(1);
-    }
-    //让shmptr2指向共享内存id为shmid的首地址。
-    *shmptr2 = shmptr;
-
-    if((pid = fork()) < 0)
-    {
-        perror("fork error");
-        exit(1);
-    }
-
-    if(pid == 0)
-    {
-        //从此处开始给mutex加锁，如果加锁成功，则此期间，父进程无法取得锁
-        if((err = pthread_mutex_lock(m)) < 0)
-        {
-            printf("lock error:%s\n", strerror(err));
-            exit(1);
-        }
-        for(int i = 0; i < 30; ++i)
-        {
-            **shmptr2 = i;
-            (*shmptr2)++;
-        }
-
-        if((err = pthread_mutex_unlock(m)) < 0)
-        {
-            printf("unlock error:%s\n", strerror(err));
-            exit(1);
-        }
-        exit(0);
-
-    }
-    else
-    {
-        //从此处开始给mutex加锁，如果加锁成功，则此期间，子进程无法取得锁
-        if((err = pthread_mutex_lock(m)) < 0)
-        {
-            printf("lock error:%s\n", strerror(err));
-            exit(1);
-        }
-        for(int i = 10; i < 42; ++i)
-        {
-            **shmptr2 = i;
-            (*shmptr2)++;
-        }
-        if((err = pthread_mutex_unlock(m)) < 0)
-        {
-            printf("unlock error:%s\n", strerror(err));
-            exit(1);
-        }
-    }
-
-    //销毁子进程
-    wait(NULL);
-
-    //查看共享内存的值
-    for(int i = 0; i < 62; ++i)
-    {
-        printf("%d ", tmp[i]);
-    }
-
-    printf("\n");
-
-    //销毁mutex的属性
-    pthread_mutexattr_destroy(&mattr);
-    //销毁mutex
-    pthread_mutex_destroy(m);
-
-    exit(0);
-
-    return 0;
-}
-```
+代码太长，附在文后：[9.2 pthread_mutex_in_father_son_process2](#92-pthread_mutex_in_father_son_process2) 。 
 
 代码保存为：`pthread_mutex_in_father_son_process2.c`。    
 编译&运行：`gcc pthread_mutex_in_father_son_process2.c && ./a.out` 。     
@@ -994,6 +753,262 @@ https://zhuanlan.zhihu.com/p/642858416
 
 ---
 
-# 9. 代码附录
+# 9. 示例代码
 
-## 
+---
+
+## 9.1 pthread_mutex_in_father_son_process
+
+本段代码对应 [3.3.2.2 父子进程间使用互斥锁](#3322-父子进程间使用互斥锁) 示例1。  
+
+```c
+// pthread_mutex_in_father_son_process.c
+
+#include <pthread.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>  //open
+#include <sys/mman.h>
+#include <string.h>
+
+int id;
+
+int main()
+{
+    int fd=open("test_shared_lock_a",O_RDWR|O_CREAT,0777);
+    int result=ftruncate(fd,sizeof(pthread_mutex_t)+sizeof(pthread_mutexattr_t)+sizeof(int)*40);
+
+    pthread_mutex_t *mutex=(pthread_mutex_t *)mmap(NULL,sizeof(pthread_mutex_t)+sizeof(pthread_mutexattr_t)+sizeof(int)*40,PROT_READ|PROT_WRITE,MAP_SHARED,fd,0);
+    memset(mutex,0,sizeof(pthread_mutex_t)+sizeof(pthread_mutexattr_t)+sizeof(int)*40);
+
+    int* num=(int*)((char*)mutex+sizeof(pthread_mutex_t)+sizeof(pthread_mutexattr_t));
+    for(int i=0;i<40;i++)
+    {
+        num[i]=0;
+    }
+
+    /* 下面四行，pthread_mutexattr_t没有放在共享内存中。*/
+    pthread_mutexattr_t* attr=NULL;
+    pthread_mutexattr_t s;
+    attr=&s;
+    pthread_mutexattr_init(attr);
+    pthread_mutexattr_setpshared(attr, PTHREAD_PROCESS_SHARED);
+
+	// 上面7行如果都注释，则为不使用attr初始化mutex。
+    pthread_mutex_init(mutex,attr);
+
+	//创建39个子进程。并且每个进程获得一个id。
+    for(int i=0;i<39;i++)
+    {
+        id=i+1;
+        int pid=fork();
+        if(pid==0)
+        {
+            break;
+        }
+        else
+        {
+            if(id==39)
+            {
+                id=0;
+            }
+        }
+    }
+
+    //每个进程报告自己的pid。
+    printf("%d report!\n",getpid());
+
+    //if(id!=0)
+    {
+        //开始检测是否有多个进程同时进入临界区。
+        int j=1;
+        while(j-->0)
+        {
+            printf("%d try to lock!\n",getpid());
+            pthread_mutex_lock(mutex);
+            printf("%d get lock\n",getpid());
+            //拿到锁后，在对应位置做标记，表示自己进入临界区。
+            num[id]=1;
+            int sum=0;
+            for(int i=0;i<40;i++)
+            {
+                sum+=num[i];
+            }
+            if(sum>1)
+            {
+                printf("%d lock_failed!\n",getpid()); //如果有两个进程同时进入临界区,sum必定大于0。
+            }
+            else
+            {
+                printf("%d test_ok\n",getpid());  //如果sum为1,说明只有一个进程进入临界区。
+            }
+            num[id]=0;
+            sleep(1);
+            pthread_mutex_unlock(mutex);
+        }
+    }
+
+    return 0;
+}
+```
+
+---
+
+## 9.2 pthread_mutex_in_father_son_process2
+
+本段代码对应 [3.3.2.2 父子进程间使用互斥锁](#3322-父子进程间使用互斥锁) 示例2。  
+
+
+```c
+// save as : pthread_mutex_in_father_son_process2.c
+// compile and run: gcc pthread_mutex_in_father_son_process2.c && ./a.out
+
+#include <stdio.h>
+#include <pthread.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/shm.h>
+#include <sys/wait.h>
+#include <string.h>
+
+int main()
+{
+    pid_t pid;
+    int shmid;
+    int* shmptr;
+    int* tmp;
+
+    int err;
+    pthread_mutexattr_t mattr;
+    //创建mutex的属性
+    if((err = pthread_mutexattr_init(&mattr)) < 0)
+    {
+        printf("mutex addr init error:%s\n", strerror(err));
+        exit(1);
+    }
+
+    //让mutex可以同步多个进程
+    //mutex的默认属性是同步线程的，所有必须要有此行代码
+    if((err = pthread_mutexattr_setpshared(&mattr, PTHREAD_PROCESS_SHARED)) < 0)
+    {
+        printf("mutex addr get shared error:%s\n", strerror(err));
+        exit(1);
+    }
+
+    //注意：这里是个大坑，这里的mutex必须是用共享内存的方式创建，目的是父进程和子进程可以共用此mutex。
+    //否则，父进程的mutex就是父进程的，子进程的mutex就是子进程的，不能达到同步的作用。
+    pthread_mutex_t* m;
+    int mid = shmget(IPC_PRIVATE, sizeof(pthread_mutex_t), 0600);
+    m = (pthread_mutex_t*)shmat(mid, NULL, 0);
+
+    //使用mutex的属性，创建mutex
+    if((err = pthread_mutex_init(m, &mattr)) < 0)
+    {
+        printf("mutex mutex init error:%s\n", strerror(err));
+        exit(1);
+    }
+
+    //创建一个共享内存区域，让父进程和子进程往里写数据。
+    if((shmid = shmget(IPC_PRIVATE, 1000, IPC_CREAT | 0600)) < 0)
+    {
+        perror("shmget error");
+        exit(1);
+    }
+
+    //取得指向共享内存的指针
+    if((shmptr = shmat(shmid, 0, 0)) == (void*)-1)
+    {
+        perror("shmat error");
+        exit(1);
+    }
+
+    tmp = shmptr;
+
+    //创建一个共享内存，保存上面共享内存的指针
+    int shmid2;
+    int** shmptr2;
+    if((shmid2 = shmget(IPC_PRIVATE, 20, IPC_CREAT | 0600)) < 0)
+    {
+        perror("shmget2 error");
+        exit(1);
+    }
+
+    //取得指向共享内存的指针
+    if((shmptr2 = shmat(shmid2, 0, 0)) == (void*)-1)
+    {
+        perror("shmat2 error");
+        exit(1);
+    }
+    //让shmptr2指向共享内存id为shmid的首地址。
+    *shmptr2 = shmptr;
+
+    if((pid = fork()) < 0)
+    {
+        perror("fork error");
+        exit(1);
+    }
+
+    if(pid == 0)
+    {
+        //从此处开始给mutex加锁，如果加锁成功，则此期间，父进程无法取得锁
+        if((err = pthread_mutex_lock(m)) < 0)
+        {
+            printf("lock error:%s\n", strerror(err));
+            exit(1);
+        }
+        for(int i = 0; i < 30; ++i)
+        {
+            **shmptr2 = i;
+            (*shmptr2)++;
+        }
+
+        if((err = pthread_mutex_unlock(m)) < 0)
+        {
+            printf("unlock error:%s\n", strerror(err));
+            exit(1);
+        }
+        exit(0);
+
+    }
+    else
+    {
+        //从此处开始给mutex加锁，如果加锁成功，则此期间，子进程无法取得锁
+        if((err = pthread_mutex_lock(m)) < 0)
+        {
+            printf("lock error:%s\n", strerror(err));
+            exit(1);
+        }
+        for(int i = 10; i < 42; ++i)
+        {
+            **shmptr2 = i;
+            (*shmptr2)++;
+        }
+        if((err = pthread_mutex_unlock(m)) < 0)
+        {
+            printf("unlock error:%s\n", strerror(err));
+            exit(1);
+        }
+    }
+
+    //销毁子进程
+    wait(NULL);
+
+    //查看共享内存的值
+    for(int i = 0; i < 62; ++i)
+    {
+        printf("%d ", tmp[i]);
+    }
+
+    printf("\n");
+
+    //销毁mutex的属性
+    pthread_mutexattr_destroy(&mattr);
+    //销毁mutex
+    pthread_mutex_destroy(m);
+
+    exit(0);
+
+    return 0;
+}
+```
