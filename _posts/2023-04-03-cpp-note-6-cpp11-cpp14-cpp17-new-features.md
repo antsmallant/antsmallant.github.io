@@ -181,7 +181,7 @@ included; however, in §3.3 below we argue why auto&& is also a forwarding case 
 
 <br/>
 
-万能引用是一种特别的引用，它能够保留函数参数的 value category，使得可以通过 `std::forward` 转发函数参数的 value category[2]。不要以为 `&&` 只用于右值引用，它也被用于表示万能引用，理解这一点很关键，不然会被搞得很糊涂。   
+万能引用是一种特别的引用，它能够保留实参的 value category，使得可以通过 `std::forward` 转发实参的 value category[2]。不要以为 `&&` 只用于右值引用，它也被用于表示万能引用，理解这一点很关键，不然会被搞得很糊涂。   
 
 万能引用目前有两种场景：       
 
