@@ -33,12 +33,11 @@ copy elision，即 “复制省略”，是编译器的优化技术，包含两�
 
 ```cpp
 #include <iostream>
-using namespace std;
 
 struct A {
     int x;
-    A(int _x) { x = _x; cout << "Call A(int)" << endl; }
-    A(const A& a) { x = a.x; cout << "Call A(const A&)" << endl; }
+    A(int _x) { x = _x; std::cout << "Call A(int)" << std::endl; }
+    A(const A& a) { x = a.x; std::cout << "Call A(const A&)" << std::endl; }
 };
 
 int main() {
@@ -76,13 +75,12 @@ Call A(int)
 
 ```cpp
 #include <iostream>
-using namespace std;
 
 struct A {
     int x;
-    A(int _x) { x = _x; cout << "Call A(int)" << endl; }
-    A(const A& a) { x = a.x; cout << "Call A(const A&)" << endl; }
-    A(A&& a) { x = a.x; cout << "Call A(A&&)" << endl; }
+    A(int _x) { x = _x; std::cout << "Call A(int)" << std::endl; }
+    A(const A& a) { x = a.x; std::cout << "Call A(const A&)" << std::endl; }
+    A(A&& a) { x = a.x; std::cout << "Call A(A&&)" << std::endl; }
 };
 
 A getA() {

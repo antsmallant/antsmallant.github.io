@@ -39,16 +39,15 @@ tags: [c++ cpp]
 
 ```cpp
 #include <iostream>
-using namespace std;
 
 template<typename T>
 void p(T t) {
-    cout << "This is general type " << t << endl;
+    std::cout << "This is general type " << t << std::endl;
 }
 
 template<>
 void p<int>(int i) {
-    cout << "This is a int type " << i << endl;
+    std::cout << "This is a int type " << i << std::endl;
 }
 
 int main() {
@@ -73,14 +72,13 @@ This is a int type 20
 
 ```cpp
 #include <iostream>
-using namespace std;
 
 template<typename T1, typename T2>
 class A {
     T1 t1;
     T2 t2;
 public:
-    A(T1 _t1, T2 _t2) : t1(_t1), t2(_t2) { cout << "This is a normal template " << t1 << " " << t2 << endl; }
+    A(T1 _t1, T2 _t2) : t1(_t1), t2(_t2) { std::cout << "This is a normal template " << t1 << " " << t2 << std::endl; }
 };
 
 template<>
@@ -88,7 +86,7 @@ class A<int, int> {
     int t1;
     int t2;
 public:
-    A(int _t1, int _t2) : t1(_t1), t2(_t2) { cout << "This is a specialization template " << t1 << " " << t2 << endl; }
+    A(int _t1, int _t2) : t1(_t1), t2(_t2) { std::cout << "This is a specialization template " << t1 << " " << t2 << std::endl; }
 };
 
 int main() {
@@ -112,23 +110,22 @@ This is a specialization template 1 2
 ```cpp
 #include <iostream>
 #include <string>
-using namespace std;
 
 template<typename T>
 class A {
     T t;
 public:
     A(T _t) : t(_t) {}
-    void p() { cout << "normal version of p : " << t << endl; }
+    void p() { std::cout << "normal version of p : " << t << std::endl; }
 };
 
 template<>
 void A<int>::p() {
-    cout << "int version of p : " << t << endl;
+    std::cout << "int version of p : " << t << std::endl;
 }
 
 int main() {
-    A<string> a("hello");
+    A<std::string> a("hello");
     a.p();
 
     A<double> b(1.23);
@@ -195,14 +192,13 @@ void f(T t, int a);
 
 ```cpp
 #include <iostream>
-using namespace std;
 
 template<typename T1, typename T2>
 class A {
     T1 t1;
     T2 t2;
 public:
-    A(T1 _t1, T2 _t2) : t1(_t1), t2(_t2) { cout << "This is a normal template " << t1 << " " << t2 << endl; }
+    A(T1 _t1, T2 _t2) : t1(_t1), t2(_t2) { std::cout << "This is a normal template " << t1 << " " << t2 << std::endl; }
 };
 
 template<typename T2>
@@ -210,7 +206,7 @@ class A<int, T2> {
     int t1;
     T2 t2;
 public:
-    A(int _t1, T2 _t2) : t1(_t1), t2(_t2) { cout << "This is a partial template " << t1 << " " << t2 << endl; }
+    A(int _t1, T2 _t2) : t1(_t1), t2(_t2) { std::cout << "This is a partial template " << t1 << " " << t2 << std::endl; }
 };
 
 int main() {
@@ -290,14 +286,13 @@ f ( p );           // 调用 (b)！因为重载决议会忽略特化版本，即
 
 ```cpp
 #include <iostream>
-using namespace std;
 
 class A {
     typedef int LType;
 public:
     A() {
         A::LType a = 100;
-        cout << a << endl;
+        std::cout << a << std::endl;
     }
 };
 
@@ -311,7 +306,7 @@ int main() {
 
 类似的，经常在一些库里面看到函数的入参前加了 `typename` 关键字，它的作用就是表面后面跟着的是类型，而不是其他的。   
 
-另外，还有这样的写法：`typedef typename vector<T>::size_type size_type;`，这里的含义就是 `typedef` 定义了一个名为 `size_type` 的别名，它指代 `typename vector<T>::size_type`。`typename` 的作用就是声明 `vector<T>::size_type` 是类型，而不是其他的。  
+另外，还有这样的写法：`typedef typename std::vector<T>::size_type size_type;`，这里的含义就是 `typedef` 定义了一个名为 `size_type` 的别名，它指代 `typename std::vector<T>::size_type`。`typename` 的作用就是声明 `std::vector<T>::size_type` 是类型，而不是其他的。  
 
 ---
 

@@ -223,8 +223,8 @@ Bjarne Stroustrup 觉得上面的分类很混乱，自己尝试对表达式的�
 int r = 100;
 int&& r1 = r;            // 不合法，r 是一个左值
 int&& r2 = 100;          // 合法，100 是一个右值
-string&& s1 {"hello"};   // 合法，"hello" 是一个右值
-string&& s2 {s1};        // 不合法，s1 是一个左值，"string 右值引用" 只是它的类型，它本质是上一个左值，它是有地址（内存位置）的，这点很容易犯错
+std::string&& s1 {"hello"};   // 合法，"hello" 是一个右值
+std::string&& s2 {s1};        // 不合法，s1 是一个左值，"string 右值引用" 只是它的类型，它本质是上一个左值，它是有地址（内存位置）的，这点很容易犯错
 
 int x = 100;
 int&& x1 = ++x;          // 不合法，++x 返回的是左值
@@ -251,7 +251,7 @@ int& refi2;     // 不合法
 
 ```cpp
 int& i = 100;           // 不合法
-string& s {"hello"};    // 不合法
+std::string& s {"hello"};    // 不合法
 ```
 
 ---
@@ -262,25 +262,25 @@ const 引用是一种特殊的左值引用，与常规左值引用的区别在�
 
 ```cpp
 const int& i1 = 100;        // 合法，相当于：int temp = 100; const int& i1 = temp;
-const string& s1 {"hello"}; // 合法，相当于：string temp {"hello"}; const string& s1 {temp};
+const std::string& s1 {"hello"}; // 合法，相当于：std::string temp {"hello"}; const std::string& s1 {temp};
 ```
 
 c++ 只会为 const 引用产生临时对象，不会对非 const 引用产生临时对象，这一特性导致了一些容易让人困惑的现象：  
 
 ```cpp
-void f1(const string& s) {
-    cout << s << endl;
+void f1(const std::string& s) {
+    std::cout << s << std::endl;
 }
 
-void f2(string& s) {
-    cout << s << endl;
+void f2(std::string& s) {
+    std::cout << s << std::endl;
 }
 
 f1("hello");   // 正常，"hello" 转换成 string 类型的临时对象，临时对象可以被 const 引用 引用
 f2("hello");   // 编译报错，"hello" 转换成 string 类型的临时对象，临时对象不可以被 左值引用 引用
                // 会报类似这样的编译错误：no known conversion from 'const char[2]' to 'string &'
 
-string s = "hello";
+std::string s = "hello";
 f1(s);         // 正常，一个左值可以被 左值引用 所引用
 f2(s);         // 正常，一个左值可以被 const引用 所引用
 ```
@@ -309,56 +309,55 @@ f2(s);         // 正常，一个左值可以被 const引用 所引用
 
 #include <iostream>
 #include <vector>
-using namespace std;
 
 class A {
 private:
-    vector<int>* p;
+    std::vector<int>* p;
 public:
     A() {
-        cout << "A 构造函数，无参数" << endl;
-        p = new vector<int>();
+        std::cout << "A 构造函数，无参数" << std::endl;
+        p = new std::vector<int>();
     }
     // 构造函数
     A(int cnt, int val) {
-        cout << "A 构造函数，带参数" << endl;
-        p = new vector<int>(cnt, val);
+        std::cout << "A 构造函数，带参数" << std::endl;
+        p = new std::vector<int>(cnt, val);
     }
     // 析构函数
     ~A() {
         if (p != nullptr) {
             delete p;
             p = nullptr;
-            cout << "A 析构函数，释放 p" << endl;
+            std::cout << "A 析构函数，释放 p" << std::endl;
         } else {
-            cout << "A 析构函数，不需要释放 p" << endl;
+            std::cout << "A 析构函数，不需要释放 p" << std::endl;
         }
     }
     // 拷贝构造函数
     A(const A& other) {
-        cout << "A 拷贝构造函数" << endl;
-        p = new vector<int>(other.p->begin(), other.p->end());
+        std::cout << "A 拷贝构造函数" << std::endl;
+        p = new std::vector<int>(other.p->begin(), other.p->end());
     }
     // 拷贝赋值运算符
     A& operator = (const A& other) {
-        cout << "A 拷贝赋值运算符" << endl;
+        std::cout << "A 拷贝赋值运算符" << std::endl;
         if (p != nullptr) {
-            cout << "A 拷贝赋值前释放旧内存" << endl;
+            std::cout << "A 拷贝赋值前释放旧内存" << std::endl;
             delete p;
             p = nullptr;
         }
-        p = new vector<int>(other.p->begin(), other.p->end());       
+        p = new std::vector<int>(other.p->begin(), other.p->end());       
         return *this;
     }
     // 移动构造函数
     A(A&& other) noexcept {
-        cout << "A 移动构造函数" << endl;
+        std::cout << "A 移动构造函数" << std::endl;
         this->p = other.p;  // 挪用别人的
         other.p = nullptr;  // 置空别人的
     }
     // 移动赋值运算符
     A& operator = (A&& other) noexcept {
-        cout << "A 移动赋值运算符" << endl;
+        std::cout << "A 移动赋值运算符" << std::endl;
         this->p = other.p; 
         other.p = nullptr;  
         return *this;
@@ -390,16 +389,16 @@ void test_move_assign_operator() {
 }
 
 int main() {
-    cout << "测试拷贝构造: " << endl;
+    std::cout << "测试拷贝构造: " << std::endl;
     test_copy_constructor();
 
-    cout << endl << "测试拷贝赋值运算符: " << endl;
+    std::cout << std::endl << "测试拷贝赋值运算符: " << std::endl;
     test_copy_assign_operator();
 
-    cout << endl << "测试移动构造: " << endl;
+    std::cout << std::endl << "测试移动构造: " << std::endl;
     test_move_constructor();
 
-    cout << endl << "测试移动赋值运算符: " << endl;
+    std::cout << std::endl << "测试移动赋值运算符: " << std::endl;
     test_move_assign_operator();
 
     return 0;
@@ -496,7 +495,7 @@ void test_move_constructor_use_stdmove() {
 }
 
 int main() {
-    cout << endl << "使用 std::move 测试移动构造：" << endl;
+    std::cout << std::endl << "使用 std::move 测试移动构造：" << std::endl;
     test_move_constructor_use_stdmove();
 }
 ```

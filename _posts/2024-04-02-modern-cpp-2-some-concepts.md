@@ -96,8 +96,8 @@ public:
 
     Dt() {a=100;}
     Dt(int v) {a = v;}
-    Dt(const Dt& other) {cout << "copy constuct" << endl; this->a = other.a;}  // 拷贝构造函数
-    Dt& operator = (const Dt& other) {cout << "operator = " << endl; this->a = other.a;} // 赋值运算符函数
+    Dt(const Dt& other) { std::cout << "copy constuct" << std::endl; this->a = other.a;}  // 拷贝构造函数
+    Dt& operator = (const Dt& other) { std::cout << "operator = " << std::endl; this->a = other.a;} // 赋值运算符函数
 };
 
 int main() {
@@ -150,7 +150,7 @@ struct S {
 
 int S::* pa = &S::a;
 S s;
-cout << s.*pa;
+std::cout << s.*pa;
 ```
 
 完整例子参考自 cppreference ： [https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_pointer-to-member_access_operators](https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_pointer-to-member_access_operators)     
@@ -414,7 +414,7 @@ public:
 };
 
 void S::f() const {   // 定义处也要写上 const
-    cout << a << endl;
+    std::cout << a << std::endl;
 }
 ```
 

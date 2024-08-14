@@ -154,12 +154,11 @@ python 的 hello world，代码链接：https://gcc.godbolt.org/z/8jM3d37dE 。
 
 ```cpp
 #include <iostream>
-using namespace std;
 
 class C0 {
 public:
-    void c0f1() {cout << "c0 c0f1" << endl;}
-    virtual void c0f2() {cout << "c0 c0f2" << endl;}
+    void c0f1() { std::cout << "c0 c0f1" << std::endl;}
+    virtual void c0f2() { std::cout << "c0 c0f2" << std::endl;}
     int c0a {10};
 };
 

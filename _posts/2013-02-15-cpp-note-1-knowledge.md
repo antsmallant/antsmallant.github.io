@@ -73,9 +73,9 @@ int main() {
 ```cpp
 struct S {
     int a;
-    S() { cout << "S 构造" << endl; }
-    S(const S& other) { cout << "S 拷贝构造" << endl; this->a = other.a; }
-    ~S() { cout << "S 析构" << endl; }
+    S() { std::cout << "S 构造" << std::endl; }
+    S(const S& other) { std::cout << "S 拷贝构造" << std::endl; this->a = other.a; }
+    ~S() { std::cout << "S 析构" << std::endl; }
 };
 
 void f(S s) {(void)s;}
@@ -168,7 +168,6 @@ c 可以使用 `_Alignof`，c++ 可以使用 `alignof`。
 
 ```cpp
 #include <iostream>
-using namespace std;
 
 struct A {
     char c;
@@ -177,8 +176,8 @@ struct A {
 };
 
 int main() {
-    cout << sizeof(A) << endl;
-    cout << alignof(A) << endl;
+    std::cout << sizeof(A) << std::endl;
+    std::cout << alignof(A) << std::endl;
     return 0;
 }
 ```
@@ -243,16 +242,15 @@ vector 不会主动缩容，需要使用某些技巧来释放。
 
 #include <iostream>
 #include <vector>
-using namespace std;
 
 int main() {
-    vector<int> a(100, 1);
+    std::vector<int> a(100, 1);
     printf("before, size:%ld, cap:%ld\n", a.size(), a.capacity());
     
     a.resize(5);
     printf("after resize, size:%ld, cap:%ld\n", a.size(), a.capacity());
     
-    vector<int>(a).swap(a);
+    std::vector<int>(a).swap(a);
     printf("after shrink, size:%ld, cap:%ld\n", a.size(), a.capacity());
     return 0;
 }
