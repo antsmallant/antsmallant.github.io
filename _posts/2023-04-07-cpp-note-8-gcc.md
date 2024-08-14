@@ -11,7 +11,7 @@ tags: [c++ cpp gcc g++]
 {:toc}
 <br/>
 
-本文记录 gcc 与 g++ 的相关信息  
+本文记录 gcc 与 g++ 的相关信息。  
 
 ---
 
