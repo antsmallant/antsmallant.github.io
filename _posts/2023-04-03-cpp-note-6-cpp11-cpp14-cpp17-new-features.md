@@ -127,7 +127,49 @@ sum({});      // 结果是 0
 
 ## auto
 
+auto 声明的变量的类型可以由编译器根据初化值进行类型推导(deduce)，这个是在编译期间决定的。  
 
+示例[7]：   
+
+```cpp
+auto a = 3.14;  // double
+auto b = 1; //int
+auto& c = b; // int&
+auto d = { 0 };  // std::initializer_list<int>
+auto&& e = 1;  // int&&
+auto&& f = b;  // int&
+auto g = new auto(123); // int*
+const auto h = 1; // const int
+auto i = 1, j = 2, k = 3;  // int, int, int
+auto l = 1, m = true, n = 1.61;  // 错误，`l` 推导为 int，但 `m` 是一个 bool，推导结果不一致
+auto o;  // 错误，需要给出初始化值
+```
+
+可以用于声明容器的 iterator 变量，代码简洁很多[7]：   
+
+```cpp
+std::vector<int> vec {1,2,3};
+std::vector<int>::iterator oldstyle_iter = vec.begin(); // 旧的方式
+auto iter = vec.begin();  // 新的方式比旧的方式简洁特别多
+```
+
+也可以用于推导函数的返回值，比如这样： 
+
+```cpp
+// in c++11
+auto f(int a, int b) -> decltype(a+b) {
+    return a+b;
+}
+```
+
+但看起来挺麻烦的，还不如不要这么写。不过，在 c++14 中，就可以省掉后面的 `decltype` 了，c++14 支持 "return value deduce" 了。直接这样就行： 
+
+```cpp
+// in c++14
+auto f(int a, int b) {
+    return a+b;
+}
+```
 
 使用 `auto` 的原则：能一眼看出是什么类型的就用 `auto`，否则不用。比如 Stroustrup 举的这个例子[1]： 
 
