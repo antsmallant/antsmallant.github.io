@@ -297,7 +297,7 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 
 ## 1.10 long long
 
-正式加入 long long，表示 (at leatst) 64 位的整数。完整的整数类型及对应的宽度规定的定义如下，参考自 [cppreference: types](https://en.cppreference.com/w/cpp/language/types) [5]：  
+正式加入 long long，表示 (at leatst) 64 位的整数。整数类型及对应的宽度规定如下，参考自 [cppreference types](https://en.cppreference.com/w/cpp/language/types) [5]：  
 
 <br/>
 <div align="center">
@@ -376,3 +376,5 @@ LP64 表示 long、pointer 的宽度是 64 位。
 [4] [美]Scott Meyers. Effective Modern C++(中文版). 高博. 北京: 中国电力出版社, 2018-4.  
 
 [5] cppreference. types. Available at https://en.cppreference.com/w/cpp/language/types.    
+
+[6] wikipedia. 64-bit computing. Available at https://en.wikipedia.org/wiki/64-bit_computing#64-bit_data_models.    
