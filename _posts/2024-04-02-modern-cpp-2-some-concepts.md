@@ -94,8 +94,8 @@ private:
     int a;
 public:
 
-    Dt() {a=100;}
-    Dt(int v) {a = v;}
+    Dt() { a=100; }
+    Dt(int v) { a = v; } 
     Dt(const Dt& other) { std::cout << "copy constuct" << std::endl; this->a = other.a;}  // 拷贝构造函数
     Dt& operator = (const Dt& other) { std::cout << "operator = " << std::endl; this->a = other.a;} // 赋值运算符函数
 };
@@ -141,7 +141,7 @@ f(a);            // a 是实参
 
 类成员变量指针或类成员函数指针。  
 
-比如一个类 S 有个成员变量 mi，那么可以用一个指针把这个成员变量保存起来，之后用这个指针来指代这个成员变量。成员函数也是同理。  
+比如一个类 `S` 有个成员变量 `mi`，那么可以用一个指针把这个成员变量保存起来，之后用这个指针来指代这个成员变量。成员函数也是同理。  
 
 ```cpp
 struct S {
