@@ -327,10 +327,19 @@ LP64 表示 long、pointer 的宽度是 64 位。
 
 ## 1.11 nullptr
 
-用以代替
+nullptr 是 c++11 新引入的空指针值，用于代替 c style 的 NULL 宏，以解决 NULL 相关的歧义问题。    
 
+nullptr 对应的类型是 std::nullptr_t，它可以隐性的转换成指针类型或 bool 类型，但不可转换为整数类型（NULL 可以，这也是它会造成歧义的原因）。   
 
+比如这样： 
 
+```cpp
+void f(int);
+void f(int*);
+
+f(NULL);     // 错误，不确定调用哪个好
+f(nullptr);  // 调用 f(int*)
+```
 
 ---
 
