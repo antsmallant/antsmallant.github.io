@@ -270,7 +270,7 @@ double m2 = mean(samples.begin(), samples.end(), &Sample::y);
 
 RAII 即 Resource acquisition is initialization，资源获取即初始化。它是利用局部对象自动销毁的特性来控制资源的生命期，即分配在栈上的类对象，在栈空间被回收的时候，这些类对象的析构函数会被自动调用。  
 
-**问题一：为什么析构函数会被自动调用？**   
+**问题一：为什么析构函数会被自动调用？**     
 
 答：编译器在编译的时候自动加进去的。  
 
@@ -317,7 +317,7 @@ f():
 
 <br/>
 
-**问题二：如果发生了异常怎么办？RAII 机制会否失效？**
+**问题二：如果发生了异常怎么办？RAII 机制会否失效？**     
 
 这个要取决于异常是否被捕捉，如果异常直接导致整个程序 abort 了，那么栈空间也无所谓回收了，自然就不会调用析构函数。如果捕捉了异常，程序不会 abort，那么栈空间可以保证被回收，此时分配在上面的类对象都会被调用析构。  
 
@@ -374,7 +374,7 @@ dynamic_cast 可以作用于指针或引用。当转换失败时，如果是指�
 
 <br/>
 
-**3、几篇不错的参考**
+**3、几篇不错的参考**    
 
 * [四种强制类型转换](https://github.com/YKitty/Notes/blob/master/notes/C++/%E5%9B%9B%E7%A7%8D%E5%BC%BA%E5%88%B6%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2.md)
 * [dynamic_cast背着你偷偷做了什么](https://blog.csdn.net/D_Guco/article/details/106033180)
