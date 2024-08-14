@@ -13,15 +13,15 @@ tags: [c++ cpp]
 
 本文记录 c++11、c++14、c++17 的新特性。  
 
-c++11 是一个 major 版本，带来了大量的新变化，在很多年的时间里，它也一直被称为 c++0x。  
+* c++11 是一个 major 版本，带来了大量的新变化，在很多年的时间里，它也一直被称为 c++0x。  
 
-c++14 是一个 minor 版本，主要是对于 c++11 一些不完善之处的补充。  
+* c++14 是一个 minor 版本，主要是对于 c++11 一些不完善之处的补充。  
 
-c++17 是一个 "中" 版本，它本来应该是一个 major 版本的，不过它也有不少的新变化。  
+* c++17 是一个 "中" 版本，它本来应该是一个 major 版本的，不过它也有不少的新变化。  
 
 虽然每个版本单独一篇文章会更简练，但是有些特性在几个版本中会有演化和改进，放一起说会更集中一些，所以以下的描述并不一定会严格按照版本进行区分。    
 
-而 c++20 又是一个 major 版本，变化太多了，应该另起一文记录，所以不包含在本文范围。  
+而 c++20 又是一个 major 版本，变化太多了，所以另起一文记录。  
 
 ---
 
@@ -293,6 +293,40 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 
 * 《modern effective c++》[4] 的条款 28，此书有纸质版，也有网友翻译的版本，见：[条款二十八：理解引用折叠](https://github.com/CnTransGroup/EffectiveModernCppChinese/blob/master/src/5.RRefMovSemPerfForw/item28.md) 。    
 
+---
+
+## 1.10 long long
+
+正式加入 long long，表示 (at leatst) 64 位的整数。完整的整数类型及对应的宽度规定的定义如下，参考自 [cppreference: types](https://en.cppreference.com/w/cpp/language/types) [5]：  
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/cpp-integral-type-width.png"/>
+</div>
+<br/>
+
+LP32 / LP64 之类的代表 data model，规定如下，参考自 [wikipedia 64-bit data models](https://en.wikipedia.org/wiki/64-bit_computing#64-bit_applications) [6]:   
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/cpp-integral-64bit-data-model.png"/>
+</div>
+<br/>
+
+I 表示 int，L 表示 long，LL 表示 long long，P 表示 pointer。  
+
+LP32 表示 long、pointer 的宽度是 32 位。    
+ILP32 表示 int、long、pointer 的宽度是 32 位。   
+ILP64 表示 int、long、pointer 的宽度是 64 位。  
+LLP64 表示 long long、pointer 的宽度是 64 位。  
+LP64 表示 long、pointer 的宽度是 64 位。  
+
+---
+
+## 1.11 std::nullptr_t
+
+
+
 
 ---
 
@@ -340,3 +374,5 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 [3] open-std. Forwarding References. https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4164.pdf.   
 
 [4] [美]Scott Meyers. Effective Modern C++(中文版). 高博. 北京: 中国电力出版社, 2018-4.  
+
+[5] cppreference. types. Available at https://en.cppreference.com/w/cpp/language/types.    
