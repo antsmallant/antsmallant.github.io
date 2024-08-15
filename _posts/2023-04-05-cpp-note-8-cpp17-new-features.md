@@ -39,10 +39,6 @@ std::vector vec {1,2,3};
 
 ---
 
-## 
-
----
-
 ## 嵌套的命名空间 (nested namespace)
 
 ```cpp
