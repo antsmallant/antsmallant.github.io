@@ -305,7 +305,8 @@ decltype(c) d = a;   // decltype(c) 是 `const int&` 型
 decltype(123) e = 10; // decltype(123) 是 `int` 型
 int&& f = 1;          // f 定义为 `int&&` 型
 decltype(f) g = 1;    // decltype(f) 是 `int&&` 型
-decltype((a)) h = g;  // decltype((a)) 是 `int&` 型，因为 (a) 是用圆括号包起来的 lvalue，按照规则，返回的就是 T& 型
+decltype((a)) h = g;  // decltype((a)) 是 `int&` 型，
+                      // 因为 (a) 是用圆括号包起来的 lvalue，按照规则返回的就是 T& 型
 
 ```
 
@@ -730,7 +731,7 @@ auto&& w1 = w;    // w1 的类型是 Widget& 。由于 w 是左值，此时 auto
 
 auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返回了右值，此时 auto 被推导为 Widget，
                          // 代入得 Widget&& w2 = w，不需要引用折叠。  
-                         
+
 ```
 
 <br/>
