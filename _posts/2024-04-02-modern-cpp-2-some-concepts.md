@@ -478,7 +478,7 @@ catch by value 的方式可能会发生切割，当抛出的是派生类，而�
 
 FCD 是 Final Committee Draft 的缩写，即最终委员会草案，它是草案（draft）的一个阶段（ Document stage ）。   
 
-比如 C++0x Final Committee Draft :  https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3094.pdf 。  
+比如 C++0x Final Committee Draft :  [https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3094.pdf](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3094.pdf) 。  
 
 C++0x 是 C++11 标准正为正式标准前的草案临时名字。   
 
