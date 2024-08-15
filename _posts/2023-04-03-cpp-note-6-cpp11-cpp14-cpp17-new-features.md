@@ -70,6 +70,10 @@ Color c = Color::Red;
 
 ---
 
+## 类内初始值 (in-class initializer)
+
+---
+
 ## nullptr
 
 `nullptr` 是 c++11 新引入的空指针字面值，用于代替 c style 的 `NULL` 宏，以解决 `NULL` 相关的歧义问题。    
