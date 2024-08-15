@@ -289,6 +289,13 @@ Ptr<int> x;       // x 的类型是 int*
 
 `decltype` 是一个运算符，它可以返回传递给它的表达式的声明类型，如果表达式有 const/volatile 修饰符或引用，也会被保留下来。  
 
+`decltype` 总体上分为两种情况处理： 
+1）参数不是以圆括号括起来的 (unparenthesized) id 表达式（id-expression） 或 类成员访问表达式 (class member access expression)，则返回的是这个表达式对应的实体的类型。  
+2）除1）的情况外，则：
+    2.1）如果表达式是将亡值 (xvalue)，则返回 T&&；    
+    2.2）如果表达式是左值(lvalue)，则返回 T&;    
+    2.3）如果表达式是纯右值（prvalue），则返回 T。   
+
 示例[7]：  
 
 ```cpp
@@ -299,8 +306,8 @@ decltype(c) d = a;   // decltype(c) 是 `const int&` 型
 decltype(123) e = 10; // decltype(123) 是 `int` 型
 int&& f = 1;          // f 定义为 `int&&` 型
 decltype(f) g = 1;    // decltype(f) 是 `int&&` 型
-decltype((a)) h = g;  // decltype((a)) 是 `int&` 型 (？？todo 为什么会是 int&) 
-                      // https://stackoverflow.com/questions/17241614/what-expressions-yield-a-reference-type-when-decltype-is-applied-to-them
+decltype((a)) h = g;  // decltype((a)) 是 `int&` 型，因为 (a) 是用圆括号包起来的 lvalue，按照规则，返回的就是 T& 型
+                      // 
 ```
 
 ```cpp
@@ -310,6 +317,12 @@ auto add(X x, Y y) -> decltype(x+y) {
 }
 add(1, 2.0); // decltype(x+y) => decltype(3.0) => double
 ```
+
+<br/>
+
+拓展阅读： 
+
+[What expressions yield a reference type when decltype is applied to them?](https://stackoverflow.com/questions/17241614/what-expressions-yield-a-reference-type-when-decltype-is-applied-to-them)     
 
 ---
 
@@ -786,3 +799,5 @@ namespace A::B::C {
 [7] AnthonyCalandra. C++11. Available at https://github.com/AnthonyCalandra/modern-cpp-features/blob/master/CPP11.md.    
 
 [8] cppreference. Type alias, alias template. Available at https://en.cppreference.com/w/cpp/language/type_alias.   
+
+[9] cppreference. decltype specifier. Available at https://en.cppreference.com/w/cpp/language/decltype.  
