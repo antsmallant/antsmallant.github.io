@@ -349,6 +349,46 @@ std::cout << std::is_lvalue_reference<decltype((a))>::value << std::endl; // 输
 
 ## constexpr
 
+constexpr 即 constant expression 的缩写，是 c++11 新引入的关键字，用于修饰变量或函数，一来表明是常量值，二来表明变量或函数【可能】可以在编译期求值。  
+
+与 const 的区别：const 并未区分编译期和运行期，而 constexpr 限定了编译期。 
+
+但是，constexpr 修饰的函数，如果传入参数后能在编译期计算出来，那么这个函数就会产生编译时期的值。否则，就当成一个普通函数在运行时正常调用。  
+
+示例[7]:   
+
+```cpp
+constexpr int square(int x) {
+    return x*x;
+}
+
+int square2(int x) {
+    return x*x;
+}
+
+int main() {
+
+    // 编译期就算出了 square(2) 的值是 4，
+    // 所以直接把结果赋值给变量 a， -4(%rbp) 即是 a 在栈上的地址
+    // movl    $4, -4(%rbp)
+    int a = square(2);   
+
+    // 运行期调用 square2， 
+    // movl    $2, %edi          ; 把参数放进 %edi 寄存器
+    // call    square2(int)      ; 执行函数调用
+    // movl    %eax, -8(%rbp)    ; 把函数返回值赋给变量 a，-8(%rbp) 即是 a 在栈上的地址
+    int b = square2(2); 
+
+    return 0;
+}
+```
+
+可以用一个小办法检测 constexpr 
+
+https://www.zhihu.com/question/35614219/answer/63798713  
+
+const 不一定是只读，const 是潜在的常量表达式，具体就是：如果初始化式用的是常量表达式，const 就是常量表达式，否则就是运行时的只读。constexpr 也是潜在的常量表达式，只是和 const 有些许区别：对于变量，必定是常量表达式，因为它只允许初始化式为常量表达式否则编译错误；对于函数，如果在调用的地方使用的所有实参都是常量表达式，函数就是常量表达式函数，否则就是非常量表达式
+
 ---
 
 ## range-based for loop
