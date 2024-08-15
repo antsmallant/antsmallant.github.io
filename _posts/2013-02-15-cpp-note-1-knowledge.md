@@ -347,6 +347,9 @@ const-volatile-qualified  ：同时被 const / volatile 修饰的
 
 # todo
 
+* 什么是 trivial，什么是 non-trivial ？
+
+
 * extern 的作用是什么？  
 
 参考：[c++全局变量extern](https://zhuanlan.zhihu.com/p/658392228)    
@@ -360,16 +363,10 @@ const-volatile-qualified  ：同时被 const / volatile 修饰的
 * xvalue 具体是怎么形成的？
 
 
-* 什么情况下会用到右值引用？返回右值引用意味着什么？
+* 返回右值引用意味着什么？
 
 
 * 为什么 string literal 是一种 lvalue？
-
-
-* 初始化列表是什么意思？   
-
-
-* 什么是结构化绑定？有性能损耗吗？  
 
 
 * 什么是 emplace_back ？它的作用是什么？ 
@@ -389,15 +386,7 @@ const-volatile-qualified  ：同时被 const / volatile 修饰的
 [Why aren't variable-length arrays part of the C++ standard?](https://stackoverflow.com/questions/1887097/why-arent-variable-length-arrays-part-of-the-c-standard)   
 
 
-* 什么是虚函数？什么是纯虚函数？
-
-
-* `auto&` 是一种好的写法吗？
-
-
-* auto& vs auto
-
-[C++ auto& vs auto - Stack Overflow](https://stackoverflow.com/questions/29859796/c-auto-vs-auto)
+* 为什么要定义纯虚函数？  
 
 
 * 什么是别名声明？  
