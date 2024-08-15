@@ -260,9 +260,48 @@ int main() {
 
 ## 1.12 声明 (declaration) 与定义 (definition)
 
+以下引用（或参考）自《C++ Primer 中文版（第 5 版）》[6]。  
+
 为了支持分离式编译(separate compilation)，c++ 需要把声明(declaration)与定义(definition)分开。一个程序若想使用在别处定义的名字，则必须包含对那个名字的声明。而定义则负责创建与名字关联的实体。  
 
-准确的表述，声明是告诉编译器变量的类型和名称，定义是创建一个实体，为对象分配内存。声明可以有多处，定义只能一处。  
+### 变量声明和定义
+
+变量声明和定义都规定了变量的类型和名字，除此之外，定义还申请存储空间，也可能会为变量赋一个初始值。   
+
+如果想要声明变量而非定义它，就在变量名前添加关键字 extern，而且不要显式地初始化变量，任何显式初始化的声明即成为定义。  
+
+示例：  
+
+```cpp
+extern int i;      // 声明 i
+int j;             // 定义 j
+int k = 1;         // 定义 k 并赋初始值 1
+
+extern int m = 10; // 定义 m 并赋初始值 10，给 extern 标记的变量赋初始值是 ok 的，但会抵消 extern 的作用，
+                   // 并且，在函数体内这么做会报错
+```
+
+如果要在多个文件中使用同一个变量，就必须将声明和定义分离，变量的定义必须且只能出现在一个文件中，而其他用到该变量的文件必须对其进行声明，绝对不能重复定义。   
+
+归纳如下：  
+
+1、相同点    
+都规定了类型和名字。    
+
+2、不同点    
+1）声明不可以赋初始值，定义可以赋初始值。     
+2）声明要加 extern 标记，定义不用。     
+3）声明可以出现在多个文件，定义只能且必须出现在一个文件。    
+
+
+### 函数的声明和定义    
+
+
+
+
+### 为什么可以分离式编译呢？   
+
+因为编译时，若使用了在别处定义的名字，只需要知道名字跟类型信息就行了，不需要具体的定义；在链接的时候，再通过名字去别处搜寻定义所在的位置，用这个位置替换掉名字即可（只是大概描述，具体的静态链接与动态链接的处理手法是不同的）。   
 
 ---
 
@@ -282,22 +321,6 @@ volatile-qualified        ：被 volatile 修饰的
 const-volatile-qualified  ：同时被 const / volatile 修饰的      
 
 ---
-
-# 3. 参考
-
-[1] SkyFire. 编译期多态. Available at https://xie.infoq.cn/article/829d74dcd8d19aa613f8da059, 2023-01-28.    
-
-[2] Holy Chen. C++中虚函数、虚继承内存模型. Available at https://zhuanlan.zhihu.com/p/41309205, 2018-08-07.    
-
-[3] wikipedia. Data structure alignment. Available at https://en.wikipedia.org/wiki/Data_structure_alignment.  
-
-[4] [美]Randal E. Bryant, David R. O'Hallaron. 深入理解计算机系统(原书第3版). 龚奕利, 贺莲. 北京: 机械工业出版社, 2022-6(1): 189.      
-
-[5] cppreference. cv (const and volatile) type qualifiers. Available at https://en.cppreference.com/w/cpp/language/cv.   
-
-
----
-
 
 # todo
 
@@ -329,13 +352,10 @@ const-volatile-qualified  ：同时被 const / volatile 修饰的
 * 什么是 emplace_back ？它的作用是什么？ 
 
 
-
 * type_traits 的作用是什么？  
 
 
-
 * constexpr 与 const 的区别是什么？
-
 
 
 * const 相对于 define 有何好处？
@@ -344,7 +364,6 @@ const-volatile-qualified  ：同时被 const / volatile 修饰的
 * c99 支持 VLA，那么 c++ 支持吗？ 
 
 [Why aren't variable-length arrays part of the C++ standard?](https://stackoverflow.com/questions/1887097/why-arent-variable-length-arrays-part-of-the-c-standard)   
-
 
 
 * 什么是虚函数？什么是纯虚函数？
@@ -366,3 +385,20 @@ https://www.cnblogs.com/wickedpriest/p/14696909.html
 
 
 * c++17 中对于 value categories 做了哪些修改？  
+
+---
+
+# 3. 参考
+
+[1] SkyFire. 编译期多态. Available at https://xie.infoq.cn/article/829d74dcd8d19aa613f8da059, 2023-01-28.    
+
+[2] Holy Chen. C++中虚函数、虚继承内存模型. Available at https://zhuanlan.zhihu.com/p/41309205, 2018-08-07.    
+
+[3] wikipedia. Data structure alignment. Available at https://en.wikipedia.org/wiki/Data_structure_alignment.  
+
+[4] [美]Randal E. Bryant, David R. O'Hallaron. 深入理解计算机系统(原书第3版). 龚奕利, 贺莲. 北京: 机械工业出版社, 2022-6(1): 189.      
+
+[5] cppreference. cv (const and volatile) type qualifiers. Available at https://en.cppreference.com/w/cpp/language/cv.   
+
+[6] [美] Stanley B. Lippman, Josée Lajoie, Barbara E. Moo. C++ Primer 中文版（第 5 版）. 王刚, 杨巨峰. 北京: 电子工业出版社, 2013-9: 120, 144, 154, 182, 730.     
+
