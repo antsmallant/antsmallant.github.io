@@ -84,24 +84,24 @@ std::unique_ptr<int> p1(new int(10));
 1、用 release 释放控制并返回裸指针     
 
 ```cpp
-    auto p1 = std::make_unique<int>(10);
-    auto p2(p1.release());   
+auto p1 = std::make_unique<int>(10);
+auto p2(p1.release());   
 ```
 
 2、用 `std::move` 触发移动构造或移动拷贝     
 
 ```cpp
-    auto p1 = std::make_unique<int>(10);
-    auto p2(std::move(p1));  // 触发移动构造
-    // auto p2 = std::move(p1); // 也可以这样触发移动拷贝
+auto p1 = std::make_unique<int>(10);
+auto p2(std::move(p1));  // 触发移动构造
+// auto p2 = std::move(p1); // 也可以这样触发移动拷贝
 ```
 
 3、用 release 释放控制，后者用 reset 重置      
 
 ```cpp
-    auto p1 = std::make_unique<int>(10);
-    std::unique_ptr<int> p2;
-    p2.reset(p1.release());
+auto p1 = std::make_unique<int>(10);
+std::unique_ptr<int> p2;
+p2.reset(p1.release());
 ```
 
 ---
@@ -157,9 +157,9 @@ auto rawptr = p1.release();
 比如这样：  
 
 ```cpp
-    auto sp = new std::string{"abc"};
-    std::shared_ptr<std::string> a {sp};
-    std::shared_ptr<std::string> b {sp};  // not ok, do not do this
+auto sp = new std::string{"abc"};
+std::shared_ptr<std::string> a {sp};
+std::shared_ptr<std::string> b {sp};  // not ok, do not do this
 ```  
 
 3、容器中的 `shared_ptr` 要及时 `erase`   
