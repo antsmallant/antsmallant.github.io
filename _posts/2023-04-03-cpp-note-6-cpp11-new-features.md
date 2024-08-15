@@ -297,6 +297,7 @@ Ptr<int> x;       // x 的类型是 int*
 示例[7]：  
 
 ```cpp
+
 int a = 1;           // a 定义为 `int` 型
 decltype(a) b = a;   // decltype(a) 是 `int` 型
 const int& c = a;    // c 定义为 `const int&` 型
@@ -305,15 +306,17 @@ decltype(123) e = 10; // decltype(123) 是 `int` 型
 int&& f = 1;          // f 定义为 `int&&` 型
 decltype(f) g = 1;    // decltype(f) 是 `int&&` 型
 decltype((a)) h = g;  // decltype((a)) 是 `int&` 型，因为 (a) 是用圆括号包起来的 lvalue，按照规则，返回的就是 T& 型
-                      // 
+
 ```
 
 ```cpp
+
 template<typename X, typename Y>
 auto add(X x, Y y) -> decltype(x+y) {
     return x+y;
 }
 add(1, 2.0); // decltype(x+y) => decltype(3.0) => double
+
 ```
 
 <br/>
@@ -333,10 +336,12 @@ add(1, 2.0); // decltype(x+y) => decltype(3.0) => double
 示例：
 
 ```cpp
+
 int a = 10;
 std::cout << std::is_integral<decltype(a)>::value << std::endl;           // 输出 1
 std::cout << std::is_rvalue_reference<decltype((a))>::value << std::endl; // 输出 0
 std::cout << std::is_lvalue_reference<decltype((a))>::value << std::endl; // 输出 1
+
 ```
 
 
@@ -358,6 +363,7 @@ constexpr 即 constant expression 的缩写，是 c++11 新引入的关键字，
 示例[7]:   
 
 ```cpp
+
 constexpr int square(int x) {
     return x*x;
 }
@@ -381,6 +387,7 @@ int main() {
 
     return 0;
 }
+
 ```
 
 可以用一个小办法检测 constexpr 
@@ -437,6 +444,7 @@ specification: [https://en.cppreference.com/w/cpp/language/noexcept](https://en.
 示例[7]：  
 
 ```cpp
+
 struct A {
     virtual void foo();
     void bar();
@@ -449,6 +457,7 @@ struct B : A {
     void baz() override; // 错误，A::baz 不存在
     ~B() override;       // 正确，override 也可以特别的虚函数，比如虚析构
 };
+
 ```
 
 另外，`override` 不是关键字，所以可以用它作为变量名，比如 `int override = 40;`。  
@@ -462,6 +471,7 @@ struct B : A {
 示例1，final 修改虚函数 [7]：
 
 ```cpp
+
 struct A {
     virtual void f();
 };
@@ -473,13 +483,16 @@ struct B {
 struct C : public B {
     virtual void f(); // 报错，f 在 B 中被标识为 final，不能被重写
 }
+
 ```
 
 示例2，final 修改类 [7]:  
 
 ```cpp
+
 struct A final {};
 struct B : A {}; // 报错，A 已经标为 final 了，不能被继承
+
 ```
 
 ---
@@ -506,11 +519,11 @@ LP32 / LP64 之类的代表 data model，规定如下，参考自 [wikipedia 64-
 
 I 表示 int，L 表示 long，LL 表示 long long，P 表示 pointer。  
 
-LP32 表示 long、pointer 的宽度是 32 位。    
+LP32  表示 long、pointer 的宽度是 32 位。    
 ILP32 表示 int、long、pointer 的宽度是 32 位。   
 ILP64 表示 int、long、pointer 的宽度是 64 位。  
 LLP64 表示 long long、pointer 的宽度是 64 位。  
-LP64 表示 long、pointer 的宽度是 64 位。  
+LP64  表示 long、pointer 的宽度是 64 位。  
 
 ---
 
@@ -545,6 +558,7 @@ included; however, in §3.3 below we argue why auto&& is also a forwarding case 
 示例[2]：  
 
 ```cpp
+
 template<class T>
 int f(T&& x) {                     // x 是万能引用
     return g(std::forward<T>(x));  // 可以被转发
@@ -565,6 +579,7 @@ struct A {
     A(T&& x, U&& y, int* p);  // x 不是万能引用，因为 T 不是构造函数的模板参数
                               // y 是万能引用
 }
+
 ```
 
 万能引用的两个判断标准： 
@@ -574,14 +589,18 @@ struct A {
 像这样就不是类型推导[4]:   
 
 ```cpp
+
 void f(Widget&& param);
+
 ```
 
 像这样就是严格的 `T&&` 形式[4]：   
 
 ```cpp
+
 template<class T>
 void f(std::vector<T>&& param); // param 不是万能引用，是右值引用
+
 ```
 
 <br/>
@@ -593,6 +612,7 @@ void f(std::vector<T>&& param); // param 不是万能引用，是右值引用
 示例[2]：  
 
 ```cpp
+
 auto && vec = foo();      // vec 是万能引用，foo() 可能是左值或右值
 auto i = std::begin(vec); // 正常工作，无论 vec 最终是左值引用或是右值引用
 (*i)++;                   // 正常工作，无论 vec 最终是左值引用或是右值引用
@@ -604,6 +624,7 @@ for (auto&& x : f()) {
 }
 
 auto&& z = {1, 2, 3}; // 不是万能引用，这是初始值列表的特殊情况
+
 ```
 
 <br/> 
@@ -627,6 +648,7 @@ value category 是一个一直存在的概念，任何一个变量都有两大�
 理解这一点的前提是要知道，形参总是左值，只不过它的类型是右值引用。比如这样：   
 
 ```cpp
+
 template<typename T>
 void f(T&& t) {
     g(t);  // 此时调用的是 g(T& t) 版本; 因为 t 作为形参，它本身就是个左值。  
@@ -639,15 +661,18 @@ void g(T& t) {
 void g(T&& t) {
     std::cout << "g 右值引用版本" << std::endl;
 }
+
 ```
 
 要能够调用 `g(T&& t)`，需要这样：  
 
 ```cpp
+
 template<typename T>
 void f(T&& t) {
     g(std::forward(t));   // std::forward 转发了 t 的 value category，如果 t 确实是一个右值
 }
+
 ```
 
 `std::forward` 与 `std::move` 的行为很像，都是将表达式强制转换为右值引用。但前者是有条件的，只会把原本是右值引用的表达式强制转换为右值引用，而后者是无条件的。  
@@ -665,6 +690,7 @@ void f(T&& t) {
 比如对于这种形式：  
 
 ```cpp
+
 template<class T>
 inf f(T&& x) {
     return g(std::forward<T>(x));
@@ -672,6 +698,7 @@ inf f(T&& x) {
 
 int i = 10;
 f(i);  
+
 ```
 
 执行 `f(i)` 的时候，`i` 对应的形参 `x` 是一个万能引用，那么就需要把 `i` 是左值的信息编码到推导出来的 `x` 的推导结果中。此时，T 的推导结果是 `int&`，产生的模板实例是： `f<int&>(int& && x);`。   
@@ -703,6 +730,7 @@ auto&& w1 = w;    // w1 的类型是 Widget& 。由于 w 是左值，此时 auto
 
 auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返回了右值，此时 auto 被推导为 Widget，
                          // 代入得 Widget&& w2 = w，不需要引用折叠。  
+                         
 ```
 
 <br/>
