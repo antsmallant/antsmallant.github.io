@@ -287,12 +287,44 @@ Ptr<int> x;       // x 的类型是 int*
 
 ## decltype
 
-`decltype` 是一个运算符，它可以返回传递给它的表达式的声明类型，如果表达式有const/volatile 修饰符或引用，也会被保留下来。  
+`decltype` 是一个运算符，它可以返回传递给它的表达式的声明类型，如果表达式有 const/volatile 修饰符或引用，也会被保留下来。  
 
 示例[7]：  
 
+```cpp
+int a = 1;           // a 定义为 `int` 型
+decltype(a) b = a;   // decltype(a) 是 `int` 型
+const int& c = a;    // c 定义为 `const int&` 型
+decltype(c) d = a;   // decltype(c) 是 `const int&` 型
+decltype(123) e = 10; // decltype(123) 是 `int` 型
+int&& f = 1;          // f 定义为 `int&&` 型
+decltype(f) g = 1;    // decltype(f) 是 `int&&` 型
+decltype((a)) h = g;  // decltype((a)) 是 `int&` 型 (？？todo 为什么会是 int&)
+```
+
+```cpp
+
+```
 
 
+---
+
+## 类型特征 (type traits)
+
+定义了编译时的基于模板的接口，可以查看或修改类型的属性。  
+
+有大量的接口，可以参考： [cppreference type_traits](https://en.cppreference.com/w/cpp/header/type_traits) 。  
+
+示例：
+
+```cpp
+int a = 10;
+std::cout << std::is_integral<decltype(a)>::value << std::endl;           // 输出 1
+std::cout << std::is_rvalue_reference<decltype((a))>::value << std::endl; // 输出 0
+std::cout << std::is_lvalue_reference<decltype((a))>::value << std::endl; // 输出 1
+
+
+```
 
 
 ---
@@ -632,6 +664,27 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 
 **概览**  
 
+参考自：[《c++11：感觉像是门新语言》](https://github.com/Cpp-Club/Cxx_HOPL4_zh/blob/main/04.md) [1]。   
+
+* unique_ptr 和 shared_ptr——依赖 RAII 的资源管理指针
+* 内存模型和 atomic 变量
+* thread、mutex、condition_variable 等——为基本的系统层级的并发提供了类型安全、可移植的支持
+* future、promise 和 packaged_task，等——稍稍更高级的并发
+* tuple——匿名的简单复合类型
+* 类型特征（type trait）——类型的可测试属性，用于元编程
+* 正则表达式匹配
+* 随机数——带有许多生成器（引擎）和多种分布
+* 时间——`time_point` 和 duration
+* unordered_map 等——哈希表
+* forward_list——单向链表
+* array——具有固定常量大小的数组，并且会记住自己的大小
+* emplace 运算——在容器内直接构建对象，避免拷贝
+* exception_ptr——允许在线程之间传递异常
+
+---
+
+## 智能指针 (smart pointer) 
+
 ---
 
 ## std::array
@@ -639,7 +692,6 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 ---
 
 ## std::chrono
-
 
 ---
 
