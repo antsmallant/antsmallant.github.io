@@ -339,8 +339,6 @@ int a = 10;
 std::cout << std::is_integral<decltype(a)>::value << std::endl;           // 输出 1
 std::cout << std::is_rvalue_reference<decltype((a))>::value << std::endl; // 输出 0
 std::cout << std::is_lvalue_reference<decltype((a))>::value << std::endl; // 输出 1
-
-
 ```
 
 
