@@ -183,6 +183,9 @@ const auto h = 1; // const int
 auto i = 1, j = 2, k = 3;  // int, int, int
 auto l = 1, m = true, n = 1.61;  // 错误，`l` 推导为 int，但 `m` 是一个 bool，推导结果不一致
 auto o;  // 错误，需要给出初始化值
+
+auto aa {10} ; // c++11 是 std::initializer_list<int>，c++17 改为 int
+
 ```
 
 可以用于声明容器的 iterator 变量，代码简洁很多[7]：   
@@ -223,11 +226,72 @@ auto y = flopscomps(x, 3);          // 不好：flopscomps() 返回的是什么�
 
 ---
 
+## 类型别名 (type alias) 和 模板别名 (template alias)
+
+基本用法是： `using idetifier = type;`    
+
+### 类型别名
+
+类似于 `typedef`，但是可读性更强。   
+
+示例：
+
+```cpp
+// 类型别名，等价于 typedef std::string MyString; 
+using MyString = std::string;
+// MyString 现在标识一种类型，name 的类型是 std::string
+MyString name = "Mike";  
+
+// 类型别名，等价于 typedef std::ios_base::fmtflag flags;
+using flags = std::ios_base::fmtflag;
+// flags 现在标识一种类型
+flags fl = std::ios_base::dec;
+
+// 类型别名，等价于 typedef void(*func)(int, int);
+using func = void(*)(int, int);
+
+// func 现在标识一个指向函数的指针
+void example (int, int) {}
+func f = example;
+
+// 类型别名用于隐藏模板参数 ？？（todo：不太理解这个）
+template<class CharT>
+using mystring = std::basic_string<CharT, std::char_traits<CharT>>;
+
+mystring<char> str;
+
+// 类型别名可以引入一个 typedef 名字成员
+template<typename T>
+struct Container { using value_type = T; }
+```
+
+### 模板别名   
+
+`typedef` 无法应用于 template，而 using 可以。  
+
+模板别名需要在 class scope 或 namespace scope 定义，不能在函数体内定义。   
+
+示例： 
+
+```cpp
+template<typename T>
+using Vec = std::vector<T>;
+Vec<int> vec {1,2,3};         // vec 的类型是 std::vector<int>
+
+template<typename T>
+using Ptr = T*;   // Ptr 现在是 T 类型指针的别名
+Ptr<int> x;       // x 的类型是 int*
+```
+
+---
+
 ## decltype
 
 `decltype` 是一个运算符，它可以返回传递给它的表达式的声明类型，如果表达式有const/volatile 修饰符或引用，也会被保留下来。  
 
 示例[7]：  
+
+
 
 
 
@@ -591,6 +655,48 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 
 ---
 
+## 构造函数模板推导
+
+c++17 之前用模板类实例化一个对象，需要指明类型，比如： 
+
+```cpp
+std::pair<int, double> p {10, 3.14};
+std::vector<int> vec {1,2,3};
+```
+
+c++17 之后可以不指标类型，在编译期进行推导：  
+
+```cpp
+std::pair p {10, 3.14};
+std::vector vec {1,2,3};
+```
+
+---
+
+## 
+
+---
+
+## 嵌套的命名空间 (nested namespace)
+
+```cpp
+namespace A {
+    namespace B {
+        namespace C {
+            void func();
+        }
+    }
+}
+
+// c++17 可以这样写
+
+namespace A::B::C {
+    void func();
+}
+```
+
+---
+
 # 6. c++17 新的库特性
 
 ---
@@ -616,3 +722,5 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 [6] wikipedia. 64-bit computing. Available at https://en.wikipedia.org/wiki/64-bit_computing#64-bit_data_models.    
 
 [7] AnthonyCalandra. C++11. Available at https://github.com/AnthonyCalandra/modern-cpp-features/blob/master/CPP11.md.    
+
+[8] cppreference. Type alias, alias template. Available at https://en.cppreference.com/w/cpp/language/type_alias.   
