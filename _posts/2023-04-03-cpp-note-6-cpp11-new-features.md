@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "c++ 笔记六：c++11、c++14、c++17 的新特性"
+title: "c++ 笔记六：c++11 的新特性"
 date: 2023-04-03
 last_modified_at: 2024-07-01
 categories: [c++]
@@ -11,17 +11,9 @@ tags: [c++ cpp]
 {:toc}
 <br/>
 
-本文记录 c++11、c++14、c++17 的新特性。  
+本文记录 c++11 的新特性。  
 
-* c++11 是一个 major 版本，带来了大量的新变化，在很多年的时间里，它也一直被称为 c++0x。  
-
-* c++14 是一个 minor 版本，主要是对于 c++11 一些不完善之处的补充。  
-
-* c++17 是一个 "中" 版本，它本来应该是一个 major 版本的，不过它也有不少的新变化。  
-
-虽然每个版本单独一篇文章会更简练，但是有些特性在几个版本中会有演化和改进，放一起说会更集中一些，所以以下的描述并不一定会严格按照版本进行区分。    
-
-而 c++20 又是一个 major 版本，变化太多了，所以另起一文记录。  
+c++11 是一个 major 版本，带来了大量的新变化，在很多年的时间里，它也一直被称为 c++0x。  
 
 ---
 
@@ -722,71 +714,13 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 
 ---
 
-# 3. c++14 新的语言特性
-
----
-
-# 4. c++14 新的库特性
-
----
-
-# 5. c++17 新的语言特性
-
----
-
-## 构造函数模板推导
-
-c++17 之前用模板类实例化一个对象，需要指明类型，比如： 
-
-```cpp
-std::pair<int, double> p {10, 3.14};
-std::vector<int> vec {1,2,3};
-```
-
-c++17 之后可以不指标类型，在编译期进行推导：  
-
-```cpp
-std::pair p {10, 3.14};
-std::vector vec {1,2,3};
-```
-
----
-
-## 
-
----
-
-## 嵌套的命名空间 (nested namespace)
-
-```cpp
-namespace A {
-    namespace B {
-        namespace C {
-            void func();
-        }
-    }
-}
-
-// c++17 可以这样写
-
-namespace A::B::C {
-    void func();
-}
-```
-
----
-
-# 6. c++17 新的库特性
-
----
-
-# 7. 拓展阅读
+# 3. 拓展阅读
 
 * [modern-cpp-features 11/14/17/20 by AnthonyCalandra](https://github.com/AnthonyCalandra/modern-cpp-features/tree/master)
 
 ---
 
-# 8. 参考
+# 4. 参考
 
 [1] Bjarne Stroustrup. c++11：感觉像是门新语言. Cpp-Club. Available at : https://github.com/Cpp-Club/Cxx_HOPL4_zh/blob/main/04.md, 2023-6-11.   
 

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "c++ 笔记九：编译、链接、加载"
+title: "c++ 笔记十二：编译、链接、加载"
 date: 2023-04-08
 last_modified_at: 2024-07-01
 categories: [c++]
