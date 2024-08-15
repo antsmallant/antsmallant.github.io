@@ -225,11 +225,42 @@ auto y = flopscomps(x, 3);          // 不好：flopscomps() 返回的是什么�
 
 ## decltype
 
+`decltype` 是一个运算符，它可以返回传递给它的表达式的声明类型，如果表达式有const/volatile 修饰符或引用，也会被保留下来。  
+
+示例[7]：  
+
+
 
 ---
 
 ## lambda 表达式
 
+
+---
+
+## constexpr
+
+---
+
+## range-based for loop
+
+---
+
+## default functions
+
+
+---
+
+## deleted functions
+
+---
+
+## Converting constructors
+
+
+---
+
+## Right angle brackets
 
 
 ---
@@ -540,6 +571,10 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 ---
 
 ## std::array
+
+---
+
+## std::chrono
 
 
 ---
