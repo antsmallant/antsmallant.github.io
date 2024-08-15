@@ -299,13 +299,17 @@ decltype(c) d = a;   // decltype(c) 是 `const int&` 型
 decltype(123) e = 10; // decltype(123) 是 `int` 型
 int&& f = 1;          // f 定义为 `int&&` 型
 decltype(f) g = 1;    // decltype(f) 是 `int&&` 型
-decltype((a)) h = g;  // decltype((a)) 是 `int&` 型 (？？todo 为什么会是 int&)
+decltype((a)) h = g;  // decltype((a)) 是 `int&` 型 (？？todo 为什么会是 int&) 
+                      // https://stackoverflow.com/questions/17241614/what-expressions-yield-a-reference-type-when-decltype-is-applied-to-them
 ```
 
 ```cpp
-
+template<typename X, typename Y>
+auto add(X x, Y y) -> decltype(x+y) {
+    return x+y;
+}
+add(1, 2.0); // decltype(x+y) => decltype(3.0) => double
 ```
-
 
 ---
 
@@ -684,6 +688,12 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 ---
 
 ## 智能指针 (smart pointer) 
+
+
+使用参考：    
+
+[GotW #91 Solution: Smart Pointer Parameters]()    
+[unique_ptr作为函数参数时，应该以值还是右值引用类型传递？](https://www.zhihu.com/question/534389744/answer/2500052393)    
 
 ---
 
