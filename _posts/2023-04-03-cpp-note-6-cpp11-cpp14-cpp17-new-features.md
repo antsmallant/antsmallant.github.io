@@ -72,7 +72,41 @@ Color c = Color::Red;
 
 ## 类内初始值 (in-class initializer)
 
+c++11 之后，非 static 成员变量也可以在声明时初始化了，不需要再放在构造函数里初始化。   
 
+static 的成员变量，如果是 const 的，则也可以使用这种类内
+
+需要注意的是，只能用 `=` 号或 `{}` 号来赋初始值，不能使用圆括号 `()` 来赋初始值。  
+
+```cpp
+// c++11 之前
+class Man {
+    int age;
+    double height;
+public:
+    Man() : age(0), height(0.0) {}
+};
+
+
+// c++11
+class Hand {
+    int x = 0;  // ok
+public:
+    Hand(int _x) : x(_x) {}
+};
+
+class Man {
+    int age = 0;         // ok
+    double height {0.0}; // ok
+
+    Hand h(100);  // not ok，会报错，不能使用圆括号初始化，得这样 Hand h {100};
+
+    static const int cnt = 0;  // ok，static 加上 const 修饰是可以类内初始化的
+    static int x = 10;         // not ok，非 const 的 static 变量，需要放到类定义去初始化，得在声明之外这样写： int Man::x = 10;
+public:
+    Man() {}
+};
+```
 
 ---
 
