@@ -285,6 +285,7 @@ RAII 即 Resource acquisition is initialization，资源获取即初始化。它
 举个例子，完整的 code 在此： [https://gcc.godbolt.org/z/6G9azzae6](https://gcc.godbolt.org/z/6G9azzae6)。   
 
 像这样的代码：    
+
 ```cpp
 struct S {
     S() {}
@@ -455,7 +456,7 @@ const char* = f(); // ok
 
 ## 3.1 以 by reference 方式捕捉 exceptions
 
-这是 “旧书” 《More Effective C++》的条款13。  
+这是 “旧书” 《More Effective C++》[3]的条款13。  
 
 catch by pointer 的方式容易发生两个问题：1、指向不复存在的对象；2、捕获者不确定是否需要 delete，容易内存泄漏。  
 
