@@ -61,7 +61,7 @@ kcp 的作者韦易笑 (skywind3000) 在这篇知乎回答 [《MOBA类游戏是�
 
 sack 即 seletive acknowledgments 的缩写。tcp sack 的相关实现，具体的可参考这篇文章：[《Selective Acknowledgments (SACK) in TCP》](https://www.geeksforgeeks.org/selective-acknowledgments-sack-in-tcp/)。   
 
-kcp 2017年的这个 issue [关于feature里一些特性与tcp的比较](https://github.com/skywind3000/kcp/issues/63) 有人问了相关的问题。  
+2017 年的这个 issue：[关于feature里一些特性与tcp的比较](https://github.com/skywind3000/kcp/issues/63) 有人问了相关的问题。  
 
 issue 提的问题是：  
 
@@ -76,7 +76,7 @@ issue 提的问题是：
 >KCP的彻底可控不仅体现在双端同时完整的支持较为先进的传输算法，参数和各种时钟彻底可以调节配置，还体现在你可以在KCP下面接一层 FEC 前向纠错，比如 RS 算法或者 xor 算法，来进一步增强传输效果，TCP 你是没法这么做的。  
 
 
-不过，之后又有一个叫 RuiHan2023 的人问了更专业的问题：
+之后又有一个叫 RuiHan2023 的人问了更专业的问题：   
 
 >1.选择性重传的问题。定义在RFC 2018、2883 和 3517 定义，since 1996。我们国内现有的大多数服务器，kernel版本为2.6.32(centos 6u)，乃至更高的3.10(centos 7u)，是支持sack的。内核定义：int sysctl_tcp_sack __read_mostly = 1。目前的tcp变种，仅有reno不支持sack，而默认协议是cubic，since 2009，支持。我们日常的抓包，都能看到sack生效，wireshark可以看到这些。这里说百分之八十不支持，有类似的公开数据验证吗？   
 >2.快速重传。3个重复ack，tcp就会进入，并不需要设置。这个特性支持也比较早了。wiki里对“快速重传”的举例似乎也有问题？并非Fast Recovery，而是sack的特性。   
