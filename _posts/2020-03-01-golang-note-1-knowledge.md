@@ -55,11 +55,19 @@ go playground: [https://go.dev/play/](https://go.dev/play/)
 
 4、数组可以这样初始化：   
 
-`b := [2]string {"hello", "world"}`    
+```go
+
+b := [2]string {"hello", "world"}
+
+```    
 
 或者让编译器帮忙计数： 
 
-`b := [...]string {"hello", "world"}`    
+```go
+
+b := [...]string {"hello", "world"}
+
+```    
 
 ---
 
@@ -72,9 +80,11 @@ slice 的构造包含三个部分：指向 array 的指针，len，cap。
 len 比较好理解，就是它实际引用的区域，比如 
 
 ```go
+
 arr := [5]int{1,2,3,4,5}
 s := arr[2:4]
 // s == []int{3,4}
+
 ```
 
 此时，s 的 len 是 2，那 cap 呢？cap 实际上就是 cap(arr) - 2 = 3。    
@@ -99,23 +109,27 @@ s := arr[2:4]
 在二次切片时，最好显式的给出上边界，避免出错，比如这样：    
 
 ```go
+
 a := make([]int, 0, 5)
 b := a[:2] // 此时 b 的长度是 2，容量是 5
 c := b[3:] // not ok，会报错，相当于 c := b[3:2] 
 c := b[3:cap(b)] // ok，相当于 c := b[3:5]
+
 ```
 
 8、创建一个二维切片     
 
 ```go
-    m := 5
-    n := 6
 
-    vec := make([][]int, m)
-    for i := 0; i < n; i++ {
-        vec[i] = make([]int, n)
-        fmt.Println(vec[i])
-    }
+m := 5
+n := 6
+
+vec := make([][]int, m)
+for i := 0; i < n; i++ {
+    vec[i] = make([]int, n)
+    fmt.Println(vec[i])
+}
+
 ```
 
 ---
@@ -141,10 +155,12 @@ c := b[3:cap(b)] // ok，相当于 c := b[3:5]
 实际上，类型名不是必须的，譬如可以这样定义一个 struct 切片。  
 
 ```go
-	v := []struct{ X, Y float64 }{
-		{2.1, 2.2},
-		{3.1, 3.2},
-	}
+
+v := []struct{ X, Y float64 }{
+    {2.1, 2.2},
+    {3.1, 3.2},
+}
+
 ```
 
 ---
@@ -160,18 +176,22 @@ c := b[3:cap(b)] // ok，相当于 c := b[3:5]
 假设有这样定义的接口和结构体：  
 
 ```go
+
 type I interface {
     M()
 }
 type T struct {
     S string
 }
+
 ```
 
 1、nil 接口值是指这个接口值既无具体值，也无类型。比如底下的 i 就是一个 nil 接口值：   
 
 ```go
+
 var i I
+
 ```
 
 2、底层值为 nil 的接口是的指无具体值，但有类型。比如底下的 i 就是一个无具体值的接口，此时 i 的底层值是 nil，但底层类型是 T：   
@@ -205,11 +225,13 @@ General:
 %#v	a Go-syntax representation of the value
 %T	a Go-syntax representation of the type of the value
 %%	a literal percent sign; consumes no value
+
 ```
 
 The default format for %v is:    
 
 ```
+
 bool:                    %t
 int, int8 etc.:          %d
 uint, uint8 etc.:        %d, %#x if printed with %#v
@@ -273,7 +295,8 @@ complex64 complex128
 ans := []byte{}
 nums := []int{10, 20, 30}
 for _, x := range nums {
-    ans = append(ans, strconv.Itoa(x)...) // strconv.Itoa 的结果是 string，而 string... 是打散成 n 个 byte
+    // strconv.Itoa 的结果是 string，而 string... 是打散成 n 个 byte
+    ans = append(ans, strconv.Itoa(x)...) 
 }
 fmt.Println(string(ans))
 
@@ -291,7 +314,8 @@ func test(nums ...int) {
 
 func main() {
 	nums := []int{10, 20, 30}
-	test(nums...)  // nums 被打散成 3 个 int，作为入参传给 test
+    // nums 被打散成 3 个 int，作为入参传给 test
+	test(nums...)  
 }
 
 ```
