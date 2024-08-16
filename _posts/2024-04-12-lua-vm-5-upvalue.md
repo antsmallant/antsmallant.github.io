@@ -44,6 +44,7 @@ tags: [lua]
 upvalue 就是外部函数的局部变量，比如下面的函数定义中，var1 就是 inner 的一个 upvalue。  
 
 ```lua
+
 local function getf(delta)
     local var1 = 100
     local function inner()
@@ -53,6 +54,7 @@ local function getf(delta)
 end
 
 local f1 = getf(10)
+
 ```
 
 upvalue 复杂的地方在于，在离开了 upvalue 的作用域之后，还要能够访问得到。比如上面调用了 `local f1 = getf(10)` ，`var1` 是在 `getf` 的栈上分配的，`getf` 返回后，栈空间被抹掉，但 `inner` 还要能访问 `var1`，所以要想办法把它捕捉下来。  
@@ -154,7 +156,7 @@ TValue* p = UpValPtr->v.p;
 
 upvalue 是在编译的时候计算好一个 Proto 需要什么 upvalue，相关信息存放在 Proto 的 upvalues 数组（ `Upvaldesc *upvalues;  /* upvalue information */`）中的。   
 
-举个例子，对于这样一个脚本，内部的函数 f1、f2 既引用了 getf 之外的变量 var1，也引用了 getf 之内的变量 var2、var3，并且在 `local f1, f2 = getf()` 调用完成后，f1 还要能访问到 var1、var2，f2 还要能访问到 var1、var3。  
+举个例子，对于这样一个脚本，内部的函数 `f1`、`f2` 既引用了 `getf` 之外的变量 `var1`，也引用了 `getf` 之内的变量 `var2`、`var3`，并且在 `local f1, f2 = getf()` 调用完成后，`f1` 还要能访问到 `var1`、`var2`，`f2` 还要能访问到 `var1`、`var3`。  
 
 ```lua
 
@@ -207,9 +209,11 @@ local retf1, retf2 = getf()
 
 <br/>
 
-从例子上可以看到，f1 引用了上一层函数 getf 的局部变量 var2，所以它的 instack 值是 true，而引用了上两层的局部变量 var1，则它的 instack 是 false。  
+从例子上可以看到，`f1` 引用了上一层函数 `getf` 的局部变量 `var2`，所以它的 instack 值是 true，而引用了上两层的局部变量 `var1`，则它的 instack 是 false。  
 
-instack 主要就是在创建 Closure 的时候帮助初始化 Closure 的 upvals 数组，对于 instack 为 true 的 upvalue，直接搜索上一层函数的栈空间即可，对于 instack 为 false 的 upvalue，就不能这样了，为什么呢？因为上两层的有可能已经不在栈上了。能想象得到吗？举个例子：   
+instack 主要就是在创建 Closure 的时候帮助初始化 Closure 的 upvals 数组，对于 instack 为 true 的 upvalue，直接搜索上一层函数的栈空间即可，对于 instack 为 false 的 upvalue，就不能这样了，为什么呢？因为上两层的有可能已经不在栈上了。能想象得到吗？  
+
+举个例子：   
 
 ```lua
 
@@ -239,7 +243,7 @@ local ret_f3 = ret_f2()
 
 所以，要解决这个问题，就需要让 `f2` 在创建的时候，先帮忙把 `var1` 捕捉下来保存到自己的 `upvals` 数组中，等 `f3` 创建的时候，就可以从 `f2` 的 `upvals` 数组中找到了。  
 
-这正是 `pushclosure` 干的活：  
+这正是 `pushclosure` 干的活，lvm.c 里的 `OP_CLOSURE` 调用的就是 `pushclosure`。`f1` 中创建 `f2` 的 closure，以及 `f2` 中创建 `f3` 的 closure，都是用的 `OP_CLOSURE` 指令。  
 
 ```c
 
@@ -264,19 +268,20 @@ static void pushclosure (lua_State *L, Proto *p, UpVal **encup, StkId base,
 
 函数实现可以看到，instack 为 true 时，调用 `luaF_findupval` 去上一层函数的栈上搜索，instack 为 false 时，上一层函数已经帮忙捕捉好了，直接从它的 upvals 数组（即这里的 encup 变量中）索引。  
 
-这里 `uv[i].idx` 就是上面 upvaldesc 的 idx 列，即当 instack 为 false 时，它对应于上一层函数的 upvals 数组的第几项。    
+这里 `uv[i].idx` 就是上面 upvaldesc 的 idx 列，即当 instack 为 false 时，它对应于上一层函数的 `upvals` 数组的第几项。    
 
 ---
 
 ### 1.2.4 upvalue 的变化：从 open 到 close 
 
-分两个阶段讲，getf 调用时以及 getf 调用后。  
+继续分析上面 [1.2.3 upvalue 的创建](#123-upvalue-的创建) 提到的 `getf`，分两个阶段讲，`getf` 调用时以及 `getf` 调用后。    
 
-1、getf 调用时，var2、var3 这两个变量作为 f1, f2 的 upvalue，它们还处在 getf 的栈上，这时候它们会被放在 lua_State 的 openupval 链表中。   
+1、`getf` 调用时，`var2`、`var3` 这两个变量作为 `f1`, `f2` 的 upvalue，它们还处在 `getf` 的栈上，这时候它们会被放在 lua_State 的 `openupval` 链表中。   
 
-2、getf 调用后，它的栈要被收回的，这时候 lua vm 会调用 luaF_close 来关闭 `getf` 栈上被引用的 upvalue，最终是 luaF_closeupval 这个函数执行：  
+2、`getf` 调用后，它的栈要被收回的，这时候 lua vm 会调用 `luaF_close` 来关闭 `getf` 栈上被引用的 upvalue，最终是 `luaF_closeupval` 这个函数执行：  
 
 ```lua
+
 void luaF_closeupval (lua_State *L, StkId level) {
   UpVal *uv;
   StkId upl;  /* stack index pointed by 'uv' */
@@ -292,11 +297,12 @@ void luaF_closeupval (lua_State *L, StkId level) {
     }
   }
 }
+
 ```
 
-要理解这个函数，就要知道 `StkId level` 这个参数的意义，它在这里是 `getf` 的 `base` 指针，即它的栈底。同个 lua_State 的函数调用链上的所有函数共用一个栈，按顺序各占一段栈空间，栈是一个数组，所以后调用的函数的变量在栈上的索引是更大的，表现上就是指针值更大。而 openupval 链表里面 Upval 里的 p 就是指向这指针，所以遍历 openupval 的时候，遇到 p 比 base 大的，就表明这个是 `getf` 栈上的变量，要把它 close 掉。 
+要理解这个函数，就要知道 `StkId level` 这个参数的意义，它在这里是 `getf` 的 `base` 指针，即它的栈底。同个 lua_State 的函数调用链上的所有函数共用一个栈，按顺序各占一段栈空间，栈是一个数组，所以后调用的函数的变量在栈上的索引是更大的，表现上就是指针值更大。而 `openupval` 链表里面 Upval 里的 p 就是指向这指针，所以遍历 `openupval` 的时候，遇到 p 比 base 大的，就表明这个是 `getf` 栈上的变量，要把它 close 掉。 
 
-close 的操作就是把 upval 从 openupval 链表移掉，同时把 upval 的 p 指向的值拷贝到它自身上。    
+close 的操作就是把 upval 从 `openupval` 链表移掉，同时把 upval 的 p 指向的值拷贝到它自身上。    
 
 <br/>
 <div align="center">
@@ -304,6 +310,35 @@ close 的操作就是把 upval 从 openupval 链表移掉，同时把 upval 的 
 </div>
 <center>图3：upvalue close 时的拷贝</center>
 <br/>
+
+到这里，其实还是让人犯糊涂的，`luaF_closeupval` 调用了 `luaF_unlinkupval` 把 `upval` 从 `openupval` 移走了，那它还要被 closure 用到啊？放哪里呢？  
+
+它只是不被 `openupval` 管理了而已，还是存在于堆上，可以理解为它独立了。另外，`struct UpVal` 本身就带有 CommonHeader 的，它也是一个 gc 结构体，会被串在 allgc 链表上，接受 gc 管理。   
+
+再看 [1.2.3 upvalue 的创建](#123-upvalue-的创建) 开头的 `getf` 的例子。   
+
+1、open 的时候，`f2`、`f3` 都使用了 `var1` 作为 upvalue，那么在 `var1` 仍在栈上时，大体的关系是这样的：   
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-upval-open.jpg"/>
+</div>
+<center>图4：open 时，closure 引用 openupval 链表上的对象 </center>
+<br/>
+
+2、close 的时候，`var1` 所在的栈被回收时，就变成这样了：  
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/lua-upval-close.jpg"/>
+</div>
+<center>图5：close 时，closure 引用一个独立的对象 </center>
+<br/>
+
+这也体现了一些设计上的考虑：    
+
+1）closure 里面的 upval 数组存放的是指针，这样一来就可以多个 closure 引用相同的 upvalue。  
+2）`struct UpVal` 结构体里，为何有一个成员变量 `v`，又有一个成员变量 `u`，`v.p` 在 open 的时候指向的是栈上的变量，而 close 的时候指向的就是 `u.value` 里。   
 
 ---
 
@@ -314,13 +349,15 @@ C 闭包（CClosure）也是有 upvalue 的，是在 lua_pushcclosure 时设置�
 CClosure 的 upvalue 直接用的是 TValue 类型的数组（不是指针），在创建的时候用的值拷贝。  
 
 ```c
+
 typedef struct CClosure {
   ClosureHeader;
   lua_CFunction f;
   TValue upvalue[1];  /* list of upvalues */
 } CClosure;
+
 ```
 
 ---
 
-正文完。  
+# 2. 参考
