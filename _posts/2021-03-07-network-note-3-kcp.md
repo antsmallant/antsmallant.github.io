@@ -42,7 +42,7 @@ kcp 的作者韦易笑 (skywind3000) 在这篇知乎回答 [《MOBA类游戏是�
 
 <br/>
 
-而这个 issue [关于feature里一些特性与tcp的比较](https://github.com/skywind3000/kcp/issues/63) 让我有点存疑，不知道林老师是不是被问住了：）   
+而这个 issue [关于feature里一些特性与tcp的比较](https://github.com/skywind3000/kcp/issues/63)，我有点感兴趣，但韦老师没有回复，是漏掉了，还是被问住了：）。     
 
 ---
 
