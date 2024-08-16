@@ -108,10 +108,6 @@ quote: [http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#Discu
 
 可以使用内存屏障吗？
 
-
-## 陈硕关于线程同步的建议
-
-
 ## 多线程的初衷
 
 是快。  

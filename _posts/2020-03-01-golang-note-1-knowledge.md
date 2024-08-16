@@ -177,9 +177,11 @@ var i I
 2、底层值为 nil 的接口是的指无具体值，但有类型。比如底下的 i 就是一个无具体值的接口，此时 i 的底层值是 nil，但底层类型是 T：   
 
 ```go
+
 var i I
 var t T
 i = t
+
 ```
 
 ---
@@ -197,6 +199,7 @@ i = t
 General:    
 
 ```
+
 %v	the value in a default format
 	when printing structs, the plus flag (%+v) adds field names
 %#v	a Go-syntax representation of the value
@@ -214,6 +217,7 @@ float32, complex64, etc: %g
 string:                  %s
 chan:                    %p
 pointer:                 %p
+
 ```
 
 ---
@@ -221,6 +225,7 @@ pointer:                 %p
 ## 2.8 基本类型 
 
 ```
+
 bool
 
 string
@@ -236,6 +241,7 @@ rune // alias for int32
 float32 float64
 
 complex64 complex128
+
 ```
 
 变量的零值：  
@@ -263,17 +269,20 @@ complex64 complex128
 2、用于将 slice 打散，比如这样：    
 
 ```go
-    ans := []byte{}
-    nums := []int{10, 20, 30}
-    for _, x := range nums {
-        ans = append(ans, strconv.Itoa(x)...) // strconv.Itoa 的结果是 string，而 string... 是打散成 n 个 byte
-    }
-    fmt.Println(string(ans))
+
+ans := []byte{}
+nums := []int{10, 20, 30}
+for _, x := range nums {
+    ans = append(ans, strconv.Itoa(x)...) // strconv.Itoa 的结果是 string，而 string... 是打散成 n 个 byte
+}
+fmt.Println(string(ans))
+
 ```
 
 或者这样：  
 
 ```go
+
 func test(nums ...int) {
 	for _, x := range nums {
 		fmt.Println(x)
@@ -284,6 +293,7 @@ func main() {
 	nums := []int{10, 20, 30}
 	test(nums...)  // nums 被打散成 3 个 int，作为入参传给 test
 }
+
 ```
 
 ---
@@ -301,9 +311,11 @@ func main() {
 2、使用时，左侧必须至少有一个未声明过的变量，比如：  
 
 ```go
+
 f := 3.14
 f, yy := 4.0, true // ok，左侧的 yy 是未声明过的
 f := 5.0           // not ok，左侧只有一个 f，且 f 已经声明过了
+
 ```
 
 ---
@@ -338,6 +350,7 @@ f := 5.0           // not ok，左侧只有一个 f，且 f 已经声明过了
 ## 4.1 命令行转圈等待
 
 ```go
+
 package main
 import (
 	"fmt"
@@ -363,6 +376,7 @@ func main() {
 ## 4.2 go tour 的 rot13 的简单做法
 
 ```go
+
 func rot13Trans(b byte) byte {
 	if b >= byte('A') && b <= byte('M') {
 		return byte(b+13)
@@ -382,6 +396,7 @@ func (r13 rot13Reader) Read(b []byte) (int, error) {
 	}
 	return n, err
 }
+
 ```
 
 ---
