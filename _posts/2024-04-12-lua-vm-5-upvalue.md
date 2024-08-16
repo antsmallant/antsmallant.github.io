@@ -195,7 +195,7 @@ local retf1, retf2 = getf()
 
 * index 表示在 LClosure 的 upvals 数组中是第几个。  
 * name 表示变量名。  
-* instack 表示这个 upvalue 是否刚好是上一层函数的局部变量，比如 var2 是 f1 的上一层的，所以 instack 为 true，而 var1 是上两层的，所以为 false。  
+* instack 表示这个 upvalue 是否刚好是上一层函数的局部变量，比如 `var2` 是 `f1` 的上一层的，所以 instack 为 true，而 `var1` 是上两层的，所以为 false。  
 * idx 表示 instack 为 false 的情况下，可以在上一层函数的 upvals 数组的第几个找到这个 upvalue。  
 * kind 表示 upvalue 类型，一般都是 VDKREG，即普通类型。 
 
@@ -233,17 +233,19 @@ local function f1()
     return f2
 end
 
-local ret_f2 = f1()
+local f2 = f1()
 
-local ret_f3 = ret_f2()
+local f3 = f2()
 
 ```
 
-调用 `f1` 的时候，得到了 `f2`，这时候 `f1` 已经返回了，它的栈已经回收了，这时候再调用 `f2`，在创建 `f3` 这个闭包的时候，是不可能再找到 `f1` 的栈去搜索 `var1` 这个变量的。  
+调用 `f1` 的时候，得到了 `f2`，然后 `f1` 返回，它的栈被回收。  
 
-所以，要解决这个问题，就需要让 `f2` 在创建的时候，先帮忙把 `var1` 捕捉下来保存到自己的 `upvals` 数组中，等 `f3` 创建的时候，就可以从 `f2` 的 `upvals` 数组中找到了。  
+之后再调用 `f2`，创建 `f3` 闭包，由于 `f1` 的栈已经被回收，所以不可能在 `f1` 的栈上找到 `var1`。   
 
-这正是 `pushclosure` 干的活，lvm.c 里的 `OP_CLOSURE` 调用的就是 `pushclosure`。`f1` 中创建 `f2` 的 closure，以及 `f2` 中创建 `f3` 的 closure，都是用的 `OP_CLOSURE` 指令。  
+要解决这个问题，就需要想办法把 `var1` 保留下来。lua 的做法是，在 `f2` 创建的时候，先帮忙把 `var1` 捕捉下来保存到自己的 `upvals` 数组中，等到 `f3` 创建的时候，就可以从 `f2` 的 `upvals` 数组中找到 `var1` 了。   
+
+这正是 `pushclosure` 干的活，lvm.c 里的 `OP_CLOSURE` 调用的就是 `pushclosure`。`f1` 中创建 `f2` 的 closure，以及 `f2` 中创建 `f3` 的 closure，都是用的 `OP_CLOSURE` 指令。   
 
 ```c
 
