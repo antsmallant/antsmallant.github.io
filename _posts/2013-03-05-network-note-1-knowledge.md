@@ -21,17 +21,19 @@ tags: [网络]
 
 ## socket read/write 的返回值处理
 
-参考：[socket读写返回值的处理](https://cloud.tencent.com/developer/article/1021456)    
+参考：[《socket读写返回值的处理》](https://cloud.tencent.com/developer/article/1021456)    
 
 1、返回值大于 0    
 
-read/write 返回值大于 0，表示从缓冲区读取或写入的实际字节数目。  
+表示从缓冲区读取或写入的实际字节数目。  
 
 <br/>
 
 2、返回值等于 0     
 
-read 返回 0，表示对端已经关闭 socket，本端也需要相应关闭。有时候 select 结果 > 0，但是 read 却返回 0，这是正常现象，select > 0 表示有事件发生，而事件就是对端关闭 socket 了，所以 read 返回 0。   
+read 返回 0，表示对端已经关闭 socket，本端也需要相应关闭。  
+
+有时候 select 结果 > 0，但是 read 却返回 0，这是正常现象，select > 0 表示有事件发生，而事件就是对端关闭 socket 了，所以 read 返回 0。   
 
 write 返回 0，表示缓冲区写满了，等下次再写。   
 
