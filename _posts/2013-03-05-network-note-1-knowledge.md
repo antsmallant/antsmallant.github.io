@@ -23,21 +23,30 @@ tags: [网络]
 
 参考：[socket读写返回值的处理](https://cloud.tencent.com/developer/article/1021456)    
 
-1、返回值大于 0
+1、返回值大于 0    
 
-read/write 返回值大于 0，表示从缓冲区读取或写入的实际字节数目。   
+read/write 返回值大于 0，表示从缓冲区读取或写入的实际字节数目。  
 
-2、返回值等于 0
+<br/>
+
+2、返回值等于 0     
 
 read 返回 0，表示对端已经关闭 socket，本端也需要相应关闭。有时候 select 结果 > 0，但是 read 却返回 0，这是正常现象，select > 0 表示有事件发生，而事件就是对端关闭 socket 了，所以 read 返回 0。   
 
 write 返回 0，表示缓冲区写满了，等下次再写。   
 
+<br/>
+
 3、返回值等于 -1
 
-read/write 返回 -1，根据 errno 判断:
-    3.1）EINTR，表示系统当前中断了，可以忽略；  
-    3.2）EAGAIN / EWOULDBLOCK(两个的值是相等的)，
+要根据 errno 判断:    
+
+* EINTR，表示系统当前中断了，可以忽略；  
+* EAGAIN 或 EWOULDBLOCK (二者的值是相等的)，非阻塞 socket 可以忽略；如果是阻塞 socket，一般是读写操时了还没返回。使用阻塞 socket 时，不要把超时设得太小，否则返回 -1 也不知道是真的断开了还是网络抖动。一般情况下，阻塞的返回 -1 都需要关闭然后重新连接。  
+
+使用 epoll 的时候，如果是 ET 模式，要 read/write 直到返回 -1，对于非阻塞 socket 是没问题的，但对于阻塞 socket，要等到超时才返回，所以
+
+
 
 ## 零拷贝
 

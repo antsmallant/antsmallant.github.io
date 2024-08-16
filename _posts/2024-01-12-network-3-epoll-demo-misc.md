@@ -60,7 +60,7 @@ epoll 是一种同步阻塞的 I/O 复用模型：
 
 就比如 socket1 没有设置非阻塞，保持默认的阻塞属性。 epoll 等待到 socket1 可读了，这时候开一条线程，以阻塞方式去 read 这个 socket1 可以吗？  
 
-答案是：没问题，阻塞的 read socket1，如果 read 到没数据就挂起在那里。等到内核有数据可读时，如果还没有被 read，那么 epoll 也是会等待掉就绪通知的。当 epoll 通知的时候，你再去 read，也是一样的，就阻塞 read 而已。  
+答案是：没问题，阻塞的 read socket1，如果 read 到没数据就挂起在那里。等到内核有数据可读时，如果还没有被 read，那么 epoll 也是会等待掉就绪通知的。当 epoll 通知的时候，再去 read，也是一样的，就阻塞 read 而已。  
 
 这个脑洞其实是比较偏的，只是为了说明这种做法的可能性，而不是真的建议这么做，这么做很愚蠢。   
 
@@ -103,6 +103,7 @@ LT 模式下，当 socket 可写，会不停的触发可写事件，应该怎么
 ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 I/O，如果返回结果小于 0，则要判断 errno，如果 errno 是 EAGAIN 或 EWOULDBLOCK，则表示此次数据已经读取完毕了，可以放心的结束本次读取，下次 epoll_wait 可以重新获得该事件通知。     
 
 那么 EAGAIN, EWOULDBLOCK 表示什么意思？  
+
 实际上，EWOULDBLOCK 的值与 EAGAIN 相等，EAGAIN 表示当前内核还没准备好（不可读或不可写），需要等待。   
 
 ---
