@@ -17,7 +17,7 @@ tags: [网络]
 
 # 1. kcp 基本信息
 
-一套纯算法的ARQ可靠协议实现。ARQ 即是 
+一套纯算法的ARQ可靠协议实现。ARQ 即是 Automatic Repeat reQuest 的缩写，自动重发请求。  
 
 作者：skywind3000，真名：林伟，知乎账号：韦易笑。  
 
