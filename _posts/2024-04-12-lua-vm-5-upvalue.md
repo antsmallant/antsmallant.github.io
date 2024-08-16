@@ -91,6 +91,7 @@ typedef struct UpVal {
 2、Upvaldesc，这个是编译时产生的信息，Proto 结构体就包含 `Upvaldesc*` 类型的数组：upvalues，用于描述当前函数用到的 upvalue 信息。   
 
 ```c
+
 typedef struct Upvaldesc {
   TString *name;  /* upvalue name (for debug information) */
   lu_byte instack;  /* whether it is in stack (register) */
@@ -109,21 +110,25 @@ typedef struct Proto {
 3、lua_State 中的 openupval 字段，它是 UpVal* 类型的链表，它相当于一个 cache，保存当前栈上还存活着的被引用到的 upvalue。   
 
 ```c
+
 struct lua_State {
   ...
   UpVal *openupval;  /* list of open upvalues in this stack */
   ...
 };
+
 ```
 
 4、LClosure 中的 upvals 数组。  
 
 ```c
+
 typedef struct LClosure {
   ClosureHeader;
   struct Proto *p;
   UpVal *upvals[1];  /* list of upvalues */
 } LClosure;
+
 ```
 
 ---
@@ -133,8 +138,10 @@ typedef struct LClosure {
 upvalue 是间接访问的，LClosure 结构体的 upvals 字段是 UpVal* 类型的数组。访问的时候先通过 upvals 获得到 UpVal 指针，再通过 UpVal 里面的 v.p 去访问具体的变量，伪码如下：  
 
 ```c
+
 UpVal* UpValPtr = closure->upvals[upidx];
 TValue* p = UpValPtr->v.p;
+
 ```
 
 需要这样间接访问，主要是因为 UpVal 本身会随着函数调用的返回发生状态的变化：从 open 改为 close，这时它的值也从栈上被拷贝到了 "自己身上"，所以指针（v.p）是变化的，不能写死。  
@@ -205,34 +212,37 @@ local retf1, retf2 = getf()
 instack 主要就是在创建 Closure 的时候帮助初始化 Closure 的 upvals 数组，对于 instack 为 true 的 upvalue，直接搜索上一层函数的栈空间即可，对于 instack 为 false 的 upvalue，就不能这样了，为什么呢？因为上两层的有可能已经不在栈上了。能想象得到吗？举个例子：   
 
 ```lua
-local function l1()
+
+local function f1()
     local var1 = 1
 
-    local function l2()
+    local function f2()
         local var2 = 2
 
-        local function l3()
+        local function f3()
             return var1+var2+3
         end
 
-        return l3
+        return f3
     end
 
-    return l2
+    return f2
 end
 
-local ret_l2 = l1()
+local ret_f2 = f1()
 
-local ret_l3 = ret_l2()
+local ret_f3 = ret_f2()
+
 ```
 
-调用 l1 的时候，得到了 l2，这时候 l1 已经返回了，它的栈已经回收了，这时候再调用 l2，在创建 l3 这个闭包的时候，是不可能再找到 l1 的栈去搜索 var1 这个变量的。  
+调用 `f1` 的时候，得到了 `f2`，这时候 `f1` 已经返回了，它的栈已经回收了，这时候再调用 `f2`，在创建 `f3` 这个闭包的时候，是不可能再找到 `f1` 的栈去搜索 `var1` 这个变量的。  
 
-所以，要解决这个问题，就需要让 l2 在创建的时候，先帮忙把 var1 捕捉下来保存到自己的 upvals 数组中，等 l3 创建的时候，就可以从 l2 的 upvals 数组中找到了。  
+所以，要解决这个问题，就需要让 `f2` 在创建的时候，先帮忙把 `var1` 捕捉下来保存到自己的 `upvals` 数组中，等 `f3` 创建的时候，就可以从 `f2` 的 `upvals` 数组中找到了。  
 
 这正是 `pushclosure` 干的活：  
 
 ```c
+
 static void pushclosure (lua_State *L, Proto *p, UpVal **encup, StkId base,
                          StkId ra) {
   int nup = p->sizeupvalues;
@@ -249,6 +259,7 @@ static void pushclosure (lua_State *L, Proto *p, UpVal **encup, StkId base,
     luaC_objbarrier(L, ncl, ncl->upvals[i]);
   }
 }
+
 ```
 
 函数实现可以看到，instack 为 true 时，调用 `luaF_findupval` 去上一层函数的栈上搜索，instack 为 false 时，上一层函数已经帮忙捕捉好了，直接从它的 upvals 数组（即这里的 encup 变量中）索引。  
