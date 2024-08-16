@@ -338,7 +338,8 @@ close 的操作就是把 upval 从 `openupval` 链表移掉，同时把 upval �
 这也体现了一些设计上的考虑：    
 
 1）closure 里面的 upval 数组存放的是指针，这样一来就可以多个 closure 引用相同的 upvalue。  
-2）`struct UpVal` 结构体里，为何有一个成员变量 `v`，又有一个成员变量 `u`，`v.p` 在 open 的时候指向的是栈上的变量，而 close 的时候指向的就是 `u.value` 里。   
+
+2）`struct UpVal` 结构体里，为何有一个成员变量 `v`，又有一个成员变量 `u`？因为这样一来，`v.p` 在 open 的时候可以指向栈上的变量，在 close 的时候可以把栈上变量拷贝到 u.value，然后把 v.p 指向 `u.value` 。   
 
 ---
 
