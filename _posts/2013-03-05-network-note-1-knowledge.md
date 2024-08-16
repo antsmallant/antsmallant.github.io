@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "网络笔记一：常识"
-date: 2016-3-5
+date: 2013-3-5
 last_modified_at: 2021-5-1
 categories: [网络]
 tags: [网络]
