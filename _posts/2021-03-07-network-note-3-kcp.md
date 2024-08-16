@@ -36,14 +36,6 @@ kcp 的作者韦易笑 (skywind3000) 在这篇知乎回答 [《MOBA类游戏是�
 [kcp github 主页上](https://github.com/skywind3000/kcp) 的介绍：  
 >KCP是一个快速可靠协议，能以比 TCP 浪费 10%-20% 的带宽的代价，换取平均延迟降低 30%-40%，且最大延迟降低三倍的传输效果。  
 
-<br/>
-
-这个 issue [我司使用kcp制作上线的网络游戏，出现了比tcp更不稳定的网络状况](https://github.com/skywind3000/kcp/issues/100) 真是把我看笑了，怎么会有这么蠢的家伙。  
-
-<br/>
-
-     
-
 ---
 
 # 3. kcp 的实现
