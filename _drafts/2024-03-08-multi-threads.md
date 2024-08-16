@@ -11,12 +11,6 @@ tags: [并发 同步 多线程]
 {:toc}
 <br/>
 
-多线程编程的水特别特别深，并且网上充斥着大量陈旧或者错误的文章，于是，我觉得有必要自己收集最新资料，做一次总结，故有本文。本文力求观点准确，知识点足够新。   
-
-以下讨论大体基于 c++。java / C# 也有功能类似的机制，此处不作讨论。  
-
-NOTE: **还没写完，要处理的信息量太大了。**
-
 ---
 
 # 同步原语的性能对比
@@ -29,10 +23,7 @@ NOTE: **还没写完，要处理的信息量太大了。**
 
 # 多线程编程的陷阱
 
-
-
-
-### C++11 完善的多线程支持
+## C++11 完善的多线程支持
 
 上文中我们把问题暴露出来了，接下来需要探讨一下解决办法了。  
 
@@ -172,18 +163,6 @@ from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.cs
 
 ---
 
-# todo
-
-* 补充完整条件变量以及自旋锁
-* 补充 linux 下各种原语的 pthread 版本
-* 搞清楚锁的作用域范围的描述是否准确
-* 重新寻找权威的关于同步原语的描述
-* 经典问题的论述：哲学家就餐问题、读者-写者问题
-* 补充陈硕关于线程同步的建议
-* 从《modern effective c++》补充一些知识点
-
----
-
 # 拓展阅读
 
 * Vincent Gramoli. More than You Ever Wanted to Know about Synchronization
@@ -194,13 +173,6 @@ from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.cs
 * [英]Anthony Williams. C++并发编程实战（第2版）. 吴天明. 北京: 人民邮电出版社, 2021-11-1.  
  
 * Mark John Batty, Wolfson College. The C11 and C++11 Concurrency Model. Available at https://www.cs.kent.ac.uk/people/staff/mjb211/docs/toc.pdf, 2014-11-29.     
-
-
----
-
-# 总结
-
-* 多线程编程简直是个屎坑，除非你掌握了足够多并且足够新的知识，轻易不要挑战它。   
 
 ---
 
