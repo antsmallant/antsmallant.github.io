@@ -134,7 +134,10 @@ ET 模式处理下处理 EPOLLIN 事件时，对于非阻塞 I/O，如果返回�
 
 无论从调用方式还是实现方式上看，epoll 都比 select 和 poll 要高效很多。   
 
-具体的关于 select 和 epoll 的实现，可以参考这两篇文章，分析得很深入：《图解 | 深入揭秘 epoll 是如何实现 IO 多路复用的》[4]，《深入学习IO多路复用 select/poll/epoll 实现原理》[5]。  
+具体的关于 select 和 epoll 的实现，可以参考这两篇文章：  
+
+* [《深入揭秘 epoll 是如何实现 IO 多路复用的》](https://mp.weixin.qq.com/s?__biz=MjM5Njg5NDgwNA==&mid=2247484905&idx=1&sn=a74ed5d7551c4fb80a8abe057405ea5e)[4]      
+* [《深入学习IO多路复用 select/poll/epoll 实现原理》](https://mp.weixin.qq.com/s?__biz=MjM5ODYwMjI2MA==&mid=2649774761&idx=1&sn=cd93afad37fecb2071d72d7e0dfebf5e)[5]      
 
 
 ---
