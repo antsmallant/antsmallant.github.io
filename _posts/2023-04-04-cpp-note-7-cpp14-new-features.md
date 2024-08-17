@@ -67,6 +67,45 @@ static_assert(std::is_same<const int&, decltype(g(x))>::value == 1);
 
 ---
 
+## 放松 `constexpr` 函数的约束
+
+在 c++11 中，`constexpr` 函数只能包含一些很有限的语法，比如 `typedef`、`using`，以及只能有一个 return 表达式。但在 c++14，大大放松了限制，支持的语法范围扩大到 `if` 语句，多个 `return` 表达式，循环等。  
+
+示例[1]：   
+
+```cpp
+
+constexpr int fac(int n) {
+    if (n <= 1) {
+        return 1;
+    } else {
+        return n * fac(n-1);
+    }
+}
+
+constexpr int a = fac(5); // ok，不会报错，a == 120
+
+```
+
+---
+
+## `[[deprecated]]` 属性
+
+c++14 引入了 `[[deprecated]]` 属性用于表明一个单位（函数、类等）不再推荐使用了，并且会在编译的时候报一个 warning。支持一个可选的 warning 信息。   
+
+示例[1]:   
+
+```cpp
+[[deprecated]]
+void very_old_f();
+
+[[deprecated("use new_method instead")]]
+void legacy_method();
+```
+
+
+---
+
 # 2. c++14 新的库特性
 
 ---
