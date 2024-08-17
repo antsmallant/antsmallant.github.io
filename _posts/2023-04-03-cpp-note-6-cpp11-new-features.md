@@ -52,12 +52,14 @@ c++11 是一个 major 版本，带来了大量的新变化，在很多年的时�
 示例[7]：   
 
 ```cpp
+
 // 指定基础类型为 `unsigned int`
 enum class Color : unsigned int { Red = 0xff0000, Green = 0xff00, Blue = 0xff };
 // `Red` / `Green` 与 Color 中的定义不冲突
 enum class Alert : bool { Red, Green };
 
 Color c = Color::Red;  
+
 ```
 
 ---
@@ -113,11 +115,13 @@ public:
 比如这样： 
 
 ```cpp
+
 void f(int);
 void f(int*);
 
 f(NULL);     // 错误，不确定调用哪个好
 f(nullptr);  // 调用 f(int*)
+
 ```
 
 值得指出的是，这篇文章 [《modern-cpp-features/CPP11.md》](https://github.com/AnthonyCalandra/modern-cpp-features/blob/master/CPP11.md#nullptr) 或 wikipedia 的词条 [《c++11/Null pointer constant and type》](https://en.wikipedia.org/wiki/C%2B%2B11#Null_pointer_constant) 都写到： "nullptr itself is of type std::nullptr_t and can be implicitly converted into pointer types, and unlike NULL, not convertible to integral types except bool"。  
@@ -242,6 +246,7 @@ auto y = flopscomps(x, 3);          // 不好：flopscomps() 返回的是什么�
 示例：   
 
 ```cpp
+
 // 类型别名，等价于 typedef std::string MyString; 
 using MyString = std::string;
 // MyString 现在标识一种类型，name 的类型是 std::string
@@ -268,6 +273,7 @@ mystring<char> str;
 // 类型别名可以引入一个 typedef 名字成员
 template<typename T>
 struct Container { using value_type = T; }
+
 ```
 
 <br/>
@@ -281,6 +287,7 @@ struct Container { using value_type = T; }
 示例： 
 
 ```cpp
+
 template<typename T>
 using Vec = std::vector<T>;
 Vec<int> vec {1,2,3};         // vec 的类型是 std::vector<int>
@@ -288,6 +295,7 @@ Vec<int> vec {1,2,3};         // vec 的类型是 std::vector<int>
 template<typename T>
 using Ptr = T*;   // Ptr 现在是 T 类型指针的别名
 Ptr<int> x;       // x 的类型是 int*
+
 ```
 
 ---
