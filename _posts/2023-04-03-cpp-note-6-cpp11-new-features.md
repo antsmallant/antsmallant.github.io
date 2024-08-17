@@ -134,11 +134,11 @@ f(nullptr);  // 调用 f(int*)
 
 ## initializer list
 
-初始值列表，对应的标准库类型是 `std::initializer_list`，头文件是 `<initializer_list>`。  
+初始值列表，对应的标准库类型是 `std::initializer_list`，头文件是 `<initializer_list>`。    
 
-它是一个代表数组的轻量级包装器，通常用于构造函数或函数参数中，以允许传递一个初始化元素列表。可以用花括号初始化来构造 `initializer_list`，比如 `{1,2,3}` 就创建了一个数字序列，它的类型为 `std::initializer_list<int>`。 
+它是一个代表数组的轻量级包装器，通常用于构造函数或函数参数中，以允许传递一个初始化元素列表。可以用花括号初始化来构造 `initializer_list`，比如 `{1,2,3}` 就创建了一个数字序列，它的类型为 `std::initializer_list<int>`。   
 
-示例代码[7]：
+示例代码[7]：   
 
 ```cpp
 
@@ -165,9 +165,9 @@ sum({});      // 结果是 0
 
 ---
 
-## auto
+## `auto`
 
-auto 声明的变量的类型可以由编译器根据初化值进行类型推导(deduce)，这个是在编译期间决定的。  
+`auto` 声明的变量的类型可以由编译器根据初化值进行类型推导 (deduce)，这个是在编译期间决定的。   
 
 示例[7]：   
 
@@ -191,7 +191,7 @@ auto aa {10} ; // c++11 是 std::initializer_list<int>，c++17 改为 int
 
 ```
 
-可以用于声明容器的 iterator 变量，代码简洁很多[7]：   
+可以用于声明容器的 iterator 变量，代码简洁很多 [7]：   
 
 ```cpp
 
@@ -736,7 +736,7 @@ included; however, in §3.3 below we argue why auto&& is also a forwarding case 
 
 * 场景一：作为函数模板的形参    
 
-精确的定义是：“function parameter of a function template declared as rvalue reference to cv-unqualified type template parameter of that same function template”[2]。  
+精确的定义是："function parameter of a function template declared as rvalue reference to cv-unqualified type template parameter of that same function template" [2]。  
 
 示例[2]：  
 
@@ -911,8 +911,9 @@ Widget w;
 auto&& w1 = w;    // w1 的类型是 Widget& 。由于 w 是左值，此时 auto 被推导为 Widget&，
                   // 代入得 Widget& && w1 = w;，引用折叠后是 Widget& w1 = w 。
 
-auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返回了右值，此时 auto 被推导为 Widget，
-                         // 代入得 Widget&& w2 = w，不需要引用折叠。  
+auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返回了右值，
+                         // 此时 auto 被推导为 Widget，代入得 Widget&& w2 = w，
+                         // 不需要引用折叠。  
 
 ```
 
