@@ -322,9 +322,10 @@ add(1, 2.0); // decltype(x+y) => decltype(3.0) => double
 
 <br/>
 
-关于 `decltype(auto)`
+`decltype(auto)` 是 c++14 引入的新特性，见这篇文章：[《》]()。  
 
 <br/>
+
 拓展阅读： 
 
 [What expressions yield a reference type when decltype is applied to them?](https://stackoverflow.com/questions/17241614/what-expressions-yield-a-reference-type-when-decltype-is-applied-to-them)      
