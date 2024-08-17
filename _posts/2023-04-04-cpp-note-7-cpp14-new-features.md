@@ -96,13 +96,14 @@ c++14 引入了 `[[deprecated]]` 属性用于表明一个单位（函数、类�
 示例[1]:   
 
 ```cpp
+
 [[deprecated]]
 void very_old_f();
 
 [[deprecated("use new_method instead")]]
 void legacy_method();
-```
 
+```
 
 ---
 
