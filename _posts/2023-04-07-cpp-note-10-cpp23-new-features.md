@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "c++ 笔记十：c++23 的新特性"
+title: "c++ 笔记：c++23 的新特性"
 date: 2023-04-07
 last_modified_at: 2024-07-01
 categories: [c++]

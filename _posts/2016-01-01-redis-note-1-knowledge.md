@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "redis 笔记一：常识"
+title: "redis 笔记：常识"
 date: 2016-1-1
 last_modified_at: 2024-7-10
 categories: [数据库]

@@ -1,10 +1,10 @@
 ---
 layout: post
-title: "网络笔记一：常识"
+title: "计算机网络笔记：常识"
 date: 2013-3-5
 last_modified_at: 2021-5-1
-categories: [网络]
-tags: [网络]
+categories: [计算机网络]
+tags: [计算机网络]
 ---
 
 * 目录  

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "c++ 笔记三：模板"
+title: "c++ 笔记：模板"
 date: 2013-02-17
 last_modified_at: 2023-04-01
 categories: [c++]

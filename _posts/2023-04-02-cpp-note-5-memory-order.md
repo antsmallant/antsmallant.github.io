@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "c++ 笔记五：memory order"
+title: "c++ 笔记：memory order"
 date: 2023-04-02
 last_modified_at: 2024-07-01
 categories: [c++]

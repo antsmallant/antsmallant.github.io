@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "c++ 笔记二：面向对象"
+title: "c++ 笔记：面向对象"
 date: 2013-02-16
 last_modified_at: 2023-04-01
 categories: [c++]

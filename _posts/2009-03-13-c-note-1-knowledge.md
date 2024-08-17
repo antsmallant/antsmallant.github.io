@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "c 笔记一：常识"
+title: "c 笔记：常识"
 date: 2009-03-13
 last_modified_at: 2023-05-01
 categories: [c]

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "lua 笔记一：常识"
+title: "lua 笔记：常识"
 date: 2022-05-01
 last_modified_at: 2022-05-01
 categories: [lua]

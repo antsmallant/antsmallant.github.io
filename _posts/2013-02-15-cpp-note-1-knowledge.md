@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "c++ 笔记一：常识、术语"
+title: "c++ 笔记：常识、术语"
 date: 2013-02-15
 last_modified_at: 2023-04-01
 categories: [c++]

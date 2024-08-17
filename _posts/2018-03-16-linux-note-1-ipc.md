@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "linux 笔记一：进程间通信"
+title: "linux 笔记：进程间通信"
 date: 2018-03-16
 last_modified_at: 2024-04-01
 categories: [操作系统]

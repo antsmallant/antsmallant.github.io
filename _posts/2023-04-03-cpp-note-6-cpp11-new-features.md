@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "c++ 笔记六：c++11 的新特性"
+title: "c++ 笔记：c++11 的新特性"
 date: 2023-04-03
 last_modified_at: 2024-07-01
 categories: [c++]
@@ -322,7 +322,7 @@ add(1, 2.0); // decltype(x+y) => decltype(3.0) => double
 
 <br/>
 
-`decltype(auto)` 是 c++14 引入的新特性，见这篇文章：[《》]()。  
+`decltype(auto)` 是 c++14 引入的新特性，见这篇文章：[《》](https://blog.antsmallant.top/2023/04/04/cpp-note-7-cpp14-new-features)。  
 
 <br/>
 

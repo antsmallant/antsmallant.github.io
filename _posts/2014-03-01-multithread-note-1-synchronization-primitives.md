@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "多线程笔记一：同步及同步原语"
+title: "多线程笔记：同步及同步原语"
 date: 2014-03-01
 last_modified_at: 2024-04-01
 categories: [并发与多线程]

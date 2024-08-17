@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "lua 笔记四：userdata 与 lightuserdata"
+title: "lua 笔记：userdata 与 lightuserdata"
 date: 2022-05-04
 last_modified_at: 2023-01-01
 categories: [lua]

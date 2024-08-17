@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "lua 笔记二：table 的用法及底层实现"
+title: "lua 笔记：table 的用法及底层实现"
 date: 2022-05-02
 last_modified_at: 2022-05-02
 categories: [lua]

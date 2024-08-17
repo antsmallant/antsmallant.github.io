@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "c++ 笔记四：copy elision、rvo、nrvo"
+title: "c++ 笔记：copy elision、rvo、nrvo"
 date: 2023-04-01
 last_modified_at: 2024-07-01
 categories: [c++]
