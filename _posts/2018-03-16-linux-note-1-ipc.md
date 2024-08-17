@@ -56,15 +56,16 @@ tags: [操作系统 linux ipc]
 
 匿名管道通过 `int pipe(int fd[2])` 系统调用创建，创建成功后，`fd[0]` 就表示读端，`fd[1]` 表示写端。   
 
-shell 中类似于 `ps aux | grep mysql` 这样的命令，就是将 ps 的输出重定向为 grep 的输入，可以使用匿名管道来实现这样的效果。大体做法是： 
+shell 中类似于 `ps aux | grep mysql` 这样的命令，就是将 `ps` 的输出重定向为 `grep` 的输入，可以使用匿名管道来实现这样的效果。大体做法是： 
 
 1、shell 创建一个匿名管道 `fd[2]`； 
-2、shell fork 出 ps 子进程，利用 dup2 函数，用管道的写端 fd[1] 替换掉 ps 子进程的 stdout（同时也关闭管道的读端，因为用不上）；  
-3、shell fork 出 grep 子进程，利用 dup2 函数，用管道的读端 fd[0] 替换掉 grep 子进程的 stdin（同时也关闭管道的写端，因为用不上）；    
+2、shell `fork` 出 `ps` 子进程，利用 `dup2` 函数，用管道的写端 `fd[1]` 替换掉 `ps` 子进程的 `stdout`（同时也关闭管道的读端，因为用不上）；  
+3、shell `fork` 出 `grep` 子进程，利用 `dup2` 函数，用管道的读端 `fd[0]` 替换掉 `grep` 子进程的 `stdin`（同时也关闭管道的写端，因为用不上）；    
 
-下面例子（仅包含 fork 出 ps 子进程的逻辑）来自 [《进程间通信IPC》](https://www.colourso.top/linux-pipefifo/) [2]:  
+下面例子（仅包含 `fork` 出 `ps` 子进程的逻辑）来自 [《进程间通信IPC》](https://www.colourso.top/linux-pipefifo/) [2]:  
 
 ```c
+
 #include <unistd.h>
 #include <sys/types.h>
 #include <stdio.h>
@@ -133,17 +134,21 @@ int main(){
 针对 1，APUE 举了一个例子，展示了 FIFO 可以在 shell 中做出非线性的连接。    
 
 ```bash
+
 mkfifo fifo1
 prog3 < fifo1 &
 prog1 < infile | tee fifo1 | prog2
+
 ```
 
 它实现了这样的效果：   
 
 ```
+
                          -> FIFO -> prog3
 输入文件 -> prog1 -> tee 
                          -> prog2
+
 ```
 
 ---
