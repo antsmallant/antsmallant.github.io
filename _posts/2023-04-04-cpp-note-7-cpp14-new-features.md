@@ -19,6 +19,21 @@ c++14 是一个 minor 版本，主要是对于 c++11 一些不完善之处的补
 
 # 1. c++14 新的语言特性
 
+**概览**  
+
+参考自：[《wikipedia c++14》](https://zh.wikipedia.org/wiki/c++14) [2]。   
+
+* 泛型的lambda
+* Lambda捕获部分中使用表达式
+* 函数返回类型推导
+* 另一种类型推断:decltype(auto)
+* 放松的constexpr函数限制
+* 变量模板
+* 聚合类成员初始化
+* 二进制字面量： 0b或0B 前缀
+* 数字分位符
+* deprecated 属性
+
 ---
 
 ## 1.1 decltype(auto)
@@ -109,8 +124,25 @@ void legacy_method();
 
 # 2. c++14 新的库特性
 
+**概览**  
+
+参考自：[《wikipedia c++14》](https://zh.wikipedia.org/wiki/c++14) [2]。   
+
+* 共享的互斥体和锁: `std::shared_timed_mutex`
+* 元函数的别名
+* 关联容器中的异构查找
+* 标准自定义字面量
+* 通过类型寻址多元组
+* 较小的标准库特性: `std::make_unique`, `std::is_final` 等
+
+---
+
+## `std::make_unique`
+
 ---
 
 # 3. 参考
 
 [1] AnthonyCalandra. C++14. Available at https://github.com/AnthonyCalandra/modern-cpp-features/blob/master/CPP14.md.     
+
+[2] Wikipedia. c++14. Available at: https://zh.wikipedia.org/wiki/c++14.   
