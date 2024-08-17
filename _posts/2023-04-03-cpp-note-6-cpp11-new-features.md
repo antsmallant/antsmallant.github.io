@@ -411,11 +411,58 @@ lambda 是匿名函数，可以捕获作用域内的变量。具体实现上，�
 
 ## constexpr
 
-constexpr 即 constant expression 的缩写，是 c++11 新引入的关键字，用于修饰变量或函数，一来表明是常量值，二来表明变量或函数【可能】可以在编译期求值。  
+常量表达式 (constant expression) 是指值不会改变并且在编译过程就能得到计算结果的表达式[10]。    
 
-与 const 的区别：const 并未区分编译期和运行期，而 constexpr 限定了编译期。 
+字面值属于常量表达式，用常量表达式初始化的 const 对象也是常量表达式。  
 
-但是，constexpr 修饰的函数，如果传入参数后能在编译期计算出来，那么这个函数就会产生编译时期的值。否则，就当成一个普通函数在运行时正常调用。  
+constexpr 是 c++11 新引入的关键字，用于修饰变量或函数。  
+
+---
+
+### constexpr 作用于变量    
+
+此处需要把它跟 `const` 进行对比。   
+
+1）const 
+
+const 表达式是潜在的常量表达式，如果用常量表达式初始化，它就是常量表达式，否则就不是。   
+
+```cpp
+
+const int a = 10;           // ok，10 是常量表达式
+const int sz = get_size();  // ok，get_size() 不是常量表达式， 具体值要到运行时才确定
+
+```
+
+2）constexpr 
+
+`constexpr` 表达式也是潜在的常量表达式，但它比 const 严格，如果用来初始化的不是常量表达式，则报错。  
+
+`constexpr` 的作用就相当于由编译器来验证变量的值是否是一个常量表达式。   
+
+```cpp
+
+constexpr int a = 10;            // ok，10 是常量表达式
+constexpr int sz = get_size();   // 不一定 ok，只有当 get_size() 是一个 constexpr 函数（即可以在编译期求值的函数）时才 ok，否则不 ok
+
+```
+
+特别的，当 `constexpr` 作用于指针时，它是把所定义的对象置为了顶层 const，即指针本身是常量，而非指针所指之物，这点与 `const` 也是存在差异的，`const` 允许设置顶层或底层常量。比如 `constexpr int* p = nullptr;` 就表示 `p` 本身是个常量。   
+
+
+关于顶层 const 和底层 const：  
+
+顶层 const 是指指针本身是 `const` 的，比如 `int * const p = nullptr;`，`const` 要放在 `*` 的右边。   
+
+底层 const 是指指针所指之物是 `const` 的，比如 `const int * p = nullptr;`，`const` 要放在 `*` 的左边。   
+
+<br/>
+
+---
+
+### constexpr 作用于函数    
+
+constexpr 修饰的函数，如果传入参数后能在编译期计算出来，那么这个函数就会产生编译时期的值。否则，就当成一个普通函数在运行时正常调用。  
 
 示例[7]:   
 
@@ -447,11 +494,34 @@ int main() {
 
 ```
 
-可以用一个小办法检测 constexpr 
+<br/>
 
-https://www.zhihu.com/question/35614219/answer/63798713  
+可以用一个小办法检测一个 constexpr 函数是否真正的编译时可求值，即利用 `std::array` 需要编译期常量才能编译通过的性质。参考自：[《C++ const 和 constexpr 的区别？》](https://www.zhihu.com/question/35614219/answer/63798713)。   
 
-const 不一定是只读，const 是潜在的常量表达式，具体就是：如果初始化式用的是常量表达式，const 就是常量表达式，否则就是运行时的只读。constexpr 也是潜在的常量表达式，只是和 const 有些许区别：对于变量，必定是常量表达式，因为它只允许初始化式为常量表达式否则编译错误；对于函数，如果在调用的地方使用的所有实参都是常量表达式，函数就是常量表达式函数，否则就是非常量表达式
+示例：
+
+```cpp
+
+#include <iostream>
+#include <array>
+
+constexpr int get_size(int i) {
+    return i+10;
+}
+
+int main() {
+    int x = 100;
+
+    get_size(5);  // ok
+    get_size(x);  // ok
+
+    std::array<int, get_size(5)> arr;  // ok
+    std::array<int, get_size(x)> arr2; // not ok，编译报错
+
+    return 0;
+}
+
+```
 
 ---
 
@@ -867,4 +937,6 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 
 [8] cppreference. Type alias, alias template. Available at https://en.cppreference.com/w/cpp/language/type_alias.   
 
-[9] cppreference. decltype specifier. Available at https://en.cppreference.com/w/cpp/language/decltype.  
+[9] cppreference. decltype specifier. Available at https://en.cppreference.com/w/cpp/language/decltype.   
+
+[10] [美] Stanley B. Lippman, Josée Lajoie, Barbara E. Moo. C++ Primer 中文版（第 5 版）. 王刚, 杨巨峰. 北京: 电子工业出版社, 2013-9: 58.     
