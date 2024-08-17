@@ -15,6 +15,8 @@ tags: [c++ cpp]
 
 c++11 是一个 major 版本，带来了大量的新变化，在很多年的时间里，它也一直被称为 c++0x。  
 
+这篇笔记的主干参考自这份 c++11 的 cheatsheet： [《AnthonyCalandra modern-cpp-features》](https://github.com/AnthonyCalandra/modern-cpp-features/blob/master/CPP11.md)，补充了一些其他来源的知识。   
+
 ---
 
 # 1. c++11 新的语言特性
