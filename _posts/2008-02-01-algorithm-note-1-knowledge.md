@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "算法笔记一：常识"
+title: "算法笔记：常识"
 date: 2008-02-01
 last_modified_at: 2024-07-01
 categories: [算法]
