@@ -705,7 +705,7 @@ struct B : A {
 
 用于标识一个虚函数不能被重写 (override)，或者标识一个类不能被继承 (inherited from)。 
 
-示例1，final 修改虚函数 [7]：
+示例1[7]，`final` 修改虚函数：    
 
 ```cpp
 
@@ -723,7 +723,7 @@ struct C : public B {
 
 ```
 
-示例2，final 修改类 [7]:  
+示例2[7]，`final` 修改类:    
 
 ```cpp
 
@@ -736,7 +736,7 @@ struct B : A {}; // 报错，A 已经标为 final 了，不能被继承
 
 ## long long
 
-正式加入 long long，表示 (at leatst) 64 位的整数。整数类型及对应的宽度规定如下，参考自 [cppreference types](https://en.cppreference.com/w/cpp/language/types) [5]：  
+正式加入 `long long`，表示 (at leatst) 64 位的整数。整数类型及对应的宽度规定如下，参考自：[《cppreference types》](https://en.cppreference.com/w/cpp/language/types) [5]。   
 
 <br/>
 <div align="center">
@@ -745,7 +745,7 @@ struct B : A {}; // 报错，A 已经标为 final 了，不能被继承
 <center>图x：整数类型及其宽度规定</center>
 <br/>
 
-LP32 / LP64 之类的代表 data model，规定如下，参考自 [wikipedia 64-bit data models](https://en.wikipedia.org/wiki/64-bit_computing#64-bit_applications) [6]:   
+LP32 / LP64 之类的代表 data model，规定如下，参考自 [《wikipedia 64-bit data models》](https://en.wikipedia.org/wiki/64-bit_computing#64-bit_applications) [6]。    
 
 <br/>
 <div align="center">
@@ -756,11 +756,13 @@ LP32 / LP64 之类的代表 data model，规定如下，参考自 [wikipedia 64-
 
 I 表示 int，L 表示 long，LL 表示 long long，P 表示 pointer。  
 
+```
 LP32  表示 long、pointer 的宽度是 32 位。    
 ILP32 表示 int、long、pointer 的宽度是 32 位。   
 ILP64 表示 int、long、pointer 的宽度是 64 位。  
 LLP64 表示 long long、pointer 的宽度是 64 位。  
 LP64  表示 long、pointer 的宽度是 64 位。  
+```
 
 ---
 
