@@ -1,10 +1,10 @@
 ---
 layout: post
-title: "网络笔记二：tcp 和 udp"
+title: "计算机网络笔记：tcp 和 udp"
 date: 2021-03-06
 last_modified_at: 2021-5-1
-categories: [网络]
-tags: [网络]
+categories: [计算机网络]
+tags: [计算机网络]
 ---
 
 * 目录  
