@@ -273,15 +273,24 @@ redisObject 结构体中的 type, encoding, lru 实际上是一种位域定义�
 int main() {
     int a = 10;
     
-    printf("%ld\n", my_sizeof_var(a));
-    printf("%ld\n", my_sizeof_type(int));
+    printf( "%ld\n", my_sizeof_var(a) );
+    printf( "%ld\n", my_sizeof_type(int) );
 
-    printf("%ld\n", my_sizeof(a));
-    printf("%ld\n", my_sizeof(int));
+    printf( "%ld\n", my_sizeof(a) );
+    printf( "%ld\n", my_sizeof(int) );
 
     return 0;
 }
 
+```
+
+输出：
+
+```
+4
+4
+4
+4
 ```
 
 ---
