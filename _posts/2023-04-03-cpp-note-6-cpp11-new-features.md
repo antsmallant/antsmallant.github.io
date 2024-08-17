@@ -182,7 +182,9 @@ auto&& f = b;  // int&
 auto g = new auto(123); // int*
 const auto h = 1; // const int
 auto i = 1, j = 2, k = 3;  // int, int, int
-auto l = 1, m = true, n = 1.61;  // 错误，`l` 推导为 int，但 `m` 是一个 bool，推导结果不一致
+auto x = 10 + 3.14;    // double，使用表达式的结果进行推导
+auto l = 1, m = true, n = 1.61;  // 错误，一个声明语句只能有一个类型
+                                 // 而 `l` 推导为 int，`m` 推导为 bool
 auto o;  // 错误，需要给出初始化值
 
 auto aa {10} ; // c++11 是 std::initializer_list<int>，c++17 改为 int
@@ -218,6 +220,48 @@ auto f(int a, int b) -> decltype(a+b) {
 auto f(int a, int b) {
     return a+b;
 }
+
+```
+
+<br/>
+
+`auto` 有时候推断出来的类型与初始值的类型不一样，下面是一些规则：  
+
+1、初始值是一个引用时，真正参与初始化的其实是引用对象的值：  
+
+```cpp
+
+#include <iostream>
+
+int main() {
+    int x = 20;
+    int& y = x;
+    auto z = y;  // z 的类型是 int，而非 int&
+
+    std::cout << std::is_reference<decltype(y)>::value << std::endl; // 输出1
+    std::cout << std::is_reference<decltype(z)>::value << std::endl; // 输出0
+        
+    return 0;
+}
+
+```
+
+2、`auto` 一般会忽略掉顶层 `const`，而底层 `const` 则会保留下来[10]   
+
+比如：  
+
+```cpp
+
+
+
+```
+
+如果希望推断出的 `auto` 类型是一个顶层 `const`，则要显式指明[10]：  
+
+```cpp
+
+const int ci = 100;
+const auto f = ci;
 
 ```
 
