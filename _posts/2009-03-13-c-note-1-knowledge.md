@@ -252,9 +252,37 @@ redisObject 结构体中的 type, encoding, lru 实际上是一种位域定义�
 
 ---
 
-## 1.10 c 实现 sizeof 
+## 1.10 宏实现 sizeof 
 
-https://www.cnblogs.com/fuhaots2009/p/3429183.html 
+可以利用指针的运算来实现。如果不使用 `typeof` 关键字，则需要分别处理变量跟类型两种情况；如果使用，则可以统一起来。   
+
+示例：
+
+```c
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// 不使用 typeof 关键字
+#define my_sizeof_var(v)    ( (size_t)(&v+1) - (size_t)(&v) )
+#define my_sizeof_type(T)   ( (size_t)( (T*)0 + 1 ) )
+
+// 使用 typeof 关键字
+#define my_sizeof(X)        ( (size_t)( (typeof(X)*)0 + 1 ) )
+
+int main() {
+    int a = 10;
+    
+    printf("%ld\n", my_sizeof_var(a));
+    printf("%ld\n", my_sizeof_type(int));
+
+    printf("%ld\n", my_sizeof(a));
+    printf("%ld\n", my_sizeof(int));
+
+    return 0;
+}
+
+```
 
 ---
 
