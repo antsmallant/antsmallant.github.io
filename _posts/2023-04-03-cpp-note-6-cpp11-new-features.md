@@ -252,8 +252,16 @@ int main() {
 
 ```cpp
 
+int i = 100;
+const int ci = i, &cr = ci;   
+auto b = ci;  // b 是一个整数（ci 的顶层 const 特性被忽略掉了）
+auto c = cr;  // c 是一个整数（cr 是 ci 的别名，ci 本身是一个顶层 const）
+auto d = &i;  // d 是一个整型指针
+auto e = &ci; // e 是一个指向整数常量的指针，即 const int* 
+              //（对常量对象取地址是一种底层 const)  
 
-
+*e = 100;     // not ok，会编译报错，e 所指之物是 const
+e = nullptr;  // ok，e 本身不是 const
 ```
 
 如果希望推断出的 `auto` 类型是一个顶层 `const`，则要显式指明[10]：  
