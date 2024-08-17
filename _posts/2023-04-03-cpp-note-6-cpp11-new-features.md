@@ -358,12 +358,16 @@ Ptr<int> x;       // x 的类型是 int*
 
 `decltype` 总体上分为两种情况处理： 
 
-1）参数不是以圆括号括起来的 (unparenthesized) id 表达式（id-expression） 或 类成员访问表达式 (class member access expression)，则返回的是这个表达式对应的实体的类型。   
+(1) 参数不是以圆括号括起来的 (unparenthesized) id 表达式（id-expression） 或 类成员访问表达式 (class member access expression)，则返回的是这个表达式对应的实体的类型。   
 
-2）除1）的情况外，则：
-    2.1）如果表达式是将亡值 (xvalue)，则返回 T&&；    
-    2.2）如果表达式是左值(lvalue)，则返回 T&;    
-    2.3）如果表达式是纯右值（prvalue），则返回 T。   
+(2) 除 (1) 的情况外，则：
+    (2.1) 如果表达式是将亡值 (xvalue)，则返回 T&&；    
+    (2.2) 如果表达式是左值(lvalue)，则返回 T&;    
+    (2.3) 如果表达式是纯右值（prvalue），则返回 T。   
+
+总结起来即是：`decltype((variable))` 的结果永远是引用，而 `decltype(variable)` 的结果只有当 variable 是引用的时候才是引用。   
+
+除上面讲的，还有一种情况，如果表达式的内容是解引用操作，则 `decltype` 将得到引用类型。比如 `int i = 10; int *p = &i;`，则 `decltype(*p)` 得到的类型是 `int&`。为什么会这样呢？解引用指针可以得到指针所指的对象，而且还能给这个对象赋值。从这个语义上讲，就应该返回 `int&` 型。  
 
 <br/>
 
@@ -371,10 +375,12 @@ Ptr<int> x;       // x 的类型是 int*
 
 ```cpp
 
-int a = 1;           // a 定义为 `int` 型
-decltype(a) b = a;   // decltype(a) 是 `int` 型
-const int& c = a;    // c 定义为 `const int&` 型
-decltype(c) d = a;   // decltype(c) 是 `const int&` 型
+int a = 1;            // a 定义为 `int` 型
+decltype(a) b = a;    // decltype(a) 是 `int` 型
+const int& c = a;     // c 定义为 `const int&` 型
+int& x = a;           // x 定义为 `int` 型
+decltype(c) d = a;    // decltype(c) 是 `const int&` 型
+decltype(x) d2 = a;   // decltype(x) 是 `int&` 型
 decltype(123) e = 10; // decltype(123) 是 `int` 型
 int&& f = 1;          // f 定义为 `int&&` 型
 decltype(f) g = 1;    // decltype(f) 是 `int&&` 型
