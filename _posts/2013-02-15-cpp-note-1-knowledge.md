@@ -328,6 +328,51 @@ extern int m = 10; // 定义 m 并赋初始值 10，给 extern 标记的变量�
 
 ---
 
+## 1.14 宏实现 sizeof
+
+只是尝试一下模拟，并无实际意义。    
+
+可以利用指针的加减来近似实现，也只能适应简单的情况。     
+
+示例：  
+
+```cpp
+
+#include <iostream>
+
+#define sizeof_var(v) reinterpret_cast<size_t>( (decltype(v)*)0 + 1 )
+
+#define sizeof_type(T) reinterpret_cast<size_t>( (T*)0 + 1 )
+
+int main() {
+    int a = 10;
+    std::cout << sizeof_var(a) << std::endl;
+    
+    int b[5];
+    std::cout << sizeof_var(b) << std::endl;
+    
+    std::string str;
+    std::cout << sizeof_var(str) << std::endl;
+
+
+    std::cout << sizeof_type(int) << std::endl;
+
+    return 0;
+}
+
+```
+
+输出：  
+
+```
+4
+20
+32
+4
+```
+
+---
+
 # 2. 术语
 
 ---
