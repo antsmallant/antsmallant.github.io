@@ -1008,6 +1008,56 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 
 ## 智能指针 (smart pointer) 
 
+c++11 引入了三种新的智能指针：`std::unique_ptr`，`std::shared_ptr`，`std::weak_ptr`。而 `std::auto_ptr` 被标为了弃用(deprecated)，并将在 c++17 最终移除。   
+
+---
+
+### `std::unique_ptr`  
+
+`std::unique_ptr` 是一种用于管理专属所有权的智能指针，它不允许复制，只允许转移所有权，它管理着一个自己专属的资源。  
+
+推荐使用 `std::make_unique` 进行创建，但是这个要等到 c++14 才支持。在 c++11，只能使用裸指针进行创建。   
+
+不可复制是通过把拷贝构造函数声明为 deleted 实现的。  
+
+示例[7]:  
+
+```cpp
+
+// `p1` 持有 `Foo` 对象
+std::unique_ptr<Foo> p1 { new Foo() };  
+if (p1) {
+    p1->bar();  
+}
+
+{
+    // 现在 `p2` 持有 `Foo` 了
+    // 能够这样构造是因为 std::unique_ptr 实现了移动构造函数
+    std::unique_ptr<Foo> p2 { std::move(p1) };                                       
+    f(*p2);
+
+    p1 = std::move(p2); // 所有权从 `p2` 转移回 `p1` 了
+}
+
+if (p1) {
+    p1->bar();
+}
+
+// 如果 `p1` 离开作用域，则 `Foo` 对象也会随之被销毁
+// 这是利用了 RAII 机制
+
+```
+
+---
+
+### `std::shared_ptr` 
+
+`std::shared_ptr` 是一种用于管理共享所有权的指针，允许多个属主共享一份资源，它内部维护了一个引用计数，当引用计数归 0 的时候，自动释放资源。  
+
+推荐使用 `std::make_shared` 进行创建。  
+
+
+
 
 使用参考：    
 
