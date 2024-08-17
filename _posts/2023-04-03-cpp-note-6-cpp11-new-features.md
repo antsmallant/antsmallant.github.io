@@ -71,6 +71,7 @@ static 的成员变量，如果是 const 的，则也可以使用这种类内
 需要注意的是，只能用 `=` 号或 `{}` 号来赋初始值，不能使用圆括号 `()` 来赋初始值。  
 
 ```cpp
+
 // c++11 之前
 class Man {
     int age;
@@ -98,6 +99,7 @@ class Man {
 public:
     Man() {}
 };
+
 ```
 
 ---
@@ -135,6 +137,7 @@ f(nullptr);  // 调用 f(int*)
 示例代码[7]：
 
 ```cpp
+
 int sum(const std::initializer_list<int>& list) {
     int total = 0;
     for (auto& e : list) {
@@ -147,6 +150,7 @@ auto list = {1,2,3};  // list 推导出来的类型是 std::initializer_list<int
 sum(list);    // 结果是 6
 sum({1,2,3}); // 结果是 6
 sum({});      // 结果是 0
+
 ```
 
 有了 `initializer_list` 之后，标准库的一些容器就可以支持使用这种类型来构造，比如 `std::vector`，在 c++11 后，加入了这样的构造函数，`vector( std::initializer_list<T> init, const Allocator& alloc = Allocator() )`。  
@@ -164,6 +168,7 @@ auto 声明的变量的类型可以由编译器根据初化值进行类型推导
 示例[7]：   
 
 ```cpp
+
 auto a = 3.14;  // double
 auto b = 1; //int
 auto& c = b; // int&
@@ -183,27 +188,33 @@ auto aa {10} ; // c++11 是 std::initializer_list<int>，c++17 改为 int
 可以用于声明容器的 iterator 变量，代码简洁很多[7]：   
 
 ```cpp
+
 std::vector<int> vec {1,2,3};
 std::vector<int>::iterator oldstyle_iter = vec.begin(); // 旧的方式
 auto iter = vec.begin();  // 新的方式比旧的方式简洁特别多
+
 ```
 
 也可以用于推导函数的返回值，比如这样： 
 
 ```cpp
+
 // in c++11
 auto f(int a, int b) -> decltype(a+b) {
     return a+b;
 }
+
 ```
 
 但看起来挺麻烦的，还不如不要这么写。不过，在 c++14 中，就可以省掉后面的 `decltype` 了，c++14 支持 "return value deduce" 了。直接这样就行： 
 
 ```cpp
+
 // in c++14
 auto f(int a, int b) {
     return a+b;
 }
+
 ```
 
 <br/>
@@ -211,9 +222,11 @@ auto f(int a, int b) {
 使用 `auto` 的原则：能一眼看出是什么类型的就用 `auto`，否则不用。比如 Stroustrup 举的这个例子[1]： 
 
 ```cpp
+
 auto n = 1;  // 很好：n 是 int
 auto x = make_unique<Gadget>(arg);  // 很好：x 是 std::unique_ptr<Gadget>
 auto y = flopscomps(x, 3);          // 不好：flopscomps() 返回的是什么东西？  
+
 ```
 
 ---
@@ -226,7 +239,7 @@ auto y = flopscomps(x, 3);          // 不好：flopscomps() 返回的是什么�
 
 类似于 `typedef`，但是可读性更强。   
 
-示例：
+示例：   
 
 ```cpp
 // 类型别名，等价于 typedef std::string MyString; 
@@ -322,7 +335,7 @@ add(1, 2.0); // decltype(x+y) => decltype(3.0) => double
 
 <br/>
 
-`decltype(auto)` 是 c++14 引入的新特性，见这篇文章：[《》](https://blog.antsmallant.top/2023/04/04/cpp-note-7-cpp14-new-features)。  
+`decltype(auto)` 是 c++14 引入的新特性，见这篇文章：[《c++ 笔记：c++14 的新特性》](https://blog.antsmallant.top/2023/04/04/cpp-note-7-cpp14-new-features)。  
 
 <br/>
 

@@ -42,17 +42,21 @@ C++语言中的大多数语句都以分号结束，一个表达式，比如 ival
 空语句是最简单的语句，空语句中只含有一个单独的分号：`;`。空语句的作用是，如果语法上需要一条语句但逻辑上不需要，此时应该使用空语句，比如：  
 
 ```cpp
+
 while (cin >> s && s != sought)
     ;
+
 ```
 
 复合语句（compound statement）是指用花括号括起来的（可能为空的）语句和声明的序列，复合语句也被称作块（block）。复合语句的作用是，如果在程序的某个地方，语法上需要一条件语句，但逻辑上需要多条语句，比如：  
 
 ```cpp
+
 while (val <= 10) {
     sum += val;
     ++val;
 }
+
 ```
 
 注意：块不以分号作为结束。  
@@ -71,10 +75,12 @@ while (val <= 10) {
 赋值表达式本身是有结果的，它的结果就是 = 号左侧的运算对象，是一个左值。比如 `a = 100`，它的结果就是 a，可以这样验证：   
 
 ```cpp
+
 int a;
 printf("%d\n", (a = 5));    // 输出 5
 printf("0x%x\n", &a);       // 在我本机上输出 0x500d58
 printf("0x%x\n", &(a=5));   // 在我本机上输出 0x500d58
+
 ```
 
 * 赋值表达式的运算顺序   
@@ -89,6 +95,7 @@ printf("0x%x\n", &(a=5));   // 在我本机上输出 0x500d58
 上面讲赋值表达式的时候已经提及了，定义时初始化与赋值是不同的，不能混为一谈。这个很重要，因为不同场景调用的函数是不同的，定义时初始化调用的是构造函数（带参数的构造函数或者拷贝构造函数），而赋值调用的是赋值运算符函数（`operator =`）。    
 
 ```cpp
+
 #include <iostream>
 
 struct Dt {
@@ -115,6 +122,7 @@ int main() {
     a = c;     // 赋值，调用的是赋值运算符函数 operator=(const Dt&) ，如果有重载则使用重载的，否则使用系统默认生成的（只会做浅拷贝）
     return 0;
 }
+
 ```
 
 如果我们没有显式的重载赋值运算符函数，那么编译器会生成一个默认的赋值运算符函数，而默认的只能完成浅拷贝，是比较危险的！   
@@ -138,9 +146,11 @@ int main() {
 例子：
 
 ```cpp
+
 int a = 100;     
 void f(int b);   // b 是形参
 f(a);            // a 是实参
+
 ```
 
 ---
@@ -152,6 +162,7 @@ f(a);            // a 是实参
 比如一个类 `S` 有个成员变量 `mi`，那么可以用一个指针把这个成员变量保存起来，之后用这个指针来指代这个成员变量。成员函数也是同理。  
 
 ```cpp
+
 struct S {
     int a;
 };
@@ -159,11 +170,13 @@ struct S {
 int S::* pa = &S::a;
 S s;
 std::cout << s.*pa;
+
 ```
 
 完整例子参考自 cppreference ： [https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_pointer-to-member_access_operators](https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_pointer-to-member_access_operators)     
 
 ```cpp
+
 #include <iostream>
  
 struct S
@@ -192,6 +205,7 @@ int main()
     std::cout << (d.*pf)(7) << ' '
               << (pd->*pf)(8) << '\n';
 }
+
 ```
 
 <br/>
@@ -203,6 +217,7 @@ int main()
 **版本一**    
 
 ```cpp
+
 struct Sample {
     time_t time;
     double value1;
@@ -230,6 +245,7 @@ double Mean(std::vector<Sample>::const_iterator begin,
 
 //...
 double mean = Mean(samples.begin(), samples.end(), &Sample::value2);
+
 ```
 
 这个 Mean 函数支持传入任意一个成员变量的指针，求得一组这样的成员变量的平均数。比如上面对 samples 数组里面的所有对象的 value2 字段取平均数。也可以求 value1，value3 取平均数，只要传入它们的指针即可。  
@@ -243,6 +259,7 @@ double mean = Mean(samples.begin(), samples.end(), &Sample::value2);
 注：下面我做了点小修改，以表示可以支持任意数值类型。  
 
 ```cpp
+
 template<typename Titer, typename S>
 S mean(Titer begin, const Titer& end, S std::iterator_traits<Titer>::value_type::* var) {
     using T = typename std::iterator_traits<Titer>::value_type;
@@ -264,6 +281,7 @@ struct Sample {
 std::vector<Sample> samples { {1.0, 100}, {2.0, 200}, {3.0, 300} };
 double m1 = mean(samples.begin(), samples.end(), &Sample::x);  
 double m2 = mean(samples.begin(), samples.end(), &Sample::y);
+
 ```
 
 无论是 int 类型，还是 double 类型的成员变量，都支持传参进去求平均数了。  
@@ -287,6 +305,7 @@ RAII 即 Resource acquisition is initialization，资源获取即初始化。它
 像这样的代码：    
 
 ```cpp
+
 struct S {
     S() {}
     ~S() {}
@@ -299,6 +318,7 @@ void f() {
     S s;
     S1 s1;
 }
+
 ```
 
 在 x86-64 gcc 14.1，函数 f 会被编译成如下的汇编码，可以看到编译器自动插入了析构函数的调用代码。    
@@ -416,6 +436,7 @@ const 作用于 stl 的 iterator 时，`const std::vector<string>::iterator iter
 表明此成员函数不会改变类成员的值。 此时 const 是放在成员函数参数的末尾，并且声明处跟定义处都要写上。    
 
 ```cpp
+
 class S {
     int a;
 public:
@@ -425,6 +446,7 @@ public:
 void S::f() const {   // 定义处也要写上 const
     std::cout << a << std::endl;
 }
+
 ```
 
 4、const 作用于函数返回值    
@@ -432,10 +454,12 @@ void S::f() const {   // 定义处也要写上 const
 表明返回的是 const 类型。需要赋值给同样的 const 类型。   
 
 ```cpp
+
 const char* f() {}
 
 char* = f();       // not ok
 const char* = f(); // ok
+
 ```
 
 ---
