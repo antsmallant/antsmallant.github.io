@@ -415,17 +415,17 @@ lambda 是匿名函数，可以捕获作用域内的变量。具体实现上，�
 
 字面值属于常量表达式，用常量表达式初始化的 const 对象也是常量表达式。  
 
-constexpr 是 c++11 新引入的关键字，用于修饰变量或函数。  
+`constexpr` 是 c++11 新引入的关键字，用于修饰变量或函数。  
 
 ---
 
-### constexpr 作用于变量    
+### `constexpr` 作用于变量    
 
 此处需要把它跟 `const` 进行对比。   
 
-1）const 
+1）`const`
 
-const 表达式是潜在的常量表达式，如果用常量表达式初始化，它就是常量表达式，否则就不是。   
+`const` 表达式是潜在的常量表达式，如果用常量表达式初始化，它就是常量表达式，否则就不是。   
 
 ```cpp
 
@@ -434,9 +434,9 @@ const int sz = get_size();  // ok，get_size() 不是常量表达式， 具体�
 
 ```
 
-2）constexpr 
+2）`constexpr`
 
-`constexpr` 表达式也是潜在的常量表达式，但它比 const 严格，如果用来初始化的不是常量表达式，则报错。  
+`constexpr` 表达式也是潜在的常量表达式，但它比 `const` 严格，如果用来初始化的不是常量表达式，则编译报错。  
 
 `constexpr` 的作用就相当于由编译器来验证变量的值是否是一个常量表达式。   
 
@@ -450,19 +450,19 @@ constexpr int sz = get_size();   // 不一定 ok，只有当 get_size() 是一�
 特别的，当 `constexpr` 作用于指针时，它是把所定义的对象置为了顶层 const，即指针本身是常量，而非指针所指之物，这点与 `const` 也是存在差异的，`const` 允许设置顶层或底层常量。比如 `constexpr int* p = nullptr;` 就表示 `p` 本身是个常量。   
 
 
-关于顶层 const 和底层 const：  
+关于顶层 `const` 和底层 `const`：  
 
-顶层 const 是指指针本身是 `const` 的，比如 `int * const p = nullptr;`，`const` 要放在 `*` 的右边。   
+顶层 `const`，指针本身是 `const` 的，比如 `int * const p = nullptr;`，`const` 要放在 `*` 的右边。   
 
-底层 const 是指指针所指之物是 `const` 的，比如 `const int * p = nullptr;`，`const` 要放在 `*` 的左边。   
+底层 `const`，指针所指之物是 `const` 的，比如 `const int * p = nullptr;`，`const` 要放在 `*` 的左边。   
 
 <br/>
 
 ---
 
-### constexpr 作用于函数    
+### `constexpr` 作用于函数    
 
-constexpr 修饰的函数，如果传入参数后能在编译期计算出来，那么这个函数就会产生编译时期的值。否则，就当成一个普通函数在运行时正常调用。  
+`constexpr` 修饰的函数，如果传入参数后能在编译期计算出来，那么这个函数就会产生编译时期的值。否则，就当成一个普通函数在运行时正常调用。  
 
 示例[7]:   
 
@@ -496,9 +496,9 @@ int main() {
 
 <br/>
 
-可以用一个小办法检测一个 constexpr 函数是否真正的编译时可求值，即利用 `std::array` 需要编译期常量才能编译通过的性质。参考自：[《C++ const 和 constexpr 的区别？》](https://www.zhihu.com/question/35614219/answer/63798713)。   
+可以用一个小办法检测一个 constexpr 函数是否真正的编译时可求值，即利用 `std::array` 需要编译期常量才能编译通过的性质。参考自：[《C++ const 和 constexpr 的区别？》](https://www.zhihu.com/question/35614219/answer/63798713) [11]。   
 
-示例：
+示例[11]：   
 
 ```cpp
 
@@ -900,8 +900,8 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 
 使用参考：    
 
-[GotW #91 Solution: Smart Pointer Parameters]()    
-[unique_ptr作为函数参数时，应该以值还是右值引用类型传递？](https://www.zhihu.com/question/534389744/answer/2500052393)    
+* [《GotW #91 Solution: Smart Pointer Parameters》](https://herbsutter.com/2013/06/05/gotw-91-solution-smart-pointer-parameters/)    
+* [《unique_ptr作为函数参数时，应该以值还是右值引用类型传递？》](https://www.zhihu.com/question/534389744/answer/2500052393)    
 
 ---
 
@@ -940,3 +940,5 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 [9] cppreference. decltype specifier. Available at https://en.cppreference.com/w/cpp/language/decltype.   
 
 [10] [美] Stanley B. Lippman, Josée Lajoie, Barbara E. Moo. C++ Primer 中文版（第 5 版）. 王刚, 杨巨峰. 北京: 电子工业出版社, 2013-9: 58.     
+
+[11] 蓝色. anster to C++ const 和 constexpr 的区别. Available at https://www.zhihu.com/question/35614219/answer/63798713, 2015-9-15.     
