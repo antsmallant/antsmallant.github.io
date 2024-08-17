@@ -322,6 +322,9 @@ add(1, 2.0); // decltype(x+y) => decltype(3.0) => double
 
 <br/>
 
+关于 `decltype(auto)`
+
+<br/>
 拓展阅读： 
 
 [What expressions yield a reference type when decltype is applied to them?](https://stackoverflow.com/questions/17241614/what-expressions-yield-a-reference-type-when-decltype-is-applied-to-them)      
@@ -353,15 +356,21 @@ lambda 是匿名函数，可以捕获作用域内的变量。具体实现上，�
 
 它的主要构成：一个捕获列表、一组可选的参数，一个可选的返回值类型，一个函数体。也就是说，捕获列表和函数体是必须给出的，另外二者可省略。  
 
-即 ` [capture list] (parameter list) -> return type { function body }`。  
+基本形式： ` [capture list] (parameter list) -> return type { function body }`。   
+
+**值捕获和引用捕获**  
 
 捕获分两种，值捕获和引用捕获，值捕获是在 lambda 创建的时候拷贝对象；引用捕获是在 lambda 创建的时候创建对象的引用，跟正常的引用方式一样，在 lambda 函数体内可以改变外部变量的值。引用捕获的时候，需要在变量前加上 `&` 号，比如有个局部变量 `v1`，要引用捕获它，则是 `&v1`。   
+
+**隐式捕获**   
 
 除了显式的写出需要捕获的变量，还可以隐式捕获，即让编译器推测我们需要捕获的对象。  
 
 隐式值捕获则是在捕获列表的开头写上 `=` 符号，即 `[=]`，如果要混合捕获，则形式是 `[=,identifier_list]`，`identifier_list` 中的名字不能包含 `this`，且名字前都要加 `&` 号。   
 
 隐式引用捕获是在捕获列表的开头写上 `&` 符号，即 `[&]`，如果要混合捕获，则形式是 `[&,identifier_list]`，`identifier_list` 中的名字前不能加 `&` 号。 
+
+**捕获的例子**  
 
 捕获列表的形式[7]：  
 
@@ -449,6 +458,10 @@ const 不一定是只读，const 是潜在的常量表达式，具体就是：�
 
 ## noexcept
 
+好处是什么？ 
+
+
+
 有两个用法，一个是作为标识符 (specifier)，一个是作为运算符 (operator)。作为标识符的时候是表明此函数不会抛出异常，作为运算符的时候是判断一个函数是否会抛出异常。   
 
 1、作为标识符    
@@ -465,7 +478,7 @@ specification: [https://en.cppreference.com/w/cpp/language/noexcept](https://en.
 
 ## 显式指定虚函数 override
 
-显式的指定此函数重写了基类的虚函数。用于确保：1）此函数是虚函数，2）正在重写基类对应的虚函数。  
+显式的指定重写了基类的某个虚函数。用于确保：1）重写的函数是虚函数；2）这个虚函数在基类是存在的。    
 
 示例[7]：  
 
