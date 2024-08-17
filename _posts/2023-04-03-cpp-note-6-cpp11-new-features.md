@@ -1014,11 +1014,67 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 
 ---
 
+## std::move
+
+---
+
+## std::forward
+
+---
+
+## std::to_string
+
+可以把一个数值类型转换成 `std::string`。  
+
+示例：  
+
+```cpp
+
+std::to_string(3.14);        // "3.14"
+std::to_string(2147483647);  // "2147483647"
+std::to_string(-10);         // "-10"
+
+```
+
+---
+
 ## std::array
+
+`std::array` 是基于 c 数组的容器，大小是固定的，支持常规的容器操作，比如排序。   
+
+示例[7]:   
+
+```cpp
+
+std::array<int, 4> arr = {1, 17, 2, 9};
+std::sort(arr.begin(), arr.end());  // arr == {1, 2, 9, 17}
+for (int& x : arr) x += 10;           // arr == {11, 12, 19, 27}
+
+```
 
 ---
 
 ## std::chrono
+
+chrono 有编年史、计时器的意思。chrono 库包含了一些类型以及一些工具函数，可以处理持续时间、时钟、时间点之类的问题。一个使用场景是用于基准测试。  
+
+示例[7]：   
+
+```cpp
+
+std::chrono::time_point<std::chrono::steady_clock> start, stop;  
+start = std::chrono::steady_clock::now();
+// do something
+stop = std::chrono::steady_clock::now();
+
+std::chrono::duration<double> elapsed_seconds = stop-start;
+double t = elapsed_seconds.count();   // double 精度的 t 秒钟
+
+```
+
+---
+
+
 
 ---
 
