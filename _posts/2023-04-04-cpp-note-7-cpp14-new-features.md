@@ -44,9 +44,26 @@ decltype(auto) z2 = std::move(z); // int&&
 
 ```
 
+对于范型代码特别方便[1]：  
 
+```cpp
 
+// 返回类型是 `int`
+auto f(const int &i) {
+    return i;
+}
 
+// 返回类型是 `const int&`
+decltype(auto) g(const int &i) {
+    return i;
+}
+
+int x = 234;
+static_assert(std::is_same<const int&, decltype(f(x))>::value == 0);
+static_assert(std::is_same<int, decltype(f(x))>::value == 1);
+static_assert(std::is_same<const int&, decltype(g(x))>::value == 1);
+
+```
 
 ---
 
