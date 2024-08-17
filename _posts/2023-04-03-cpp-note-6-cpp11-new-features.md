@@ -613,6 +613,27 @@ int main() {
 
 ## range-based for loop
 
+`for` 遍历容器的语法糖。  
+
+示例[7]:   
+
+```cpp
+
+// 以引用的方式遍历，可修改容器内部的元素值
+std::vector<int> vec {1,2,3,4};
+for (auto& num : vec) 
+    num += 10;
+// vec 变成 {11,12,13,14}
+
+
+// 以值的方式遍历，不会修改容器内的元素值
+std::vector<int> vec2 {1,2,3,4};
+for (auto num : vec)
+    num += 10;
+// vec2 仍然是 {1,2,3,4}
+
+```
+
 ---
 
 ## default functions
@@ -637,7 +658,6 @@ int main() {
 ## noexcept
 
 好处是什么？ 
-
 
 
 有两个用法，一个是作为标识符 (specifier)，一个是作为运算符 (operator)。作为标识符的时候是表明此函数不会抛出异常，作为运算符的时候是判断一个函数是否会抛出异常。   
