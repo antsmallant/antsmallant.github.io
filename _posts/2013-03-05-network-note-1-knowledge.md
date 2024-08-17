@@ -35,7 +35,7 @@ tags: [计算机网络]
 
 read 返回 0，表示对端已经关闭 socket，本端也需要相应关闭。  
 
-有时候 select 结果 > 0，但是 read 却返回 0，这是正常现象，select > 0 表示有事件发生，而事件就是对端关闭 socket 了，所以 read 返回 0。   
+有时候 select 有结果，但是 read 却返回 0，这是正常现象，select 有结果表示有事件发生，而事件就是对端关闭 socket 了，所以 read 返回 0。   
 
 write 返回 0，表示缓冲区写满了，等下次再写。   
 
