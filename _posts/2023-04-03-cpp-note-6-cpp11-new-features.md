@@ -1160,7 +1160,10 @@ auto sptr3 = wptr.lock();  // sptr3.use_count() == 0;  (!sptr3) == true;
 
 ### `std::shared_ptr` 与 `std::weak_ptr` 的底层实现
 
-参考： [《源码分析shared_ptr实现》](https://www.jianshu.com/p/b6ac02d406a0)     
+参考：   
+
+* [《源码分析shared_ptr实现》](https://www.jianshu.com/p/b6ac02d406a0)     
+* [《C++智能指针shared_ptr与weak_ptr的实现分析》](https://www.jb51.net/article/262284.htm)
 
 ---
 
@@ -1175,6 +1178,44 @@ auto sptr3 = wptr.lock();  // sptr3.use_count() == 0;  (!sptr3) == true;
 
 * [《GotW #91 Solution: Smart Pointer Parameters》](https://herbsutter.com/2013/06/05/gotw-91-solution-smart-pointer-parameters/)    
 * [《unique_ptr作为函数参数时，应该以值还是右值引用类型传递？》](https://www.zhihu.com/question/534389744/answer/2500052393)    
+
+---
+
+## `std::make_shared`
+
+推荐使用 `std::make_shared` 拷贝 `shared_ptr`，而不是使用 `new`，基于以下三个理由：  
+
+1、使用 `new` 需要写两次类型名    
+
+`std::make_shared<Foo>(10)` vs `std::shared_ptr<Foo>(new Foo())`。     
+
+2、使用 `new` 可能会因为异常而导致内存泄漏     
+
+在 c++17 之前，对于这样的函数调用 `f( std::shared_ptr<Foo>(new Foo()), get_some_param() )`，编译器给出的参数求值顺序可能是这样的：  
+1）执行 `new Foo()`   
+2）执行 `get_some_param()`   
+3）构造 `shared_ptr`   
+
+如果第2）步异常了，那么第1）步 `new` 出来的对象就内存泄漏了。  
+
+不过这种情况在 c++17 之后就不会，要么就是 （1、3、2），要么就是 （2、1、3），1 跟 3 可以确保连续完成了。   
+
+相关文档：  
+
+* [Trip report: Summer ISO C++ standards meeting (Oulu)](https://herbsutter.com/2016/06/30/trip-report-summer-iso-c-standards-meeting-oulu/)   
+* [GotW #56](http://gotw.ca/gotw/056.htm)
+* [Refining Expression Evaluation Order for Idiomatic C++](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0145r3.pdf)
+* [What are the evaluation order guarantees introduced by C++17?](https://stackoverflow.com/questions/38501587/what-are-the-evaluation-order-guarantees-introduced-by-c17)
+* [C++求值顺序](https://cloud.tencent.com/developer/article/1394034)
+* [C++避坑---函数参数求值顺序和使用独立语句将newed对象存储于智能指针中](https://cloud.tencent.com/developer/article/2288023)
+
+关于求值顺序导致的大问题，还可以参考这篇文章：[《C++17之定义表达式求值顺序》](https://blog.csdn.net/janeqi1987/article/details/100181769)，情况比想象中的还要严重。   
+
+3、使用 `new` 需要 2 次内存分配    
+
+而不使用 `new` 可以给编译器创造优化空间，有可能用一次内存分配即可。     
+
+因为 `std::shared_ptr` 除了需要一个指针指向共享的资源，还需要一个控制块来保存引用计数的信息，这个控制块也需要内存空间的。使用 `std::make_shared` 令编译器有机会分配一次内存，同时申请好资源的内存空间和控制块的内存空间。 
 
 ---
 
