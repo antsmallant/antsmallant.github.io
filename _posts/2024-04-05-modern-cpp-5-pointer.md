@@ -91,9 +91,10 @@ auto p2(p1.release());
 2、用 `std::move` 触发移动构造或移动拷贝     
 
 ```cpp
+
 auto p1 = std::make_unique<int>(10);
 auto p2(std::move(p1));  // 触发移动构造
-// auto p2 = std::move(p1); // 也可以这样触发移动拷贝
+
 ```
 
 3、用 release 释放控制，后者用 reset 重置      
@@ -198,15 +199,15 @@ std::shared_ptr<std::string> b {sp};  // not ok, do not do this
 
 ## 2.4 优先使用 `make_` 函数初始化智能指针
 
-以上例子刻意用 std::make_unique 来构造 p1，而不是像这样：   
+以上例子刻意用 `std::make_unique` 来构造 p1，而不是像这样：   
 
 ```cpp
 std::unique_ptr<int> p1(new int(10));
 ```
 
-因为 std::make_unique 是一种更佳的初始化方式，原因有二，以下原因同时适用于 std::make_unique 和 std::make_shared [3]：   
+因为 `std::make_unique` 是一种更佳的初始化方式，原因有二，以下原因同时适用于 `std::make_unique` 和 `std::make_shared` [3]：   
 
-1、使用 new 版本的，需要把类型写两次，比如上面就写了两次 int。  
+1、使用 `new` 版本的，需要把类型写两次，比如上面就写了两次 `int`。  
 
 2、避免潜在的内存泄漏，《Effective Modern C++》[3] 里举了一个例子，类似这样的一种调用，`process(std::shared_ptr<Widget>(new Widget), compute());`，如果编译器生成出来的操作时序是：  
 a） 实施 `new Widget`   
