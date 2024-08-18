@@ -1145,12 +1145,13 @@ std::weak_ptr<Foo> wptr;
 
 {
     auto sptr = std::make_shared<Foo>();
-    wptr = sptr;  // wptr.use_count() == 1 ;  wptr.expired() == false; 
+    wptr = sptr;  // 在作用域内：wptr.use_count() == 1 ;  wptr.expired() == false; 
 
     auto sptr2 = wptr.lock(); // sptr2 是 sptr 的一个拷贝
 }
 
-// wptr.use_count() == 0; wptr.expired() == true; 
+// 离开了作用域：wptr.use_count() == 0; wptr.expired() == true; 
+
 auto sptr3 = wptr.lock();  // sptr3.use_count() == 0;  (!sptr3) == true;   
 
 ```
