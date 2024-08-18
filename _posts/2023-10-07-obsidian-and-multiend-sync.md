@@ -26,6 +26,8 @@ obsidian 的核心功能体验，可以参考这个：[《玩转 Obsidian 01：�
 
 # 3. 安装步骤
 
+---
+
 ## 3.1 创建日志仓库   
 
 在 github 或 gitee 创建私有仓库，比如命名为 obnote。    

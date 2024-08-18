@@ -34,6 +34,7 @@ kcp 的作者韦易笑 (skywind3000) 在这篇知乎回答 [《MOBA类游戏是�
 <br/>
 
 [kcp github 主页上](https://github.com/skywind3000/kcp) 的介绍：  
+
 >KCP是一个快速可靠协议，能以比 TCP 浪费 10%-20% 的带宽的代价，换取平均延迟降低 30%-40%，且最大延迟降低三倍的传输效果。  
 
 ---
@@ -78,7 +79,7 @@ issue 提的问题是：
 >UNA vs ACK+UNA。TCP ACK 本身是“累积确认”，即表示当前ackseq的包已经收到，也表示此前的所有包都收到了。这一点似乎还是在讲sack问题？   
 
 
-这些问题我也很感兴趣，但韦老师没有回复，不知道是漏掉了，还是被问住了：）。这位兄台问得挺专业的，于是我特意查了一下，找到这个网页：https://livevideostack.cn/yellow_expert/%E9%9F%A9%E7%91%9E/ ，果然是专门研究计算机网络的，是鹅厂的专家工程师，中南大学本硕。   
+这些问题我也很感兴趣，但韦老师没有回复。这位兄台问得挺专业的，于是我特意查了一下，找到这个网页：[https://livevideostack.cn/yellow_expert/韩瑞](https://livevideostack.cn/yellow_expert/韩瑞)，果然是专门研究计算机网络的，鹅厂的专家工程师，中南大学本硕。   
 
 ---
 
