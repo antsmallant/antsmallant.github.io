@@ -657,8 +657,23 @@ for (auto num : vec)
 
 ---
 
-## Right angle brackets
+## 右尖括号（Right angle brackets）
 
+c++11 之前，右尖括号之间要有空格，否则报错。 
+
+```cpp
+// c++11 之前
+std::vector<std::vector<int>> x;    // 不 ok，会编译报错
+std::vector<std::vector<int> > x;   // ok
+```
+
+c++11 之后，不需要加空格了。 
+
+```cpp
+// c++11 之后
+std::vector<std::vector<int>> x;    // ok
+std::vector<std::vector<int> > x;   // ok
+```
 
 ---
 
@@ -1095,7 +1110,7 @@ auto p2 (std::move(p1));  // 触发移动构造
 
 api 参考：[cppreference shared_ptr](https://en.cppreference.com/w/cpp/memory/shared_ptr)。  
 
-示例[7]：  
+示例 [7]：  
 
 ```cpp
 
