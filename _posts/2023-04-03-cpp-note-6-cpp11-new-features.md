@@ -1088,6 +1088,8 @@ auto p2 (std::move(p1));  // 触发移动构造
 
 `std::shared_ptr` 是一种使用引用计数管理共享所有权的智能指针，允许多个 `std::shared_ptr` 的拷贝指向同一份资源，每次拷贝会触发引用计数+1，每次析构会触发引用计数-1，最后一个 `shared_ptr` 析构的时候，释放资源。  
 
+api 参考： [cppreference shared_ptr](https://en.cppreference.com/w/cpp/memory/shared_ptr)。  
+
 使用上的注意：   
 
 1、推荐使用 `std::make_shared` 进行创建，这个在 c++11 就支持了。如果不使用 `std::make_shared`，那么在 c++17 之前的版本，可能会发生内存泄漏。   
@@ -1099,20 +1101,65 @@ auto p2 (std::move(p1));  // 触发移动构造
 
 示例[7]：  
 
+```cpp
 
+void f1(std::shared_ptr<T> t) {
+    // do something with t
+}
 
+void f2(std::shared_ptr<T> t) {
+    // do something with t
+}
 
+void f3(std::shared_ptr<T> t) {
+    // do something with t
+}
 
+auto p1 = std::make_shared<T>();;
 
+// 可能在别的线程执行
+f1(p1);
+f2(p1);
+f3(p1);
 
-
+```
 
 ---
 
 ### `std::weak_ptr`
 
-问题：这个是怎么实现的？当计数归0，资源被释放之后，`weak_ptr` 是通过什么方式判断掉资源为空了？内存不是已经被释放了吗？   
+`std::weak_ptr` 是用来监视 `std::shared_ptr` 的生命周期的，它的拷贝和析构都不会影响引用计数。lua 中也有类似的实现，叫弱表。    
 
+提供的成员函数不多，可参考：[cppreference weak_ptr](https://en.cppreference.com/w/cpp/memory/weak_ptr)。主要有三个：`use_count`，`expired`，`lock`。  
+
+主要用途：    
+（1）防止循环引用。     
+（2）只需要知道资源是否还存在，不需要共享资源。    
+
+示例[7]:   
+
+```cpp
+
+struct Foo {};
+std::weak_ptr<Foo> wptr;
+
+{
+    auto sptr = std::make_shared<Foo>();
+    wptr = sptr;  // wptr.use_count() == 1 ;  wptr.expired() == false; 
+
+    auto sptr2 = wptr.lock(); // sptr2 是 sptr 的一个拷贝
+}
+
+// wptr.use_count() == 0; wptr.expired() == true; 
+auto sptr3 = wptr.lock();  // sptr3.use_count() == 0;  (!sptr3) == true;   
+
+```
+
+---
+
+### `std::shared_ptr` 与 `std::weak_ptr` 的底层实现
+
+参考： [《源码分析shared_ptr实现》](https://www.jianshu.com/p/b6ac02d406a0)     
 
 ---
 
