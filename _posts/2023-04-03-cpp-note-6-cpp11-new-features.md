@@ -54,14 +54,12 @@ c++11 是一个 major 版本，带来了大量的新变化，在很多年的时�
 示例[7]：   
 
 ```cpp
-
 // 指定基础类型为 `unsigned int`
 enum class Color : unsigned int { Red = 0xff0000, Green = 0xff00, Blue = 0xff };
 // `Red` / `Green` 与 Color 中的定义不冲突
 enum class Alert : bool { Red, Green };
 
 Color c = Color::Red;  
-
 ```
 
 ---
@@ -75,7 +73,6 @@ static 的成员变量，如果是 const 的，则也可以使用这种类内初
 需要注意的是，只能用 `=` 号或 `{}` 号来赋初始值，不能使用圆括号 `()` 来赋初始值。  
 
 ```cpp
-
 // c++11 之前
 class Man {
     int age;
@@ -103,7 +100,6 @@ class Man {
 public:
     Man() {}
 };
-
 ```
 
 ---
@@ -117,13 +113,11 @@ public:
 比如这样： 
 
 ```cpp
-
 void f(int);
 void f(int*);
 
 f(NULL);     // 错误，不确定调用哪个好
 f(nullptr);  // 调用 f(int*)
-
 ```
 
 值得指出的是，这篇文章 [《modern-cpp-features/CPP11.md》](https://github.com/AnthonyCalandra/modern-cpp-features/blob/master/CPP11.md#nullptr) 或 wikipedia 的词条 [《c++11/Null pointer constant and type》](https://en.wikipedia.org/wiki/C%2B%2B11#Null_pointer_constant) 都写到： "nullptr itself is of type std::nullptr_t and can be implicitly converted into pointer types, and unlike NULL, not convertible to integral types except bool"。  
@@ -143,7 +137,6 @@ f(nullptr);  // 调用 f(int*)
 示例代码[7]：   
 
 ```cpp
-
 int sum(const std::initializer_list<int>& list) {
     int total = 0;
     for (auto& e : list) {
@@ -156,7 +149,6 @@ auto list = {1,2,3};  // list 推导出来的类型是 std::initializer_list<int
 sum(list);    // 结果是 6
 sum({1,2,3}); // 结果是 6
 sum({});      // 结果是 0
-
 ```
 
 有了 `initializer_list` 之后，标准库的一些容器就可以支持使用这种类型来构造，比如 `std::vector`，在 c++11 后，加入了这样的构造函数，`vector( std::initializer_list<T> init, const Allocator& alloc = Allocator() )`。  
@@ -174,7 +166,6 @@ sum({});      // 结果是 0
 示例[7]：   
 
 ```cpp
-
 auto a = 3.14;  // double
 auto b = 1; //int
 auto& c = b; // int&
@@ -190,39 +181,32 @@ auto l = 1, m = true, n = 1.61;  // 错误，一个声明语句只能有一个�
 auto o;  // 错误，需要给出初始化值
 
 auto aa {10} ; // c++11 是 std::initializer_list<int>，c++17 改为 int
-
 ```
 
 可以用于声明容器的 iterator 变量，代码简洁很多 [7]：   
 
 ```cpp
-
 std::vector<int> vec {1,2,3};
 std::vector<int>::iterator oldstyle_iter = vec.begin(); // 旧的方式
 auto iter = vec.begin();  // 新的方式比旧的方式简洁特别多
-
 ```
 
 也可以用于推导函数的返回值，比如这样： 
 
 ```cpp
-
 // in c++11
 auto f(int a, int b) -> decltype(a+b) {
     return a+b;
 }
-
 ```
 
 但看起来挺麻烦的，还不如不要这么写。不过，在 c++14 中，就可以省掉后面的 `decltype` 了，c++14 支持 "return value deduce" 了。直接这样就行： 
 
 ```cpp
-
 // in c++14
 auto f(int a, int b) {
     return a+b;
 }
-
 ```
 
 <br/>
@@ -232,7 +216,6 @@ auto f(int a, int b) {
 1、初始值是一个引用时，真正参与初始化的其实是引用对象的值：  
 
 ```cpp
-
 #include <iostream>
 
 int main() {
@@ -245,7 +228,6 @@ int main() {
         
     return 0;
 }
-
 ```
 
 2、`auto` 一般会忽略掉顶层 `const`，而底层 `const` 则会保留下来[10]   
@@ -253,7 +235,6 @@ int main() {
 比如：  
 
 ```cpp
-
 int i = 100;
 const int ci = i, &cr = ci;   
 auto b = ci;  // b 是一个整数（ci 的顶层 const 特性被忽略掉了）
@@ -269,10 +250,8 @@ e = nullptr;  // ok，e 本身不是 const
 如果希望推断出的 `auto` 类型是一个顶层 `const`，则要显式指明[10]：  
 
 ```cpp
-
 const int ci = 100;
 const auto f = ci;
-
 ```
 
 <br/>
@@ -280,11 +259,9 @@ const auto f = ci;
 使用 `auto` 的原则：能一眼看出是什么类型的就用 `auto`，否则不用。比如 Stroustrup 举的这个例子[1]： 
 
 ```cpp
-
 auto n = 1;  // 很好：n 是 int
 auto x = make_unique<Gadget>(arg);  // 很好：x 是 std::unique_ptr<Gadget>
 auto y = flopscomps(x, 3);          // 不好：flopscomps() 返回的是什么东西？  
-
 ```
 
 ---
@@ -300,7 +277,6 @@ auto y = flopscomps(x, 3);          // 不好：flopscomps() 返回的是什么�
 示例：   
 
 ```cpp
-
 // 类型别名，等价于 typedef std::string MyString; 
 using MyString = std::string;
 // MyString 现在标识一种类型，name 的类型是 std::string
@@ -327,7 +303,6 @@ mystring<char> str;
 // 类型别名可以引入一个 typedef 名字成员
 template<typename T>
 struct Container { using value_type = T; }
-
 ```
 
 <br/>
@@ -341,7 +316,6 @@ struct Container { using value_type = T; }
 示例： 
 
 ```cpp
-
 template<typename T>
 using Vec = std::vector<T>;
 Vec<int> vec {1,2,3};         // vec 的类型是 std::vector<int>
@@ -349,7 +323,6 @@ Vec<int> vec {1,2,3};         // vec 的类型是 std::vector<int>
 template<typename T>
 using Ptr = T*;   // Ptr 现在是 T 类型指针的别名
 Ptr<int> x;       // x 的类型是 int*
-
 ```
 
 ---
@@ -374,7 +347,6 @@ Ptr<int> x;       // x 的类型是 int*
 示例[7]：  
 
 ```cpp
-
 int a = 1;            // a 定义为 `int` 型
 decltype(a) b = a;    // decltype(a) 是 `int` 型
 const int& c = a;     // c 定义为 `const int&` 型
@@ -386,17 +358,14 @@ int&& f = 1;          // f 定义为 `int&&` 型
 decltype(f) g = 1;    // decltype(f) 是 `int&&` 型
 decltype((a)) h = g;  // decltype((a)) 是 `int&` 型，
                       // 因为 (a) 是用圆括号包起来的 lvalue，按照规则返回的就是 T& 型
-
 ```
 
 ```cpp
-
 template<typename X, typename Y>
 auto add(X x, Y y) -> decltype(x+y) {
     return x+y;
 }
 add(1, 2.0); // decltype(x+y) => decltype(3.0) => double
-
 ```
 
 另外，`decltype(auto)` 是 c++14 引入的新特性，见这篇文章：[《c++ 笔记：c++14 的新特性》](https://blog.antsmallant.top/2023/04/04/cpp-note-7-cpp14-new-features)。  
@@ -412,12 +381,10 @@ add(1, 2.0); // decltype(x+y) => decltype(3.0) => double
 示例：
 
 ```cpp
-
 int a = 10;
 std::cout << std::is_integral<decltype(a)>::value << std::endl;           // 输出 1
 std::cout << std::is_rvalue_reference<decltype((a))>::value << std::endl; // 输出 0
 std::cout << std::is_lvalue_reference<decltype((a))>::value << std::endl; // 输出 1
-
 ```
 
 ---
@@ -429,7 +396,6 @@ lambda 是匿名函数对象，可以捕获作用域内的变量。具体实现�
 它的主要构成：一个捕获列表、一组可选的参数，一个可选的返回值类型，一个函数体。也就是说，捕获列表和函数体是必须给出的，另外二者可省略。  
 
 基本形式：  
-
 ```
 [ capture list ] ( parameter list ) -> return type { function body }
 ```
@@ -462,7 +428,6 @@ lambda 是匿名函数对象，可以捕获作用域内的变量。具体实现�
 示例[7]:   
 
 ```cpp
-
 int x = 1;
 
 auto getX = [=] { return x; };
@@ -473,7 +438,6 @@ addX(1); // == 2
 
 auto getXRef = [&]() -> int& { return x; };
 getXRef();  // int& to `x`
-
 ```
 
 默认情况下，值捕获的变量在 `lambda` 表达式中不允许修改的，因为在实现上，会把这种变量设为 `const` 的，但如果在 `lambda` 表达式加上 `mutable` 关键字，则允许这么做。   
@@ -481,7 +445,6 @@ getXRef();  // int& to `x`
 示例[7]：  
 
 ```cpp
-
 int x = 1;
 
 auto f1 = [&x] { x = 2; };  // ok，引用捕获，会改变引用对象的值
@@ -491,7 +454,6 @@ auto f2 = [x] { x = 2; };   // not ok，值捕获的变量，在 lambda 内部�
 
 auto f3 = [x]() mutable { x = 2; }; // ok，允许修改值捕获的变量，不过 mutable 需要跟随
                                     // 在参数列表后面，即使没有参数，也要写上 `()` 号
-
 ```
 
 ---
@@ -515,10 +477,8 @@ auto f3 = [x]() mutable { x = 2; }; // ok，允许修改值捕获的变量，不
 `const` 表达式是潜在的常量表达式，如果用常量表达式初始化，它就是常量表达式，否则就不是。   
 
 ```cpp
-
 const int a = 10;           // ok，10 是常量表达式
 const int sz = get_size();  // ok，get_size() 不是常量表达式， 具体值要到运行时才确定
-
 ```
 
 2）`constexpr`
@@ -528,10 +488,8 @@ const int sz = get_size();  // ok，get_size() 不是常量表达式， 具体�
 `constexpr` 的作用就相当于由编译器来验证变量的值是否是一个常量表达式。   
 
 ```cpp
-
 constexpr int a = 10;            // ok，10 是常量表达式
 constexpr int sz = get_size();   // 不一定 ok，只有当 get_size() 是一个 constexpr 函数（即可以在编译期求值的函数）时才 ok，否则不 ok
-
 ```
 
 特别的，当 `constexpr` 作用于指针时，它是把所定义的对象置为了顶层 const，即指针本身是常量，而非指针所指之物，这点与 `const` 也是存在差异的，`const` 允许设置顶层或底层常量。比如 `constexpr int* p = nullptr;` 就表示 `p` 本身是个常量。   
@@ -560,7 +518,6 @@ constexpr int sz = get_size();   // 不一定 ok，只有当 get_size() 是一�
 示例[7]:   
 
 ```cpp
-
 constexpr int square(int x) {
     return x*x;
 }
@@ -584,7 +541,6 @@ int main() {
 
     return 0;
 }
-
 ```
 
 <br/>
@@ -594,7 +550,6 @@ int main() {
 示例[11]：   
 
 ```cpp
-
 #include <iostream>
 #include <array>
 
@@ -613,7 +568,6 @@ int main() {
 
     return 0;
 }
-
 ```
 
 ---
@@ -625,7 +579,6 @@ int main() {
 示例[7]:   
 
 ```cpp
-
 // 以引用的方式遍历，可修改容器内部的元素值
 std::vector<int> vec {1,2,3,4};
 for (auto& num : vec) 
@@ -638,7 +591,6 @@ std::vector<int> vec2 {1,2,3,4};
 for (auto num : vec)
     num += 10;
 // vec2 仍然是 {1,2,3,4}
-
 ```
 
 ---
@@ -703,7 +655,6 @@ specification: [https://en.cppreference.com/w/cpp/language/noexcept](https://en.
 示例[7]：  
 
 ```cpp
-
 struct A {
     virtual void foo();
     void bar();
@@ -716,7 +667,6 @@ struct B : A {
     void baz() override; // 错误，A::baz 不存在
     ~B() override;       // 正确，override 也可以特别的虚函数，比如虚析构
 };
-
 ```
 
 另外，`override` 不是关键字，所以可以用它作为变量名，比如 `int override = 40;`。  
@@ -730,7 +680,6 @@ struct B : A {
 示例1[7]，`final` 修改虚函数：    
 
 ```cpp
-
 struct A {
     virtual void f();
 };
@@ -742,16 +691,13 @@ struct B {
 struct C : public B {
     virtual void f(); // 报错，f 在 B 中被标识为 final，不能被重写
 }
-
 ```
 
 示例2[7]，`final` 修改类:    
 
 ```cpp
-
 struct A final {};
 struct B : A {}; // 报错，A 已经标为 final 了，不能被继承
-
 ```
 
 ---
@@ -819,7 +765,6 @@ included; however, in §3.3 below we argue why auto&& is also a forwarding case 
 示例[2]：  
 
 ```cpp
-
 template<class T>
 int f(T&& x) {                     // x 是万能引用
     return g(std::forward<T>(x));  // 可以被转发
@@ -840,7 +785,6 @@ struct A {
     A(T&& x, U&& y, int* p);  // x 不是万能引用，因为 T 不是构造函数的模板参数
                               // y 是万能引用
 }
-
 ```
 
 万能引用的两个判断标准： 
@@ -850,18 +794,14 @@ struct A {
 像这样就不是类型推导[4]:   
 
 ```cpp
-
 void f(Widget&& param);
-
 ```
 
 像这样就是严格的 `T&&` 形式[4]：   
 
 ```cpp
-
 template<class T>
 void f(std::vector<T>&& param); // param 不是万能引用，是右值引用
-
 ```
 
 <br/>
@@ -873,7 +813,6 @@ void f(std::vector<T>&& param); // param 不是万能引用，是右值引用
 示例[2]：  
 
 ```cpp
-
 auto && vec = foo();      // vec 是万能引用，foo() 可能是左值或右值
 auto i = std::begin(vec); // 正常工作，无论 vec 最终是左值引用或是右值引用
 (*i)++;                   // 正常工作，无论 vec 最终是左值引用或是右值引用
@@ -885,7 +824,6 @@ for (auto&& x : f()) {
 }
 
 auto&& z = {1, 2, 3}; // 不是万能引用，这是初始值列表的特殊情况
-
 ```
 
 <br/> 
@@ -909,7 +847,6 @@ value category 是一个一直存在的概念，任何一个变量都有两大�
 理解这一点的前提是要知道，形参总是左值，只不过它的类型是右值引用。比如这样：   
 
 ```cpp
-
 template<typename T>
 void f(T&& t) {
     g(t);  // 此时调用的是 g(T& t) 版本; 因为 t 作为形参，它本身就是个左值。  
@@ -922,18 +859,15 @@ void g(T& t) {
 void g(T&& t) {
     std::cout << "g 右值引用版本" << std::endl;
 }
-
 ```
 
 要能够调用 `g(T&& t)`，需要这样：  
 
 ```cpp
-
 template<typename T>
 void f(T&& t) {
     g(std::forward(t));   // std::forward 转发了 t 的 value category，如果 t 确实是一个右值
 }
-
 ```
 
 `std::forward` 与 `std::move` 的行为很像，都是将表达式强制转换为右值引用。但前者是有条件的，只会把原本是右值引用的表达式强制转换为右值引用，而后者是无条件的。  
@@ -951,7 +885,6 @@ void f(T&& t) {
 比如对于这种形式：  
 
 ```cpp
-
 template<class T>
 inf f(T&& x) {
     return g(std::forward<T>(x));
@@ -959,7 +892,6 @@ inf f(T&& x) {
 
 int i = 10;
 f(i);  
-
 ```
 
 执行 `f(i)` 的时候，`i` 对应的形参 `x` 是一个万能引用，那么就需要把 `i` 是左值的信息编码到推导出来的 `x` 的推导结果中。此时，T 的推导结果是 `int&`，产生的模板实例是： `f<int&>(int& && x);`。   
@@ -982,7 +914,6 @@ c++11 引入了对于 reference-to-reference 的处理，在模板实例化的�
 关于 `auto&&` 的类型推导与引用折叠，举例如下[4]：  
 
 ```cpp
-
 Widget getWidget();
 Widget w;
 
@@ -992,7 +923,6 @@ auto&& w1 = w;    // w1 的类型是 Widget& 。由于 w 是左值，此时 auto
 auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返回了右值，
                          // 此时 auto 被推导为 Widget，代入得 Widget&& w2 = w，
                          // 不需要引用折叠。  
-
 ```
 
 <br/>
@@ -1043,7 +973,6 @@ c++11 引入了三种新的智能指针：`std::unique_ptr`，`std::shared_ptr`�
 示例[7]:  
 
 ```cpp
-
 // `p1` 持有 `Foo` 对象
 std::unique_ptr<Foo> p1 { new Foo() };  
 if (p1) {
@@ -1067,7 +996,6 @@ if (p1) {
 
 // 如果 `p1` 离开作用域，则 `Foo` 对象也会随之被销毁
 // 这是利用了 RAII 机制
-
 ```
 
 转移所有权的几种方式。  
@@ -1075,31 +1003,25 @@ if (p1) {
 1、用 `release` 释放控制并返回裸指针。  
 
 ```cpp
-
 auto p1 = std::make_unique<int>(10);
 auto p2(p1.release());
 // 不能再使用 p1 了
-
 ```
 
 如果 `p2` 已经有管理对象了，需要使用 `reset`：    
 
 ```cpp
-
 auto p1 = std::make_unique<int>(10);
 auto p2 = std::make_unique<int>(20);
 p2.reset(p1.release()); // `reset` 会释放已经持有的对象，然后用新的对象赋值
-
 ```
   
 2、用 `std::move` 触发移动构造
 
 ```cpp
-
 auto p1 = std::make_unique<int>(10);
 auto p2 (std::move(p1));  // 触发移动构造
 // 不能再使用 p1 了
-
 ```
 
 ---
@@ -1113,7 +1035,6 @@ api 参考：[cppreference shared_ptr](https://en.cppreference.com/w/cpp/memory/
 示例 [7]：  
 
 ```cpp
-
 void f1(std::shared_ptr<T> t) {
     // do something with t
 }
@@ -1132,7 +1053,6 @@ auto p1 = std::make_shared<T>();;
 f1(p1);
 f2(p1);
 f3(p1);
-
 ```
 
 使用上的注意 [12]：   
@@ -1175,7 +1095,6 @@ struct X : public std::enable_shared_from_this<X> {
 示例[7]:   
 
 ```cpp
-
 struct Foo {};
 std::weak_ptr<Foo> wptr;
 
@@ -1189,7 +1108,6 @@ std::weak_ptr<Foo> wptr;
 // 离开了作用域：wptr.use_count() == 0; wptr.expired() == true; 
 
 auto sptr3 = wptr.lock();  // sptr3.use_count() == 0;  (!sptr3) == true;   
-
 ```
 
 ---
@@ -1278,11 +1196,9 @@ auto sptr3 = wptr.lock();  // sptr3.use_count() == 0;  (!sptr3) == true;
 示例：  
 
 ```cpp
-
 std::to_string(3.14);        // "3.14"
 std::to_string(2147483647);  // "2147483647"
 std::to_string(-10);         // "-10"
-
 ```
 
 ---
@@ -1294,11 +1210,9 @@ std::to_string(-10);         // "-10"
 示例[7]:   
 
 ```cpp
-
 std::array<int, 4> arr = {1, 17, 2, 9};
 std::sort(arr.begin(), arr.end());  // arr == {1, 2, 9, 17}
 for (int& x : arr) x += 10;           // arr == {11, 12, 19, 27}
-
 ```
 
 ---
@@ -1310,7 +1224,6 @@ chrono 有编年史、计时器的意思。chrono 库包含了一些类型以及
 示例[7]：   
 
 ```cpp
-
 std::chrono::time_point<std::chrono::steady_clock> start, stop;  
 start = std::chrono::steady_clock::now();
 // do something
@@ -1318,7 +1231,6 @@ stop = std::chrono::steady_clock::now();
 
 std::chrono::duration<double> elapsed_seconds = stop-start;
 double t = elapsed_seconds.count();   // double 精度的 t 秒钟
-
 ```
 
 ---
