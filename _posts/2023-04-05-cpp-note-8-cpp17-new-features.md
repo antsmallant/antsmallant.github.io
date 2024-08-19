@@ -21,6 +21,16 @@ c++17 是一个 "中" 版本，它本来应该是一个 major 版本的，不过
 
 ---
 
+## 结构化绑定 (Structured binding)
+
+
+
+specification: [cppreference Structured binding declaration](https://en.cppreference.com/w/cpp/language/structured_binding)。   
+
+详细参考：[C++17中的结构化绑定详解](https://blog.csdn.net/haokan123456789/article/details/137613251)。  
+
+---
+
 ## 构造函数模板推导
 
 c++17 之前用模板类实例化一个对象，需要指明类型，比如： 
