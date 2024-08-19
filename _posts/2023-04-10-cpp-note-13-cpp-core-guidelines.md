@@ -15,7 +15,7 @@ tags: [c++ cpp]
 
 ---
 
-# 1. 返回值、出参
+# 1. 函数返回值、出参
 
 [F.48: Don't return `std::move(local)`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#f48-dont-return-stdmovelocal)     
 
@@ -42,3 +42,20 @@ tags: [c++ cpp]
 
 "The overly generic `pair` and `tuple` should be used only when the value returned reprents indepent entities rather than an abstraction"。  
 大概翻译一下，`std::pair` 和 `std::tuple` 的通用规则是，应该用于返回一组不相关的独立值，而不是一组可以被抽象（成一个类）的值。  
+
+---
+
+# 2. 函数入参
+
+[F.15: Prefer simple and conventional ways of passing information](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#f15-prefer-simple-and-conventional-ways-of-passing-information)    
+
+
+[F.16 For "in" parameters, pass cheaply-copied types by value and others by referenc to const](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#f16-for-in-parameters-pass-cheaply-copied-types-by-value-and-others-by-reference-to-const)    
+
+
+[F.17 For "in-out" parameters, pass by reference to non-const](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#f17-for-in-out-parameters-pass-by-reference-to-non-const)
+
+
+---
+
+# 参考
