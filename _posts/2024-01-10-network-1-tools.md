@@ -68,8 +68,8 @@ windows 例子：
 
 |命令|作用|
 |:---|:---|
-|`netstat -ano \| find "80"`|查看端口号为 80 的所有连接信息|
-|`netstat -ano \| find "LISTEN"`|查看所有的 listen|
+|netstat -ano \| find "80"|查看端口号为 80 的所有连接信息|
+|netstat -ano \| find "LISTEN"|查看所有的 listen|
 
 
 ---
@@ -111,16 +111,16 @@ lsof -i [46][protocol][@hostname|hostaddr][:service|port]
 
 |命令|作用|
 |:---|:---|
-|`lsof -i`|显示所有网络连接|
-|`lsof -i 6`|仅显示 ipv6 连接|
-|`lsof -i tcp`|仅显示所有 tcp 连接|
-|`lsof -i udp`|仅显示所有 udp 连接|
-|`lsof -i :9999`|显示端口为 9999 的连接|
-|`lsof -i :1000,2000`|显示端口号为 1000 或 2000 的连接|
-|`lsof -i :1000-9999`|显示端口范围从 1000 到 9999 的连接|
-|`lsof -i 4tcp@127.0.0.1:9999`|显示ipv4，tcp协议，连接信息为 127.0.0.1 9999 的连接|
-|`lsof -i -s tcp:established`|显示已经建立的 tcp 连接|
-|`lsof -i -s tcp:listen`|显示等待连接 (listen) 的 tcp 端口|
+|lsof -i|显示所有网络连接|
+|lsof -i 6|仅显示 ipv6 连接|
+|lsof -i tcp|仅显示所有 tcp 连接|
+|lsof -i udp|仅显示所有 udp 连接|
+|lsof -i :9999|显示端口为 9999 的连接|
+|lsof -i :1000,2000|显示端口号为 1000 或 2000 的连接|
+|lsof -i :1000-9999|显示端口范围从 1000 到 9999 的连接|
+|lsof -i 4tcp@127.0.0.1:9999|显示ipv4，tcp协议，连接信息为 127.0.0.1 9999 的连接|
+|lsof -i -s tcp:established|显示已经建立的 tcp 连接|
+|lsof -i -s tcp:listen|显示等待连接 (listen) 的 tcp 端口|
 
 ---
 
