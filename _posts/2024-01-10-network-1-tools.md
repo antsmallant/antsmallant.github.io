@@ -57,9 +57,9 @@ linux 例子：
 
 |命令|作用|
 |:---|:---|
-|`netstat -anp \| grep 80`|查看端口号为 80 的所有连接信息|
-|`netstat -tnp \| grep 80`|查看端口号为 80 的 tcp 连接信息|
-|`netstat -l`|查看所有的 listen|
+|netstat -anp \| grep 80|查看端口号为 80 的所有连接信息|
+|netstat -tnp \| grep 80|查看端口号为 80 的 tcp 连接信息|
+|netstat -l|查看所有的 listen|
 
 
 netstat 在 windows 下也有相应的实现，不过命令参数与 linux 下略有不同，而且过滤结果也不能使用 grep，得使用 find。    
