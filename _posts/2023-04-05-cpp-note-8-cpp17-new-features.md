@@ -27,6 +27,8 @@ c++17 是一个 "中" 版本，它本来应该是一个 major 版本的，不过
 
 形式如：`auto [x,y,z] = expr`。  
 
+specification: [cppreference Structured binding declaration](https://en.cppreference.com/w/cpp/language/structured_binding)。    
+
 示例 [1]：
 
 ```cpp
