@@ -333,12 +333,12 @@ Ptr<int> x;       // x 的类型是 int*
 
 `decltype` 总体上分为两种情况处理： 
 
-(1) 参数不是以圆括号括起来的 (unparenthesized) id 表达式（id-expression） 或 类成员访问表达式 (class member access expression)，则返回的是这个表达式对应的实体的类型。   
+1. 参数不是以圆括号括起来的 (unparenthesized) id 表达式（id-expression） 或 类成员访问表达式 (class member access expression)，则返回的是这个表达式对应的实体的类型。   
 
-(2) 除 (1) 的情况外，则：
-    (2.1) 如果表达式是将亡值 (xvalue)，则返回 T&&；    
-    (2.2) 如果表达式是左值(lvalue)，则返回 T&;    
-    (2.3) 如果表达式是纯右值（prvalue），则返回 T。   
+2. 除 1 的情况外，则：    
+    2.1 如果表达式是将亡值 (xvalue)，则返回 T&&；    
+    2.2 如果表达式是左值(lvalue)，则返回 T&;    
+    2.3 如果表达式是纯右值（prvalue），则返回 T。   
 
 总结起来即是：`decltype((variable))` 的结果永远是引用，而 `decltype(variable)` 的结果只有当 variable 是引用的时候才是引用。   
 
@@ -472,7 +472,7 @@ auto f3 = [x]() mutable { x = 2; }; // ok，允许修改值捕获的变量，不
 
 此处需要把它跟 `const` 进行对比。   
 
-1）`const`
+1、`const`
 
 `const` 表达式是潜在的常量表达式，如果用常量表达式初始化，它就是常量表达式，否则就不是。   
 
@@ -481,7 +481,7 @@ const int a = 10;           // ok，10 是常量表达式
 const int sz = get_size();  // ok，get_size() 不是常量表达式， 具体值要到运行时才确定
 ```
 
-2）`constexpr`
+2、`constexpr`
 
 `constexpr` 表达式也是潜在的常量表达式，但它比 `const` 严格，如果用来初始化的不是常量表达式，则编译报错。  
 
@@ -509,9 +509,9 @@ constexpr int sz = get_size();   // 不一定 ok，只有当 get_size() 是一�
 
 `constexpr` 修饰的函数，如果传入参数后能在编译期计算出来，那么这个函数就会产生编译时期的值。否则，就当成一个普通函数在运行时正常调用。  
 
-在 c++11 中，对于 `constexpr` 函数有这些规定： 
-1）函数的返回值类型及所有形参的类型都得是字面值类型；  
-2）函数体有且只有一条 `return` 语句；  
+在 c++11 中，对于 `constexpr` 函数有这些规定：   
+1. 函数的返回值类型及所有形参的类型都得是字面值类型；  
+2. 函数体有且只有一条 `return` 语句；  
 
 字面值类型就是指算术类型、引用、指针、枚举这些，而像普通的自定义类（字面值常量类除外）、IO 库则不是字面值类型。  
 
@@ -650,7 +650,9 @@ specification: [https://en.cppreference.com/w/cpp/language/noexcept](https://en.
 
 ## 显式指定虚函数 override
 
-显式的指定重写了基类的某个虚函数。用于确保：1）重写的函数是虚函数；2）这个虚函数在基类是存在的。    
+显式的指定重写了基类的某个虚函数。用于确保：    
+1. 重写的函数是虚函数；   
+2. 这个虚函数在基类是存在的。       
 
 示例[7]：  
 
@@ -787,9 +789,9 @@ struct A {
 }
 ```
 
-万能引用的两个判断标准： 
-1）必须是类型推导；   
-2）形式上必须是 T&&； 
+万能引用的两个判断标准：    
+1. 必须是类型推导；   
+2. 形式上必须是 `T&&`；   
 
 像这样就不是类型推导[4]:   
 
@@ -840,7 +842,7 @@ auto&& z = {1, 2, 3}; // 不是万能引用，这是初始值列表的特殊情�
 
 完美转发是为了帮助撰写接受任意实参的函数模板，并将其转发到其他函数，目标函数会接受到与转发函数所接受的完全相同的实参[4]。也就是说，它能够转发形参的 value category。  
 
-value category 是一个一直存在的概念，任何一个变量都有两大属性：1）basic type ；2）value category。 value category 经过 c++11 规范后，包括左值、右值、将亡值、纯右值、广义左值这些概念。   
+value category 是一个一直存在的概念，任何一个变量都有两大属性：1. basic type ；2. value category。value category 经过 c++11 规范后，包括左值、右值、将亡值、纯右值、广义左值这些概念。   
 
 实现完美转发依赖于函数 `std::forward`，它的工作逻辑是这样的：如果入参的 value category 是右值，它就强制转换为右值引用并返回，否则，它不做转换。  
 
@@ -1088,9 +1090,9 @@ struct X : public std::enable_shared_from_this<X> {
 
 提供的成员函数不多，可参考：[cppreference weak_ptr](https://en.cppreference.com/w/cpp/memory/weak_ptr)。主要有三个：`use_count`，`expired`，`lock`。  
 
-主要用途：    
-（1）防止循环引用。     
-（2）只需要知道资源是否还存在，不需要共享资源。    
+主要用途：      
+1. 防止循环引用。        
+2. 只需要知道资源是否还存在，不需要共享资源。      
 
 示例[7]:   
 
@@ -1146,11 +1148,11 @@ auto sptr3 = wptr.lock();  // sptr3.use_count() == 0;  (!sptr3) == true;
 2、使用 `new` 可能会因为异常而导致内存泄漏     
 
 在 c++17 之前，对于这样的函数调用 `f( std::shared_ptr<Foo>(new Foo()), get_some_param() )`，编译器给出的参数求值顺序可能是这样的：  
-1）执行 `new Foo()`   
-2）执行 `get_some_param()`   
-3）构造 `shared_ptr`   
+1. 执行 `new Foo()`     
+2. 执行 `get_some_param()`      
+3. 构造 `shared_ptr`     
 
-如果第2）步异常了，那么第1）步 `new` 出来的对象就内存泄漏了。  
+如果第 2 步异常了，那么第 1 步 `new` 出来的对象就内存泄漏了。  
 
 不过这种情况在 c++17 之后就不会，要么就是 （1、3、2），要么就是 （2、1、3），1 跟 3 可以确保连续完成了。   
 
