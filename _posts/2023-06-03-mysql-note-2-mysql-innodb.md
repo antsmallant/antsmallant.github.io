@@ -17,6 +17,8 @@ tags: [db, mysql]
 
 # 1. innodb
 
+---
+
 # 1.1 既然有了 buffer poll，为何 innodb 的性能远低于 redis ?
 
 参考：   
