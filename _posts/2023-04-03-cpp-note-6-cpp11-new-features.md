@@ -15,7 +15,7 @@ tags: [c++ cpp]
 
 c++11 是一个 major 版本，带来了大量的新变化，在很多年的时间里，它也一直被称为 c++0x。  
 
-这篇笔记的主干参考自这份 cheatsheet： [《AnthonyCalandra modern-cpp-features》](https://github.com/AnthonyCalandra/modern-cpp-features/blob/master/CPP11.md)，但由于 cheatsheet 实在过于简单，所以补充了不少内容。    
+这篇笔记的主干参考自这份 cheatsheet： [《AnthonyCalandra modern-cpp-features》](https://github.com/AnthonyCalandra/modern-cpp-features/blob/master/CPP11.md)，但由于 cheatsheet 实在过于简单，几乎没有讲任何原理性的东西，所以本文补充了不少内容。    
 
 ---
 
@@ -1261,15 +1261,45 @@ auto yourprofile = std::tuple<int, std::string, std::string>(15, "NY", "Tim");
 
 ## `std::tie`
 
+`std::tie` 实际上是构造了由左值引用或 `std::ignore` 作为参数形成的一个 tuple。但这种方式，也使得 `std::tie` 可以用于解包一个 `std::tuple` 或 `std::pair`。  
+
 示例：[7]  
 
 ```cpp
+int age;
+std::string name;
+std::string city;
+std::tie(age, name, city) = std::make_tuple(100, "Mike", "LA");
+// 也可以这样
+std::tie(std::ignore, name, std::ignore) = std::make_tuple(100, "Mike", "LA");
 
+std::string yes, no;
+std::tie(yes, no) = std::make_pair("yes", "no");
 ```
 
+```cpp
+int age = 10;
+std::string name = "Kitty";
+std::string nation = "JP";
+auto tp = std::tie(age, name, nation); // tp 是一个 std::tuple
+```
 
-关于 `std::tie` 是怎么工作的：  
-* [How does std::tie work?](https://stackoverflow.com/questions/43762651/how-does-stdtie-work)
+`std::tie` 之所以能用于解包，原因在于它构造的 `tuple` 是由 lvalue reference 构成的。  
+
+`std::tie(age, name, city) = std::make_tuple(100, "Mike", "LA");` 实际上是 `std::tuple<int&, std::string&, std::string&> {age, name, city} = std::make_tuple(100, "Mike", "LA");`。  
+
+`std::tuple<int&, std::string&, std::string&> {age, name, city}` 看起来是一个 rvalue，怎么可以赋值的？
+
+no，no，这里实际上是这样调用的： 
+
+```cpp
+(std::tuple<int&, std::string&, std::string&> {age, name, city}).operator = (std::make_tuple(100, "Mike", "LA"));
+```
+
+`std::tuple` 重载了很多个 `operator =` 函数，可参考这里：[std::tuple<Types...>::operator=](https://en.cppreference.com/w/cpp/utility/tuple/operator%3D)。当然，也重载了 `std::pair` 到 `std::tuple` 的转换，所以上面的例子中，`std::tie` 也可以用于解包 `std::pair`。  
+
+
+更具体的关于 `std::tie` 是怎么工作的，可参考这篇文章： [《How does std::tie work?》](https://stackoverflow.com/questions/43762651/how-does-stdtie-work)。  
 
 ---
 
