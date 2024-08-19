@@ -1237,6 +1237,42 @@ double t = elapsed_seconds.count();   // double 精度的 t 秒钟
 
 ---
 
+## `std::tuple` 
+
+即元组，是一个固定大小的集合，可以包含各种类型，可以认为是 `std::pair` 的范化。  
+
+可以使用 `std::tuple` 或 `std::make_tuple` 构造。  
+
+可以使用 `std::get` 或 `std::tie` 进行解包 (unpacking)，如果是 c++17，可以使用结构化绑定进行解包。    
+
+示例 [7]:  
+
+```cpp
+auto myprofile = std::make_tuple(10, "LA", "Mike");
+std::get<0>(myprofile);  // 10
+std::get<1>(myprofile);  // "LA"
+std::get<2>(myprofile);  // "Mike"
+
+// 或者这样构造
+auto yourprofile = std::tuple<int, std::string, std::string>(15, "NY", "Tim");
+```
+
+---
+
+## `std::tie`
+
+示例：[7]  
+
+```cpp
+
+```
+
+
+关于 `std::tie` 是怎么工作的：  
+* [How does std::tie work?](https://stackoverflow.com/questions/43762651/how-does-stdtie-work)
+
+---
+
 ## 无序的容器 (unordered container)
 
 这些容器提供常数时间复杂度的搜索、插入、删除操作，代价是使用哈希算法，牺牲了元素的有序性。包括这些： `unordered_set`, `unordered_multiset`, `unordered_map`, `unordered_multimap`。   
