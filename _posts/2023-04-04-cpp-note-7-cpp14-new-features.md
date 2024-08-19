@@ -43,7 +43,6 @@ c++14 是一个 minor 版本，主要是对于 c++11 一些不完善之处的补
 示例[1]:  
 
 ```cpp
-
 const int x = 0;
 auto x1 = x;           // int
 decltype(auto) x2 = x; // const int
@@ -56,13 +55,11 @@ decltype(auto) y3 = y1;  // int&
 int&& z = 0;
 auto z1 = std::move(z);           // int
 decltype(auto) z2 = std::move(z); // int&&
-
 ```
 
 对于范型代码特别方便[1]：  
 
 ```cpp
-
 // 返回类型是 `int`
 auto f(const int &i) {
     return i;
@@ -77,7 +74,6 @@ int x = 234;
 static_assert(std::is_same<const int&, decltype(f(x))>::value == 0);
 static_assert(std::is_same<int, decltype(f(x))>::value == 1);
 static_assert(std::is_same<const int&, decltype(g(x))>::value == 1);
-
 ```
 
 ---
@@ -89,7 +85,6 @@ static_assert(std::is_same<const int&, decltype(g(x))>::value == 1);
 示例[1]：   
 
 ```cpp
-
 constexpr int fac(int n) {
     if (n <= 1) {
         return 1;
@@ -99,7 +94,6 @@ constexpr int fac(int n) {
 }
 
 constexpr int a = fac(5); // ok，不会报错，a == 120
-
 ```
 
 ---
@@ -111,13 +105,11 @@ c++14 引入了 `[[deprecated]]` 属性用于表明一个单位（函数、类�
 示例[1]:   
 
 ```cpp
-
 [[deprecated]]
 void very_old_f();
 
 [[deprecated("use new_method instead")]]
 void legacy_method();
-
 ```
 
 ---

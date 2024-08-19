@@ -217,7 +217,6 @@ clib.f1 的这句代码 `printf("clib.f1: after yield\n");` 在第二次 resume 
 <br>
 
 ```c
-
 int f2_after_yield(lua_State* L, int status, lua_KContext ctx) {
     printf("clib.f2: after yield\n");
     return 0;
@@ -231,7 +230,6 @@ static int f2(lua_State* L) {
     
     return 0;
 }
-
 ```
 
 ---
@@ -272,7 +270,6 @@ end)
 
 local ok, err = co.resume(co2)
 print(ok, err)
-
 ```
 
 <br/>
@@ -280,7 +277,6 @@ print(ok, err)
 c 代码：clib.c    
 
 ```c
-
 // clib.c
 
 #include <stdlib.h>
@@ -304,7 +300,6 @@ LUAMOD_API int luaopen_clib(lua_State* L) {
     luaL_newlib(L, funcs);
     return 1;
 }
-
 ```   
 
 <br/>
