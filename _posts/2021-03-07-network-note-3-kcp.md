@@ -41,6 +41,8 @@ kcp 的作者韦易笑 (skywind3000) 在这篇知乎回答 [《MOBA类游戏是�
 
 # 3. kcp 的实现
 
+todo
+
 主要参考这篇文章： [《KCP 协议介绍与业务优化》](https://www.cnblogs.com/moonwalk/p/18168164) [2] 。  
 
 
@@ -82,6 +84,8 @@ sack 即 seletive acknowledgments 的缩写。tcp sack 的相关实现，具体�
 ---
 
 ## 4.2 kcp 如何接入 fec？ 
+
+todo
 
 ---
 
