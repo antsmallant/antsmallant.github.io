@@ -208,6 +208,26 @@ ObjectId()
 
 ## 1.7 MongoDB 分片集群 (sharding cluster)
 
+参考：[《Mongo进阶 - DB核心：分片Sharding》](https://pdai.tech/md/db/nosql-mongo/mongo-z-sharding.html)    
+
+
+---
+
+## 1.8 MongoDB 的引擎
+
+### wiredtiger
+
+参考：  
+[《MongoDB Wiredtiger存储引擎实现原理》](https://mongoing.com/archives/2540)     
+[《Mongo进阶 - WT引擎：缓存机制》](https://pdai.tech/md/db/nosql-mongo/mongo-y-cache.html)    
+[Mongo进阶 - WT引擎：事务实现](https://pdai.tech/md/db/nosql-mongo/mongo-y-trans.html)    
+
+从 MongoDB3.2 开始，WiredTiger 成为默认的存储引擎。   
+
+
+## 1.9 MongoDB 的 write concern 问题
+
+要注意公有云的性能测试使用的测试方法，比如腾讯云的这个测试方法： https://cloud.tencent.com/document/product/240/106644 ， "w = 0表示写操作不需要确认，即不需要等待写操作的响应。"，write concern 都是关闭了测试的。  
 
 
 ---
