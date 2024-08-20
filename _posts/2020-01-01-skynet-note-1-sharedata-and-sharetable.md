@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "skynet 笔记：sharedata 与 sharetable 对比"
-date: 2020-01-01
+date: 2021-01-01
 last_modified_at: 2024-7-2
 categories: [skynet]
 tags: [skynet]
@@ -12,6 +12,8 @@ tags: [skynet]
 <br/>
 
 ---
+
+# 1. 简单对比
 
 sharetable 在 2019 年就做出来了，见云风的这篇文章 [《不同虚拟机间共享不变的 Table》](https://blog.codingnow.com/2019/04/share_table.html) ，现在基本上都是使用这个的，而更早的，基本上都是使用 sharedata 的，中间还有一个叫 datasheet，但用的人可能不多。  
 
@@ -36,4 +38,20 @@ sharedata 的实现是这样的，sharedatad 把一个 table 序列化成 c user
 3. 配置数据不参与 gc，速度快。      
 
 所以，如果没有升级到 sharetable 的，都可以尝试升级一下，对性能的提升是很明显的。  
+
+---
+
+# 2. sharetable 的底层实现 
+
+todo
+
+---
+
+# 3. sharedata 的底层实现
+
+todo
+
+---
+
+# 4. 参考
 
