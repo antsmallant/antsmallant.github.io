@@ -198,6 +198,12 @@ ObjectId()
 |Clustered Indexes	  |clustered collections支持的index|
 
 
+---
+
+## 1.6 MongoDB 的持久化
+
+
+
 
 ---
 
