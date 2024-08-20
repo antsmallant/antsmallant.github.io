@@ -257,7 +257,7 @@ MongoDB 从 4.2 版本开始支持自定义分片键了，游戏一般不需要�
 
 |方案|中间件|数据源|
 |:--|:--|:--|
-|自建|ShardingSphere|TiDB or 集群版的MongoDB|
+|自建|ShardingSphere|TiDB or 集群版MongoDB|
 |公有云|华为云的 DDM|腾讯云的TDSQL or 集群版MongoDB|
 
 ---
