@@ -23,21 +23,17 @@ sharetable 在 2019 年就做出来了，见云风的这篇文章 [《不同虚�
 
 sharedata 的实现是这样的，sharedatad 把一个 table 序列化成 lightuserdata，同个进程内的其他服务 query 这个名称的 table，sharedatad 就返回这个 lightuserdata 的指针。各个服务的 vm 使用 metatable 的方式从这个 lightuserdata 查询数据，而为了避免总是这样查数据，会创建 proxy，查过的就 cache 到 proxy 了。    
 
-这样实现的好处是：惰性展开了，内存消耗上会少一些；其他服务 query 的时候也很快，因为只需要返回一个指针而已。  
-
-缺点也就是：
+这样实现的好处是：惰性展开了，内存消耗上会少一些；其他服务 query 的时候也很快，因为只需要返回一个指针而已。缺点也就是：   
 1. 通过 metatable 访问，慢；  
 2. 查询过程中，各个 vm 最终也是创建了 proxy，内存消耗会上来；    
 3. 创建出来的 proxy 需要参与 gc。     
 
-而反观 sharetable，它直接就修改了 lua vm 的实现，允许在不同的 vm share 只读的原生的 lua table，而且这些 table 不参与 gc。   
-
-这完全就是碾压式的性能提升了：  
+而反观 sharetable，它直接就修改了 lua vm 的实现，允许在不同的 vm share 只读的原生的 lua table，而且这些 table 不参与 gc。这完全就是碾压式的性能提升了：   
 1. 不需要 metatable 访问，速度快；   
 2. 不需要创建 proxy，内存占用少；   
 3. 配置数据不参与 gc，速度快。      
 
-所以，如果没有升级到 sharetable 的，都可以尝试升级一下，对性能的提升是很明显的。  
+所以，如果没有升级到 sharetable 的，都可以尝试升级一下，对性能的提升是很明显的。   
 
 ---
 
