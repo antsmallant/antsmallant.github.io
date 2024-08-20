@@ -17,11 +17,11 @@ tags: [skynet]
 
 sharetable 在 2019 年就做出来了，见云风的这篇文章 [《不同虚拟机间共享不变的 Table》](https://blog.codingnow.com/2019/04/share_table.html) ，现在基本上都是使用这个的，而更早的，基本上都是使用 sharedata 的，中间还有一个叫 datasheet，但用的人可能不多。  
 
-对比 sharedata 与 sharetable 是有意义的，从中可以看到 userdata + metatable 这种方案，在于性能要求的特殊场景下，并非一个好的设计选择，因为访问配置数据的代码占了游戏服务端逻辑的很大一部分比例，这里稍微有性能提升，对于整体的性能提升是很大的。这也就是 sharetable 存在的意义，虽然打破了 lua 的 vm 不直接 share 原生数据的原则，但却带了较大的性能提升。   
+对比 sharedata 与 sharetable 是有意义的，从中可以看到 lightuserdata + metatable 这种方案，在于性能要求的特殊场景下，并非一个好的设计选择，因为访问配置数据的代码占了游戏服务端逻辑的很大一部分比例，这里稍微有性能提升，对于整体的性能提升是很大的。这也就是 sharetable 存在的意义，虽然打破了 lua 的 vm 不直接 share 原生数据的原则，但却带了较大的性能提升。   
 
 我在开发中实测过，使用 sharetable 代替 sharedata，性能的提升大约是 5 ~ 25 倍，这是一个比较大的提升（忘记当时具体的测量方法了，有空再重新测试一番）。   
 
-sharedata 的实现是这样的，sharedatad 把一个 table 序列化成 c userdata，同个进程内的其他服务 query 这个名称的 table，sharedatad 就返回这个 userdata 的指针。各个服务的 vm 使用 metatable 的方式从这个 userdata 查询数据，而为了避免总是这样查数据，会创建 proxy，查过的就 cache 到 proxy 了。    
+sharedata 的实现是这样的，sharedatad 把一个 table 序列化成 lightuserdata，同个进程内的其他服务 query 这个名称的 table，sharedatad 就返回这个 lightuserdata 的指针。各个服务的 vm 使用 metatable 的方式从这个 lightuserdata 查询数据，而为了避免总是这样查数据，会创建 proxy，查过的就 cache 到 proxy 了。    
 
 这样实现的好处是：惰性展开了，内存消耗上会少一些；其他服务 query 的时候也很快，因为只需要返回一个指针而已。  
 
