@@ -41,6 +41,8 @@ sharedata 的实现是这样的，sharedatad 把一个 table 序列化成 lightu
 
 todo
 
+关于 sharetable 使用方式的一个 issue，有比较充分的讨论：[《请教 sharetable 的使用方式 #1429》](https://github.com/cloudwu/skynet/discussions/1429)。   
+
 ---
 
 # 3. sharedata 的底层实现
