@@ -409,7 +409,7 @@ mysql 主要是写比较慢，像 innodb，如果要保证事务提交后不丢�
 
 我这篇文章还是过于粗浅了，推荐一些真正厉害的文章：      
 
-* [天美J3工作室服务器主程：我们怎么避免上线即炸服？](https://youxiputao.com/articles/20565)    
+* [《天美J3工作室服务器主程：我们怎么避免上线即炸服？》](https://youxiputao.com/articles/20565)    
 
 
 ---
