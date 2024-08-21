@@ -82,6 +82,26 @@ Redis Online Playground: [https://onecompiler.com/redis/](https://onecompiler.co
 |Set|字符串的无序集合|添加、获取、删除元素；集合操作：交集、差集、并集；随机选取 n 个元素|整数集合或哈希表|
 |Zset|又叫 Sorted Set，有序集合，存储字符串与浮点型分数的有序键值对，以分数的大小排序|添加、获取、删除元素；根据分值范围、排名范围、分值获取元素|7.0之前："压缩列表或跳表" + 哈希表；7.0之后："listpack 或跳表" + 哈希表|
 
+<br/>
+
+**Zset如何利用跳表计算排名的**   
+
+跳表的 `zskiplistNode` 里面有 `zskiplistLevel` 结构的数组 `level[]`。跳表的实现就是多层索引，利用的正是 `zskiplistLevel` 这种结构， 每个 `zskiplistLevel` 里面包含着下一个节点的指针 `forward`，以及到下一个节点的跨度 `span`（即两者之间相距多少个节点）。   
+
+在遍历的过程中，把跨度加起来，就得到了目标节点对应的排名值。要根据特定排名值获取节点也是类似原理，通过 `span` 字段去试探，是要 forward 查找，还是同节点往一下层查找。  
+
+```c
+typedef struct zskiplistNode {
+    sds ele;
+    double score;
+    struct zskiplistNode *backward;
+    struct zskiplistLevel {
+        struct zskiplistNode *forward;
+        unsigned long span;
+    } level[];
+} zskiplistNode;
+```
+
 ---
 
 ### 1.2.2 其他数据类型    
