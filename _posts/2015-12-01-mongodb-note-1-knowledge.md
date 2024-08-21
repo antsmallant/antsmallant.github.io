@@ -208,6 +208,7 @@ MongoDB 的日志叫 journal。
 
 持久性级别与性能的相关性。   
 
+
 ### write concern 问题
 
 要注意公有云的性能测试使用的测试方法，比如腾讯云的这个测试方法： https://cloud.tencent.com/document/product/240/106644 ， "w = 0表示写操作不需要确认，即不需要等待写操作的响应"，也就是说，测试时都不开 write concern 的。  
@@ -223,6 +224,7 @@ MongoDB 的日志叫 journal。
 ### 参考文档 
 
 * [mongodb manual 分片](https://www.mongodb.com/zh-cn/docs/manual/sharding/)  
+
 * [《Mongo进阶 - DB核心：分片Sharding》](https://pdai.tech/md/db/nosql-mongo/mongo-z-sharding.html)    
 
 
@@ -241,9 +243,13 @@ MongoDB 的日志叫 journal。
 
 ### 公有云 MongoDB 的版本情况
 
-腾讯云: MongoDB 6.0     
-阿里云: MongoDB 7.0     
-华为云: 没有 MongoDB，只有兼容 MongoDB 的文档数据库，叫 DDS，兼容 MongoDB 4.4    
+截至 2024-8-21。  
+
+|厂商|版本|
+|--|--|
+|腾讯云| MongoDB 6.0 |
+|阿里云| MongoDB 7.0 |
+|华为云| 没有 MongoDB，只有兼容 MongoDB 的文档数据库，叫 DDS，兼容 MongoDB 4.4 |
 
 
 ### 公有云 MongoDB 分片集群的支持情况
@@ -267,17 +273,20 @@ Shard 节点： 2 ~ 20 个。
 
 ---
 
-## 1.8 MongoDB 的引擎
+## 1.8 MongoDB wiredtiger 引擎
 
-### wiredtiger
+参考文档：  
 
-参考：  
-
-[《MongoDB Wiredtiger存储引擎实现原理》](https://mongoing.com/archives/2540)     
-[《Mongo进阶 - WT引擎：缓存机制》](https://pdai.tech/md/db/nosql-mongo/mongo-y-cache.html)    
-[《Mongo进阶 - WT引擎：事务实现》](https://pdai.tech/md/db/nosql-mongo/mongo-y-trans.html)    
+* [《MongoDB Wiredtiger存储引擎实现原理》](https://mongoing.com/archives/2540)     
+* [《Mongo进阶 - WT引擎：缓存机制》](https://pdai.tech/md/db/nosql-mongo/mongo-y-cache.html)    
+* [《Mongo进阶 - WT引擎：事务实现》](https://pdai.tech/md/db/nosql-mongo/mongo-y-trans.html)    
 
 从 MongoDB 3.2 开始，WiredTiger 成为默认的存储引擎。   
+
+
+---
+
+## 1.9 MongoDB 的事务支持
 
 
 ---
