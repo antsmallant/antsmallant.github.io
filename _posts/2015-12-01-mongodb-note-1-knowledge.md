@@ -202,7 +202,9 @@ ObjectId()
 
 ## 1.6 MongoDB 的持久化
 
-MongoDB 的日志叫 journal。  
+MongoDB 的日志叫 journal。   
+
+---
 
 ### write concern
 
@@ -238,7 +240,6 @@ MongoDB 的日志叫 journal。
 * 当写入 local 库时，write concern 会被忽略。    
 
 
-
 参考： 
 
 * [阿里云-云数据库MongoDB版-事务与Read/Write Concern](https://help.aliyun.com/zh/mongodb/use-cases/transactions-and-read-write-concern)   
@@ -246,10 +247,11 @@ MongoDB 的日志叫 journal。
 * [MongoDB Manual write concern](https://www.mongodb.com/zh-cn/docs/manual/reference/write-concern/)
 
 
-
 ---
 
 ## 1.7 MongoDB 分片集群 (sharding cluster)
+
+---
 
 ### 参考文档 
 
@@ -257,8 +259,10 @@ MongoDB 的日志叫 journal。
 
 * [《Mongo进阶 - DB核心：分片Sharding》](https://pdai.tech/md/db/nosql-mongo/mongo-z-sharding.html)    
 
+---
 
 ### todo
+
 单机性能的参照。   
 分片集群性能的参照。   
 分片集群会有什么瓶颈？
@@ -266,10 +270,11 @@ MongoDB 的日志叫 journal。
 
 在已经分片的集群中增加分片，可动态进行吗？会有怎么样的性能消耗？需要多久？
 
+---
 
 ### 分片集群如何保证数据安全？每个 shard 都做成 3 节点副本吗？ 
 
-
+---
 
 ### 公有云 MongoDB 的版本情况
 
@@ -281,10 +286,16 @@ MongoDB 的日志叫 journal。
 |阿里云| MongoDB 7.0 |
 |华为云| 没有 MongoDB，只有兼容 MongoDB 的文档数据库，叫 DDS，兼容 MongoDB 4.4 |
 
+---
 
 ### 公有云 MongoDB 分片集群的支持情况
 
+截至 2024-8-21。  
+
 1、腾讯云    
+
+以 MongoDB 6.0 为例。  
+
 Mongos 节点： 3 ~ 32 个。    
 Config 节点：默认3副本集群，1核2G配置，不可变更。  
 Shard 节点： 2 ~ 20 个。    
@@ -294,12 +305,17 @@ Shard 节点： 2 ~ 20 个。
 
 2、阿里云   
 
+以 MongoDB 7.0 为例。  
 
+Mongos 节点： 3 ~ 32 个。    
+Config 节点：副本集架构，配置可选。  
+Shard 节点： 2 ~ 32 个。    
+
+---
 
 ### 分片的操作与查看
 
 参考： https://help.aliyun.com/zh/mongodb/use-cases/configure-sharding-to-maximize-the-performance-of-shards?spm=5176.17705728.0.0.57e5778bVB96qV
-
 
 ---
 
@@ -312,7 +328,6 @@ Shard 节点： 2 ~ 20 个。
 * [《Mongo进阶 - WT引擎：事务实现》](https://pdai.tech/md/db/nosql-mongo/mongo-y-trans.html)    
 
 从 MongoDB 3.2 开始，WiredTiger 成为默认的存储引擎。   
-
 
 ---
 
