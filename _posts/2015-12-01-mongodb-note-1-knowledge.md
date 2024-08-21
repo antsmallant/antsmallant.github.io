@@ -202,6 +202,12 @@ ObjectId()
 
 ## 1.6 MongoDB 的持久化
 
+MongoDB 的日志叫 journal，
+
+持久性级别
+
+
+
 
 
 ---

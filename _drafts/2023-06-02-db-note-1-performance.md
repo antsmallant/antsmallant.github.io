@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "游戏数据库常识二：常见数据库的 qps，兼谈云数据库选型"
+title: "数据库笔记：常见数据库的 qps、云数据库选型"
 date: 2023-06-02
 last_modified_at: 2023-06-02
 categories: [数据库]
