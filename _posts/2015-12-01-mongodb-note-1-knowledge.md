@@ -202,9 +202,11 @@ ObjectId()
 
 ## 1.6 MongoDB 的持久化
 
-MongoDB 的日志叫 journal，
+MongoDB 的日志叫 journal。  
 
-持久性级别
+持久性级别。  
+
+持久性级别与性能的相关性。   
 
 
 ---
@@ -212,6 +214,11 @@ MongoDB 的日志叫 journal，
 ## 1.7 MongoDB 分片集群 (sharding cluster)
 
 参考：[《Mongo进阶 - DB核心：分片Sharding》](https://pdai.tech/md/db/nosql-mongo/mongo-z-sharding.html)    
+
+单机性能的参照。   
+分片集群性能的参照。   
+分片集群会有什么瓶颈？
+分片集群实际使用过程会遇到什么问题？   
 
 
 ---
@@ -221,17 +228,18 @@ MongoDB 的日志叫 journal，
 ### wiredtiger
 
 参考：  
+
 [《MongoDB Wiredtiger存储引擎实现原理》](https://mongoing.com/archives/2540)     
 [《Mongo进阶 - WT引擎：缓存机制》](https://pdai.tech/md/db/nosql-mongo/mongo-y-cache.html)    
 [《Mongo进阶 - WT引擎：事务实现》](https://pdai.tech/md/db/nosql-mongo/mongo-y-trans.html)    
 
 从 MongoDB 3.2 开始，WiredTiger 成为默认的存储引擎。   
 
+---
 
 ## 1.9 MongoDB 的 write concern 问题
 
-要注意公有云的性能测试使用的测试方法，比如腾讯云的这个测试方法： https://cloud.tencent.com/document/product/240/106644 ， "w = 0表示写操作不需要确认，即不需要等待写操作的响应。"，也就是说，测试时都不开 write concern 的。  
-
+要注意公有云的性能测试使用的测试方法，比如腾讯云的这个测试方法： https://cloud.tencent.com/document/product/240/106644 ， "w = 0表示写操作不需要确认，即不需要等待写操作的响应"，也就是说，测试时都不开 write concern 的。  
 
 ---
 
