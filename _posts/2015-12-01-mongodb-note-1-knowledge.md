@@ -262,13 +262,13 @@ MongoDB 的日志叫 journal。
 
 ---
 
-### 分片集群的应用时机
+### 分片集群的使用时机
 
 参考：    
 
 * [MongoDB: Why Avoid Sharding, it should be kept as the last option.](https://medium.com/geekculture/mongodb-why-avoid-sharding-it-should-be-kept-as-the-last-option-cb8fdc693b66)    
 
-这篇文章说的是尽量不要选择 sharding，除非不得不。要选择 sharding，必须特别特别关注 shard key 的选择，这个是最最最重要的，否则负载的不平均会是个特别的麻烦。除此之外，还需要注意 Scatter Gather Query 即细碎收集式查询的问题，需要从多个 shard 取数据再聚合起来返回，这样会降低查询的性能。  
+这篇文章说的是尽量不要选择 sharding，除非不得不。要 sharding，必须特别关注 shard key 的选择，这个是最重要的，否则负载的不均衡会是个特别的麻烦。除此之外，还需要注意 "Scatter Gather Query" 即细碎收集式查询的问题，需要从多个 shard 取数据再聚合起来返回，这样会降低查询的性能。  
 
 关于 shard key 是否可以改变的问题：   
 MongoDB 4.2 及之前，shard key 是不能变的；  
@@ -330,7 +330,7 @@ Shard 节点： 2 ~ 36 个。
 以 MongoDB 7.0 为例。  
 
 Mongos 节点： 3 ~ 32 个。    
-Config 节点：副本集架构，配置可选。  
+Config 节点：副本集架构，配置可选。   
 Shard 节点： 2 ~ 32 个。    
 
 
@@ -353,14 +353,14 @@ Shard 节点： 2 ~ 32 个。
 
 2. 变更 Mongos 节点配置规格    
 
-参考：[腾讯云-云数据库 MongoDB-调整分片数量](https://cloud.tencent.com/document/product/240/76799)    
+参考：[腾讯云-云数据库 MongoDB-调整分片数量](https://cloud.tencent.com/document/product/240/76799)     
 
 注意点：   
-可能会涉及到跨机房迁移数据，会引起连接闪断的现象，要确保业务层有自动重连的机制，建议在业务低峰期维护。   
+可能会涉及到跨机房迁移数据，会引起连接闪断的现象，要确保业务层有自动重连的机制，建议在业务低峰期维护。    
 
 3. 新增 Mongos 节点   
 
-参考：[腾讯云-云数据库 MongoDB-新增 Mongos 节点](https://cloud.tencent.com/document/product/240/76801)    
+参考：[腾讯云-云数据库 MongoDB-新增 Mongos 节点](https://cloud.tencent.com/document/product/240/76801)     
 
 
 2、阿里云    
