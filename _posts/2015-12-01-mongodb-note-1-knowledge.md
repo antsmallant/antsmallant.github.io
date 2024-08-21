@@ -259,6 +259,24 @@ MongoDB 的日志叫 journal。
 
 * [《Mongo进阶 - DB核心：分片Sharding》](https://pdai.tech/md/db/nosql-mongo/mongo-z-sharding.html)    
 
+
+---
+
+### 分片集群的应用时机
+
+参考：    
+
+* [MongoDB: Why Avoid Sharding, it should be kept as the last option.](https://medium.com/geekculture/mongodb-why-avoid-sharding-it-should-be-kept-as-the-last-option-cb8fdc693b66)    
+
+这篇文章说的是尽量不要选择 sharding，除非不得不。要选择 sharding，必须特别特别关注 shard key 的选择，这个是最最最重要的，否则负载的不平均会是个特别的麻烦。除此之外，还需要注意 Scatter Gather Query 即细碎收集式查询的问题，需要从多个 shard 取数据再聚合起来返回，这样会降低查询的性能。  
+
+关于 shard key 是否可以改变的问题：   
+MongoDB 4.2 及之前，shard key 是不能变的；  
+MongoDB 4.4 开始，可以通过增加后缀字段的方式来改善 shard key；   
+MongoDB 5.0 开始，可以改变一个集合的 shard key 来 reshard。  
+
+然而，虽然能改变或更新 shard key，但 reshard 可能会导致负载过重，而严重影响正常业务。   
+
 ---
 
 ### todo
@@ -292,7 +310,9 @@ MongoDB 的日志叫 journal。
 
 ### 公有云 MongoDB 分片集群的支持情况
 
-截至 2024-8-21。  
+分片集群的构成：mongos 节点、Config Server、分片节点。每个分片是分片数据的一个子集，云数据库的分片都作为一个副本集部署。下文中 shard 节点，实际上指的是分片服务器，它通常是由三节点的副本集构成。    
+
+以下数据截至 2024-8-21。   
 
 1、腾讯云    
 
@@ -302,7 +322,7 @@ Mongos 节点： 3 ~ 32 个。
 Config 节点：默认3副本集群，1核2G配置，不可变更。  
 Shard 节点： 2 ~ 36 个。   
 
-这个文档里 [腾讯云-云数据库MongoDB-系统架构](https://cloud.tencent.com/document/product/240/64126?from_cn_redirect=1) 写着 shard 数量是 2 ~ 20，但实际可选范围是 2 ~ 36。   
+这个文档里 [腾讯云-云数据库MongoDB-系统架构](https://cloud.tencent.com/document/product/240/64126) 写着 shard 数量是 2 ~ 20，但实际可选范围是 2 ~ 36。   
 
 
 2、阿里云   
@@ -313,11 +333,53 @@ Mongos 节点： 3 ~ 32 个。
 Config 节点：副本集架构，配置可选。  
 Shard 节点： 2 ~ 32 个。    
 
+
+---
+
+## 公有云的分片集群扩容
+
+1、腾讯云   
+
+1. 调整分片数量     
+
+参考：[腾讯云-云数据库 MongoDB-调整分片数量](https://cloud.tencent.com/document/product/240/76799)
+
+注意点：  
+只能增，不能减。    
+新增节点加入集群开始同步数据，业务不受影响。    
+切勿同时发起调整节点数、调整节点计算规格与存储的任务。    
+调整节点数量后实例的名称、内网地址和端口均不发生变化。     
+
+
+2. 变更 Mongos 节点配置规格    
+
+参考：[腾讯云-云数据库 MongoDB-调整分片数量](https://cloud.tencent.com/document/product/240/76799)    
+
+注意点：   
+可能会涉及到跨机房迁移数据，会引起连接闪断的现象，要确保业务层有自动重连的机制，建议在业务低峰期维护。   
+
+3. 新增 Mongos 节点   
+
+参考：[腾讯云-云数据库 MongoDB-新增 Mongos 节点](https://cloud.tencent.com/document/product/240/76801)    
+
+
+2、阿里云    
+
+
 ---
 
 ### 分片的操作与查看
 
-参考： https://help.aliyun.com/zh/mongodb/use-cases/configure-sharding-to-maximize-the-performance-of-shards?spm=5176.17705728.0.0.57e5778bVB96qV
+参考： https://help.aliyun.com/zh/mongodb/use-cases/configure-sharding-to-maximize-the-performance-of-shards
+
+---
+
+### 分片集群 batch insert 的性能问题
+
+参考：[《MongoDB sharding 集合不分片性能更高？》](https://mongoing.com/archives/26859)     
+
+batch insert 的情况下，分片集群单个 shard 的性能，相对于未分片的会有所下降，因为未分片的时候，batch insert 直接就到达 Primary shard 了，而分片的情况下，mongos 收到请求后，还要做二次分发，如果 batch 里面的 key 是打得很散的，那么分发的时候基本上就没 batch 的优势了。  
+
 
 ---
 
@@ -330,6 +392,12 @@ Shard 节点： 2 ~ 32 个。
 * [《Mongo进阶 - WT引擎：事务实现》](https://pdai.tech/md/db/nosql-mongo/mongo-y-trans.html)    
 
 从 MongoDB 3.2 开始，WiredTiger 成为默认的存储引擎。   
+
+---
+
+## 1.9 Mongodb Oplog
+
+
 
 ---
 
