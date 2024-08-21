@@ -86,9 +86,9 @@ Redis Online Playground: [https://onecompiler.com/redis/](https://onecompiler.co
 
 **Zset如何利用跳表计算排名的**   
 
-跳表的 `zskiplistNode` 里面有 `zskiplistLevel` 结构的数组 `level[]`。跳表的实现就是多层索引，利用的正是 `zskiplistLevel` 这种结构， 每个 `zskiplistLevel` 里面包含着下一个节点的指针 `forward`，以及到下一个节点的跨度 `span`（即两者之间相距多少个节点）。   
+跳表是一种链表，通过添加多层索引来加速插入、查找、删除。在 redis 的实现中，跳表的节点结构是 `zskiplistNode`，里面包含的 `zskiplistLevel` 数组，就是实现多层索引的数据结构。每个 `zskiplistLevel` 代表着一层索引，里面包含着下一个节点的指针 `forward`，以及到下一个节点的跨度 `span`（即两者之间相距多少个节点）。   
 
-在遍历的过程中，把跨度加起来，就得到了目标节点对应的排名值。要根据特定排名值获取节点也是类似原理，通过 `span` 字段去试探，是要 forward 查找，还是同节点往一下层查找。  
+在遍历的过程中，把途经的跨度相加，就得到了目标节点对应的排名值。要根据特定排名值获取节点也是类似原理，通过 `span` 字段去试探，是要 forward 查找，还是同节点往一下层查找，`span` 相加结果与目标值相等则查找完毕。  
 
 ```c
 typedef struct zskiplistNode {
