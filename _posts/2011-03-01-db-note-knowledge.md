@@ -54,7 +54,7 @@ wordn -> idm,idn,..idz
 <div align="center">
 <img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/db-inverted-index-inside.png"/>
 </div>
-<center>倒排索引的内部构造示意[1]</center>
+<center>图：倒排索引的内部构造示意[1]</center>
 <br/>
 
 
