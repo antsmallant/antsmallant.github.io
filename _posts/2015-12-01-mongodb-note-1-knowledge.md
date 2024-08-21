@@ -242,9 +242,9 @@ MongoDB 的日志叫 journal。
 
 参考： 
 
-* [阿里云-云数据库MongoDB版-事务与Read/Write Concern](https://help.aliyun.com/zh/mongodb/use-cases/transactions-and-read-write-concern)   
+* [《阿里云-云数据库MongoDB版-事务与Read/Write Concern》](https://help.aliyun.com/zh/mongodb/use-cases/transactions-and-read-write-concern)   
 
-* [MongoDB Manual write concern](https://www.mongodb.com/zh-cn/docs/manual/reference/write-concern/)
+* [《MongoDB Manual write concern》](https://www.mongodb.com/zh-cn/docs/manual/reference/write-concern/)
 
 
 ---
@@ -255,7 +255,7 @@ MongoDB 的日志叫 journal。
 
 ### 参考文档 
 
-* [mongodb manual 分片](https://www.mongodb.com/zh-cn/docs/manual/sharding/)  
+* [《mongodb manual 分片》](https://www.mongodb.com/zh-cn/docs/manual/sharding/)  
 
 * [《Mongo进阶 - DB核心：分片Sharding》](https://pdai.tech/md/db/nosql-mongo/mongo-z-sharding.html)    
 
@@ -322,7 +322,7 @@ Mongos 节点： 3 ~ 32 个。
 Config 节点：默认3副本集群，1核2G配置，不可变更。  
 Shard 节点： 2 ~ 36 个。   
 
-这个文档里 [腾讯云-云数据库MongoDB-系统架构](https://cloud.tencent.com/document/product/240/64126) 写着 shard 数量是 2 ~ 20，但实际可选范围是 2 ~ 36。   
+这个文档里 [《腾讯云-云数据库MongoDB-系统架构》](https://cloud.tencent.com/document/product/240/64126) 写着 shard 数量是 2 ~ 20，但实际可选范围是 2 ~ 36。   
 
 
 2、阿里云   
@@ -340,9 +340,9 @@ Shard 节点： 2 ~ 32 个。
 
 1、腾讯云   
 
-1. 调整分片数量     
+(1) 调整分片数量     
 
-参考：[腾讯云-云数据库 MongoDB-调整分片数量](https://cloud.tencent.com/document/product/240/76799)
+参考：[《腾讯云-云数据库 MongoDB-调整分片数量》](https://cloud.tencent.com/document/product/240/76799)
 
 注意点：  
 只能增，不能减。    
@@ -351,16 +351,16 @@ Shard 节点： 2 ~ 32 个。
 调整节点数量后实例的名称、内网地址和端口均不发生变化。     
 
 
-2. 变更 Mongos 节点配置规格    
+(2) 变更 Mongos 节点配置规格    
 
-参考：[腾讯云-云数据库 MongoDB-调整分片数量](https://cloud.tencent.com/document/product/240/76799)     
+参考：[《腾讯云-云数据库 MongoDB-调整分片数量》](https://cloud.tencent.com/document/product/240/76799)     
 
 注意点：   
 可能会涉及到跨机房迁移数据，会引起连接闪断的现象，要确保业务层有自动重连的机制，建议在业务低峰期维护。    
 
-3. 新增 Mongos 节点   
+(3) 新增 Mongos 节点   
 
-参考：[腾讯云-云数据库 MongoDB-新增 Mongos 节点](https://cloud.tencent.com/document/product/240/76801)     
+参考：[《腾讯云-云数据库 MongoDB-新增 Mongos 节点》](https://cloud.tencent.com/document/product/240/76801)     
 
 
 2、阿里云    
