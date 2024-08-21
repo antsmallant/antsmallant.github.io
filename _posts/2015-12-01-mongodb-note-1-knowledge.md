@@ -220,6 +220,37 @@ MongoDB 的日志叫 journal。
 分片集群会有什么瓶颈？
 分片集群实际使用过程会遇到什么问题？   
 
+在已经分片的集群中增加分片，可动态进行吗？会有怎么样的性能消耗？需要多久？
+
+### 分片集群如何保证数据安全？每个 shard 都做成 3 节点副本吗？ 
+
+
+### 公有云 MongoDB 的版本情况
+
+腾讯云: MongoDB 6.0     
+阿里云: MongoDB 7.0     
+华为云: 没有 MongoDB，只有兼容 MongoDB 的文档数据库，叫 DDS，兼容 MongoDB 4.4    
+
+
+### 公有云 MongoDB 分片集群的支持情况
+
+1、腾讯云    
+Mongos 节点： 3 ~ 32 个。    
+Config 节点：默认3副本集群，1核2G配置，不可变更。  
+Shard 节点： 2 ~ 20 个。    
+
+（ 参考：https://cloud.tencent.com/document/product/240/64126?from_cn_redirect=1 ）    
+
+
+2、阿里云   
+
+
+### 分片的操作与查看
+
+参考： https://help.aliyun.com/zh/mongodb/use-cases/configure-sharding-to-maximize-the-performance-of-shards?spm=5176.17705728.0.0.57e5778bVB96qV
+
+
+
 
 ---
 
@@ -240,6 +271,9 @@ MongoDB 的日志叫 journal。
 ## 1.9 MongoDB 的 write concern 问题
 
 要注意公有云的性能测试使用的测试方法，比如腾讯云的这个测试方法： https://cloud.tencent.com/document/product/240/106644 ， "w = 0表示写操作不需要确认，即不需要等待写操作的响应"，也就是说，测试时都不开 write concern 的。  
+
+参考： [阿里云-云数据库MongoDB版-事务与Read/Write Concern](https://help.aliyun.com/zh/mongodb/use-cases/transactions-and-read-write-concern?spm=a2c4g.11186623.0.0.5aa74ce1b0dGif)
+
 
 ---
 
