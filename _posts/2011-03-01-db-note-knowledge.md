@@ -17,7 +17,11 @@ tags: [c]
 
 ---
 
-# 1. 倒排索引 
+# 1. 常识
+
+---
+
+## 1.1 倒排索引 
 
 正排索引是类似这样的：  
 
@@ -56,6 +60,6 @@ wordn -> idm,idn,..idz
 
 ---
 
-## 2. 参考  
+# 2. 参考  
 
 [1] 码上得天上. 倒排索引原理. Available at https://blog.csdn.net/meser88/article/details/131135522, 2023-6-10.   
