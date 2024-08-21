@@ -240,6 +240,7 @@ MongoDB 的日志叫 journal。
 
 
 参考： 
+
 * [阿里云-云数据库MongoDB版-事务与Read/Write Concern](https://help.aliyun.com/zh/mongodb/use-cases/transactions-and-read-write-concern)   
 
 * [MongoDB Manual write concern](https://www.mongodb.com/zh-cn/docs/manual/reference/write-concern/)
