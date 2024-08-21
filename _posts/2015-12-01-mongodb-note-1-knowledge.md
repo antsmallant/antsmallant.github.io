@@ -272,7 +272,9 @@ MongoDB 的日志叫 journal。
 
 ---
 
-### 分片集群如何保证数据安全？每个 shard 都做成 3 节点副本吗？ 
+### 分片集群如何保证数据安全
+
+每个 shard 都是副本集架构。  
 
 ---
 
@@ -298,9 +300,9 @@ MongoDB 的日志叫 journal。
 
 Mongos 节点： 3 ~ 32 个。    
 Config 节点：默认3副本集群，1核2G配置，不可变更。  
-Shard 节点： 2 ~ 20 个。    
+Shard 节点： 2 ~ 36 个。   
 
-（ 参考：https://cloud.tencent.com/document/product/240/64126?from_cn_redirect=1 ）    
+这个文档里 [腾讯云-云数据库MongoDB-系统架构](https://cloud.tencent.com/document/product/240/64126?from_cn_redirect=1) 写着 shard 数量是 2 ~ 20，但实际可选范围是 2 ~ 36。   
 
 
 2、阿里云   
