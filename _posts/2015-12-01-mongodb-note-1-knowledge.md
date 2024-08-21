@@ -209,11 +209,45 @@ MongoDB 的日志叫 journal。
 持久性级别与性能的相关性。   
 
 
-### write concern 问题
+### write concern
+
+`write concern` 是用于控制数据持久化的保证级别。   
 
 要注意公有云的性能测试使用的测试方法，比如腾讯云的这个测试方法： https://cloud.tencent.com/document/product/240/106644 ， "w = 0表示写操作不需要确认，即不需要等待写操作的响应"，也就是说，测试时都不开 write concern 的。  
 
-参考： [阿里云-云数据库MongoDB版-事务与Read/Write Concern](https://help.aliyun.com/zh/mongodb/use-cases/transactions-and-read-write-concern?spm=a2c4g.11186623.0.0.5aa74ce1b0dGif)
+基本格式：  
+
+```
+{w: <value>, j: <boolean>, wtimeout: <number>}
+```
+
+`write concern` 大致可以分为下面几种类别[2]：   
+
+1、`{w: 0}` 表示写不确认，不确认写操作是否完成，可能发生数据的丢失。  
+
+2、`{w: 1}` 表示写确认，为 MongoDB 5.0 以前的默认行为。默认写操作在内存中完成，但由于还没有持久化，依然可能发生数据丢失。  
+
+3、`{j: true}` 表示日志 (journal) 确认。确认写操作已完成并刷到持久化存储的 WAL 中，写操作不会丢失。  
+
+4、`{w: "majority"}` 表示大多数（majority），为 MongoDB 5.0 及以上版本的默认行为。等待写操作被复制到副本集大多数节点上后才确认，数据不会被回滚。   
+
+
+关于 write concern 的一些注意点[2]：    
+
+* 可以设置服务器的默认的 write concern，操作的 write concern 的优先级高于服务端设置的 write concern。    
+
+* 因果一致性会话里，必须使用 "majority" 的 write concern。   
+
+* 副本集中的隐藏节点、延迟节点、或其他优先级为0的可投票节点均可视为 "majority" 中的一员。   
+
+* 当写入 local 库时，write concern 会被忽略。    
+
+
+
+参考： 
+* [阿里云-云数据库MongoDB版-事务与Read/Write Concern](https://help.aliyun.com/zh/mongodb/use-cases/transactions-and-read-write-concern?spm=a2c4g.11186623.0.0.5aa74ce1b0dGif)   
+
+* [MongoDB Manual write concern](https://www.mongodb.com/zh-cn/docs/manual/reference/write-concern/)
 
 
 
@@ -296,3 +330,5 @@ Shard 节点： 2 ~ 20 个。
 # 2. 参考
 
 [1] sevenll07. MongoDB 概念及基础CRUD. Available at https://blog.csdn.net/weixin_38980638/article/details/136994894, 2024-3-24.    
+
+[2] 阿里云. 事务与Read/Write Concern. Available at https://help.aliyun.com/zh/mongodb/use-cases/transactions-and-read-write-concern, 2024-6-4.    
