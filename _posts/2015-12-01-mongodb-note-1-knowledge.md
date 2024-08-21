@@ -210,7 +210,7 @@ MongoDB 的日志叫 journal。
 
 `write concern` 是用于控制数据持久化的保证级别。   
 
-要注意公有云的性能测试使用的测试方法，比如腾讯云的这个测试方法： https://cloud.tencent.com/document/product/240/106644 ， "w = 0表示写操作不需要确认，即不需要等待写操作的响应"，也就是说，测试时都不开 write concern 的。  
+要注意公有云的性能测试使用的测试方法，比如腾讯云的这个测试方法： https://cloud.tencent.com/document/product/240/106644 ， "w = 0表示写操作不需要确认，即不需要等待写操作的响应"，也就是说，测试时都是不确认是否写成功就返回的。     
 
 基本格式：  
 
@@ -218,7 +218,7 @@ MongoDB 的日志叫 journal。
 {w: <value>, j: <boolean>, wtimeout: <number>}
 ```
 
-`write concern` 大致可以分为下面几种类别[2]：   
+`write concern` 大致可以分为下面几种类别 [2]：   
 
 1、`{w: 0}` 表示写不确认，不确认写操作是否完成，可能发生数据的丢失。  
 
@@ -229,7 +229,7 @@ MongoDB 的日志叫 journal。
 4、`{w: "majority"}` 表示大多数（majority），为 MongoDB 5.0 及以上版本的默认行为。等待写操作被复制到副本集大多数节点上后才确认，数据不会被回滚。   
 
 
-关于 write concern 的一些注意点[2]：    
+关于 write concern 的一些注意点 [2]：    
 
 * 可以设置服务器的默认的 write concern，操作的 write concern 的优先级高于服务端设置的 write concern。    
 
