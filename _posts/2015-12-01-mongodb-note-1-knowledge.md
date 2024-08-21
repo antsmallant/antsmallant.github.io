@@ -208,13 +208,25 @@ MongoDB 的日志叫 journal。
 
 持久性级别与性能的相关性。   
 
+### write concern 问题
+
+要注意公有云的性能测试使用的测试方法，比如腾讯云的这个测试方法： https://cloud.tencent.com/document/product/240/106644 ， "w = 0表示写操作不需要确认，即不需要等待写操作的响应"，也就是说，测试时都不开 write concern 的。  
+
+参考： [阿里云-云数据库MongoDB版-事务与Read/Write Concern](https://help.aliyun.com/zh/mongodb/use-cases/transactions-and-read-write-concern?spm=a2c4g.11186623.0.0.5aa74ce1b0dGif)
+
+
 
 ---
 
 ## 1.7 MongoDB 分片集群 (sharding cluster)
 
-参考：[《Mongo进阶 - DB核心：分片Sharding》](https://pdai.tech/md/db/nosql-mongo/mongo-z-sharding.html)    
+### 参考文档 
 
+* [mongodb manual 分片](https://www.mongodb.com/zh-cn/docs/manual/sharding/)  
+* [《Mongo进阶 - DB核心：分片Sharding》](https://pdai.tech/md/db/nosql-mongo/mongo-z-sharding.html)    
+
+
+### todo
 单机性能的参照。   
 分片集群性能的参照。   
 分片集群会有什么瓶颈？
@@ -222,7 +234,9 @@ MongoDB 的日志叫 journal。
 
 在已经分片的集群中增加分片，可动态进行吗？会有怎么样的性能消耗？需要多久？
 
+
 ### 分片集群如何保证数据安全？每个 shard 都做成 3 节点副本吗？ 
+
 
 
 ### 公有云 MongoDB 的版本情况
@@ -245,11 +259,10 @@ Shard 节点： 2 ~ 20 个。
 2、阿里云   
 
 
+
 ### 分片的操作与查看
 
 参考： https://help.aliyun.com/zh/mongodb/use-cases/configure-sharding-to-maximize-the-performance-of-shards?spm=5176.17705728.0.0.57e5778bVB96qV
-
-
 
 
 ---
@@ -265,14 +278,6 @@ Shard 节点： 2 ~ 20 个。
 [《Mongo进阶 - WT引擎：事务实现》](https://pdai.tech/md/db/nosql-mongo/mongo-y-trans.html)    
 
 从 MongoDB 3.2 开始，WiredTiger 成为默认的存储引擎。   
-
----
-
-## 1.9 MongoDB 的 write concern 问题
-
-要注意公有云的性能测试使用的测试方法，比如腾讯云的这个测试方法： https://cloud.tencent.com/document/product/240/106644 ， "w = 0表示写操作不需要确认，即不需要等待写操作的响应"，也就是说，测试时都不开 write concern 的。  
-
-参考： [阿里云-云数据库MongoDB版-事务与Read/Write Concern](https://help.aliyun.com/zh/mongodb/use-cases/transactions-and-read-write-concern?spm=a2c4g.11186623.0.0.5aa74ce1b0dGif)
 
 
 ---
