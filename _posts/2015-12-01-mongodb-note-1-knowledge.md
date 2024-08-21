@@ -207,9 +207,6 @@ MongoDB 的日志叫 journal，
 持久性级别
 
 
-
-
-
 ---
 
 ## 1.7 MongoDB 分片集群 (sharding cluster)
@@ -233,7 +230,7 @@ MongoDB 的日志叫 journal，
 
 ## 1.9 MongoDB 的 write concern 问题
 
-要注意公有云的性能测试使用的测试方法，比如腾讯云的这个测试方法： https://cloud.tencent.com/document/product/240/106644 ， "w = 0表示写操作不需要确认，即不需要等待写操作的响应。"，write concern 都是关闭了测试的。  
+要注意公有云的性能测试使用的测试方法，比如腾讯云的这个测试方法： https://cloud.tencent.com/document/product/240/106644 ， "w = 0表示写操作不需要确认，即不需要等待写操作的响应。"，也就是说，测试时都不开 write concern 的。  
 
 
 ---
