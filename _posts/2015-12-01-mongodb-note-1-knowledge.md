@@ -298,21 +298,51 @@ shard 节点：负责将数据分片存储在多个服务器上。
 参考：  
 
 * [mongodb 数据块的迁移流程介绍](https://www.cnblogs.com/xinghebuluo/p/16154158.html)     
-* [mongodb 数据块迁移的源码分析](https://www.cnblogs.com/xinghebuluo/p/16461068.html)   
+* [mongodb 数据块迁移的源码分析](https://www.cnblogs.com/xinghebuluo/p/16461068.html)    
 
-<br/>
+---
 
-**chunk 的概念**   
+### chunk 的概念
 
 chunk 是一个逻辑上的概念，它是 shard 做负载均衡的最小单位，每个 chunk 会有一个 shard key 的范围 (minkey，maxkey)，无论是 range based 还是 hash based，最终都会算出整数类型的 shard key，mongos 就根据 shard key 找到对应的 chunk 进行路由。  
 
 每个 shard 上都会有若干个 chunk，哪个 chunk 位于哪个 shard 之上是一种元数据，被存储在 config server 上。当 shard 上的 chunk 数量不均衡的时候，config server 就会发起 movechunk 的操作，在不同的 shard 之间迁移 chunk，使得 chunk 的分布尽量均衡。  
 
-<br/>
+---
 
-**chunk 的创建及分裂**   
+### chunk 的创建及分裂
+
+参考： 
+
+* [《MongoDB--chunk的分裂和迁移》](https://blog.csdn.net/ITgagaga/article/details/103474910)     
+* [MongoDB Sharding Chunk分裂与迁移详解](https://blog.csdn.net/joy0921/article/details/80131276)     
 
 
+1、关于 chunk 的基本信息   
+
+初始的块（chunk） 的 minkey、maxkey 是无限小和无限大的。随着数据的增长，达到 chunk 的大小上限（默认是 64 MB），则进行分裂。   
+
+
+2、chunk 的分裂逻辑    
+
+chunk size 默认是 64 MB。 
+
+修改 chunksize 的方法：   
+a.连接到 mongos；  
+b. 执行
+
+```
+use config
+db.settings.save({_id: "chunksize", value: 64})  // 单位是 MB
+```
+
+注意：   
+
+* 自动分裂只在插入的时候生效。   
+* 如果降低了块的大小，可能需要一段时间才能将所有块分割为新的大小。   
+* 分裂不能被取消。   
+* chunk 只会分裂，不会合并，所以即使将 chunksize 改大，chunk 数量也不会减少。   
+* chunk size 的范围是 1MB ~ 1024 MB。   
 
 
 ---
