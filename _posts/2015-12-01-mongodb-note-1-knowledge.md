@@ -284,7 +284,13 @@ MongoDB 的日志叫 journal。
 
 ### 分片集群的构成 
 
+参考： [《腾讯云-云数据库MongoDB-系统架构》](https://cloud.tencent.com/document/product/240/64126)   
 
+mongos 节点：负责接收所有客户端的连接查询请求，并将请求路由到集群内部对应的分片上，同时会把接收到的响应拼装起来返回到客户端。   
+
+config server 节点：负责存储集群和 shard 节点的元数据信息，如集群的节点信息、分片数据的路由信息等。   
+
+shard 节点：负责将数据分片存储在多个服务器上。   
 
 
 ---
@@ -294,7 +300,11 @@ MongoDB 的日志叫 journal。
 参考：  
 
 * [mongodb 数据块的迁移流程介绍](https://www.cnblogs.com/xinghebuluo/p/16154158.html)     
-* [mongodb 数据块迁移的源码分析](https://www.cnblogs.com/xinghebuluo/p/16461068.html)     
+* [mongodb 数据块迁移的源码分析](https://www.cnblogs.com/xinghebuluo/p/16461068.html)   
+
+**chunk 的概念**   
+
+chunk 是一个逻辑上的概念，它是 shard 做负载均衡的最小单位，每个 chunk 会有一个 shard key 的范围 (minkey，maxkey)，无论是 range based 还是 hash based，最终都会算出整数类型的 shard key，mongos 就根据 shard key 找到对应的 chunk 进行路由。  
 
 
 ---
