@@ -28,7 +28,7 @@ MongoDB 从 1.6 版本开始支持 sharding；从 3.6 版本开始，要求 shar
 
 ---
 
-## 架构
+## 分片集群的架构
 
 <br/>
 <div align="center">
@@ -39,7 +39,7 @@ MongoDB 从 1.6 版本开始支持 sharding；从 3.6 版本开始，要求 shar
 
 ---
 
-## 分片集群的构成 
+## 分片集群的构成
 
 参考： [《腾讯云-云数据库MongoDB-系统架构》](https://cloud.tencent.com/document/product/240/64126)   
 
@@ -79,7 +79,7 @@ chunk 是一个逻辑上的概念，它是 shard 做负载均衡的最小单位�
 参考： 
 
 * [《MongoDB--chunk的分裂和迁移》](https://blog.csdn.net/ITgagaga/article/details/103474910)     
-* [MongoDB Sharding Chunk分裂与迁移详解](https://blog.csdn.net/joy0921/article/details/80131276)     
+* [《MongoDB Sharding Chunk分裂与迁移详解》](https://blog.csdn.net/joy0921/article/details/80131276)     
 
 <br/>
 
