@@ -109,7 +109,7 @@ db.settings.save({_id: "chunksize", value: 64})  // 单位是 MB
 当 chunk size 是 64MB 时，根据 chunk 数量不同，具体的分裂阈值如下：     
 
 |集合 chunk 数量|分裂阈值|
-|--|--|
+|:--|:--|
 |`1`|1024B|
 |`[2,3)`|0.5MB|
 |`[3,10)`|16MB|
