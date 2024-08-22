@@ -253,44 +253,106 @@ MongoDB 的日志叫 journal。
 
 ---
 
-### 参考文档 
+### 一些参考文章 
 
 * [《mongodb manual 分片》](https://www.mongodb.com/zh-cn/docs/manual/sharding/)  
 
 * [《Mongo进阶 - DB核心：分片Sharding》](https://pdai.tech/md/db/nosql-mongo/mongo-z-sharding.html)    
 
+* [《火山引擎 - MongoDB 分片集群使用指南》](https://www.volcengine.com/docs/6447/1185247)    
 
----
+* [《mongodb的底层是怎么实现的？》](https://www.zhihu.com/question/316097977/answer/2432202296)    
 
-### 分片集群的使用时机
+* [《MongoDB分片迁移原理与源码（1）》](https://cloud.tencent.com/developer/article/1608372)   
 
-参考：    
+* [《MongoDB分片迁移原理与源码（2）》](https://cloud.tencent.com/developer/article/1609526)    
 
-* [MongoDB: Why Avoid Sharding, it should be kept as the last option.](https://medium.com/geekculture/mongodb-why-avoid-sharding-it-should-be-kept-as-the-last-option-cb8fdc693b66)    
+* [《杨亚洲的源码注释及一些文章链接》](https://github.com/y123456yz/reading-and-annotate-mongodb-5.0)   
 
-这篇文章说的是尽量不要选择 sharding，除非不得不。要 sharding，必须特别关注 shard key 的选择，这个是最重要的，否则负载的不均衡会是个特别的麻烦。除此之外，还需要注意 "Scatter Gather Query" 即细碎收集式查询的问题，需要从多个 shard 取数据再聚合起来返回，这样会降低查询的性能。  
-
-关于 shard key 是否可以改变的问题：   
-MongoDB 4.2 及之前，shard key 是不能变的；  
-MongoDB 4.4 开始，可以通过增加后缀字段的方式来改善 shard key；   
-MongoDB 5.0 开始，可以改变一个集合的 shard key 来 reshard。  
-
-然而，虽然能改变或更新 shard key，但 reshard 可能会导致负载过重，而严重影响正常业务。   
+* [《杨亚洲 - 万亿级数据库MongoDB集群性能优化及机房多活容灾实践》](https://zhuanlan.zhihu.com/p/343524817)   
 
 ---
 
 ### todo
 
-单机性能的参照。    
-分片集群性能的参照。      
+单机性能的参照。      
+分片集群性能的参照。       
 分片集群会有什么瓶颈？    
 分片集群实际使用过程会遇到什么问题？       
 
 ---
 
+### 分片集群的构成 
+
+
+
+
+---
+
+### sharding 的源码实现
+
+参考：  
+
+* [mongodb 数据块的迁移流程介绍](https://www.cnblogs.com/xinghebuluo/p/16154158.html)     
+* [mongodb 数据块迁移的源码分析](https://www.cnblogs.com/xinghebuluo/p/16461068.html)     
+
+
+---
+
+### 分片集群的使用时机  
+
+参考这篇文章： [MongoDB: Why Avoid Sharding, it should be kept as the last option.](https://medium.com/geekculture/mongodb-why-avoid-sharding-it-should-be-kept-as-the-last-option-cb8fdc693b66) 。  
+
+这篇文章说的是尽量不要选择 sharding，除非不得不。   
+
+如果综合考虑后，一定要做 sharding，必须特别关注 shard key 的选择，这个是最重要的，否则负载的不均衡会是个特别的麻烦。  
+
+除此之外，还需要注意 "Scatter Gather Query" 问题，即细碎收集式的查询：需要从多个 shard 取数据再聚合起来返回，这样会大大降低查询的性能。   
+
+关于 shard key 是否可以改变的问题：   
+
+MongoDB 4.2 及之前，shard key 是不能变的；  
+MongoDB 4.4 开始，可以通过增加后缀字段的方式来改善 shard key； （todo：？这个仍然需要搞清楚）
+MongoDB 5.0 开始，可以改变一个集合的 shard key 来 reshard。  
+
+然而，虽然能改变或更新 shard key，但 reshard 可能会导致负载过重，而严重影响正常业务。   
+
+
+### MongoDB 5.0 之后的 reshard
+
+Manual: 
+
+reshard 操作命令：  
+
+```
+reshardCollection: "<database>.<collection>", key: <shardkey>
+```
+
+---
+
+### 分片键的选择 
+
+参考： [《腾讯云-云数据库 MongoDB-分片集群使用注意事项》](https://cloud.tencent.com/document/product/240/44611)     
+
+* 取值基数  
+
+* 取值分布  
+
+* 查询带分片
+
+* 如果是范围分片，要避免单调递增或递减
+
+
+---
+
+### 哈希分片具体是怎么工作的？新增分片后，会如何处理？ 
+
+
+---
+
 ### 分片集群如何保证数据安全
 
-每个 shard 都是副本集架构。  
+每个 shard 都做成副本集架构。  
 
 副本集架构是通过部署多个服务器存储数据副本来达到高可用的能力，每一个副本集实例由一个 Primary 节点和一个或多个 Secondary 节点组成。在 Primary 节点故障时，多个 Secondary 节点通过选举成为新的 Primary 节点，保障高可用。  
 
@@ -310,7 +372,7 @@ MongoDB 5.0 开始，可以改变一个集合的 shard key 来 reshard。
 
 ### 公有云 MongoDB 分片集群的支持情况
 
-分片集群的构成：mongos 节点、Config Server、分片节点。每个分片是分片数据的一个子集，云数据库的分片都作为一个副本集部署。下文中 shard 节点，实际上指的是分片服务器，它通常是由三节点的副本集构成。    
+分片集群的构成：mongos 节点、Config Server、分片节点。每个分片是分片数据的一个子集，云数据库的分片都作为一个副本集部署。下文中 shard 节点，实际上指的是分片服务器，一般是由三节点的副本集构成。    
 
 以下数据截至 2024-8-21。   
 
