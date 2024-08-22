@@ -459,6 +459,10 @@ Shard 节点： 2 ~ 32 个。
 
 参考：[《腾讯云-云数据库 MongoDB-新增 Mongos 节点》](https://cloud.tencent.com/document/product/240/76801)     
 
+增加 Mongos 数量，可提升数据库实例访问的最大连接数。  
+系统会自动为新增的 Mongos 节点绑定 ip 地址，开通访问 Mongos 的连接串。  
+如果是通过负载均衡的地址访问，系统将自动的将新增的 Mongos 节点绑定到负载均衡中。   
+
 <br/>
 
 2、阿里云    
