@@ -277,8 +277,6 @@ MongoDB 的日志叫 journal。
 
 单机性能的参照。      
 分片集群性能的参照。       
-分片集群会有什么瓶颈？    
-分片集群实际使用过程会遇到什么问题？       
 
 ---
 
@@ -302,9 +300,17 @@ shard 节点：负责将数据分片存储在多个服务器上。
 * [mongodb 数据块的迁移流程介绍](https://www.cnblogs.com/xinghebuluo/p/16154158.html)     
 * [mongodb 数据块迁移的源码分析](https://www.cnblogs.com/xinghebuluo/p/16461068.html)   
 
+
 **chunk 的概念**   
 
 chunk 是一个逻辑上的概念，它是 shard 做负载均衡的最小单位，每个 chunk 会有一个 shard key 的范围 (minkey，maxkey)，无论是 range based 还是 hash based，最终都会算出整数类型的 shard key，mongos 就根据 shard key 找到对应的 chunk 进行路由。  
+
+每个 shard 上都会有若干个 chunk，哪个 chunk 位于哪个 shard 之上是一种元数据，被存储在 config server 上。当 shard 上的 chunk 数量不均衡的时候，config server 就会发起 movechunk 的操作，在不同的 shard 之间迁移 chunk，使得 chunk 的分布尽量均衡。  
+
+
+**chunk 的创建及分裂**   
+
+
 
 
 ---
@@ -353,11 +359,19 @@ reshardCollection: "<database>.<collection>", key: <shardkey>
 
 * 取值基数  
 
+如果用小基数的片键，因为备选值有限，那么 chunk 的总数量就有限，随着数据增多，chunk 大小会越来越大，导致水平扩展时，移动块会很困难。  
+
 * 取值分布  
+
+取值分布要尽量均匀，分布不均匀的片键会造成某些 chunk 的数据量非常大，同样会出现数据分布不均匀，性能瓶颈的问题。  
 
 * 查询带分片
 
+查询时建议带上分片，使用分片键做条件查询时，mongos 可以直接定义到具体分片，否则 mongos 需要将查询分发到所有分片，再等待响应返回。  
+
 * 如果是范围分片，要避免单调递增或递减
+
+虽然单调递增的 sharding key，数据文件挪动小，但是写入会集中，导致最后一片的数据量持续增大，不断发生迁移。递减也是一样的问题。  
 
 
 ---
