@@ -380,9 +380,11 @@ batch insert 的情况下，分片集群单个 shard 的性能，相对于非分
 
 * [《MongoDB分片迁移原理与源码（1）》](https://cloud.tencent.com/developer/article/1608372)   
 
-* [《杨亚洲的源码注释及一些文章链接》](https://github.com/y123456yz/reading-and-annotate-mongodb-5.0)   
+* [《杨亚洲 - 一些源码注释和文章链接》](https://github.com/y123456yz/reading-and-annotate-mongodb-5.0)   
 
 * [《杨亚洲 - 万亿级数据库MongoDB集群性能优化及机房多活容灾实践》](https://zhuanlan.zhihu.com/p/343524817)   
+
+* [《一文读懂MongoDB chunk 迁移》](https://cloud.tencent.com/developer/article/1794766)     
 
 ---
 
