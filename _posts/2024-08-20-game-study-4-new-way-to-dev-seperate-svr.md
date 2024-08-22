@@ -60,7 +60,8 @@ c. TiDB，还没怎么听过应用在游戏行业，更多是金融领域。
 
 中间件类型的：  
 a. 华为云的 DDM，没用过，可靠性不详，扩展性不详；华为云专有的，容易被锁定。    
-b. Apache 的 ShardingSphere，
+b. Apache 的 ShardingSphere，没实际在生产上用过的，很容易翻车。  
+c. 某 Cat，这个很垃圾，不要用就是了。   
 
 <br/>
 
