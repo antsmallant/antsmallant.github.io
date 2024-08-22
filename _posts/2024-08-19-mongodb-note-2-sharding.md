@@ -91,7 +91,7 @@ chunk 是一个逻辑上的概念，它是 shard 做负载均衡的最小单位�
 
 1、chunk 的基本信息   
 
-chunk size 默认是 64 MB。初始的块（chunk） 的 minkey、maxkey 是无限小和无限大的。随着数据的增长，达到 chunk 的大小上限（默认是 64 MB），则进行分裂。    
+chunk size 默认是 64 MB。初始的 chunk，它的 minkey、maxkey 分别是无限小和无限大。随着数据增长，达到 chunk 的上限，则进行分裂。    
 
 修改 chunk size 的方法：     
 a. 连接到 mongos；    
@@ -118,7 +118,7 @@ db.settings.save({_id: "chunksize", value: 64})  // 单位是 MB
 
 注意：   
 
-* 自动分裂只在插入的时候生效。   
+* 自动分裂只在插入或更新时发生。  
 * 如果降低了块的大小，可能需要一段时间才能将所有块分割为新的大小。   
 * 分裂不能被取消。   
 * chunk 只会分裂，不会合并，所以即使将 chunksize 改大，chunk 数量也不会减少。   
@@ -132,7 +132,43 @@ chunk 分裂之后，shard 上 chunk 分布不均衡时，就会触发 chunk 迁
 
 config server 上的 balancer 负责数据的迁移，它会周期性的检查分片间是否存在不均衡，如果存在就会执行迁移。  
 
-1、
+以下是触发迁移的一些情况：   
+
+1、根据 shard tag 迁移   
+
+2、根据 shard 之间的 chunk 数量迁移     
+
+3、removeShard 触发迁移   
+
+4、手动移动块   
+
+
+### chunk 的分裂和迁移的管理  
+
+一些要注意的点：   
+
+1、chunk size 应该尽量保持默认值 [2]。   
+
+a. 较小的 chunk size 会使数据分布更均匀，但会带来频繁的迁移，导致查询路由开销增加，如果调小了 chunk size，mongodb 会耗费一些时间从原有 chunk 拆分到新 chunk，且此操作不可逆。要特别注意，chunk 只会分裂，不会合并，所以这个操作要慎重再慎重。  
+
+b. 较大的 chunk size 通常迁移较少，查询路由和网络负载也较低，但可能会导致数据分布不均匀，限制分片优势。如果调大 chunk size，已存在的 chunk 只会等到插入或更新的时候扩充至新大小，不会执行合并操作的。   
+
+<br/>
+
+2、如果使用 hash 分片，在合适的场景下可以考虑【预分片】[3]   
+
+即提前创建出指定数量的 chunk，并打散分布到后端的各个 shard，通过 numInitialChunks 参数指定，该值不能超过 8192。   
+
+<br/>
+
+3、balancer 能动态的开启和关闭[3]        
+
+balancer 能针对指定的集合开启或关闭，并且支持配置时间窗口，只在指定的时间段内进行迁移操作。    
+
+
+### jumbo chunk 问题
+
+jumbo 即是巨大的意思。
 
 
 ---
@@ -262,6 +298,7 @@ Shard 节点： 2 ~ 32 个。
 参考：[《腾讯云-云数据库 MongoDB-调整分片数量》](https://cloud.tencent.com/document/product/240/76799)
 
 注意点：  
+
 只能增，不能减。    
 新增节点加入集群开始同步数据，业务不受影响。    
 切勿同时发起调整节点数、调整节点计算规格与存储的任务。    
@@ -272,12 +309,15 @@ Shard 节点： 2 ~ 32 个。
 
 参考：[《腾讯云-云数据库 MongoDB-调整分片数量》](https://cloud.tencent.com/document/product/240/76799)     
 
-注意点：   
+注意点：    
+
 可能会涉及到跨机房迁移数据，会引起连接闪断的现象，要确保业务层有自动重连的机制，建议在业务低峰期维护。    
 
 (3) 新增 Mongos 节点   
 
 参考：[《腾讯云-云数据库 MongoDB-新增 Mongos 节点》](https://cloud.tencent.com/document/product/240/76801)     
+
+注意点：   
 
 增加 Mongos 数量，可提升数据库实例访问的最大连接数。  
 系统会自动为新增的 Mongos 节点绑定 ip 地址，开通访问 Mongos 的连接串。  
@@ -297,11 +337,13 @@ Shard 节点： 2 ~ 32 个。
 
 参考：[《MongoDB sharding 集合不分片性能更高？》](https://mongoing.com/archives/26859)     
 
-batch insert 的情况下，分片集群单个 shard 的性能，相对于非分片集群的会有所下降，对于非分片集群（副本集），batch insert 直接就到达 Primary shard 了，而分片集群，mongos 收到请求后，还要做二次分发，如果 batch 里面的 key 是打得很散的，那么分发的时候基本上就丧失 batch 的优势了。  
+batch insert 的情况下，分片集群单个 shard 的性能，相对于非分片集群的会有所下降。对于非分片集群（副本集），batch insert 直接就到达 Primary shard 了。而分片集群，mongos 收到请求后，还要做二次分发，如果 batch 里面的 key 是打得很散的，那么分发的时候基本上就丧失 batch 的优势了。  
 
 ---
 
-# 一些文章 
+# 一些文章   
+
+以下文章都是参考过的，笔记里有些直接就照抄了这些文章的，由于太多了，就不给出具体的引用参考了。   
 
 * [《mongodb manual 分片》](https://www.mongodb.com/zh-cn/docs/manual/sharding/)  
 
@@ -313,8 +355,6 @@ batch insert 的情况下，分片集群单个 shard 的性能，相对于非分
 
 * [《MongoDB分片迁移原理与源码（1）》](https://cloud.tencent.com/developer/article/1608372)   
 
-* [《MongoDB分片迁移原理与源码（2）》](https://cloud.tencent.com/developer/article/1609526)    
-
 * [《杨亚洲的源码注释及一些文章链接》](https://github.com/y123456yz/reading-and-annotate-mongodb-5.0)   
 
 * [《杨亚洲 - 万亿级数据库MongoDB集群性能优化及机房多活容灾实践》](https://zhuanlan.zhihu.com/p/343524817)   
@@ -323,4 +363,8 @@ batch insert 的情况下，分片集群单个 shard 的性能，相对于非分
 
 # 参考
 
-[1] MongoDB. 分片. Available at https://www.mongodb.com/zh-cn/docs/manual/sharding/.   
+[1] MongoDB. 分片. Available at https://www.mongodb.com/zh-cn/docs/manual/sharding/.     
+
+[2] 火山引擎. MongoDB 分片集群使用指南. Available at https://www.volcengine.com/docs/6447/1185247.     
+
+[3] Keep hunger. MongoDB--chunk的分裂和迁移. Available at https://blog.csdn.net/ITgagaga/article/details/103474910, 2019-12-10.    
