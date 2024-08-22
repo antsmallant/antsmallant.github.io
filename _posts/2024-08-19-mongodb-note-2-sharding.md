@@ -17,7 +17,18 @@ tags: [mongodb 数据库]
 
 ---
 
-# 基本架构
+# 基本信息
+
+MongoDB 从 1.6 版本开始支持 sharding；从 3.6 版本开始，要求 shard 以副本集部署；从 5.0 版本开始，支持修改 sharding key。   
+
+**todo**   
+
+单机性能的参照。      
+分片集群性能的参照。   
+
+---
+
+## 架构
 
 <br/>
 <div align="center">
@@ -28,34 +39,7 @@ tags: [mongodb 数据库]
 
 ---
 
-# 一些参考文章 
-
-* [《mongodb manual 分片》](https://www.mongodb.com/zh-cn/docs/manual/sharding/)  
-
-* [《Mongo进阶 - DB核心：分片Sharding》](https://pdai.tech/md/db/nosql-mongo/mongo-z-sharding.html)    
-
-* [《火山引擎 - MongoDB 分片集群使用指南》](https://www.volcengine.com/docs/6447/1185247)    
-
-* [《mongodb的底层是怎么实现的？》](https://www.zhihu.com/question/316097977/answer/2432202296)    
-
-* [《MongoDB分片迁移原理与源码（1）》](https://cloud.tencent.com/developer/article/1608372)   
-
-* [《MongoDB分片迁移原理与源码（2）》](https://cloud.tencent.com/developer/article/1609526)    
-
-* [《杨亚洲的源码注释及一些文章链接》](https://github.com/y123456yz/reading-and-annotate-mongodb-5.0)   
-
-* [《杨亚洲 - 万亿级数据库MongoDB集群性能优化及机房多活容灾实践》](https://zhuanlan.zhihu.com/p/343524817)   
-
----
-
-# todo
-
-单机性能的参照。      
-分片集群性能的参照。   
-
----
-
-# 分片集群的构成 
+## 分片集群的构成 
 
 参考： [《腾讯云-云数据库MongoDB-系统架构》](https://cloud.tencent.com/document/product/240/64126)   
 
@@ -71,22 +55,20 @@ shard 的高可用是通过副本集架构保证的，副本集架构是通过�
 
 ---
 
-# sharding 的源码实现
+# chunk 
 
 参考：  
 
 * [mongodb 数据块的迁移流程介绍](https://www.cnblogs.com/xinghebuluo/p/16154158.html)     
-* [mongodb 数据块迁移的源码分析](https://www.cnblogs.com/xinghebuluo/p/16461068.html)    
-
----
-
-# chunk 
+* [mongodb 数据块迁移的源码分析](https://www.cnblogs.com/xinghebuluo/p/16461068.html)   
 
 ---
 
 ## chunk 的概念
 
-chunk 是一个逻辑上的概念，它是 shard 做负载均衡的最小单位，每个 chunk 会有一个 shard key 的范围 (minkey，maxkey)，无论是 range based 还是 hash based，最终都会算出整数类型的 shard key，mongos 就根据 shard key 找到对应的 chunk 进行路由。  
+chunk 是一个逻辑上的概念，它是 shard 做负载均衡的最小单位。一个 chunk 会存储同个集合的若个干文档，分片集群的 collection，里面的文档会根据 sharding key 拆分到多个 chunk 去保存，每个 chunk 有大小控制（默认是 64 MB），但如果是多个文档的 sharding key 都相同，chunk 也会突破大小限制的，形成所谓的 jumbo chunk，这是一种很不好的现象，需要极力避免。  
+
+每个 chunk 会有一个 shard key 的范围 (minkey，maxkey)，无论是 range based 还是 hash based，最终都会算出整数类型的 shard key，mongos 就根据 shard key 找到对应的 chunk 进行路由。  
 
 每个 shard 上都会有若干个 chunk，哪个 chunk 位于哪个 shard 之上是一种元数据，被存储在 config server 上。当 shard 上的 chunk 数量不均衡的时候，config server 就会发起 movechunk 的操作，在不同的 shard 之间迁移 chunk，使得 chunk 的分布尽量均衡。  
 
@@ -308,6 +290,25 @@ Shard 节点： 2 ~ 32 个。
 
 batch insert 的情况下，分片集群单个 shard 的性能，相对于非分片集群的会有所下降，对于非分片集群（副本集），batch insert 直接就到达 Primary shard 了，而分片集群，mongos 收到请求后，还要做二次分发，如果 batch 里面的 key 是打得很散的，那么分发的时候基本上就丧失 batch 的优势了。  
 
+---
+
+# 一些参考文章 
+
+* [《mongodb manual 分片》](https://www.mongodb.com/zh-cn/docs/manual/sharding/)  
+
+* [《Mongo进阶 - DB核心：分片Sharding》](https://pdai.tech/md/db/nosql-mongo/mongo-z-sharding.html)    
+
+* [《火山引擎 - MongoDB 分片集群使用指南》](https://www.volcengine.com/docs/6447/1185247)    
+
+* [《mongodb的底层是怎么实现的？》](https://www.zhihu.com/question/316097977/answer/2432202296)    
+
+* [《MongoDB分片迁移原理与源码（1）》](https://cloud.tencent.com/developer/article/1608372)   
+
+* [《MongoDB分片迁移原理与源码（2）》](https://cloud.tencent.com/developer/article/1609526)    
+
+* [《杨亚洲的源码注释及一些文章链接》](https://github.com/y123456yz/reading-and-annotate-mongodb-5.0)   
+
+* [《杨亚洲 - 万亿级数据库MongoDB集群性能优化及机房多活容灾实践》](https://zhuanlan.zhihu.com/p/343524817)   
 
 ---
 
