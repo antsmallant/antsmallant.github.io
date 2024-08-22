@@ -471,7 +471,7 @@ Shard 节点： 2 ~ 32 个。
 
 参考：[《MongoDB sharding 集合不分片性能更高？》](https://mongoing.com/archives/26859)     
 
-batch insert 的情况下，分片集群单个 shard 的性能，相对于未分片的会有所下降，因为未分片的时候，batch insert 直接就到达 Primary shard 了，而分片的情况下，mongos 收到请求后，还要做二次分发，如果 batch 里面的 key 是打得很散的，那么分发的时候基本上就没 batch 的优势了。  
+batch insert 的情况下，分片集群单个 shard 的性能，相对于非分片集群的会有所下降，对于非分片集群（副本集），batch insert 直接就到达 Primary shard 了，而分片集群，mongos 收到请求后，还要做二次分发，如果 batch 里面的 key 是打得很散的，那么分发的时候基本上就丧失 batch 的优势了。  
 
 
 ---
