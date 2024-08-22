@@ -52,11 +52,21 @@ b. Apache 的 ShardingSphere，
 
 <br/>
 
-2、MongoDB
+2、tcaplus  
+
+腾讯内部基本上都是用的这个，腾讯云有提供。性能跟实践无需多言，肯定是支持“海量”数据的。但腾讯云专有，容易被锁定。除非是跟腾讯合作发行的游戏，否则不应该使用。   
+
+另外，据内部消息，这个的使用费用较高。   
+
+<br/>
+
+3、MongoDB
 
 MongoDB 的 scale out 方案是分片集群，相关的调研，我写在了这篇文章：[《mongodb 笔记：分片集群》](https://blog.antsmallant.top/2024/08/19/mongodb-note-2-sharding) 。   
 
 MongoDB 从 1.6 版本就开始支持 sharding 了，至今（2024-8-22）已经迭代到 7.0 版本了，技术上已经比较成熟了，而且从 5.0 开始，也支持自动的 reshard 了，即可以修改 sharding key，虽然仍然会有不少负载，但至少是比较自动化的执行。   
+
+使用 MongoDB 分片集群，首要就是做好 sharding key 的选择，花 1000% 的精力在这个上面，基本上就不会翻车了。  
 
 而且，也有不少游戏使用 MongoDB 作为数据库，行业经验比较丰富。  
 
