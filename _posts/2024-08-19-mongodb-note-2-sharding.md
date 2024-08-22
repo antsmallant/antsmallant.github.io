@@ -89,24 +89,22 @@ chunk 是一个逻辑上的概念，它是 shard 做负载均衡的最小单位�
 
 <br/>
 
-1、关于 chunk 的基本信息   
+1、chunk 的基本信息   
 
-初始的块（chunk） 的 minkey、maxkey 是无限小和无限大的。随着数据的增长，达到 chunk 的大小上限（默认是 64 MB），则进行分裂。   
+chunk size 默认是 64 MB。初始的块（chunk） 的 minkey、maxkey 是无限小和无限大的。随着数据的增长，达到 chunk 的大小上限（默认是 64 MB），则进行分裂。    
 
-<br/>
-
-2、chunk 的分裂逻辑    
-
-chunk size 默认是 64 MB。  
-
-修改 chunksize 的方法：     
-a.连接到 mongos；    
+修改 chunk size 的方法：     
+a. 连接到 mongos；    
 b. 执行以下命令    
 
 ```
 use config
 db.settings.save({_id: "chunksize", value: 64})  // 单位是 MB
 ```
+
+<br/>
+
+2、chunk 的分裂逻辑    
 
 当 chunk size 是 64MB 时，根据 chunk 数量不同，具体的分裂阈值如下：     
 
