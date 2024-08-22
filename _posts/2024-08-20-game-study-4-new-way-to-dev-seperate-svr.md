@@ -11,6 +11,12 @@ tags: [gameserver]
 {:toc}
 <br/>
 
+本文记录用全区全服的方式实现分区分服类型的游戏的一些思路。  
+
+持续更新，想到什么写什么。  
+
+---
+
 今天跟一个大哥聊了用全区全服的架构做分区分服游戏的问题。这个让我想起了之前看过的一篇文章：[《天美J3工作室服务器主程：我们怎么避免上线即炸服？》](https://youxiputao.com/articles/20565) 。     
 
 
@@ -31,8 +37,6 @@ tags: [gameserver]
 
 共用数据库，那么数据库的容量就是个需要考虑的问题，单靠 scale up 不太行，要能 scale out。所以，带 sharding 能力的数据库需要考察一下。  
 
-<br/>
-
 1、MySQL 
 
 带 sharding 能力的 MySQL 也有，但是用于生产，多少有些力不从心，分析如下。  
@@ -49,6 +53,12 @@ b. Apache 的 ShardingSphere，
 <br/>
 
 2、MongoDB
+
+MongoDB 的 scale out 方案是分片集群，相关的调研，我写在了这篇文章：[《mongodb 笔记：分片集群》](https://blog.antsmallant.top/2024/08/19/mongodb-note-2-sharding) 。   
+
+MongoDB 从 1.6 版本就开始支持 sharding 了，至今（2024-8-22）已经迭代到 7.0 版本了，技术上已经比较成熟了，而且从 5.0 开始，也支持自动的 reshard 了，即可以修改 sharding key，虽然仍然会有不少负载，但至少是比较自动化的执行。   
+
+而且，也有不少游戏使用 MongoDB 作为数据库，行业经验比较丰富。  
 
 <br/>
 
