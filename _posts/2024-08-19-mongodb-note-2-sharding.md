@@ -65,8 +65,8 @@ shard 的高可用是通过副本集架构保证的，从 MongoDB 3.6 版本开�
 
 参考：  
 
-* [mongodb 数据块的迁移流程介绍](https://www.cnblogs.com/xinghebuluo/p/16154158.html)     
-* [mongodb 数据块迁移的源码分析](https://www.cnblogs.com/xinghebuluo/p/16461068.html)   
+* [《mongodb 数据块的迁移流程介绍》](https://www.cnblogs.com/xinghebuluo/p/16154158.html)     
+* [《mongodb 数据块迁移的源码分析》](https://www.cnblogs.com/xinghebuluo/p/16461068.html)   
 
 ---
 
@@ -143,7 +143,7 @@ config server 上的 balancer 负责数据的迁移，它会周期性的检查�
 
 ## 使用时机  
 
-参考这篇文章： [MongoDB: Why Avoid Sharding, it should be kept as the last option.](https://medium.com/geekculture/mongodb-why-avoid-sharding-it-should-be-kept-as-the-last-option-cb8fdc693b66) 。  
+参考这篇文章： [《MongoDB: Why Avoid Sharding, it should be kept as the last option.》](https://medium.com/geekculture/mongodb-why-avoid-sharding-it-should-be-kept-as-the-last-option-cb8fdc693b66) 。  
 
 这篇文章说的是尽量不要选择 sharding，除非不得不。   
 
@@ -163,9 +163,9 @@ MongoDB 5.0 开始，可以改变一个集合的 shard key 来 reshard。
 
 ## MongoDB 5.0 之后的 reshard
 
-Manual: [对集合重新分片](https://www.mongodb.com/zh-cn/docs/manual/core/sharding-reshard-a-collection/)    
+Manual: [《对集合重新分片》](https://www.mongodb.com/zh-cn/docs/manual/core/sharding-reshard-a-collection/)    
 
-参考： [Scale Out Without Fear or Friction: Live Resharding in MongoDB](https://www.mongodb.com/blog/post/scale-out-without-fear-friction-live-resharding-mongodb)   
+参考： [《Scale Out Without Fear or Friction: Live Resharding in MongoDB》](https://www.mongodb.com/blog/post/scale-out-without-fear-friction-live-resharding-mongodb)   
 
 
 reshard 操作命令：   
