@@ -335,6 +335,7 @@ MongoDB 5.0 开始，可以改变一个集合的 shard key 来 reshard。
 
 然而，虽然能改变或更新 shard key，但 reshard 可能会导致负载过重，而严重影响正常业务。   
 
+---
 
 ### MongoDB 5.0 之后的 reshard
 
