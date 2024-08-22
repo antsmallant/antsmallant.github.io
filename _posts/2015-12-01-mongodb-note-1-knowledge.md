@@ -273,7 +273,18 @@ MongoDB 的日志叫 journal。
 ### todo
 
 单机性能的参照。      
-分片集群性能的参照。       
+分片集群性能的参照。   
+
+---
+
+### 基本架构
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/mongodb-sharding-architecture.jpg"/>
+</div>
+<center>图：mongodb sharding 的基本架构[3]</center>
+<br/>    
 
 ---
 
@@ -286,7 +297,6 @@ mongos 节点：负责接收所有客户端的连接查询请求，并将请求�
 config server 节点：负责存储集群和 shard 节点的元数据信息，如集群的节点信息、分片数据的路由信息等。   
 
 shard 节点：负责将数据分片存储在多个服务器上。   
-
 
 ---
 
@@ -314,19 +324,31 @@ chunk 是一个逻辑上的概念，它是 shard 做负载均衡的最小单位�
 * [《MongoDB--chunk的分裂和迁移》](https://blog.csdn.net/ITgagaga/article/details/103474910)     
 * [MongoDB Sharding Chunk分裂与迁移详解](https://blog.csdn.net/joy0921/article/details/80131276)     
 
+<br/>
 
 1、关于 chunk 的基本信息   
 
 初始的块（chunk） 的 minkey、maxkey 是无限小和无限大的。随着数据的增长，达到 chunk 的大小上限（默认是 64 MB），则进行分裂。   
 
+<br/>
 
 2、chunk 的分裂逻辑    
 
-chunk size 默认是 64 MB。 
+chunk size 默认是 64 MB。  
 
-修改 chunksize 的方法：   
-a.连接到 mongos；  
-b. 执行
+分裂阈值：   
+
+|集合 chunk 数量|分裂阈值|
+|--|--|
+|`1`|1024B|
+|`[1,3)`|0.5MB|
+|`[3,10)`|16MB|
+|`[10,20)`|32MB|
+|`[20,max)`|64MB|
+
+修改 chunksize 的方法：     
+a.连接到 mongos；    
+b. 执行    
 
 ```
 use config
@@ -340,6 +362,12 @@ db.settings.save({_id: "chunksize", value: 64})  // 单位是 MB
 * 分裂不能被取消。   
 * chunk 只会分裂，不会合并，所以即使将 chunksize 改大，chunk 数量也不会减少。   
 * chunk size 的范围是 1MB ~ 1024 MB。   
+
+<br/>
+
+3、chunk 的迁移逻辑    
+
+chunk 分裂之后，shard 上 chunk 分布不均衡时，就会触发 chunk 迁移。  
 
 
 ---
@@ -402,11 +430,6 @@ reshardCollection: "<database>.<collection>", key: <shardkey>
 * 如果是范围分片，要避免单调递增或递减
 
 虽然单调递增的 sharding key，数据文件挪动小，但是写入会集中，导致最后一片的数据量持续增大，不断发生迁移。递减也是一样的问题。  
-
-
----
-
-### 哈希分片具体是怎么工作的？新增分片后，会如何处理？ 
 
 
 ---
@@ -538,3 +561,5 @@ batch insert 的情况下，分片集群单个 shard 的性能，相对于非分
 [1] sevenll07. MongoDB 概念及基础CRUD. Available at https://blog.csdn.net/weixin_38980638/article/details/136994894, 2024-3-24.    
 
 [2] 阿里云. 事务与Read/Write Concern. Available at https://help.aliyun.com/zh/mongodb/use-cases/transactions-and-read-write-concern, 2024-6-4.    
+
+[3] MongoDB. 分片. Available at https://www.mongodb.com/zh-cn/docs/manual/sharding/.   
