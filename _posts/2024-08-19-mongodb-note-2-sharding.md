@@ -63,7 +63,7 @@ MongoDB 支持的分片策略如下：
 
 1. 范围分片，好处是支持基于 shard key 的范围查询。     
 2. 哈希分片，好处是能够将写入均衡分布到各个 shard。    
-3. Tag aware sharding，可以自定义一些 chunk 的分布规则。   
+3. Tag aware sharding，可以自定义一些 chunk 的分布规则（基本规则：给 shard 打标签 A，给集合的某些 chunk range 打标签 A，那么 balancer 最近会将标签为 A 的 chunk 都迁移到标签为 A 的 shard 上）。     
 
 ---
 
