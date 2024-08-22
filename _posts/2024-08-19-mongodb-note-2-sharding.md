@@ -147,8 +147,25 @@ reshardCollection: "<database>.<collection>", key: <shardkey>
 |厂商|版本|
 |--|--|
 |腾讯云| MongoDB 6.0 |
-|阿里云| MongoDB 7.0 |
+|阿里云| MongoDB 7.0 【注1】|
 |华为云| 没有 MongoDB，只有兼容 MongoDB 的文档数据库，叫 DDS，兼容 MongoDB 4.4 |
+
+【注1】阿里云的云数据库MongoDB版本（ApsaraDB for MongoDB）完全兼容MongoDB协议。[5]     
+
+
+## 性能参考 
+
+几家公有云的 MongoDB 性能白皮书。 
+
+1、阿里云、火山引擎，明确测试的都是副本集，可以理解为单机，而腾讯云没有明说，也可以当成是单机。   
+2、写的测试，腾讯云跟火山引擎明确是使用 `w=0` 的，阿里云的不详，没有明说，火山引擎跟阿里云都是用的 ycsb，而火山引擎在参数中明确了 `w=0`，而阿里云没有，猜测应该是用的默认配置，且阿里云测出的数据比火山引擎差很多，合理推测，阿里云的应该是 `w=1`。       
+
+* 腾讯云：   https://cloud.tencent.com/document/product/240/106621    
+* 阿里云：   https://help.aliyun.com/zh/mongodb/support/test-results    
+* 火山引擎： https://www.volcengine.com/docs/6447/108845     
+
+
+综合来看，粗略的估计，对于单机的 MongoDB，6400w 的数据规模下，24核128GB的配置，单纯读 QPS 约为 6w，单纯写 QPS 约为 2w，延迟基本可以控制在 2ms 左右。  
 
 ---
 
@@ -412,3 +429,5 @@ batch insert 的情况下，分片集群单个 shard 的性能，相对于非分
 [3] Keep hunger. MongoDB--chunk的分裂和迁移. Available at https://blog.csdn.net/ITgagaga/article/details/103474910, 2019-12-10.    
 
 [4] 阿里云. MongoDB 分片集群介绍. Available at https://help.aliyun.com/zh/mongodb/use-cases/introduction-to-apsaradb-for-mongodb-sharded-cluster-instances, 2023-11-21.    
+
+[5] 阿里云. 云数据库 MongoDB 版 - 产品概述. Available at https://help.aliyun.com/zh/mongodb/support/overview-4, 2019-11-19.     
