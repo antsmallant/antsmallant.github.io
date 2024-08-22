@@ -61,7 +61,7 @@ mongos 节点：负责接收所有客户端的连接查询请求，并将请求�
 
 config server 节点：负责存储集群和 shard 节点的元数据信息，如集群的节点信息、分片数据的路由信息等。   
 
-shard 节点：负责将数据分片存储在多个服务器上。   
+shard 节点：负责将数据分片存储在多个服务器上（从 MongoDB 3.6 版本开始，每个 shard 都必须部署成副本集，所以公有云上的都是副本集部署的）。    
 
 ---
 
@@ -74,7 +74,11 @@ shard 节点：负责将数据分片存储在多个服务器上。
 
 ---
 
-# chunk 的概念
+# chunk 
+
+---
+
+## chunk 的概念
 
 chunk 是一个逻辑上的概念，它是 shard 做负载均衡的最小单位，每个 chunk 会有一个 shard key 的范围 (minkey，maxkey)，无论是 range based 还是 hash based，最终都会算出整数类型的 shard key，mongos 就根据 shard key 找到对应的 chunk 进行路由。  
 
@@ -82,7 +86,7 @@ chunk 是一个逻辑上的概念，它是 shard 做负载均衡的最小单位�
 
 ---
 
-# chunk 的创建及分裂
+## chunk 的创建及分裂
 
 参考： 
 
@@ -130,10 +134,9 @@ db.settings.save({_id: "chunksize", value: 64})  // 单位是 MB
 
 <br/>
 
-3、chunk 的迁移逻辑    
+## chunk 的迁移逻辑    
 
 chunk 分裂之后，shard 上 chunk 分布不均衡时，就会触发 chunk 迁移。  
-
 
 ---
 
