@@ -45,7 +45,9 @@ wordn -> idm,idn,..idz
 倒排索引通常用于全文搜索，一般由三个部分组成：词项索引（term index）、词项字典（term dictionary）、倒排表（posting list）。  
 
 词项索引可以是一个 trie 树，用于快速定位到词项在词项字典中的位置。  
+
 词项字典就建立了词项到倒排表中的id列表的映射。  
+
 倒排表本身就是一行行的记录，每行记录包含着同个字项出现的文档的id，以及位置，频次等信息。    
 
 如下图所示 (引用自：[《倒排索引原理》](https://blog.csdn.net/meser88/article/details/131135522))：   
