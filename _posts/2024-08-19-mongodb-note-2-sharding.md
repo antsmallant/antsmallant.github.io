@@ -132,6 +132,10 @@ db.settings.save({_id: "chunksize", value: 64})  // 单位是 MB
 
 chunk 分裂之后，shard 上 chunk 分布不均衡时，就会触发 chunk 迁移。  
 
+config server 上的 balancer 负责数据的迁移，它会周期性的检查分片间是否存在不均衡，如果存在就会执行迁移。  
+
+1、
+
 
 ---
 
