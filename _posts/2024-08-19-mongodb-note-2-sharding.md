@@ -123,7 +123,7 @@ chunk size 默认是 64 MB。
 
 修改 chunksize 的方法：     
 a.连接到 mongos；    
-b. 执行    
+b. 执行以下命令    
 
 ```
 use config
@@ -143,6 +143,8 @@ db.settings.save({_id: "chunksize", value: 64})  // 单位是 MB
 ## chunk 的迁移逻辑    
 
 chunk 分裂之后，shard 上 chunk 分布不均衡时，就会触发 chunk 迁移。  
+
+
 
 ---
 
