@@ -300,6 +300,7 @@ shard 节点：负责将数据分片存储在多个服务器上。
 * [mongodb 数据块的迁移流程介绍](https://www.cnblogs.com/xinghebuluo/p/16154158.html)     
 * [mongodb 数据块迁移的源码分析](https://www.cnblogs.com/xinghebuluo/p/16461068.html)   
 
+<br/>
 
 **chunk 的概念**   
 
@@ -307,6 +308,7 @@ chunk 是一个逻辑上的概念，它是 shard 做负载均衡的最小单位�
 
 每个 shard 上都会有若干个 chunk，哪个 chunk 位于哪个 shard 之上是一种元数据，被存储在 config server 上。当 shard 上的 chunk 数量不均衡的时候，config server 就会发起 movechunk 的操作，在不同的 shard 之间迁移 chunk，使得 chunk 的分布尽量均衡。  
 
+<br/>
 
 **chunk 的创建及分裂**   
 
@@ -417,6 +419,7 @@ Shard 节点： 2 ~ 36 个。
 
 这个文档里 [《腾讯云-云数据库MongoDB-系统架构》](https://cloud.tencent.com/document/product/240/64126) 写着 shard 数量是 2 ~ 20，但实际可选范围是 2 ~ 36。   
 
+<br/>
 
 2、阿里云   
 
@@ -455,6 +458,7 @@ Shard 节点： 2 ~ 32 个。
 
 参考：[《腾讯云-云数据库 MongoDB-新增 Mongos 节点》](https://cloud.tencent.com/document/product/240/76801)     
 
+<br/>
 
 2、阿里云    
 
@@ -463,7 +467,8 @@ Shard 节点： 2 ~ 32 个。
 
 ### 分片的操作与查看
 
-参考： https://help.aliyun.com/zh/mongodb/use-cases/configure-sharding-to-maximize-the-performance-of-shards
+参考： [《阿里云 - 云数据库 MongoDB - 设置数据分片以充分利用Shard性能》](https://help.aliyun.com/zh/mongodb/use-cases/configure-sharding-to-maximize-the-performance-of-shards)  
+
 
 ---
 
