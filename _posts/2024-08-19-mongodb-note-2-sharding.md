@@ -264,7 +264,7 @@ reshardCollection: "<database>.<collection>", key: <shardkey>
 
 ## 分片的操作与查看
 
-参考： [《阿里云 - 云数据库 MongoDB - 设置数据分片以充分利用Shard性能》](https://help.aliyun.com/zh/mongodb/use-cases/configure-sharding-to-maximize-the-performance-of-shards)  
+参考： [《阿里云 - 云数据库 MongoDB - 设置数据分片以充分利用Shard性能》](https://help.aliyun.com/zh/mongodb/use-cases/configure-sharding-to-maximize-the-performance-of-shards)     
 
 
 ---
