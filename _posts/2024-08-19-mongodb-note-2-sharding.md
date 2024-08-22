@@ -63,6 +63,10 @@ config server 节点：负责存储集群和 shard 节点的元数据信息，�
 
 shard 节点：负责将数据分片存储在多个服务器上（从 MongoDB 3.6 版本开始，每个 shard 都必须部署成副本集，所以公有云上的都是副本集部署的）。    
 
+<br/>
+
+shard 的高可用是通过副本集架构保证的，副本集架构是通过部署多个服务器存储数据副本来达到高可用的能力，每一个副本集实例由一个 Primary 节点和一个或多个 Secondary 节点组成。在 Primary 节点故障时，多个 Secondary 节点通过选举成为新的 Primary 节点，保障高可用。  
+
 ---
 
 # sharding 的源码实现
@@ -199,15 +203,6 @@ reshardCollection: "<database>.<collection>", key: <shardkey>
 
 虽然单调递增的 sharding key，数据文件挪动小，但是写入会集中，导致最后一片的数据量持续增大，不断发生迁移。递减也是一样的问题。  
 
-
----
-
-# 分片集群如何保证数据安全
-
-每个 shard 都做成副本集架构。  
-
-副本集架构是通过部署多个服务器存储数据副本来达到高可用的能力，每一个副本集实例由一个 Primary 节点和一个或多个 Secondary 节点组成。在 Primary 节点故障时，多个 Secondary 节点通过选举成为新的 Primary 节点，保障高可用。  
-
 ---
 
 # 公有云 MongoDB 的版本情况
@@ -295,7 +290,11 @@ Shard 节点： 2 ~ 32 个。
 
 ---
 
-# 分片集群 batch insert 的性能问题
+# 分片集群的一些问题
+
+---
+
+## 分片集群 batch insert 的性能问题
 
 参考：[《MongoDB sharding 集合不分片性能更高？》](https://mongoing.com/archives/26859)     
 
