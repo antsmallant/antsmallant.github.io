@@ -21,11 +21,13 @@ tags: [c++ cpp]
 
 会影响 RVO、NRVO 的实施。  
 
+<br/>
 
 [F.49: Don't return `const T`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#f49-dont-return-const-t)    
 
 会干扰 `move` 语义。  
 
+<br/>
 
 [F.20: For "out" output values, prefer return values to output parameters](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#f20-for-out-output-values-prefer-return-values-to-output-parameters)   
 
@@ -33,6 +35,7 @@ tags: [c++ cpp]
 
 这个规则适用于支持 `move` 语义的标准容器，以及一些大的对象。  
 
+<br/>
 
 [F.21: To return multiple "out" values, prefer returning a struct](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#f21-to-return-multiple-out-values-prefer-returning-a-struct)    
 
@@ -49,9 +52,11 @@ tags: [c++ cpp]
 
 [F.15: Prefer simple and conventional ways of passing information](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#f15-prefer-simple-and-conventional-ways-of-passing-information)    
 
+<br/>
 
 [F.16 For "in" parameters, pass cheaply-copied types by value and others by referenc to const](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#f16-for-in-parameters-pass-cheaply-copied-types-by-value-and-others-by-reference-to-const)    
 
+<br/>
 
 [F.17 For "in-out" parameters, pass by reference to non-const](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#f17-for-in-out-parameters-pass-by-reference-to-non-const)
 
