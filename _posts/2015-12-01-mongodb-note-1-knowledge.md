@@ -320,13 +320,20 @@ MongoDB 5.0 开始，可以改变一个集合的 shard key 来 reshard。
 
 ### MongoDB 5.0 之后的 reshard
 
-Manual: 
+Manual: [对集合重新分片](https://www.mongodb.com/zh-cn/docs/manual/core/sharding-reshard-a-collection/)    
 
-reshard 操作命令：  
+参考： [Scale Out Without Fear or Friction: Live Resharding in MongoDB](https://www.mongodb.com/blog/post/scale-out-without-fear-friction-live-resharding-mongodb)   
+
+
+reshard 操作命令：   
 
 ```
 reshardCollection: "<database>.<collection>", key: <shardkey>
 ```
+
+注意事项：  
+
+
 
 ---
 
