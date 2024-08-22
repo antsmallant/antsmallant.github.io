@@ -17,7 +17,7 @@ tags: [mongodb 数据库]
 
 ---
 
-# 基本信息
+# 1. 基本信息
 
 MongoDB 从 1.6 版本开始支持 sharding；从 3.6 版本开始，要求 shard 以副本集部署；从 5.0 版本开始，支持修改 sharding key。   
 
@@ -28,7 +28,7 @@ MongoDB 从 1.6 版本开始支持 sharding；从 3.6 版本开始，要求 shar
 
 ---
 
-## 架构
+## 1.1 架构
 
 <br/>
 <div align="center">
@@ -39,7 +39,7 @@ MongoDB 从 1.6 版本开始支持 sharding；从 3.6 版本开始，要求 shar
 
 ---
 
-## 构成要素
+## 1.2 构成要素
 
 参考： [《腾讯云-云数据库MongoDB-系统架构》](https://cloud.tencent.com/document/product/240/64126)   
 
@@ -57,7 +57,7 @@ shard 的高可用是通过副本集架构保证的，从 MongoDB 3.6 版本开�
 
 ---
 
-## 基本的分片策略
+## 1.3 基本的分片策略
 
 MongoDB 支持的分片策略如下：  
 
@@ -67,11 +67,11 @@ MongoDB 支持的分片策略如下：
 
 ---
 
-# 实际使用
+# 2. 实际使用
 
 --- 
 
-## 使用时机  
+## 2.1 使用时机  
 
 参考这篇文章： [《MongoDB: Why Avoid Sharding, it should be kept as the last option.》](https://medium.com/geekculture/mongodb-why-avoid-sharding-it-should-be-kept-as-the-last-option-cb8fdc693b66) 。  
 
@@ -91,7 +91,7 @@ MongoDB 5.0 开始，可以改变一个集合的 shard key 来 reshard。
 
 ---
 
-## 分片键的选择 
+## 2.2 分片键的选择 
 
 参考： [《腾讯云-云数据库 MongoDB-分片集群使用注意事项》](https://cloud.tencent.com/document/product/240/44611)     
 
@@ -113,7 +113,7 @@ MongoDB 5.0 开始，可以改变一个集合的 shard key 来 reshard。
 
 ---
 
-## MongoDB 5.0 之后的 reshard
+## 2.3 MongoDB 5.0 之后的 reshard
 
 Manual: [《对集合重新分片》](https://www.mongodb.com/zh-cn/docs/manual/core/sharding-reshard-a-collection/)    
 
@@ -130,17 +130,17 @@ reshardCollection: "<database>.<collection>", key: <shardkey>
 
 ---
 
-## 分片的操作与查看
+## 2.4 分片的操作与查看
 
 参考： [《阿里云 - 云数据库 MongoDB - 设置数据分片以充分利用Shard性能》](https://help.aliyun.com/zh/mongodb/use-cases/configure-sharding-to-maximize-the-performance-of-shards)     
 
 ---
 
-# 公有云上的 MongoDB
+# 3. 公有云上的 MongoDB
 
 ---
 
-## 版本情况
+## 3.1 版本情况
 
 截至 2024-8-21。  
 
@@ -153,7 +153,7 @@ reshardCollection: "<database>.<collection>", key: <shardkey>
 【注1】阿里云的云数据库MongoDB版本（ApsaraDB for MongoDB）完全兼容MongoDB协议。[5]     
 
 
-## 性能参考 
+## 3.2 性能参考 
 
 几家公有云的 MongoDB 性能白皮书。 
 
@@ -169,7 +169,7 @@ reshardCollection: "<database>.<collection>", key: <shardkey>
 
 ---
 
-## 分片集群的支持情况
+## 3.3 分片集群的支持情况
 
 分片集群的构成：mongos 节点、Config Server、分片节点。每个分片是分片数据的一个子集，云数据库的分片都作为一个副本集部署。下文中 shard 节点，实际上指的是分片服务器，一般是由三节点的副本集构成。    
 
@@ -198,7 +198,7 @@ Shard 节点： 2 ~ 32 个。
 
 ---
 
-## 分片集群的扩容操作
+## 3.4 分片集群的扩容操作
 
 1、腾讯云   
 
@@ -238,11 +238,11 @@ Shard 节点： 2 ~ 32 个。
 
 ---
 
-# 底层实现
+# 4. 底层实现
 
 ---
 
-## chunk
+## 4.1 chunk
 
 参考：  
 
@@ -252,7 +252,7 @@ Shard 节点： 2 ~ 32 个。
 
 ---
 
-### chunk 的概念
+### 4.1.1 chunk 的概念
 
 chunk 是一个逻辑上的概念，它是 shard 做负载均衡的最小单位。一个 chunk 会存储同个集合的若个干文档，分片集群的 collection，里面的文档会根据 sharding key 拆分到多个 chunk 去保存，每个 chunk 有大小控制（默认是 64 MB），但如果是多个文档的 sharding key 都相同，chunk 也会突破大小限制的，形成所谓的 jumbo chunk，这是一种很不好的现象，需要极力避免。  
 
@@ -262,7 +262,7 @@ chunk 是一个逻辑上的概念，它是 shard 做负载均衡的最小单位�
 
 ---
 
-### chunk 的创建及分裂
+### 4.1.2 chunk 的创建及分裂
 
 参考： 
 
@@ -309,7 +309,7 @@ db.settings.save({_id: "chunksize", value: 64})  // 单位是 MB
 
 ---
 
-### chunk 的迁移逻辑    
+### 4.1.3 chunk 的迁移逻辑    
 
 chunk 分裂之后，shard 上 chunk 分布不均衡时，就会触发 chunk 迁移。  
 
@@ -349,7 +349,7 @@ sh.moveChunk("<collection>", {"key":value}, <shardname>)
 chunk 的大小超出了系统指定的值时，系统会拒绝移动这个 chunk，可以手动执行 `splitAt` 命令进行拆分。   
 
 
-### chunk 的分裂和迁移的管理    
+### 4.1.4 chunk 的分裂和迁移的管理    
 
 一些要注意的点：   
 
@@ -372,7 +372,7 @@ b. 较大的 chunk size，迁移会较少，查询路由和网络负载也较低
 balancer 能针对指定的集合开启或关闭，并且支持配置时间窗口，只在指定的时间段内进行迁移操作。    
 
 
-### jumbo chunk 问题
+### 4.1.5 jumbo chunk 问题
 
 jumbo 即是巨大的意思。MongoDB 默认的 chunk size 是 64 MB，如果 chunk 超过 64 MB 且不能分裂（比如该 chunk 中所有文档的 shard key 都相同），则会被标记为 jumbo chunk，balancer 不会迁移这样的 chunk，从而导致负载不均衡 [4]。    
 
@@ -386,11 +386,11 @@ jumbo 即是巨大的意思。MongoDB 默认的 chunk size 是 64 MB，如果 ch
 
 ---
 
-# 一些问题
+# 5. 一些问题
 
 ---
 
-## 分片集群 batch insert 的性能问题
+## 5.1 分片集群 batch insert 的性能问题
 
 参考：[《MongoDB sharding 集合不分片性能更高？》](https://mongoing.com/archives/26859)     
 
@@ -398,7 +398,7 @@ batch insert 的情况下，分片集群单个 shard 的性能，相对于非分
 
 ---
 
-# 一些文章   
+# 6. 一些文章   
 
 以下文章都是参考过的，笔记里有些直接就照抄了这些文章的，由于太多了，就不给出具体的引用参考了。   
 
@@ -420,7 +420,7 @@ batch insert 的情况下，分片集群单个 shard 的性能，相对于非分
 
 ---
 
-# 参考
+# 7. 参考
 
 [1] MongoDB. 分片. Available at https://www.mongodb.com/zh-cn/docs/manual/sharding/.     
 
