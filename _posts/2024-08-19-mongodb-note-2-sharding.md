@@ -205,7 +205,11 @@ reshardCollection: "<database>.<collection>", key: <shardkey>
 
 ---
 
-# 公有云 MongoDB 的版本情况
+# 公有云上的 MongoDB
+
+---
+
+## 公有云 MongoDB 的版本情况
 
 截至 2024-8-21。  
 
@@ -217,7 +221,7 @@ reshardCollection: "<database>.<collection>", key: <shardkey>
 
 ---
 
-# 公有云 MongoDB 分片集群的支持情况
+## 公有云 MongoDB 分片集群的支持情况
 
 分片集群的构成：mongos 节点、Config Server、分片节点。每个分片是分片数据的一个子集，云数据库的分片都作为一个副本集部署。下文中 shard 节点，实际上指的是分片服务器，一般是由三节点的副本集构成。    
 
@@ -246,7 +250,7 @@ Shard 节点： 2 ~ 32 个。
 
 ---
 
-# 公有云的分片集群扩容
+## 公有云的分片集群扩容
 
 1、腾讯云   
 
