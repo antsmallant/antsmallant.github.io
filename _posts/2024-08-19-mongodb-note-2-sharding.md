@@ -66,6 +66,7 @@ shard 的高可用是通过副本集架构保证的，从 MongoDB 3.6 版本开�
 参考：  
 
 * [《mongodb 数据块的迁移流程介绍》](https://www.cnblogs.com/xinghebuluo/p/16154158.html)     
+
 * [《mongodb 数据块迁移的源码分析》](https://www.cnblogs.com/xinghebuluo/p/16461068.html)   
 
 ---
@@ -85,6 +86,7 @@ chunk 是一个逻辑上的概念，它是 shard 做负载均衡的最小单位�
 参考： 
 
 * [《MongoDB--chunk的分裂和迁移》](https://blog.csdn.net/ITgagaga/article/details/103474910)     
+
 * [《MongoDB Sharding Chunk分裂与迁移详解》](https://blog.csdn.net/joy0921/article/details/80131276)     
 
 <br/>
@@ -97,7 +99,7 @@ chunk size 默认是 64 MB。初始的 chunk，它的 minkey、maxkey 分别是�
 a. 连接到 mongos；    
 b. 执行以下命令    
 
-```
+```sh
 use config
 db.settings.save({_id: "chunksize", value: 64})  // 单位是 MB
 ```
@@ -106,7 +108,7 @@ db.settings.save({_id: "chunksize", value: 64})  // 单位是 MB
 
 2、chunk 的分裂逻辑    
 
-当 chunk size 是 64MB 时，根据 chunk 数量不同，具体的分裂阈值如下：     
+当 chunk size 是 64MB 时，根据 chunk 数量不同，具体的分裂阈值如下 [3]：     
 
 |集合 chunk 数量|分裂阈值|
 |:--|:--|
@@ -116,7 +118,7 @@ db.settings.save({_id: "chunksize", value: 64})  // 单位是 MB
 |`[10,20)`|32MB|
 |`[20,max)`|64MB|
 
-注意：   
+一些要注意的点 [3]：   
 
 * 自动分裂只在插入或更新时发生。  
 * 如果降低了块的大小，可能需要一段时间才能将所有块分割为新的大小。   
@@ -132,15 +134,38 @@ chunk 分裂之后，shard 上 chunk 分布不均衡时，就会触发 chunk 迁
 
 config server 上的 balancer 负责数据的迁移，它会周期性的检查分片间是否存在不均衡，如果存在就会执行迁移。  
 
-以下是触发迁移的一些情况：   
+以下是触发迁移的一些场景 [3]：     
+
+（todo：以下这几条似乎有些老旧了，针对的应该是 MongoDB 3.x 的老版本，需要看看最新版本的一些规则。）
 
 1、根据 shard tag 迁移   
 
+可以给 shard 打上标签，然后给集合的某个 range 打上标签，balancer 在迁移的时候就会保证：拥有相同 tag 的 range 会分配到拥有相同 tag 的 shard 上。  
+
+这其实就是 MongoDB 提供的手动的控制数据在 shard 上分布的手段。  
+
 2、根据 shard 之间的 chunk 数量迁移     
+
+如果 shard 之间的 chunk 数量存在差距，达到阈值时，就会触发迁移，具体的阈值如下：  
+
+|集合 chunk 数量|迁移阈值|
+|:--|:--|
+|`[1,20)`|2|
+|`[20,80)`|4|
+|`[80,max)`|8|
 
 3、removeShard 触发迁移   
 
+当用户执行 removeShard 命令从集群中移除 shard 时，balancer 会自动将此 shard 的 chunk 迁移到其他 shard 。   
+
 4、手动移动块    
+
+```bash
+use config
+sh.moveChunk("<collection>", {"key":value}, <shardname>)
+```
+
+chunk 的大小超出了系统指定的值时，系统会拒绝移动这个 chunk，可以手动执行 `splitAt` 命令进行拆分。   
 
 
 ### chunk 的分裂和迁移的管理    
@@ -161,7 +186,7 @@ b. 较大的 chunk size，迁移会较少，查询路由和网络负载也较低
 
 <br/>
 
-3、balancer 能动态的开启和关闭[3]        
+3、balancer 能动态的开启和关闭 [3]        
 
 balancer 能针对指定的集合开启或关闭，并且支持配置时间窗口，只在指定的时间段内进行迁移操作。    
 
