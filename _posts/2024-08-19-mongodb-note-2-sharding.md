@@ -57,6 +57,170 @@ shard 的高可用是通过副本集架构保证的，从 MongoDB 3.6 版本开�
 
 ---
 
+## 基本的分片策略
+
+MongoDB 支持的分片策略如下：  
+
+1. 范围分片，好处是支持基于 shard key 的范围查询。     
+2. 哈希分片，好处是能够将写入均衡分布到各个 shard。    
+3. Tag aware sharding，可以自定义一些 chunk 的分布规则。   
+
+---
+
+# 实际使用
+
+--- 
+
+## 使用时机  
+
+参考这篇文章： [《MongoDB: Why Avoid Sharding, it should be kept as the last option.》](https://medium.com/geekculture/mongodb-why-avoid-sharding-it-should-be-kept-as-the-last-option-cb8fdc693b66) 。  
+
+这篇文章说的是尽量不要选择 sharding，除非不得不。   
+
+如果综合考虑后，一定要做 sharding，必须特别关注 shard key 的选择，这个是最重要的，否则负载的不均衡会是个特别的麻烦。  
+
+除此之外，还需要注意 "Scatter Gather Query" 问题，即细碎收集式的查询：需要从多个 shard 取数据再聚合起来返回，这样会大大降低查询的性能。   
+
+关于 shard key 是否可以改变的问题：   
+
+MongoDB 4.2 及之前，shard key 是不能变的；  
+MongoDB 4.4 开始，可以通过增加后缀字段的方式来改善 shard key； （todo：？这个仍然需要搞清楚）    
+MongoDB 5.0 开始，可以改变一个集合的 shard key 来 reshard。  
+
+然而，虽然能改变或更新 shard key，但 reshard 可能会导致负载过重，而严重影响正常业务。   
+
+---
+
+## 分片键的选择 
+
+参考： [《腾讯云-云数据库 MongoDB-分片集群使用注意事项》](https://cloud.tencent.com/document/product/240/44611)     
+
+* 取值基数  
+
+如果用小基数的片键，因为备选值有限，那么 chunk 的总数量就有限，随着数据增多，chunk 大小会越来越大，导致水平扩展时，移动块会很困难。  
+
+* 取值分布  
+
+取值分布要尽量均匀，分布不均匀的片键会造成某些 chunk 的数据量非常大，同样会出现数据分布不均匀，性能瓶颈的问题。  
+
+* 查询带分片
+
+查询时建议带上分片，使用分片键做条件查询时，mongos 可以直接定义到具体分片，否则 mongos 需要将查询分发到所有分片，再等待响应返回。  
+
+* 如果是范围分片，要避免单调递增或递减
+
+虽然单调递增的 sharding key，数据文件挪动小，但是写入会集中，导致最后一片的数据量持续增大，不断发生迁移。递减也是一样的问题。  
+
+---
+
+## MongoDB 5.0 之后的 reshard
+
+Manual: [《对集合重新分片》](https://www.mongodb.com/zh-cn/docs/manual/core/sharding-reshard-a-collection/)    
+
+参考： [《Scale Out Without Fear or Friction: Live Resharding in MongoDB》](https://www.mongodb.com/blog/post/scale-out-without-fear-friction-live-resharding-mongodb)   
+
+
+reshard 操作命令：   
+
+```
+reshardCollection: "<database>.<collection>", key: <shardkey>
+```
+
+注意事项：  
+
+---
+
+## 分片的操作与查看
+
+参考： [《阿里云 - 云数据库 MongoDB - 设置数据分片以充分利用Shard性能》](https://help.aliyun.com/zh/mongodb/use-cases/configure-sharding-to-maximize-the-performance-of-shards)     
+
+---
+
+# 公有云上的 MongoDB
+
+---
+
+## 版本情况
+
+截至 2024-8-21。  
+
+|厂商|版本|
+|--|--|
+|腾讯云| MongoDB 6.0 |
+|阿里云| MongoDB 7.0 |
+|华为云| 没有 MongoDB，只有兼容 MongoDB 的文档数据库，叫 DDS，兼容 MongoDB 4.4 |
+
+---
+
+## 分片集群的支持情况
+
+分片集群的构成：mongos 节点、Config Server、分片节点。每个分片是分片数据的一个子集，云数据库的分片都作为一个副本集部署。下文中 shard 节点，实际上指的是分片服务器，一般是由三节点的副本集构成。    
+
+以下数据截至 2024-8-21。   
+
+1、腾讯云    
+
+以 MongoDB 6.0 为例。  
+
+Mongos 节点： 3 ~ 32 个。    
+Config 节点：默认3副本集群，1核2G配置，不可变更。  
+Shard 节点： 2 ~ 36 个。   
+
+这个文档里 [《腾讯云-云数据库MongoDB-系统架构》](https://cloud.tencent.com/document/product/240/64126) 写着 shard 数量是 2 ~ 20，但实际可选范围是 2 ~ 36。   
+
+<br/>
+
+2、阿里云   
+
+以 MongoDB 7.0 为例。  
+
+Mongos 节点： 3 ~ 32 个。    
+Config 节点：副本集架构，配置可选。   
+Shard 节点： 2 ~ 32 个。    
+
+
+---
+
+## 分片集群的扩容操作
+
+1、腾讯云   
+
+(1) 调整分片数量     
+
+参考：[《腾讯云-云数据库 MongoDB-调整分片数量》](https://cloud.tencent.com/document/product/240/76799)
+
+注意点：  
+
+只能增，不能减。    
+新增节点加入集群开始同步数据，业务不受影响。    
+切勿同时发起调整节点数、调整节点计算规格与存储的任务。    
+调整节点数量后实例的名称、内网地址和端口均不发生变化。     
+
+
+(2) 变更 Mongos 节点配置规格    
+
+参考：[《腾讯云-云数据库 MongoDB-调整分片数量》](https://cloud.tencent.com/document/product/240/76799)     
+
+注意点：    
+
+可能会涉及到跨机房迁移数据，会引起连接闪断的现象，要确保业务层有自动重连的机制，建议在业务低峰期维护。    
+
+(3) 新增 Mongos 节点   
+
+参考：[《腾讯云-云数据库 MongoDB-新增 Mongos 节点》](https://cloud.tencent.com/document/product/240/76801)     
+
+注意点：   
+
+增加 Mongos 数量，可提升数据库实例访问的最大连接数。  
+系统会自动为新增的 Mongos 节点绑定 ip 地址，开通访问 Mongos 的连接串。  
+如果是通过负载均衡的地址访问，系统将自动的将新增的 Mongos 节点绑定到负载均衡中。   
+
+<br/>
+
+2、阿里云    
+
+---
+
 # 底层实现
 
 ---
@@ -202,162 +366,6 @@ jumbo 即是巨大的意思。MongoDB 默认的 chunk size 是 64 MB，如果 ch
 * 调大 chunk size，当 chunk 大小不超过 chunk size 时，jumbo 标记最终会被清理。但随着数据的写入，仍可能会再出现 jumbo chunk。   
 
 要解决 jumbo chunk，根本办法还是合理规划好 shard key。   
-
----
-
-# 实际使用
-
---- 
-
-## 使用时机  
-
-参考这篇文章： [《MongoDB: Why Avoid Sharding, it should be kept as the last option.》](https://medium.com/geekculture/mongodb-why-avoid-sharding-it-should-be-kept-as-the-last-option-cb8fdc693b66) 。  
-
-这篇文章说的是尽量不要选择 sharding，除非不得不。   
-
-如果综合考虑后，一定要做 sharding，必须特别关注 shard key 的选择，这个是最重要的，否则负载的不均衡会是个特别的麻烦。  
-
-除此之外，还需要注意 "Scatter Gather Query" 问题，即细碎收集式的查询：需要从多个 shard 取数据再聚合起来返回，这样会大大降低查询的性能。   
-
-关于 shard key 是否可以改变的问题：   
-
-MongoDB 4.2 及之前，shard key 是不能变的；  
-MongoDB 4.4 开始，可以通过增加后缀字段的方式来改善 shard key； （todo：？这个仍然需要搞清楚）    
-MongoDB 5.0 开始，可以改变一个集合的 shard key 来 reshard。  
-
-然而，虽然能改变或更新 shard key，但 reshard 可能会导致负载过重，而严重影响正常业务。   
-
----
-
-## MongoDB 5.0 之后的 reshard
-
-Manual: [《对集合重新分片》](https://www.mongodb.com/zh-cn/docs/manual/core/sharding-reshard-a-collection/)    
-
-参考： [《Scale Out Without Fear or Friction: Live Resharding in MongoDB》](https://www.mongodb.com/blog/post/scale-out-without-fear-friction-live-resharding-mongodb)   
-
-
-reshard 操作命令：   
-
-```
-reshardCollection: "<database>.<collection>", key: <shardkey>
-```
-
-注意事项：  
-
-
----
-
-## 分片键的选择 
-
-参考： [《腾讯云-云数据库 MongoDB-分片集群使用注意事项》](https://cloud.tencent.com/document/product/240/44611)     
-
-* 取值基数  
-
-如果用小基数的片键，因为备选值有限，那么 chunk 的总数量就有限，随着数据增多，chunk 大小会越来越大，导致水平扩展时，移动块会很困难。  
-
-* 取值分布  
-
-取值分布要尽量均匀，分布不均匀的片键会造成某些 chunk 的数据量非常大，同样会出现数据分布不均匀，性能瓶颈的问题。  
-
-* 查询带分片
-
-查询时建议带上分片，使用分片键做条件查询时，mongos 可以直接定义到具体分片，否则 mongos 需要将查询分发到所有分片，再等待响应返回。  
-
-* 如果是范围分片，要避免单调递增或递减
-
-虽然单调递增的 sharding key，数据文件挪动小，但是写入会集中，导致最后一片的数据量持续增大，不断发生迁移。递减也是一样的问题。  
-
----
-
-## 分片的操作与查看
-
-参考： [《阿里云 - 云数据库 MongoDB - 设置数据分片以充分利用Shard性能》](https://help.aliyun.com/zh/mongodb/use-cases/configure-sharding-to-maximize-the-performance-of-shards)     
-
-
----
-
-# 公有云上的 MongoDB
-
----
-
-## 版本情况
-
-截至 2024-8-21。  
-
-|厂商|版本|
-|--|--|
-|腾讯云| MongoDB 6.0 |
-|阿里云| MongoDB 7.0 |
-|华为云| 没有 MongoDB，只有兼容 MongoDB 的文档数据库，叫 DDS，兼容 MongoDB 4.4 |
-
----
-
-## 分片集群的支持情况
-
-分片集群的构成：mongos 节点、Config Server、分片节点。每个分片是分片数据的一个子集，云数据库的分片都作为一个副本集部署。下文中 shard 节点，实际上指的是分片服务器，一般是由三节点的副本集构成。    
-
-以下数据截至 2024-8-21。   
-
-1、腾讯云    
-
-以 MongoDB 6.0 为例。  
-
-Mongos 节点： 3 ~ 32 个。    
-Config 节点：默认3副本集群，1核2G配置，不可变更。  
-Shard 节点： 2 ~ 36 个。   
-
-这个文档里 [《腾讯云-云数据库MongoDB-系统架构》](https://cloud.tencent.com/document/product/240/64126) 写着 shard 数量是 2 ~ 20，但实际可选范围是 2 ~ 36。   
-
-<br/>
-
-2、阿里云   
-
-以 MongoDB 7.0 为例。  
-
-Mongos 节点： 3 ~ 32 个。    
-Config 节点：副本集架构，配置可选。   
-Shard 节点： 2 ~ 32 个。    
-
-
----
-
-## 分片集群的扩容操作
-
-1、腾讯云   
-
-(1) 调整分片数量     
-
-参考：[《腾讯云-云数据库 MongoDB-调整分片数量》](https://cloud.tencent.com/document/product/240/76799)
-
-注意点：  
-
-只能增，不能减。    
-新增节点加入集群开始同步数据，业务不受影响。    
-切勿同时发起调整节点数、调整节点计算规格与存储的任务。    
-调整节点数量后实例的名称、内网地址和端口均不发生变化。     
-
-
-(2) 变更 Mongos 节点配置规格    
-
-参考：[《腾讯云-云数据库 MongoDB-调整分片数量》](https://cloud.tencent.com/document/product/240/76799)     
-
-注意点：    
-
-可能会涉及到跨机房迁移数据，会引起连接闪断的现象，要确保业务层有自动重连的机制，建议在业务低峰期维护。    
-
-(3) 新增 Mongos 节点   
-
-参考：[《腾讯云-云数据库 MongoDB-新增 Mongos 节点》](https://cloud.tencent.com/document/product/240/76801)     
-
-注意点：   
-
-增加 Mongos 数量，可提升数据库实例访问的最大连接数。  
-系统会自动为新增的 Mongos 节点绑定 ip 地址，开通访问 Mongos 的连接串。  
-如果是通过负载均衡的地址访问，系统将自动的将新增的 Mongos 节点绑定到负载均衡中。   
-
-<br/>
-
-2、阿里云    
 
 ---
 
