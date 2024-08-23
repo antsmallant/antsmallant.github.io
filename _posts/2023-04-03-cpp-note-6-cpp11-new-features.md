@@ -1425,6 +1425,9 @@ int main() {
 
 ---
 
+### std::lock
+
+---
 
 ### std::condition_variable
 
@@ -1433,12 +1436,8 @@ int main() {
 示例 [13]:  
 
 ```cpp
+
 ```
-
----
-
-### std::lock
-
 
 ---
 
@@ -1607,9 +1606,18 @@ auto tp = std::tie(age, name, nation); // tp 是一个 std::tuple
 
 `std::tie` 之所以能用于解包，原因在于它构造的 `tuple` 是由 lvalue reference 构成的。     
 
-`std::tie(age, name, city) = std::make_tuple(100, "Mike", "LA");` 实际上是 `std::tuple<int&, std::string&, std::string&> {age, name, city} = std::make_tuple(100, "Mike", "LA");`。    
+```cpp
+std::tie(age, name, city) = std::make_tuple(100, "Mike", "LA"); 
+``` 
 
-`std::tuple<int&, std::string&, std::string&> {age, name, city}` 看起来是一个 rvalue，怎么可以赋值的？    
+实际上是
+
+```cpp
+std::tuple<int&, std::string&, std::string&> {age, name, city} = 
+    std::make_tuple(100, "Mike", "LA");    
+```
+
+而 `std::tuple<int&, std::string&, std::string&> {age, name, city}` 看起来是一个 rvalue，怎么可以赋值的？    
 
 这里实际上是这样调用的：      
 
