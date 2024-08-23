@@ -1527,7 +1527,10 @@ auto tp = std::tie(age, name, nation); // tp 是一个 std::tuple
 这里实际上是这样调用的：      
 
 ```cpp
-(std::tuple<int&, std::string&, std::string&> {age, name, city}).operator = (std::make_tuple(100, "Mike", "LA"));    
+
+(std::tuple<int&, std::string&, std::string&> {age, name, city}).operator = (
+                                        std::make_tuple(100, "Mike", "LA"));   
+
 ```
 
 `std::tuple` 重载了很多个 `operator =` 函数，可参考这里：[《`std::tuple<Types...>::operator=`》](https://en.cppreference.com/w/cpp/utility/tuple/operator%3D)。当然，也重载了 `std::pair` 到 `std::tuple` 的转换，所以上面的例子中，`std::tie` 也可以用于解包 `std::pair`。    
