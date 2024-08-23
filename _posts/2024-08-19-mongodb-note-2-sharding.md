@@ -152,6 +152,7 @@ reshardCollection: "<database>.<collection>", key: <shardkey>
 
 【注1】阿里云的云数据库MongoDB版本（ApsaraDB for MongoDB）完全兼容MongoDB协议。[5]     
 
+---
 
 ## 3.2 性能参考 
 
@@ -348,6 +349,7 @@ sh.moveChunk("<collection>", {"key":value}, <shardname>)
 
 chunk 的大小超出了系统指定的值时，系统会拒绝移动这个 chunk，可以手动执行 `splitAt` 命令进行拆分。   
 
+---
 
 ### 4.1.4 chunk 的分裂和迁移的管理    
 
@@ -371,6 +373,7 @@ b. 较大的 chunk size，迁移会较少，查询路由和网络负载也较低
 
 balancer 能针对指定的集合开启或关闭，并且支持配置时间窗口，只在指定的时间段内进行迁移操作。    
 
+---
 
 ### 4.1.5 jumbo chunk 问题
 
