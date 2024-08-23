@@ -373,14 +373,7 @@ int main() {
 
 ---
 
-## 1.15 异常
-
-参考：[《【C++】异常+智能指针+特殊类和类型转换》](https://cloud.tencent.com/developer/article/2344734)    
-
-
----
-
-## 1.16 打印当前时间
+## 1.15 打印当前时间
 
 参考自百度ai智答：  
 
@@ -449,6 +442,9 @@ int main() {
 }
 ```
 
+---
+
+## 
 
 
 ---
@@ -471,6 +467,14 @@ const-volatile-qualified  ：同时被 const / volatile 修饰的
 ---
 
 # todo
+
+* 安全的格式化与字符串操作
+
+
+* 异常
+
+参考：[《【C++】异常+智能指针+特殊类和类型转换》](https://cloud.tencent.com/developer/article/2344734)    
+
 
 * 什么是 trivial，什么是 non-trivial ？
 
