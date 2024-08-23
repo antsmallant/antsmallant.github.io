@@ -1380,6 +1380,7 @@ c++11 没有直接提供类似于 pthread_spin 这样的自旋锁实现。不过
 #include <iostream>
 #include <mutex>
 
+// 实现自旋锁
 class spin_mutex {
     std::atomic_flag flag = ATOMIC_FLAG_INIT;
 public:
@@ -1395,12 +1396,15 @@ public:
     }
 };
 
+
+// 测试自旋锁
 spin_mutex g_spin_mtx;
 
 int main() {
     
     auto func = [](std::string name) {
-        std::lock_guard<spin_mutex> lock(g_spin_mtx);
+        // 同样可以使用 lock_guard 来保护锁
+        std::lock_guard<spin_mutex> lock(g_spin_mtx); 
         std::this_thread::sleep_for(std::chrono::seconds(5));
         for (int i = 0; i < 5; ++i)
             std::cout << name << ": " << i << std::endl;
