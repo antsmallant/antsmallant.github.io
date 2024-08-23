@@ -1480,40 +1480,64 @@ Manual：[《cppreference unique_lock》](https://en.cppreference.com/w/cpp/thre
 
 头文件：`<mutex>`    
 
-稍复杂一些，可以手动调用 `unlock`。可以配合 `std::condition_variable` 使用。    
+比 `std::lock_guard` 复杂得多，提供了更多的功能。  
 
-示例：  
+按照 specification 的描述，`std::unique_lock` 是一个通用目标的 mutex 所有权包装器，支持延迟加锁、时间约束的尝试加锁、递归加锁，转移锁的所有权，以及被条件变量使用。   
+
+简单示例：  
+
+`std::unique_lock` 的简单用法可以提供跟 `std::lock_guard` 一样的效果，只要将上面的示例中的 `std::lock_guard<std::mutex> lock(g_mtx);` 改为 `std::unique_lock<std::mutex> lock(g_mtx);` 即可。  
+
+高级示例 [15]：   
 
 ```cpp
-#include <thread>
-#include <mutex>
 #include <iostream>
-#include <string>
-#include <chrono>
-#include <vector>
+#include <mutex>
+#include <thread>
 
-std::mutex g_mtx;
+struct Box {
+    explicit Box(int num) : num_things {num} {}
+
+    int num_things;
+    std::mutex m;
+};
+
+void transfer(Box& from, Box& to, int num) {
+    // 暂时不加锁
+    std::unique_lock lock1{from.m, std::defer_lock};
+    std::unique_lock lock2{to.m, std::defer_lock};
+
+    // 同时加锁，不会死锁
+    std::lock(lock1, lock2);
+
+    from.num_things -= num;
+    to.num_things += num;
+
+    // 离开作用域后，lock1 和 lock2 会自动释放 from.m 和 to.m
+}
 
 int main() {
-    auto func = [](std::string name) {
-        std::unique_lock<std::mutex> lock(g_mtx);
-        for (int i = 0; i < 5; ++i) {
-            std::cout << name << ": " << i << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        }
-    };
+    Box acc1 {100};
+    Box acc2 {50};
 
-    std::vector<std::thread> vec;
+    std::thread t1{transfer, std::ref(acc1), std::ref(acc2), 10};
+    std::thread t2{transfer, std::ref(acc2), std::ref(acc1), 5};
 
-    for (int i = 0; i < 5; ++i) {
-        vec.emplace_back(func, "thread" + std::to_string(i+1));
-    }
+    t1.join();
+    t2.join();
 
-    for (auto & t : vec)
-        t.join();
-
+    std::cout << "acc1: " << acc1.num_things << "\n"
+              << "acc2: " << acc2.num_things << "\n";
+    
     return 0;
 }
+```  
+
+输出： 
+
+```
+acc1: 95
+acc2: 55
 ```
    
 ---
@@ -1521,6 +1545,12 @@ int main() {
 ### std::condition_variable
 
 `std::condition_variable` 即条件变量，也是一种同步原语，应用于协作的场景。对应 pthread 中的 pthread_cond。  
+
+Manual: [《cppreference - condition_variable》](https://en.cppreference.com/w/cpp/thread/condition_variable)      
+
+头文件：`<condition_variable>`     
+
+条件变量
 
 示例 [13]:  
 
@@ -1765,3 +1795,5 @@ std::tuple<int&, std::string&, std::string&> {age, name, city} =
 [13] 程序喵大人. c++11新特性之线程相关所有知识点. Available at https://zhuanlan.zhihu.com/p/137914574, 2020-5-3.  
 
 [14] 破晓. C++11实现自旋锁. Available at https://blog.poxiao.me/p/spinlock-implementation-in-cpp11/, 2014-4-20.    
+
+[15] cppreference. unique_lock. Available at https://en.cppreference.com/w/cpp/thread/unique_lock.    
