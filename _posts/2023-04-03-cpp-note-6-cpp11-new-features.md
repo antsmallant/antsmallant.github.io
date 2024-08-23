@@ -1395,8 +1395,9 @@ std::timed_mutex g_mtx;
 
 int main() {
     auto func = [](int x) {
-        // try_lock_for 尝试获得锁，直到超时，或者获取成功
+        // try_lock_for 以时长作为参数，尝试获得锁，直到超时，或者获取成功
         // 如果成功 返回 true；否则返回 false 。  
+        // 类似的函数还有 try_lock_until，是以时间点作为参数
         if (g_mtx.try_lock_for(std::chrono::milliseconds(100))) {
             std::this_thread::sleep_for(std::chrono::seconds(1));
             for (int i = 0; i < x; ++i) {
@@ -1440,8 +1441,35 @@ Manual: [《cppreference - lock_guard》](https://en.cppreference.com/w/cpp/thre
 示例：  
 
 ```cpp
+#include <thread>
+#include <mutex>
+#include <iostream>
+#include <string>
+#include <chrono>
+#include <vector>
 
+std::mutex g_mtx;
 
+int main() {
+    auto func = [](std::string name) {
+        std::lock_guard<std::mutex> lock(g_mtx);
+        for (int i = 0; i < 5; ++i) {
+            std::cout << name << ": " << i << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+    };
+
+    std::vector<std::thread> vec;
+
+    for (int i = 0; i < 5; ++i) {
+        vec.emplace_back(func, "thread" + std::to_string(i+1));
+    }
+
+    for (auto & t : vec)
+        t.join();
+
+    return 0;
+}
 ```
 
 <br/>
@@ -1457,8 +1485,35 @@ Manual：[《cppreference unique_lock》](https://en.cppreference.com/w/cpp/thre
 示例：  
 
 ```cpp
+#include <thread>
+#include <mutex>
+#include <iostream>
+#include <string>
+#include <chrono>
+#include <vector>
 
+std::mutex g_mtx;
 
+int main() {
+    auto func = [](std::string name) {
+        std::unique_lock<std::mutex> lock(g_mtx);
+        for (int i = 0; i < 5; ++i) {
+            std::cout << name << ": " << i << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+    };
+
+    std::vector<std::thread> vec;
+
+    for (int i = 0; i < 5; ++i) {
+        vec.emplace_back(func, "thread" + std::to_string(i+1));
+    }
+
+    for (auto & t : vec)
+        t.join();
+
+    return 0;
+}
 ```
    
 ---
