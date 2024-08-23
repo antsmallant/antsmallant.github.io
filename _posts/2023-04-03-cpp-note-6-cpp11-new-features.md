@@ -1374,6 +1374,9 @@ c++11 没有直接提供类似于 pthread_spin 这样的自旋锁实现。不过
 
 ```cpp
 #include <atomic>
+#include <thread>
+#include <chrono>
+#include <iostream>
 
 class spin_mutex {
     std::atomic_flag flag = ATOMIC_FLAG_INIT;
@@ -1390,6 +1393,26 @@ public:
     }
 };
 
+// 使用示例
+int main() {
+    spin_mutex sp;
+
+    auto func = [&sp](std::string name) {
+        sp.lock();
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+        for (int i = 0; i < 5; ++i)
+            std::cout << name << ": " << i << std::endl;
+        sp.unlock();
+    };
+
+    std::thread t1(func, "t1");
+    std::thread t2(func, "t2");
+
+    t1.join();
+    t2.join();
+
+    return 0;
+}
 ```
 
 ---
