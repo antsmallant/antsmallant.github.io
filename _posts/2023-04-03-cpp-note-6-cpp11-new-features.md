@@ -1275,14 +1275,37 @@ void sleep_for( const std::chrono::duration<Rep, Period>& sleep_duration );
 示例：  
 
 ```cpp
+std::this_thread::sleep_for(std::chrono::seconds(2));
+```
 
+如果是 c++14，可以这样：  
+
+```cpp
+using namespace std::chrono_literals;
+std::this_thread::sleep_for(2000ms);
 ```
 
 <br/>
 
 3、`std::this_thread::sleep_until`
 
+Manual: [《cppreference - sleep_until》](https://en.cppreference.com/w/cpp/thread/sleep_until)    
 
+原型：   
+
+```cpp
+template< class Clock, class Duration >
+void sleep_until( const std::chrono::time_point<Clock, Duration>& sleep_time );
+```
+
+作用：阻塞当前线程直到指定的时间点。   
+
+示例：  
+
+```cpp
+using std::chrono::operator""ms;  
+std::this_thread::sleep_until(std::chrono::steady_clock::now() + 2000ms); 
+```
 
 ---
 
@@ -1290,7 +1313,7 @@ void sleep_for( const std::chrono::duration<Rep, Period>& sleep_duration );
 
 `std::mutex` 即互斥锁，是一种同步原语，应用于竞争的场景。对应 pthread 中的 pthread_mutex。  
 
-c++11 中，mutex 实际上分了四种：  
+c++11 中，mutex 分了四种：  
 
 * std::mutex：不可递归，不带超时
 * std::recursive_mutex：可递归，不带超时
@@ -1314,6 +1337,11 @@ c++11 中，mutex 实际上分了四种：
 
 `std::condition_variable` 即条件变量，也是一种同步原语，应用于协作的场景。对应 pthread 中的 pthread_cond。  
 
+示例 [13]:  
+
+```cpp
+```
+
 ---
 
 ### std::lock
@@ -1321,7 +1349,12 @@ c++11 中，mutex 实际上分了四种：
 
 ---
 
-### c++11 实现自旋锁
+### std::atomic
+
+
+---
+
+### std::atomic_flag 实现自旋锁 
 
 参考： [《C++11实现自旋锁》](https://blog.poxiao.me/p/spinlock-implementation-in-cpp11/) [14]。    
 
@@ -1377,7 +1410,7 @@ std::to_string(-10);         // "-10"
 
 `std::array` 是基于 c 数组的容器，大小是固定的，支持常规的容器操作，比如排序。   
 
-示例[7]:   
+示例 [7]:   
 
 ```cpp
 std::array<int, 4> arr = {1, 17, 2, 9};
@@ -1391,7 +1424,7 @@ for (int& x : arr) x += 10;           // arr == {11, 12, 19, 27}
 
 chrono 有编年史、计时器的意思。chrono 库包含了一些类型以及一些工具函数，可以处理持续时间、时钟、时间点之类的问题。一个使用场景是用于基准测试。  
 
-示例[7]：   
+示例 [7]：   
 
 ```cpp
 std::chrono::time_point<std::chrono::steady_clock> start, stop;  
@@ -1431,7 +1464,7 @@ auto yourprofile = std::tuple<int, std::string, std::string>(15, "NY", "Tim");
 
 `std::tie` 实际上是构造了由左值引用或 `std::ignore` 作为参数形成的一个 tuple。但这种方式，也使得 `std::tie` 可以用于解包一个 `std::tuple` 或 `std::pair`。  
 
-示例：[7]  
+示例 [7]：
 
 ```cpp
 int age;
