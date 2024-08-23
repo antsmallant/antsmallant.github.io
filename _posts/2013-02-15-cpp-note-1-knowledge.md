@@ -377,6 +377,80 @@ int main() {
 
 参考：[《【C++】异常+智能指针+特殊类和类型转换》](https://cloud.tencent.com/developer/article/2344734)    
 
+
+---
+
+## 1.16 打印当前时间
+
+参考自百度ai智答：  
+
+方法一：time + ctime    
+
+```cpp
+#include <iostream>
+#include <ctime>
+
+int main() {
+    std::time_t t = std::time(nullptr);
+    std::cout << std::ctime(&t) << std::endl;
+    return 0;
+}
+```
+
+<br/>
+
+方法二：chrono + system_clock
+
+```cpp
+#include <iostream>
+#include <chrono>
+
+int main() {
+    auto now = std::chrono::system_clock::now();
+    std::time_t t = std::chrono::system_clock::to_time_t(now);
+    std::cout << std::ctime(&t) << std::endl;
+    return 0;
+}
+```
+
+<br/>
+
+方法三：chrono + localtime (since c++17)
+
+```cpp
+#include <iostream>
+#include <chrono>
+#include <ctime>
+
+int main() {
+    auto now = std::chrono::system_clock::now();
+    std::time_t t = std::chrono::system_clock::to_time_t(now);
+    struct std::tm* tm = std::localtime(&t);
+    std::cout << tm->tm_year+1900 << "-" << tm->tm_mon+1 << "-" << tm->tm_mday << " "
+              << tm->tm_hour << ":" << tm->tm_min << ":" << tm->tm_sec << std::endl;
+    return 0;
+}
+```
+
+<br/>
+
+方法四：time + strftime + localtime
+
+```cpp
+#include <iostream>
+#include <ctime>
+
+int main() {
+    std::time_t now = std::time(nullptr);
+    char timeString[100];
+    std::strftime(timeString, sizeof(timeString), "%Y-%m-%d %X", std::localtime(&now));
+    std::cout << timeString << std::endl;
+    return 0;
+}
+```
+
+
+
 ---
 
 # 2. 术语
