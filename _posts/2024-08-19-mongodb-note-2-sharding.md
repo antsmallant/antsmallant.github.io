@@ -1,10 +1,10 @@
 ---
 layout: post
-title: "mongodb 笔记：分片集群"
+title: "MongoDB 笔记：分片集群"
 date: 2024-08-19
 last_modified_at: 2024-08-22
 categories: [数据库]
-tags: [mongodb 数据库]
+tags: [MongoDB 数据库]
 ---
 
 * 目录  

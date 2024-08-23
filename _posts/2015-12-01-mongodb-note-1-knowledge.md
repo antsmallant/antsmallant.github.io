@@ -1,10 +1,10 @@
 ---
 layout: post
-title: "mongodb 笔记：常识"
+title: "MongoDB 笔记：常识"
 date: 2015-12-01
 last_modified_at: 2024-7-10
 categories: [数据库]
-tags: [mongodb 数据库]
+tags: [MongoDB 数据库]
 ---
 
 * 目录  
