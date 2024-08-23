@@ -1427,6 +1427,38 @@ int main() {
 
 ### std::lock
 
+锁包装器 s(wrapper)，利用 RAII 机制，以异常安全的方式控制锁资源，包括 `std::lock_guard`，`std::unique_lock`。   
+
+1、`std::lock_guard`   
+
+Manual: [《cppreference - lock_guard》](https://en.cppreference.com/w/cpp/thread/lock_guard)     
+
+头文件： `<mutex>`   
+
+比较简单，只有构造函数和析构函数。构造时加锁，析构时解锁。   
+
+示例：  
+
+```cpp
+
+
+```
+
+<br/>
+
+2、`std::unique_lock`   
+
+Manual：[《cppreference unique_lock》](https://en.cppreference.com/w/cpp/thread/unique_lock)      
+
+头文件：`<mutex>`    
+
+稍复杂一些，可以手动调用 `unlock`。可以配合 `std::condition_variable` 使用。  
+
+示例：  
+
+```cpp
+```
+   
 ---
 
 ### std::condition_variable
