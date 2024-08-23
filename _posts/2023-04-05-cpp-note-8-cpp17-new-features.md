@@ -44,7 +44,7 @@ c++17 是一个 "中" 版本，它本来应该是一个 major 版本的，不过
 
 形式如：`auto [x,y,z] = expr`。  
 
-specification: [cppreference Structured binding declaration](https://en.cppreference.com/w/cpp/language/structured_binding)。    
+specification: [《cppreference - Structured binding declaration》](https://en.cppreference.com/w/cpp/language/structured_binding)。    
 
 示例 [1]：
 
@@ -92,7 +92,7 @@ for (auto& [k, v] : m) {
 // m 变成了 { {1, "hello_abc"}, {2, "world_abc"} }
 ```
 
-详细参考：[C++17中的结构化绑定详解](https://blog.csdn.net/haokan123456789/article/details/137613251)。   
+详细参考：[《C++17中的结构化绑定详解》](https://blog.csdn.net/haokan123456789/article/details/137613251)。   
 
 ---
 

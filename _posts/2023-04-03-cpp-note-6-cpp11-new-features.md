@@ -1177,6 +1177,10 @@ auto sptr3 = wptr.lock();  // sptr3.use_count() == 0;  (!sptr3) == true;
 
 ## 线程相关 
 
+参考文章：  
+* [《【C++】C++11线程库 和 C++IO流》](https://cloud.tencent.com/developer/article/2344735)   
+* [《c++11新特性之线程相关所有知识点》](https://zhuanlan.zhihu.com/p/137914574)    
+
 线程相关的有很多，包括：`std::thread`，`std::mutex`，`std::condition_variable`，`std::lock`，`std::atomic`，，，，
 
 

@@ -373,6 +373,12 @@ int main() {
 
 ---
 
+## 1.15 异常
+
+参考：[《【C++】异常+智能指针+特殊类和类型转换》](https://cloud.tencent.com/developer/article/2344734)    
+
+---
+
 # 2. 术语
 
 ---
