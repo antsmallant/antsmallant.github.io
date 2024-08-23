@@ -1178,12 +1178,172 @@ auto sptr3 = wptr.lock();  // sptr3.use_count() == 0;  (!sptr3) == true;
 ## 线程相关 
 
 参考文章：  
+
 * [《【C++】C++11线程库 和 C++IO流》](https://cloud.tencent.com/developer/article/2344735)   
+
 * [《c++11新特性之线程相关所有知识点》](https://zhuanlan.zhihu.com/p/137914574)    
 
-线程相关的有很多，包括：`std::thread`，`std::mutex`，`std::condition_variable`，`std::lock`，`std::atomic`，，，，
+
+线程相关的有很多，包括：`std::thread`，`std::mutex`，`std::condition_variable`，`std::lock`，`std::atomic`，`std::call_once`，`std::future`，`async` 等。  
+
+c++11 提供这些线程实现，意义主要在于可跨平台使用。有些文章把它捧得很高，实际上没必要，在 linux 上，它只不过是对 posix 线程库的封装而已。  
+
+---
+
+### std::thread
+
+`std::thread` 即线程类。对应 posix 中的 pthread。  
+
+`join` 表示等待线程执行完成。   
+
+`detach` 表示切断当前线程与线程对象的关联，切断之后，当前线程就不能再 `join` 这个线程对象了。       
+
+对于一条创建出来的子线程，要么 `join`，要么 `detach`。否则会出现这样的问题：母线程运行结束，开始释放资源，会把子线程对象也析构掉，而子线程还在运行中，导致出错。  
+
+如果不想 `join`，就只能 `detach`，将母线程与子线程对象分离，这样一来，母线程结束时，也不会析构子线程对象。   
+
+示例 [13]:  
+
+```cpp
+#include <iostream>
+#include <thread>
+
+int main() {
+    auto func1 = []() {
+        for (int i = 0; i < 5; ++i) {
+            std::cout << "func1: " << i << std::endl;
+        } 
+    };
+
+    std::thread t1(func1);
+    if (t1.joinable()) {
+        t1.detach();  // detach 之后，不能再 join 了，t1.joinable() 会返回 false
+    }
+
+    auto func2 = [](int x) {
+        for (int i = 0; i < x; ++i) {
+            std::cout << "func2: " << i << std::endl;
+        }
+    };
+    
+    std::thread t2(func2, 10);
+    if (t2.joinable()) {
+        t2.join();  // 等待 t2 执行完
+    }
+
+    return 0;
+}
+
+```
+
+---
+
+### std::this_thread
+
+`std::this_thread` 是一个 namespace，包含了可以访问当前运行线程的一些函数。头文件是 `<thread>`。  
+
+主要函数：    
+
+* `std::this_thread::get_id`   
+
+Manual: [《cppreference - get_id》](https://en.cppreference.com/w/cpp/thread/get_id)    
+
+原型： `std::this_thread::id get_id() noexcept;`    
+
+作用： 获得当前运行线程的 id。  
+
+示例：  
+
+```cpp
+std::this_thread::id this_id = std::this_thread::get_id();
+```
+
+<br/>  
+
+* `std::this_thread::sleep_for`   
+
+Manual: [《cppreference - sleep_for》](https://en.cppreference.com/w/cpp/thread/sleep_for)   
+
+原型： 
+```cpp
+template< class Rep, class Period>
+void sleep_for( const std::chrono::duration<Rep, Period>& sleep_duration );
+```
+
+作用：阻塞当前线程至少 sleep_duration 指定的时长。   
+
+示例：  
+
+```cpp
+
+```
 
 
+
+---
+
+### std::mutex 
+
+`std::mutex` 即互斥锁，是一种同步原语，应用于竞争的场景。对应 pthread 中的 pthread_mutex。  
+
+c++11 中，mutex 实际上分了四种：  
+
+* std::mutex：不可递归，不带超时
+* std::recursive_mutex：可递归(可重入)s，不带超时
+* std::timed_mutex：带超时，不可递归
+* std::recursive_timed_mutex：带超时，可递归  
+
+大部分情况下，用 `std::mutex` 就够了，recursive 的要慎用，可能会导致意想不到的问题：比如外层逻辑加锁了在修改，内层逻辑也加锁了在修改。  
+
+通常情况下，代码中不要直接裸的使用 `std::mutex`。用 `std::unique_lock`，`std::lock_guard` 或 `std::scoped_lock` (since c++17) 可以更(异常)安全的管理锁资源。  
+
+示例 [13]：   
+
+```cpp
+
+```
+
+---
+
+
+### std::condition_variable
+
+std::condition_variable 即条件变量，也是一种同步原语，应用于协作的场景。对应 pthread 中的 pthread_cond。  
+
+---
+
+### std::lock
+
+
+---
+
+### c++11 实现自旋锁
+
+参考： [《C++11实现自旋锁》](https://blog.poxiao.me/p/spinlock-implementation-in-cpp11/) [14]。    
+
+c++11 没有直接提供类似于 pthread_spin 这样的自旋锁实现。不过可以使用 `std::atomic_flag` 来实现，它是一个无锁的二值类型。不能用 `std::atomic` 实现，因为 c++ 没有强制要求 `std::atomic` 的实现必须是无锁的。    
+
+示例 [14]:  
+
+```cpp
+#include <atomic>
+
+class spin_mutex {
+    std::atomic_flag flag = ATOMIC_FLAG_INIT;
+public:
+    spin_mutex() = default;
+    spin_mutex(const spin_mutex&) = delete;
+    spin_mutex& operator = (const spin_mutex&) = delete;
+    void lock() {
+        while (flag.test_and_set(std::memory_order_acquire)) 
+            ;
+    }
+    void unlock() {
+        flag.clear(std::memory_order_release);
+    }
+};
+
+```
 
 ---
 
@@ -1344,3 +1504,7 @@ auto tp = std::tie(age, name, nation); // tp 是一个 std::tuple
 [11] 蓝色. anster to C++ const 和 constexpr 的区别. Available at https://www.zhihu.com/question/35614219/answer/63798713, 2015-9-15.     
 
 [12] 程序喵大人. c++11新特性之智能指针. Available at https://zhuanlan.zhihu.com/p/137958974, 2020-5-3.    
+
+[13] 程序喵大人. c++11新特性之线程相关所有知识点. Available at https://zhuanlan.zhihu.com/p/137914574, 2020-5-3.  
+
+[14] 破晓. C++11实现自旋锁. Available at https://blog.poxiao.me/p/spinlock-implementation-in-cpp11/, 2014-4-20.    
