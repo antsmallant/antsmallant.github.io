@@ -1289,13 +1289,13 @@ void sleep_for( const std::chrono::duration<Rep, Period>& sleep_duration );
 c++11 中，mutex 实际上分了四种：  
 
 * std::mutex：不可递归，不带超时
-* std::recursive_mutex：可递归(可重入)s，不带超时
+* std::recursive_mutex：可递归，不带超时
 * std::timed_mutex：带超时，不可递归
 * std::recursive_timed_mutex：带超时，可递归  
 
-大部分情况下，用 `std::mutex` 就够了，recursive 的要慎用，可能会导致意想不到的问题：比如外层逻辑加锁了在修改，内层逻辑也加锁了在修改。  
+可递归的意思就是同一线程加锁了，可以再次加锁。大部分情况下，用 `std::mutex` 就够了。可递归的要慎用，可能会导致意想不到的问题：比如外层逻辑加锁了开始修改，内层逻辑也加锁了修改同一资源。     
 
-通常情况下，代码中不要直接裸的使用 `std::mutex`。用 `std::unique_lock`，`std::lock_guard` 或 `std::scoped_lock` (since c++17) 可以更(异常)安全的管理锁资源。  
+通常情况下，代码中不要直接裸用 `std::mutex`。用 `std::unique_lock`，`std::lock_guard` 或 `std::scoped_lock` (since c++17)，它们可以更(异常)安全的管理锁资源。  
 
 示例 [13]：   
 
