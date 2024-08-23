@@ -1244,7 +1244,7 @@ int main() {
 
 主要函数：    
 
-* `std::this_thread::get_id`   
+1、`std::this_thread::get_id`   
 
 Manual: [《cppreference - get_id》](https://en.cppreference.com/w/cpp/thread/get_id)    
 
@@ -1260,7 +1260,7 @@ std::this_thread::id this_id = std::this_thread::get_id();
 
 <br/>  
 
-* `std::this_thread::sleep_for`   
+2、`std::this_thread::sleep_for`   
 
 Manual: [《cppreference - sleep_for》](https://en.cppreference.com/w/cpp/thread/sleep_for)   
 
@@ -1277,6 +1277,10 @@ void sleep_for( const std::chrono::duration<Rep, Period>& sleep_duration );
 ```cpp
 
 ```
+
+<br/>
+
+3、`std::this_thread::sleep_until`
 
 
 
@@ -1308,7 +1312,7 @@ c++11 中，mutex 实际上分了四种：
 
 ### std::condition_variable
 
-std::condition_variable 即条件变量，也是一种同步原语，应用于协作的场景。对应 pthread 中的 pthread_cond。  
+`std::condition_variable` 即条件变量，也是一种同步原语，应用于协作的场景。对应 pthread 中的 pthread_cond。  
 
 ---
 
