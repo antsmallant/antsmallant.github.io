@@ -958,7 +958,7 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 
 ---
 
-## 智能指针 ( std::unique_ptr、std::shared_ptr、std::weak_ptr ) 
+## 智能指针
 
 c++11 引入了三种新的智能指针：`std::unique_ptr`，`std::shared_ptr`，`std::weak_ptr`。而 `std::auto_ptr` 被标为了弃用(deprecated)，并将在 c++17 最终移除。   
 
