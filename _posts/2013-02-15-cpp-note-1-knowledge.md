@@ -377,7 +377,7 @@ int main() {
 
 参考自百度ai智答。  
 
-方法一：time + ctime    
+方法一：time + ctime      
 
 ```cpp
 #include <iostream>
@@ -392,7 +392,7 @@ int main() {
 
 <br/>
 
-方法二：chrono + system_clock
+方法二：chrono + system_clock    
 
 ```cpp
 #include <iostream>
@@ -408,7 +408,7 @@ int main() {
 
 <br/>
 
-方法三：chrono + localtime (since c++17)
+方法三：chrono + localtime (since c++17)    
 
 ```cpp
 #include <iostream>
@@ -427,7 +427,7 @@ int main() {
 
 <br/>
 
-方法四：time + strftime + localtime
+方法四：time + strftime + localtime     
 
 ```cpp
 #include <iostream>
