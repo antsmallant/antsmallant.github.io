@@ -1324,6 +1324,10 @@ std::this_thread::sleep_until(std::chrono::steady_clock::now() + 2000ms);
 
 `std::mutex` 即互斥锁，是一种同步原语，应用于竞争的场景。对应 pthread 中的 pthread_mutex。  
 
+头文件：`<mutex>`。   
+
+Manual: [《cppreference - mutex》](https://en.cppreference.com/w/cpp/header/mutex)       s
+
 c++11 中，mutex 分了四种：  
 
 * std::mutex：不可递归，不带超时
@@ -1335,10 +1339,88 @@ c++11 中，mutex 分了四种：
 
 通常情况下，代码中不要直接裸用 `std::mutex`。用 `std::unique_lock`，`std::lock_guard` 或 `std::scoped_lock` (since c++17)，它们可以更(异常)安全的管理锁资源。  
 
-示例 [13]：   
+<br/>
+
+`std::mutex` 示例：    
 
 ```cpp
+#include <thread>
+#include <mutex>
+#include <iostream>
+#include <string>
+#include <vector>
 
+std::mutex g_mtx;
+
+int main() {
+    auto func = [](std::string name) {
+        // 以下仅仅是展示用法，正常情况下，应该使用 
+        // std::lock_guard 或 std::unique_lock 来保证安全的使用锁
+        g_mtx.lock();
+        for (int i = 0; i < 5; ++i) {
+            std::cout << name << ": " << i << std::endl;
+        }
+        g_mtx.unlock();
+    };
+
+    std::vector<std::thread> vec;
+    
+    for (int i = 0; i < 5; ++i) {
+        vec.emplace_back(func, "thread" + std::to_string(i+1));
+    }
+
+    for (auto& t : vec) {
+        t.join();
+    }
+
+    return 0;
+}
+
+```
+
+<br/>
+
+`std::timed_mutex` 示例：  
+
+Manual: [《cppreference - timed_mutex》](https://en.cppreference.com/w/cpp/thread/timed_mutex)     
+
+```cpp
+#include <iostream>
+#include <mutex>
+#include <thread>
+#include <chrono>
+#include <vector>
+
+std::timed_mutex g_mtx;
+
+int main() {
+    auto func = [](int x) {
+        // try_lock_for 尝试获得锁，直到超时，或者获取成功
+        // 如果成功 返回 true；否则返回 false 。  
+        if (g_mtx.try_lock_for(std::chrono::milliseconds(100))) {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            for (int i = 0; i < x; ++i) {
+                std::cout << i << " ";
+            }
+            std::cout << std::endl;
+            g_mtx.unlock();
+        } else {
+            std::cout << "lock fail" << std::endl;
+        }
+    };
+
+    std::vector<std::thread> vec;
+
+    for (int i = 0; i < 5; ++i) {
+        vec.emplace_back(func, 10);
+    }
+
+    for (auto & t : vec) {
+        t.join();
+    }
+        
+    return 0;
+}
 ```
 
 ---
