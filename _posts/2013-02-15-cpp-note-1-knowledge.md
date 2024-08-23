@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "c++ 笔记：常识、术语"
+title: "c++ 笔记：常识"
 date: 2013-02-15
 last_modified_at: 2023-04-01
 categories: [c++]
@@ -444,16 +444,7 @@ int main() {
 
 ---
 
-## 
-
-
----
-
-# 2. 术语
-
----
-
-## 2.1 cv-unqualified
+## 1.16 cv-unqualified
 
 cv-unqualified 指没有被 const 或 volatile 修饰的类型[5]，比如基础类型 int / float/ double / nullptr_t，或复合类型 enum / struct / class 等。  
 
@@ -529,7 +520,7 @@ https://www.cnblogs.com/wickedpriest/p/14696909.html
 
 ---
 
-# 3. 参考
+# 2. 参考
 
 [1] SkyFire. 编译期多态. Available at https://xie.infoq.cn/article/829d74dcd8d19aa613f8da059, 2023-01-28.    
 
