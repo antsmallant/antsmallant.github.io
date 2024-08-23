@@ -1,10 +1,10 @@
 ---
 layout: post
-title: "mysql 笔记：mysql 在游戏中的使用"
+title: "MySQL 笔记：MySQL 在游戏中的使用"
 date: 2023-06-01
 last_modified_at: 2023-06-01
 categories: [数据库]
-tags: [game, db, mysql]
+tags: [game db MySQL]
 ---
 
 * 目录  

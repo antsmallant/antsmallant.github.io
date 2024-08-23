@@ -1,10 +1,10 @@
 ---
 layout: post
-title: "mysql 笔记：innodb"
+title: "MySQL 笔记：innodb"
 date: 2023-06-03
 last_modified_at: 2023-06-03
 categories: [数据库]
-tags: [db, mysql]
+tags: [db MySQL]
 ---
 
 * 目录  
