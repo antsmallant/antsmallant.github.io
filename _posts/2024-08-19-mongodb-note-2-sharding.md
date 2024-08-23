@@ -316,6 +316,8 @@ chunk 分裂之后，shard 上 chunk 分布不均衡时，就会触发 chunk 迁
 
 config server 上的 balancer 负责数据的迁移，它会周期性的检查分片间是否存在不均衡，如果存在就会执行迁移。  
 
+<br/>
+
 以下是触发迁移的一些场景 [3]：     
 
 （todo：以下这几条似乎有些老旧了，针对的应该是 MongoDB 3.x 的老版本，需要看看最新版本的一些规则。）
@@ -325,6 +327,8 @@ config server 上的 balancer 负责数据的迁移，它会周期性的检查�
 可以给 shard 打上标签，然后给集合的某个 range 打上标签，balancer 在迁移的时候就会保证：拥有相同 tag 的 range 会分配到拥有相同 tag 的 shard 上。  
 
 这其实就是 MongoDB 提供的手动的控制数据在 shard 上分布的手段。  
+
+<br/>
 
 2、根据 shard 之间的 chunk 数量迁移     
 
@@ -336,9 +340,13 @@ config server 上的 balancer 负责数据的迁移，它会周期性的检查�
 |`[20,80)`|4|
 |`[80,max)`|8|
 
+<br/>
+
 3、removeShard 触发迁移   
 
 当用户执行 removeShard 命令从集群中移除 shard 时，balancer 会自动将此 shard 的 chunk 迁移到其他 shard 。   
+
+<br/>
 
 4、手动移动块    
 
