@@ -1208,8 +1208,7 @@ c++11 提供这些线程实现，意义主要在于可跨平台使用。有些�
 
 * `detach`: 把线程和线程对象分离，允许线程继续独立的运行。分离之后，线程对象 （即 `std::thread` 的实例）不再持有线程。独立出来的线程在运行结束后，会清理占用的资源。  
 
-对于一条创建出来的子线程，要么 `join`，要么 `detach`。否则会出现这样的问题：母线程运行结束，开始释放资源，会把子线程对象也析构掉，而子线程还在运行中，导致出错。如果不想 `join`，就只能 `detach`，让子线程与子线程对象分离，使得子线程的运行不受子线程对象析构的影响。   
-
+对于一条创建出来的子线程，要么 `join`，要么 `detach`。否则可能会出现这样的问题：母线程运行结束，开始释放资源，会把子线程对象也析构掉，但子线程还在运行中，最终导致出错。如果不想 `join`，就只能 `detach`，让子线程与子线程对象分离，使得子线程的运行不受子线程对象析构的影响。   
 
 
 示例 [13]:  
@@ -1250,7 +1249,9 @@ int main() {
 
 ### std::this_thread
 
-`std::this_thread` 是一个 namespace，包含了可以访问当前运行线程的一些函数。头文件是 `<thread>`。  
+`std::this_thread` 是一个 namespace，包含了可以访问当前运行线程的一些函数。    
+
+头文件： `<thread>`。    
 
 主要函数：    
 
@@ -1377,6 +1378,7 @@ c++11 没有直接提供类似于 pthread_spin 这样的自旋锁实现。不过
 #include <thread>
 #include <chrono>
 #include <iostream>
+#include <mutex>
 
 class spin_mutex {
     std::atomic_flag flag = ATOMIC_FLAG_INIT;
@@ -1393,16 +1395,15 @@ public:
     }
 };
 
-// 使用示例
-int main() {
-    spin_mutex sp;
+spin_mutex g_spin_mtx;
 
-    auto func = [&sp](std::string name) {
-        sp.lock();
+int main() {
+    
+    auto func = [](std::string name) {
+        std::lock_guard<spin_mutex> lock(g_spin_mtx);
         std::this_thread::sleep_for(std::chrono::seconds(5));
         for (int i = 0; i < 5; ++i)
             std::cout << name << ": " << i << std::endl;
-        sp.unlock();
     };
 
     std::thread t1(func, "t1");
