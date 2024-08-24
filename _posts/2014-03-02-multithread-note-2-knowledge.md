@@ -23,7 +23,7 @@ tags: [多线程 并发 同步 同步原语 锁]
 
 ## 1.1 惊群效应
 
-[深入理解linux惊群效应（超详细）](https://zhuanlan.zhihu.com/p/696195062)    
+* [深入理解linux惊群效应（超详细）](https://zhuanlan.zhihu.com/p/696195062)    
 
 
 ---
@@ -42,7 +42,7 @@ tags: [多线程 并发 同步 同步原语 锁]
 
 * [Real-world Concurrency](https://queue.acm.org/detail.cfm?id=1454462)   
 
-* wikipedia 关于 Concurrency control 的词条：[Concurrency control](https://en.wikipedia.org/wiki/Concurrency_control)
+* [Concurrency control](https://en.wikipedia.org/wiki/Concurrency_control)
 
 * [The C11 and C++11 Concurrency Model](https://www.cs.kent.ac.uk/people/staff/mjb211/docs/toc.pdf)   
 
@@ -55,6 +55,8 @@ tags: [多线程 并发 同步 同步原语 锁]
 * [Is there any cross-platform threading library in C++?](https://stackoverflow.com/questions/2561471/is-there-any-cross-platform-threading-library-in-c)
 
 * [Threading before C++11](https://bajamircea.github.io/coding/cpp/2019/10/29/threading-before-cpp11.html)
+
+* [List of C++ multi-threading libraries](https://en.wikipedia.org/wiki/List_of_C%2B%2B_multi-threading_libraries)
 
 ---
 
