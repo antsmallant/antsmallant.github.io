@@ -40,46 +40,6 @@ pthread 库 对 barrier 也做了封装，支持 pthread_barrier_t 数据类型�
 
 参考：[pthread_barrier_wait， 内存屏障](https://www.cnblogs.com/my_life/articles/5310793.html)
 
-
-* atmoic  
-
-[What exactly is std::atomic?](https://stackoverflow.com/questions/31978324/what-exactly-is-stdatomic)   
-
-* That conclusion was accurate at the time the article was written (2004); now C++ is a thread and multiprocessor aware language.    
-
-pdf: [C++ and the Perils of Double-Checked Locking](https://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf)   
-
-quote: [http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#DiscussOrder](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#DiscussOrder)
-
-
-## 多线程的初衷
-
-是快。  
-
-但是加了一系列限制之后，它还够快吗？这是一个值得思考的问题。  
-
-from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.csdn.net/qianlong4526888/article/details/17551725)
-
-> None of these mention multi-threading. Indeed, Boehm's paper points to a 1997 comp.programming.threads discussionwhere two experts said it bluntly:
->
->   "Declaring your variables volatile will have no useful effect, and will simply cause your code to run a *lot* slower when you turn on optimisation in your compiler." - Bryan O' Sullivan
->
->   "...the use of volatile accomplishes nothing but to prevent the compiler from making useful and desirable optimizations, providing no help whatsoever in making code "thread safe". " - David Butenhof
->
-> If you are multi-threading for the sake of speed, slowing down code is definitely not what you want. For multi-threaded programming, there two key issues that volatile is often mistakenly thought to address:
-> * atomicity
-> * memory consistency, i.e. the order of a thread's operations as seen by another thread.
-
----
-
-## java or C# 中的内存模型
-
-[如何理解java中的volatile、happen-before、以及重排序的关系？](https://www.zhihu.com/question/499586720/answer/2350034212)
-
-[CPU memory model](https://bajamircea.github.io/coding/cpp/2019/10/25/cpu-memory-model.html)
-
-[Weak vs. Strong Memory Models](https://preshing.com/20120930/weak-vs-strong-memory-models/) 
-
 ---
 
 # 参考
