@@ -1428,7 +1428,7 @@ int main() {
 
 ### std::lock
 
-锁包装器 s(wrapper)，利用 RAII 机制，以异常安全的方式控制锁资源，包括 `std::lock_guard`，`std::unique_lock`。   
+锁包装器 (wrapper)，利用 RAII 机制，以异常安全的方式控制锁资源，包括 `std::lock_guard`，`std::unique_lock`。   
 
 1、`std::lock_guard`   
 
@@ -1483,6 +1483,23 @@ Manual：[《cppreference unique_lock》](https://en.cppreference.com/w/cpp/thre
 比 `std::lock_guard` 复杂得多，提供了更多的功能。  
 
 按照 specification 的描述，`std::unique_lock` 是一个通用目标的 mutex 所有权包装器，支持延迟加锁、时间约束的尝试加锁、递归加锁，转移锁的所有权，以及被条件变量使用。   
+
+主要的 api ：  
+
+```
+lock
+try_lock
+try_lock_for
+try_lock_until
+unlock
+
+swap
+release
+
+mutex
+owns_lock
+operator bool
+```
 
 简单示例：  
 
@@ -1554,7 +1571,7 @@ Manual: [《cppreference - condition_variable》](https://en.cppreference.com/w/
 
 虚假唤醒的研究，我写在了这篇文章：[《antsmallant - 多线程笔记：同步及同步原语》](https://blog.antsmallant.top/2014/03/01/multithread-note-1-synchronization-primitives#42-%E8%99%9A%E5%81%87%E5%94%A4%E9%86%92%E9%97%AE%E9%A2%98) 。   
 
-相关的 api ：    
+主要的 api ：    
 
 |api|功能|
 |:--|:--|
