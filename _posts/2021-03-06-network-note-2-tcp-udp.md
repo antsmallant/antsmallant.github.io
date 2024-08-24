@@ -25,7 +25,7 @@ tags: [计算机网络]
 
 单个服务器可以支撑多少并发连接？经常听到 c10k，也就是单个服务器支持1万个客户端连接，但其实只要性能足够，c100k, c1000k, c10000k ... 都没有问题。  
 
-因为每个 tcp 连接是四元组 (source_ip, source_port, target_ip, target_port) 确定一对连接的, 即使服务端侧的两个值 (target_ip, target_port) 是固定的，客户端侧 (source_ip, source_port) 的组合也几乎是无限的，在 ipv4 下，理论上限是 2^32 * 65535，即 2 的 48 次方，在 ipv6 下，就更夸张了。    
+因为每个 tcp 连接是四元组 (source_ip, source_port, target_ip, target_port) 确定一对连接的, 即使服务端侧的两个值 (target_ip, target_port) 是固定的，客户端侧 (source_ip, source_port) 的组合也几乎是无限的，在 ipv4 下，理论上限是 `2^32 * 65535`，即 2 的 48 次方，在 ipv6 下，就更夸张了。    
 
 上面的计算只是为了说明理论上服务器可以支持超大的 tcp 连接数。实际中，服务器能建立的连接数取决于自身的配置，主要就是操作系统和内存。  
 
@@ -37,8 +37,8 @@ tags: [计算机网络]
 
 tcp 为什么需要三次握手才能建立连接呢？为什么刚好三次就够了呢？  
 
-* 防止重复历史连接的初始化
-* 确定好双方的初始序列号
+1. 防止重复历史连接的初始化
+2. 确定好双方的初始序列号
 
 ![tcp-head](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/network-tcp-head.png)
 <center>图1：tcp包头 [1]</center>
@@ -47,8 +47,8 @@ tcp 为什么需要三次握手才能建立连接呢？为什么刚好三次就�
 
 tcp 握手就是为了协商双方的初始序列号，要完成这个过程，至少也要两次握手：  
 
-* 第一次：A -> B 一个SYN包（seq=a）。  
-* 第二次：B -> A 一个SYN-ACK包（seq=b,ack=a+1）。
+1. A -> B 一个SYN包（seq=a）。  
+2. B -> A 一个SYN-ACK包（seq=b,ack=a+1）。
 
 以上如果网络一切正常，也是能 work 的，双方互相发送了自己的初始 seq 号码。  
 
