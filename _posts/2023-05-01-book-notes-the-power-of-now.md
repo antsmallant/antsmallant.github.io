@@ -10,9 +10,6 @@ categories: [读书]
 {:toc}
 <br/>
 
----
-
-# 1. 概要
 
 英文名是《The Power Of Now》，作者是埃克哈特.托利，出版于 1997 年[1]。   
 
@@ -31,7 +28,7 @@ categories: [读书]
 
 ---
 
-# 2. 要点
+# 1. 要点
 
 ---
 
@@ -63,12 +60,12 @@ categories: [读书]
 
 ---
 
-# 3. 感受
+# 2. 感受
 
 
 ---
 
-# 4. 参考
+# 3. 参考
 
 [1] wikipedia. The Power of Now. Available at https://en.wikipedia.org/wiki/The_Power_of_Now.   
 
