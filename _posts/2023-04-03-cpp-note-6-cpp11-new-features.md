@@ -1600,7 +1600,7 @@ void wait( std::unique_lock<std::mutex>& lock, Predicate pred );
 
 ```cpp
 std::unique_lock lock(some_mutex);
-while (check_condition() != true) {
+while (check_something() != true) {
     cond.wait(lock);
 }
 ```
@@ -1609,7 +1609,7 @@ while (check_condition() != true) {
 
 ```cpp
 std::unique_lock lock(some_mutex);
-cond.wait(lock, []() { return check_condition() == true; });
+cond.wait(lock, []() { return check_something() == true; });
 ```
 
 <br/>
