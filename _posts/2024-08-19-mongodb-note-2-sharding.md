@@ -255,7 +255,7 @@ Shard 节点： 2 ~ 32 个。
 
 ### 4.1.1 chunk 的概念
 
-chunk 是一个逻辑上的概念，它是 shard 做负载均衡的最小单位。一个 chunk 会存储同个集合的若个干文档，分片集群的 collection，里面的文档会根据 sharding key 拆分到多个 chunk 去保存，每个 chunk 有大小控制（默认是 64 MB），但如果是多个文档的 sharding key 都相同，chunk 也会突破大小限制的，形成所谓的 jumbo chunk，这是一种很不好的现象，需要极力避免。  
+chunk 是一个逻辑上的概念，它是 shard 做负载均衡的最小单位。一个 chunk 会存储同个集合的若个干文档。集合中的文档根据 shard key 拆分到多个 chunk 去保存，每个 chunk 有大小控制（默认是 64 MB），但如果多个文档的 shard key 都相同，chunk 也会突破大小限制的，形成所谓的 jumbo chunk，这是一种很不好的现象，需要尽力避免。  
 
 每个 chunk 会有一个 shard key 的范围 (minkey，maxkey)，无论是 range based 还是 hash based，最终都会算出整数类型的 shard key，mongos 就根据 shard key 进行路由，找到对应的 chunk 。   
 
