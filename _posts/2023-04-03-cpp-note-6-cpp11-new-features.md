@@ -1145,6 +1145,8 @@ auto sptr3 = wptr.lock();  // sptr3.use_count() == 0;  (!sptr3) == true;
 
 `std::make_shared<Foo>(10)` vs `std::shared_ptr<Foo>(new Foo())`。     
 
+<br/>
+
 2、使用 `new` 可能会因为异常而导致内存泄漏     
 
 在 c++17 之前，对于这样的函数调用 `f( std::shared_ptr<Foo>(new Foo()), get_some_param() )`，编译器给出的参数求值顺序可能是这样的：  
@@ -1167,11 +1169,21 @@ auto sptr3 = wptr.lock();  // sptr3.use_count() == 0;  (!sptr3) == true;
 
 关于求值顺序导致的大问题，还可以参考这篇文章：[《C++17之定义表达式求值顺序》](https://blog.csdn.net/janeqi1987/article/details/100181769)，情况比想象中的还要严重。   
 
+<br/>
+
 3、使用 `new` 需要 2 次内存分配    
 
 而不使用 `new` 可以给编译器创造优化空间，有可能用一次内存分配即可。     
 
 因为 `std::shared_ptr` 除了包含一个指向共享的资源的指针，还包含一个保存引用计数信息的控制块，这个控制块也需要申请内存空间的。使用 `std::make_shared` 令编译器有机会分配一次内存，同时申请好资源的内存空间和控制块的内存空间。    
+
+---
+
+## memory model
+
+
+
+
 
 ---
 
@@ -1742,6 +1754,12 @@ int main() {
     return 0;
 }
 ```
+
+---
+
+### std::future 相关
+
+
 
 ---
 
