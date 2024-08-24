@@ -712,6 +712,8 @@ stackexchange 上的这个回答：[《What is the rationale behind EINTR?》](h
 >
 >In the above scenario, when `SA_RESTART` is not set, `recv()` whould receive `EINTR` instead of being restarted. The system call exits and thus can continue. Of course, the program should then (as early as possible) check the flag (set by the signal handler) and do clean up or whatever it does.   
 
+与此种设计相关的一篇文章：[《The Rise of "Worse is Better"》](https://www.jwz.org/doc/worse-is-better.html) [16] 。  
+
 <br/>
 
 等有空还是要亲自看一下 pthread 的源码，看看 `pthread_cond_wait`，`pthread_cond_signal` 的具体实现。   
@@ -1067,3 +1069,5 @@ int main()
 [14] [美]David R. Butenhof. POSIX多线程程序设计. 于磊, 曾刚. 北京: 中国电力出版社, 2003-4.   
 
 [15] Raymond Chen. Spurious wake-ups in Win32 condition variables. Available at https://devblogs.microsoft.com/oldnewthing/20180201-00/?p=97946, 2018-2-1.   
+
+[16] Richard Gabriel. The Rise of "Worse is Better". Available at https://www.jwz.org/doc/worse-is-better.html.    
