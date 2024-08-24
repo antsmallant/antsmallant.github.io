@@ -639,6 +639,10 @@ int pthread_cond_timedwait(pthread_cond_t* cond, pthread_mutex_t *mutex,
 
 解释一下谓词，像下面的伪码中，判断队列是否为空的语句就是一个谓词。   
 
+`pthread_cond_wait` 的实现逻辑是这样的：  
+1. 进入函数，先解锁 `mutex`，并阻塞到等待队列中。   
+2. 退出函数，重新加锁 `mutex`，加锁成功再返回。     
+
 条件变量的一般编程模式如下面的伪码：    
 
 ```c
