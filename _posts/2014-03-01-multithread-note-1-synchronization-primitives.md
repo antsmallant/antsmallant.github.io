@@ -691,7 +691,7 @@ David R. Butenhof 在《Posix多线程程序设计》中的解释是 “在某�
 
 第 2 点，按照 David R. Butenhof 书中[14]对于 "spurious wakeups" 的描述来看，算不上虚假唤醒，应该只是一种 “多处理器竞争问题”。   
 
-这篇文章 [《Spurious wake-ups in Win32 condition variables》](https://devblogs.microsoft.com/oldnewthing/20180201-00/?p=97946) 描述了 windows 下的虚假唤醒问题，文章中把上面第 2 点称为 "stolen wake-up"。    
+这篇文章 [《Spurious wake-ups in Win32 condition variables》](https://devblogs.microsoft.com/oldnewthing/20180201-00/?p=97946) [15] 描述了 windows 下的虚假唤醒问题，文章中把上面第 2 点称为 "stolen wake-up"。    
 
 <br/>
 
@@ -1042,4 +1042,6 @@ int main()
 
 [13] David R. Butenhof. Recursive mutexes by David Butenhof. Available at http://zaval.org/resources/library/butenhof1.html, 2005-5-17.  
 
-[14] [美]David R. Butenhof. POSIX多线程程序设计. 于磊, 曾刚. 北京: 中国电力出版社, 2003-4.  
+[14] [美]David R. Butenhof. POSIX多线程程序设计. 于磊, 曾刚. 北京: 中国电力出版社, 2003-4.   
+
+[15] Raymond Chen. Spurious wake-ups in Win32 condition variables. Available at https://devblogs.microsoft.com/oldnewthing/20180201-00/?p=97946, 2018-2-1.   
