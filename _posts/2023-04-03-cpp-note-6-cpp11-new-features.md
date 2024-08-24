@@ -1550,9 +1550,23 @@ Manual: [《cppreference - condition_variable》](https://en.cppreference.com/w/
 
 头文件：`<condition_variable>`     
 
-条件变量
+条件变量需要配合 `std::mutex` 使用，这个与常规的条件变量实现没什么差异。同样也需要处理虚假唤醒（spurius wakeup）问题，即在循环里判断条件是否满足，不满足则继续 wait。    
 
-示例 [13]:  
+虚假唤醒的研究，我写在了这篇文章：[《antsmallant - 多线程笔记：同步及同步原语》](https://blog.antsmallant.top/2014/03/01/multithread-note-1-synchronization-primitives#42-%E8%99%9A%E5%81%87%E5%94%A4%E9%86%92%E9%97%AE%E9%A2%98) 。   
+
+相关的 api ：    
+
+|api|功能|
+|:--|:--|
+|notify_one|唤醒一条等待线程|
+|notify_all|唤醒所有等待线程|
+|wait|阻塞直到被唤醒|
+|wait_for|阻塞直到被唤醒或达到指定时长|
+|wait_until|阻塞直到被唤醒或达到指定时间点|
+|native_handle|返回原始句柄，这个与具体实现有关，在Posix系统，可能是 pthread_cond_t*，在Windows，可能是 PCONDITION_VARIABLE|
+
+
+示例 [13]:   
 
 ```cpp
 
