@@ -1583,7 +1583,9 @@ Manual: [《cppreference - condition_variable》](https://en.cppreference.com/w/
 |wait_until|阻塞直到被唤醒或达到指定时间点|
 |native_handle|返回原始句柄，这个与具体实现有关，在Posix系统，可能是 pthread_cond_t*，在Windows，可能是 PCONDITION_VARIABLE|
 
-需要注意的是，c++ 里 `condition_variable` 的 `wait` 与 pthread 里的 `pthread_cond_wait` 有小小差异，c++ 这里支持两个函数原型：   
+注意：  
+1. 一般在 `notify_` 之前，要先解锁，避免把等待线程唤醒了，但它又需要阻塞在加锁上。  
+2. c++ 里 `condition_variable` 的 `wait` 与 pthread 里的 `pthread_cond_wait` 有小小差异，c++ 这里支持两个函数原型：   
 
 ```cpp
 void wait( std::unique_lock<std::mutex>& lock );
@@ -1610,10 +1612,73 @@ std::unique_lock lock(some_mutex);
 cond.wait(lock, []() { return check_condition() == true; });
 ```
 
+<br/>
+
 示例 [16]:   
 
 ```cpp
+#include <condition_variable>
+#include <mutex>
+#include <thread>
+#include <iostream>
+#include <string> 
 
+std::mutex m;
+std::condition_variable cv;
+std::string data;
+bool ready = false;
+bool processed = false;
+
+void worker_thread() {
+    // 等待直到 main() 发送数据
+    std::unique_lock lk(m);
+    cv.wait(lk, []{ return ready; });  // 相当于传统的循环检测条件是否满足的写法
+
+    // 等待结束，成功获得锁
+    std::cout << "Worker thread is processing data\n";
+    data += " after processing";
+
+    // 向 main() 发送数据
+    processed = true;
+    std::cout << "Worker thread signals data processing completed\n";
+
+    // 在 notify 前手动的释放锁，避免唤醒了等待线程，但该线程又阻塞在加锁上
+    lk.unlock();
+    cv.notify_one();
+}
+
+int main() {
+    std::thread worker(worker_thread);
+
+    data = "Example data";
+    // 向 worker thread 发送数据
+    {
+        std::lock_guard lk(m);
+        ready = true;
+        std::cout << "main() signals data ready for processing\n";
+    }
+    cv.notify_one();
+
+    // 等待 woker
+    {
+        std::unique_lock lk(m);
+        cv.wait(lk, []{ return processed; });
+    }
+    std::cout << "Back in main(), data = " << data << "\n";
+
+    worker.join();
+
+    return 0;
+}
+```
+
+输出：   
+
+```
+main() signals data ready for processing
+Worker thread is processing data
+Worker thread signals data processing completed
+Back in main(), data = Example data after processing
 ```
 
 ---
