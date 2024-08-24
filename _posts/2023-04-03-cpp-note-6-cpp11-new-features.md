@@ -1870,10 +1870,12 @@ std::tuple<int&, std::string&, std::string&> {age, name, city} =
 
 ```
 
-`std::tuple` 重载了很多个 `operator =` 函数，可参考这里：[《`std::tuple<Types...>::operator=`》](https://en.cppreference.com/w/cpp/utility/tuple/operator%3D)。当然，也重载了 `std::pair` 到 `std::tuple` 的转换，所以上面的例子中，`std::tie` 也可以用于解包 `std::pair`。    
+`std::tuple` 重载了很多个 `operator =` 函数，可参考这里：[《cppreference - `std::tuple<Types...>::operator=`》](https://en.cppreference.com/w/cpp/utility/tuple/operator%3D)。    
+
+当然，也重载了 `std::pair` 到 `std::tuple` 的转换，所以上面的例子中，`std::tie` 也可以用于解包 `std::pair`。    
 
 
-更具体的关于 `std::tie` 是怎么工作的，可参考这篇文章： [《How does std::tie work?》](https://stackoverflow.com/questions/43762651/how-does-stdtie-work)。  
+更具体的关于 `std::tie` 是怎么工作的，可参考这篇文章： [《How does std::tie work?》](https://stackoverflow.com/questions/43762651/how-does-stdtie-work)。    
 
 ---
 
