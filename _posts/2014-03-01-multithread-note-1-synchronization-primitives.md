@@ -32,11 +32,13 @@ tags: [多线程 并发 同步 同步原语 锁]
 **todo**  
 
 - [ ] 补完读写锁
+- [ ] 补完 3.5 barrier 相关的
 - [ ] 补完 c++ 相关的同步原语
 - [ ] pthread mutex，未持有锁的线程 unlock 了被其他线程持有的锁，会发生什么事情？   
 - [ ] what is monitor?  https://en.wikipedia.org/wiki/Monitor_(synchronization)#  实际上就是 condition var?  
 - [ ] named semaphore 如何保证被 unlink 掉？  
 - [ ] 替换引用，整理引用。  
+
 
 ---
 
@@ -583,6 +585,22 @@ int pthread_spin_unlock(pthread_spinlock_t *lock);
 ```  
 
 与互斥锁类似，如果要让自旋锁跨进程使用，则 `pthread_spinlock_t` 也需要分配在共享内存上，具体做法参照上文的互斥锁 。  
+
+---
+
+## 3.5 barrier
+
+* [pthread_barrier_wait， 内存屏障](https://www.cnblogs.com/my_life/articles/5310793.html)
+
+* [深入浅出 Barriers 实现（一）](https://www.cnblogs.com/haippy/archive/2012/12/26/2833554.html)
+
+pthread 库 对 barrier 也做了封装，支持 pthread_barrier_t 数据类型，并且提供了pthread_barrier_init, pthread_barrier_destroy, pthread_barrier_wait API, 为了使用 pthread 的 barrier。  
+
+操作系统底层就有提供这种 barrier，比如 linux 提供的：  
+
+```c
+#define barrier() __asm__ __volatile__("" ::: "memory")
+```
 
 ---
 
