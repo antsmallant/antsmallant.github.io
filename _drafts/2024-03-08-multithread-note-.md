@@ -13,14 +13,6 @@ tags: [并发 同步 多线程]
 
 ---
 
-# 同步原语的性能对比
-
-* 性能对比的论文
-[More Than You Ever Wanted to Know about Synchronization: Synchrobench, Measuring the Impact of the Synchronization on Concurrent Algorithms](https://www.researchgate.net/profile/Vincent-Gramoli/publication/282921226_More_Than_You_Ever_Wanted_to_Know_about_Synchronization_Synchrobench_Measuring_the_Impact_of_the_Synchronization_on_Concurrent_Algorithms/links/573c005308ae9ace840eb23a/More-Than-You-Ever-Wanted-to-Know-about-Synchronization-Synchrobench-Measuring-the-Impact-of-the-Synchronization-on-Concurrent-Algorithms.pdf)
-
-
----
-
 # 多线程编程的陷阱
 
 ## C++11 完善的多线程支持
@@ -54,21 +46,6 @@ pthread 库 对 barrier 也做了封装，支持 pthread_barrier_t 数据类型�
     * [Threading before C++11](https://bajamircea.github.io/coding/cpp/2019/10/29/threading-before-cpp11.html)
 
 
-* 内存模型 & reordering 参考：
-    * [Memory Model and Synchronization Primitive - Part 1: Memory Barrier](https://www.alibabacloud.com/blog/memory-model-and-synchronization-primitive---part-1-memory-barrier_597460)
-
-    * [Memory Model and Synchronization Primitive - Part 2: Memory Model](https://www.alibabacloud.com/blog/memory-model-and-synchronization-primitive---part-2-memory-model_597461)
-
-    * [C++ and Beyond 2012: Herb Sutter - atomic Weapons 1 of 2](https://www.youtube.com/watch?v=A8eCGOqgvH4&t=620s)
-
-    * [Compiler reordering](https://bajamircea.github.io/coding/cpp/2019/10/23/compiler-reordering.html)
-
-    * [CPU流水线与指令重排序](https://cloud.tencent.com/developer/article/2195759)
-
-    * [Memory ordering](https://en.wikipedia.org/wiki/Memory_ordering)
-
-    * [大白话C++之：一文搞懂C++多线程内存模型(Memory Order)](https://blog.csdn.net/sinat_38293503/article/details/134612152)     
-
 * atmoic  
 
 [What exactly is std::atomic?](https://stackoverflow.com/questions/31978324/what-exactly-is-stdatomic)   
@@ -87,8 +64,6 @@ pthread 库 对 barrier 也做了封装，支持 pthread_barrier_t 数据类型�
 
 * That conclusion was accurate at the time the article was written (2004); now C++ is a thread and multiprocessor aware language.    
 
-[volatile keyword and multiprocessors ](https://www.daniweb.com/programming/software-development/threads/389799/volatile-keyword-and-multiprocessors) 
-
 pdf: [C++ and the Perils of Double-Checked Locking](https://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf)   
 
 quote: [http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#DiscussOrder](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#DiscussOrder)
@@ -98,15 +73,6 @@ quote: [http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#Discu
 
 [Why do we use the volatile keyword? ](https://stackoverflow.com/questions/4437527/why-do-we-use-the-volatile-keyword)
 
-
-* wikipedia 的 volatile 定义   
-
-[volatile (computer programming)](https://en.wikipedia.org/wiki/Volatile_(computer_programming)#cite_note-7)
-
-
-## c 没有明确规定的内存模型，是如何在多线程下工作的？
-
-可以使用内存屏障吗？
 
 ## 多线程的初衷
 

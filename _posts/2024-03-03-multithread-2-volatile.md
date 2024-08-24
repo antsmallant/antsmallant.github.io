@@ -156,13 +156,19 @@ microsoft 在这篇文章[《volatile (C++)》](https://learn.microsoft.com/en-u
 
 ---
 
-# 5. 总结
+# 5. 拓展阅读
+
+* [C++11 volatile](https://bajamircea.github.io/coding/cpp/2019/11/05/cpp11-volatile.html)    
+
+---
+
+# 6. 总结
 
 * 多线程编程中，不要依赖 volatile。  
 
 ---
 
-# 6. 参考
+# 7. 参考
 
 [1] [美]Scott Meyers. Effective Modern C++(中文版). 高博. 北京: 中国电力出版社, 2018-4: 254.    
 
