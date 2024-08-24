@@ -23,6 +23,8 @@ tags: [并发 同步 多线程]
 
 * C++11 引入的 memory model，可以很好的解决多线程下的内存顺序问题，应该使用这些可靠的机制。    
 
+所谓 Memory Mapped I/O，就是将 IO 设备的寄存器与存储映射到特定的内存空间上，往这个内存空间读写数据的时候，就等于是从这个 IO 设备读写数据。  
+
 Scott Meyers 在《Effective Modern C++》的条款40[1]说到：“可怜的 volatile。被误解到如此地步。它甚至不应该出现在本章中，因为它与并发程序设计毫无关系。”。    
 
 要了解清楚 volatile 是如何被误解和滥用的，需要先了解一下它的历史。下文主要参考自这篇文章：[《C++11 volatile》](https://bajamircea.github.io/coding/cpp/2019/11/05/cpp11-volatile.html) [2]。  
