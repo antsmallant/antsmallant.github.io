@@ -1565,8 +1565,34 @@ Manual: [《cppreference - condition_variable》](https://en.cppreference.com/w/
 |wait_until|阻塞直到被唤醒或达到指定时间点|
 |native_handle|返回原始句柄，这个与具体实现有关，在Posix系统，可能是 pthread_cond_t*，在Windows，可能是 PCONDITION_VARIABLE|
 
+需要注意的是，c++ 里 `condition_variable` 的 `wait` 与 pthread 里的 `pthread_cond_wait` 有小小差异，c++ 这里支持两个函数原型：   
 
-示例 [13]:   
+```cpp
+void wait( std::unique_lock<std::mutex>& lock );
+
+template< class Predicate >
+void wait( std::unique_lock<std::mutex>& lock, Predicate pred ); 
+```
+
+第一个原型跟 `pthread_cond_wait` 类似，而第二个则支持把谓词作为参数传进去，那么就可以省去循环式的写法了。  
+
+第一个原型一般得这么写：  
+
+```cpp
+std::unique_lock lock(some_mutex);
+while (check_condition() != true) {
+    cond.wait(lock);
+}
+```
+
+而第二个原型可以这么写：  
+
+```cpp
+std::unique_lock lock(some_mutex);
+cond.wait(lock, []() { return check_condition() == true; });
+```
+
+示例 [16]:   
 
 ```cpp
 
@@ -1811,3 +1837,5 @@ std::tuple<int&, std::string&, std::string&> {age, name, city} =
 [14] 破晓. C++11实现自旋锁. Available at https://blog.poxiao.me/p/spinlock-implementation-in-cpp11/, 2014-4-20.    
 
 [15] cppreference. unique_lock. Available at https://en.cppreference.com/w/cpp/thread/unique_lock.    
+
+[16] cppreference. condition_variable. Available at https://en.cppreference.com/w/cpp/thread/condition_variable.    
