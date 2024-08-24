@@ -52,7 +52,7 @@ write 返回 0，表示缓冲区写满了，等下次再写。
 
 ## 零拷贝
 
-参考： [什么是零拷贝？](https://xiaolincoding.com/os/8_network_system/zero_copy.html#_9-1-%E4%BB%80%E4%B9%88%E6%98%AF%E9%9B%B6%E6%8B%B7%E8%B4%9D)
+* [什么是零拷贝？](https://xiaolincoding.com/os/8_network_system/zero_copy.html#_9-1-%E4%BB%80%E4%B9%88%E6%98%AF%E9%9B%B6%E6%8B%B7%E8%B4%9D)
 
 ---
 
