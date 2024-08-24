@@ -44,6 +44,17 @@ tags: [多线程 并发 同步 同步原语 锁]
 
 * wikipedia 关于 Concurrency control 的词条：[Concurrency control](https://en.wikipedia.org/wiki/Concurrency_control)
 
+* [The C11 and C++11 Concurrency Model](https://www.cs.kent.ac.uk/people/staff/mjb211/docs/toc.pdf)   
+
+---
+
+## 1.4 多线程库
+
+* [Multithreaded programming in C++](https://www.incredibuild.com/blog/multithreaded-programming-in-c)
+
+* [Is there any cross-platform threading library in C++?](https://stackoverflow.com/questions/2561471/is-there-any-cross-platform-threading-library-in-c)
+
+* [Threading before C++11](https://bajamircea.github.io/coding/cpp/2019/10/29/threading-before-cpp11.html)
 
 ---
 

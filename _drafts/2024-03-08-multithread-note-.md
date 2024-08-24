@@ -40,11 +40,6 @@ pthread 库 对 barrier 也做了封装，支持 pthread_barrier_t 数据类型�
 
 参考：[pthread_barrier_wait， 内存屏障](https://www.cnblogs.com/my_life/articles/5310793.html)
 
-* C++11 之前是如何使用多线程编程的？
-    * [Multithreaded programming in C++](https://www.incredibuild.com/blog/multithreaded-programming-in-c)
-    * [Is there any cross-platform threading library in C++?](https://stackoverflow.com/questions/2561471/is-there-any-cross-platform-threading-library-in-c)
-    * [Threading before C++11](https://bajamircea.github.io/coding/cpp/2019/10/29/threading-before-cpp11.html)
-
 
 * atmoic  
 
@@ -75,30 +70,15 @@ from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.cs
 > * atomicity
 > * memory consistency, i.e. the order of a thread's operations as seen by another thread.
 
-
+---
 
 ## java or C# 中的内存模型
-
-何为 JMM ？ 
 
 [如何理解java中的volatile、happen-before、以及重排序的关系？](https://www.zhihu.com/question/499586720/answer/2350034212)
 
 [CPU memory model](https://bajamircea.github.io/coding/cpp/2019/10/25/cpu-memory-model.html)
 
-[Weak vs. Strong Memory Models](https://preshing.com/20120930/weak-vs-strong-memory-models/)
-
----
-
-# 拓展阅读
-
-* Vincent Gramoli. More than You Ever Wanted to Know about Synchronization
- Synchrobench, Measuring the Impact of the Synchronization on Concurrent Algorithms. Available at https://perso.telecom-paristech.fr/kuznetso/INF346-2015/slides/gramoli-ppopp15.pdf, 2015.  
-
-* Bryan Cantrill, Jeff Bonwick. Real-world Concurrency. Available at https://queue.acm.org/detail.cfm?id=1454462, 2008-10-24.   
-
-* [英]Anthony Williams. C++并发编程实战（第2版）. 吴天明. 北京: 人民邮电出版社, 2021-11-1.  
- 
-* Mark John Batty, Wolfson College. The C11 and C++11 Concurrency Model. Available at https://www.cs.kent.ac.uk/people/staff/mjb211/docs/toc.pdf, 2014-11-29.     
+[Weak vs. Strong Memory Models](https://preshing.com/20120930/weak-vs-strong-memory-models/) 
 
 ---
 

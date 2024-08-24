@@ -1043,7 +1043,7 @@ int main()
 
 # 9. 拓展阅读
 
-* 同步原语的性能对比论文：[《More Than You Ever Wanted to Know about Synchronization: Synchrobench, Measuring the Impact of the Synchronization on Concurrent Algorithms》](https://www.researchgate.net/profile/Vincent-Gramoli/publication/282921226_More_Than_You_Ever_Wanted_to_Know_about_Synchronization_Synchrobench_Measuring_the_Impact_of_the_Synchronization_on_Concurrent_Algorithms/links/573c005308ae9ace840eb23a/More-Than-You-Ever-Wanted-to-Know-about-Synchronization-Synchrobench-Measuring-the-Impact-of-the-Synchronization-on-Concurrent-Algorithms.pdf)
+* 同步原语的性能对比论文：[《More Than You Ever Wanted to Know about Synchronization: Synchrobench, Measuring the Impact of the Synchronization on Concurrent Algorithms》](https://www.researchgate.net/profile/Vincent-Gramoli/publication/282921226_More_Than_You_Ever_Wanted_to_Know_about_Synchronization_Synchrobench_Measuring_the_Impact_of_the_Synchronization_on_Concurrent_Algorithms/links/573c005308ae9ace840eb23a/More-Than-You-Ever-Wanted-to-Know-about-Synchronization-Synchrobench-Measuring-the-Impact-of-the-Synchronization-on-Concurrent-Algorithms.pdf)  或者这个链接 [https://perso.telecom-paristech.fr/kuznetso/INF346-2015/slides/gramoli-ppopp15.pdf](https://perso.telecom-paristech.fr/kuznetso/INF346-2015/slides/gramoli-ppopp15.pdf)
 
 
 
