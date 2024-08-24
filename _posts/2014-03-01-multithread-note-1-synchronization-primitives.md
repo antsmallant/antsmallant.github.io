@@ -695,9 +695,28 @@ David R. Butenhof 在《Posix多线程程序设计》中的解释是 “在某�
 
 <br/>
 
+另一个问题，关于上面第 1 点，为什么阻塞的系统调用在执行期间，遇到进程被信号中断，会中止阻塞并返回 EINTR 呢？   
+
+stackexchange 上的这个回答：[《What is the rationale behind EINTR?》](https://unix.stackexchange.com/questions/253349/what-is-the-rationale-behind-eintr) 做了挺好的解释。  
+
+大概的意思是：假设进程对于信号 SIGINT 有个信号处理函数，在这个函数里面会修改某些标志（flag），这些标志会在别处被检测。而我们有些 read/write 之类的系统调用阻塞着，在信号处理函数执行完后，如果自动恢复 read/write 的运行，那么调用了 read/write 的事件循环逻辑就没有机会重新检测由信号处理函数修改的标志（flag）。   
+
+原文引用：  
+>It is difficult to do nontrivial things in a signal handler, since the rest of the program is in an unknown state. Most signal handlers just set a flag, which is later checked and handled elsewhere in the program.  
+>
+>**Reason for not restarting the system call automatically:**   
+>
+>Imagine an application which receives data from a socket by the **blocking and uninterruptible** `recv()` system call. In our scenario, data comes very slow and the program resides long in that system call. That program has a signal handler for `SIGINT` that sets a flag(which is evaluated elsewhere), and `SA_RESTART` is set that the system call restarts automatically. Imagine that the program is int `recv()` which waits for data. But no data arrives. The system call blocks. The program now catches `ctrl-c` from the user. The system call is interrupted and the signal handler, which just sets the flag is executed. Then `recv()` is restarted, still waiting for data. The event loop is stuck in `recv()` and has no opportunity to evaluate the flag and exit the program gracefully.  
+>
+>**With `SA_RESTART` not set:**   
+>
+>In the above scenario, when `SA_RESTART` is not set, `recv()` whould receive `EINTR` instead of being restarted. The system call exits and thus can continue. Of course, the program should then (as early as possible) check the flag (set by the signal handler) and do clean up or whatever it does.   
+
+<br/>
+
 等有空还是要亲自看一下 pthread 的源码，看看 `pthread_cond_wait`，`pthread_cond_signal` 的具体实现。   
 
-或许可以先看下这篇文章：[《深入了解glibc的条件变量》](https://blog.csdn.net/qq_31442743/article/details/131548997)。  
+或许可以先看下这篇文章：[《深入了解glibc的条件变量》](https://blog.csdn.net/qq_31442743/article/details/131548997)。   
 
 
 ---
