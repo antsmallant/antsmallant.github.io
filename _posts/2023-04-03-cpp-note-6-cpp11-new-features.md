@@ -1852,7 +1852,7 @@ auto tp = std::tie(age, name, nation); // tp 是一个 std::tuple
 std::tie(age, name, city) = std::make_tuple(100, "Mike", "LA"); 
 ``` 
 
-实际上是
+实际上是:  
 
 ```cpp
 std::tuple<int&, std::string&, std::string&> {age, name, city} = 
