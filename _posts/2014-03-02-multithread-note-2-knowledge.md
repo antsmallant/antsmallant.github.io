@@ -28,4 +28,23 @@ tags: [多线程 并发 同步 同步原语 锁]
 
 ---
 
+## 1.2 什么时候应该使用多线程编程？
+
+* [CppCon 2017: Ansel Sermersheim “Multithreading is the answer. What is the question? (part 1 of 2)”](https://www.youtube.com/watch?v=GNw3RXr-VJk)
+
+* [CppCon 2017: Ansel Sermersheim “Multithreading is the answer. What is the question? (part 2 of 2)”](https://www.youtube.com/watch?v=sDLQWivf1-I)
+
+* [Multithreading is the answer.What is the question](https://www.copperspice.com/pdf/ACCU-Multi-Threading.pdf)
+
+---
+
+## 1.3 并发
+
+* [Real-world Concurrency](https://queue.acm.org/detail.cfm?id=1454462)   
+
+* wikipedia 关于 Concurrency control 的词条：[Concurrency control](https://en.wikipedia.org/wiki/Concurrency_control)
+
+
+---
+
 # 2. 参考

@@ -50,28 +50,11 @@ pthread 库 对 barrier 也做了封装，支持 pthread_barrier_t 数据类型�
 
 [What exactly is std::atomic?](https://stackoverflow.com/questions/31978324/what-exactly-is-stdatomic)   
 
-* intel 论坛上的这篇文章了：  Volatile: Almost Useless for Multi-Threaded Programming     
-
-[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.csdn.net/qianlong4526888/article/details/17551725)
-
-[Should volatile Acquire Atomicity and Thread Visibility Semantics?](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n2016.html)
-
-
-* Since C++11, atomic variables (std::atomic<T>) give us all of the relevant guarantees.   
-
-[Why is volatile not considered useful in multithreaded C or C++ programming?](https://stackoverflow.com/questions/2484980/why-is-volatile-not-considered-useful-in-multithreaded-c-or-c-programming)
-
-
 * That conclusion was accurate at the time the article was written (2004); now C++ is a thread and multiprocessor aware language.    
 
 pdf: [C++ and the Perils of Double-Checked Locking](https://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf)   
 
 quote: [http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#DiscussOrder](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#DiscussOrder)
-
-
-* Why do we use the volatile keyword?   
-
-[Why do we use the volatile keyword? ](https://stackoverflow.com/questions/4437527/why-do-we-use-the-volatile-keyword)
 
 
 ## 多线程的初衷
@@ -103,25 +86,6 @@ from：[Volatile: Almost Useless for Multi-Threaded Programming](https://blog.cs
 [CPU memory model](https://bajamircea.github.io/coding/cpp/2019/10/25/cpu-memory-model.html)
 
 [Weak vs. Strong Memory Models](https://preshing.com/20120930/weak-vs-strong-memory-models/)
-
----
-
-# 什么时候应该使用多线程编程？
-
-* [CppCon 2017: Ansel Sermersheim “Multithreading is the answer. What is the question? (part 1 of 2)”](https://www.youtube.com/watch?v=GNw3RXr-VJk)
-
-* [CppCon 2017: Ansel Sermersheim “Multithreading is the answer. What is the question? (part 2 of 2)”](https://www.youtube.com/watch?v=sDLQWivf1-I)
-
-* [Multithreading is the answer.What is the question](https://www.copperspice.com/pdf/ACCU-Multi-Threading.pdf)
-
----
-
-# 并发
-
-[Real-world Concurrency](https://queue.acm.org/detail.cfm?id=1454462)   
-
-* wikipedia 关于 Concurrency control 的词条
-[Concurrency control](https://en.wikipedia.org/wiki/Concurrency_control)
 
 ---
 

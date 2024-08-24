@@ -162,6 +162,16 @@ microsoft 在这篇文章[《volatile (C++)》](https://learn.microsoft.com/en-u
 
 * [C++11 volatile](https://bajamircea.github.io/coding/cpp/2019/11/05/cpp11-volatile.html)    
 
+* [Why do we use the volatile keyword? ](https://stackoverflow.com/questions/4437527/why-do-we-use-the-volatile-keyword)
+
+* [Should volatile Acquire Atomicity and Thread Visibility Semantics?](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n2016.html)
+
+* [Volatile: Almost Useless for Multi-Threaded Programming](https://blog.csdn.net/qianlong4526888/article/details/17551725)
+
+* [Why is volatile not considered useful in multithreaded C or C++ programming?](https://stackoverflow.com/questions/2484980/why-is-volatile-not-considered-useful-in-multithreaded-c-or-c-programming)
+
+
+
 ---
 
 # 6. 总结
