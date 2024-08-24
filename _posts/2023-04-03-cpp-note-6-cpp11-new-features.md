@@ -1484,22 +1484,23 @@ Manual：[《cppreference unique_lock》](https://en.cppreference.com/w/cpp/thre
 
 按照 specification 的描述，`std::unique_lock` 是一个通用目标的 mutex 所有权包装器，支持延迟加锁、时间约束的尝试加锁、递归加锁，转移锁的所有权，以及被条件变量使用。   
 
+`std::unique_lock` 不可拷贝，但可移动。  
+
 主要的 api ：  
 
-```
-lock
-try_lock
-try_lock_for
-try_lock_until
-unlock
+|api|作用|
+|:--|:--|
+|lock|阻塞的加锁关联的 mutex |
+|try_lock|不阻塞的尝试加锁关联的 mutex|
+|try_lock_for|尝试对关联的 mutex 加锁：成功或者超过指定时长而失败|
+|try_lock_until|尝试对关联的 mutex 加锁：成功或者超过指定时间点失败|
+|unlock|解锁关联的 mutex|
+|swap|与另一个 std::unique_lock 交换状态量|
+|release|与关联的 mutex 断开联系，但并不解锁|
+|mutex|返回关联的mutex的指针|
+|owns_lock|测试当前是否与mutex有关联并加了锁|
+|operator bool|作用与 owns_lock 相同|
 
-swap
-release
-
-mutex
-owns_lock
-operator bool
-```
 
 简单示例：  
 
