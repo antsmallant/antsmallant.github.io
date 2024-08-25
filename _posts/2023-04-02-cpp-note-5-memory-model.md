@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "c++ 笔记：memory order"
+title: "c++ 笔记：memory model"
 date: 2023-04-02
 last_modified_at: 2024-07-01
 categories: [c++]
@@ -11,7 +11,7 @@ tags: [c++ cpp]
 {:toc}
 <br/>
 
-本文记录 c++ memory order 相关的要点。  
+本文记录 c++ memory model 相关的要点。  
 
 ---
 
