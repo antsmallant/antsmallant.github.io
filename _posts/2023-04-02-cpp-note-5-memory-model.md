@@ -25,7 +25,7 @@ tags: [c++ cpp]
 
 * Consistency: 连贯性，它确定了一个写入值什么时候被读取操作返回。[1]     
 
-而 Sequential Consistency 又译作顺序一致性。   
+而 Sequential Consistency 译作顺序连贯性，但也有人译作顺序一致性。     
 
 Cache Coherence 保证对单个地址读写的正确性，Sequential Consistency 保证对多个地址读写的正确性。    
 

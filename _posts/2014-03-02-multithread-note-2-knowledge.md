@@ -62,11 +62,13 @@ tags: [多线程 并发 同步 同步原语 锁]
 
 ## 1.5 java or C# 中的内存模型
 
-[如何理解java中的volatile、happen-before、以及重排序的关系？](https://www.zhihu.com/question/499586720/answer/2350034212)
+* [如何理解java中的volatile、happen-before、以及重排序的关系？](https://www.zhihu.com/question/499586720/answer/2350034212)
 
-[CPU memory model](https://bajamircea.github.io/coding/cpp/2019/10/25/cpu-memory-model.html)
+* [CPU memory model](https://bajamircea.github.io/coding/cpp/2019/10/25/cpu-memory-model.html)
 
-[Weak vs. Strong Memory Models](https://preshing.com/20120930/weak-vs-strong-memory-models/) 
+* [Weak vs. Strong Memory Models](https://preshing.com/20120930/weak-vs-strong-memory-models/) 
+
+* [The Java Memory Model](https://www.cs.umd.edu/~pugh/java/memoryModel/)   
 
 ---
 
