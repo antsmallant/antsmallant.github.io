@@ -160,40 +160,19 @@ innodb 的读写 qps 差异很大。如果内存足够大，数据局部性足�
 
 ---
 
-# 参考
-
-[2] 李俊飞. 数据库性能评测：整体性能对比. https://cloud.tencent.com/developer/article/1005399, 2017-07-04.   
-
-[3] 阿里云. Redis社区版性能白皮书. Available at https://help.aliyun.com/zh/redis/support/performance-whitepaper-of-community-edition-instances, 2023-10-20.  
-
-[4] 阿里云. MySQL 8.0测试结果. Available at https://help.aliyun.com/zh/rds/apsaradb-rds-for-mysql/test-results-of-apsaradb-rds-instances-that-run-mysql-8, 2023-11-24.  
-
-[5] 华为云. RDS for MySQL 8.0测试数据：独享型测试数据. Available at https://support.huaweicloud.com/pwp-rds/rds_swp_mysql_12.html, 2022-12-22.  
-
-[6] redis. Redis benchmark. Available at https://redis.io/docs/latest/operate/oss_and_stack/management/optimization/benchmarks/.
-
----
-
-
 # 资料收集
 
-这篇文章《数据库性能评测：整体性能对比》[2] 做了一次 mysql / mongodb / redis 的数据性能测试。  
+* [《数据库性能评测：整体性能对比》](https://cloud.tencent.com/developer/article/1005399) 做了一次 mysql / mongodb / redis 的数据性能测试。  
 
+* [mysql 官方 MySQL Benchmarks 推荐的几篇文章](https://www.mysql.com/cn/why-mysql/benchmarks/mysql/)
 
-mysql 官方 MySQL Benchmarks 推荐的几篇文章。  
+* [阿里云官方 rds MySQL版 性能白皮书](https://www.alibabacloud.com/help/zh/rds/apsaradb-rds-for-mysql/rds-for-mysql/)
 
-https://www.mysql.com/cn/why-mysql/benchmarks/mysql/
-
-* 阿里云官方 rds MySQL版 性能白皮书 
-https://www.alibabacloud.com/help/zh/rds/apsaradb-rds-for-mysql/rds-for-mysql/
-[阿里云官方：MySQL 8.0测试结果](https://help.aliyun.com/zh/rds/support/test-results-of-apsaradb-rds-instances-that-run-mysql-8?spm=a2c4g.11186623.0.0.218c4450qJquTB)
+* [阿里云官方：MySQL 8.0测试结果](https://help.aliyun.com/zh/rds/support/test-results-of-apsaradb-rds-instances-that-run-mysql-8?spm=a2c4g.11186623.0.0.218c4450qJquTB)
 
 从这个测试结果来看，写 qps 与 iops 的相关性很大，如果是纯写，那写 qps 大致相当于 iops，而读 qps 很难计算与 iops 的关系，因为它与 cache 有很大关系，如果 cache 命中率高（要么就是内存很大，要么就是数据局部性很好，索引建得很合理），那么读 qps 要远远大于 iops，甚至几乎就是内存读。  
 
-* 腾讯云官方 云数据库 MySQL 性能白皮书 性能测试报告 
-
-https://cloud.tencent.com/document/product/236/68808
-
+* [腾讯云官方 云数据库 MySQL 性能白皮书 性能测试报告](https://cloud.tencent.com/document/product/236/68808)
 
 * [实测：云RDS MySQL性能是自建的1.6倍](https://www.cnblogs.com/zhoujinyi/p/16392223.html)
 
@@ -223,3 +202,17 @@ https://cloud.tencent.com/document/product/236/68808
 |2|不会丢|可能丢|
 
 0 < 2 < 1
+
+---
+
+# 参考
+
+[3] 阿里云. Redis社区版性能白皮书. Available at https://help.aliyun.com/zh/redis/support/performance-whitepaper-of-community-edition-instances, 2023-10-20.  
+
+[4] 阿里云. MySQL 8.0测试结果. Available at https://help.aliyun.com/zh/rds/apsaradb-rds-for-mysql/test-results-of-apsaradb-rds-instances-that-run-mysql-8, 2023-11-24.  
+
+[5] 华为云. RDS for MySQL 8.0测试数据：独享型测试数据. Available at https://support.huaweicloud.com/pwp-rds/rds_swp_mysql_12.html, 2022-12-22.  
+
+[6] redis. Redis benchmark. Available at https://redis.io/docs/latest/operate/oss_and_stack/management/optimization/benchmarks/.
+
+---
