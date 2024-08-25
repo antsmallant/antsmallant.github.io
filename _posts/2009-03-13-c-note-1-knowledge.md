@@ -162,16 +162,17 @@ c99 开始是合法的，在此之前不合法。
 
 <br/>
 
-|No.	| `#include<filename>`	| `#include”filename”` |
+|No.| `#include<filename>`	| `#include”filename”` |
 |:--|:--|:--|
-|1 |	The preprocessor searches in the search directories pre-designated by the compiler/ IDE.	| The preprocessor searches in the same directory as the file containing the directive.|
-|2 |	The header files can be found at default locations like /usr/include or /usr/local/include.	| The header files can be found in -I defined folders.|
-|3 |	This method is normally used for standard library header files.	| This method is normally used for programmer-defined header files.|
-|4 |	<> It indicates that file is system header file	| ” ” It indicates that file is user-defined header file|
+|1 |The preprocessor searches in the search directories pre-designated by the compiler/ IDE.| The preprocessor searches in the same directory as the file containing the directive.|
+|2 |The header files can be found at default locations like /usr/include or /usr/local/include.s| The header files can be found in -I defined folders.|
+|3 |This method is normally used for standard library header files.| This method is normally used for programmer-defined header files.|
+|4 |<> It indicates that file is system header file	| ” ” It indicates that file is user-defined header file|
 
 <br/>  
 
-翻译过来：
+翻译过来：  
+
 * `<>` 用于包含标准库头文件，`""` 用于包含用户自定义头文件；  
 * `<>` 从编译器或IDE指定的目录搜索，比如 `/usr/include`，`/usr/local/include`；`""` 从当前目录搜索，或者从 `-I` 指定的目录搜索。  
 
