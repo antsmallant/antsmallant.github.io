@@ -213,4 +213,4 @@ categories: [读书]
 
 # 4. 参考
 
-[1] 徐影老师. "渣男"卢梭. Available at https://mp.weixin.qq.com/s?__biz=MzI0ODA5ODU3MQ==&mid=2248289978&idx=1&sn=94ebf526668d10033fa61aed4614a98f, 2024-4-7.       
+[1] 徐影老师. "渣男"卢梭. Available at https://zhuanlan.zhihu.com/p/691275359, 2024-4-8.        
