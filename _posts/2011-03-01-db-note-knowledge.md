@@ -59,6 +59,13 @@ wordn -> idm,idn,..idz
 <center>图：倒排索引的内部构造示意[1]</center>
 <br/>
 
+---
+
+## 1.2 常见的 log scheme
+
+* [李兆龙 - 谈谈几种Logging Schemes](https://lizhaolong.blog.csdn.net/article/details/124544615)   
+
+* [李兆龙 - MySQL日志详解](https://blog.csdn.net/weixin_43705457/article/details/104739376)
 
 ---
 

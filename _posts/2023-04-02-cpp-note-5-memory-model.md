@@ -23,6 +23,11 @@ CC 保证对单个地址读写的正确性，SC 保证对多个地址读写的�
 
 ---
 
+# MESI
+
+
+---
+
 # 拓展阅读
 
 * [《Furion W 如何理解 C++11 的六种 memory order？》](https://www.zhihu.com/question/24301047/answer/83422523)       
@@ -56,6 +61,8 @@ CC 保证对单个地址读写的正确性，SC 保证对多个地址读写的�
 * [C++ and the Perils of Double-Checked Locking](https://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf)   
 
 * [http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#DiscussOrder](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html#DiscussOrder)
+
+* [深入理解volatile与MESI缓存一致性协议](https://blog.csdn.net/yaoyaochengxian/article/details/117538574)
 
 ---
 

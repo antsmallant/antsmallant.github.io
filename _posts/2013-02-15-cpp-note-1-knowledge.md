@@ -457,6 +457,12 @@ const-volatile-qualified  ：同时被 const / volatile 修饰的
 
 ---
 
+## 1.17 explicit
+
+
+
+---
+
 # todo
 
 * 安全的格式化与字符串操作
