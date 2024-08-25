@@ -3,7 +3,7 @@ layout: post
 title: "算法笔记：常识"
 date: 2008-02-01
 last_modified_at: 2024-07-01
-categories: [算法]
+categories: [基础理论与算法]
 tags: [算法]
 ---
 
