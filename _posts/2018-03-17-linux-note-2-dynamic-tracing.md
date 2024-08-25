@@ -18,15 +18,15 @@ tags: [操作系统 linux bpf]
 
 # 动态追踪
 
-* [李兆龙 - 浅谈动态追踪：从SystemTap到bpfTrace](https://zhuanlan.zhihu.com/p/704960304)   
+* [《李兆龙 - 浅谈动态追踪：从SystemTap到bpfTrace》](https://zhuanlan.zhihu.com/p/704960304)   
 
-* [章亦春 - 动态追踪技术漫谈](https://blog.openresty.com.cn/cn/dynamic-tracing/)
+* [《章亦春 - 动态追踪技术漫谈》](https://blog.openresty.com.cn/cn/dynamic-tracing/)
 
 ---
 
 # systemtap
 
-* [codedump - 通过实例快速入门Systemtap](https://www.codedump.info/post/20200128-systemtap-by-example/)
+* [《codedump - 通过实例快速入门Systemtap》](https://www.codedump.info/post/20200128-systemtap-by-example/)
 
 ---
 
