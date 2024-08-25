@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "计算机理论笔记：常识"
-date: 2008-02-01
+date: 2007-01-01
 last_modified_at: 2024-07-01
 categories: [基础理论]
 tags: [基础理论]
