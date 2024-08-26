@@ -801,7 +801,7 @@ https://zhuanlan.zhihu.com/p/642858416
 
 ---
 
-## 9.1 pthread_mutex_in_father_son_process
+## 8.1 pthread_mutex_in_father_son_process
 
 本段代码对应 [3.3.2.2 父子进程间使用互斥锁](#3322-父子进程间使用互斥锁) 示例1。  
 
@@ -898,7 +898,7 @@ int main()
 
 ---
 
-## 9.2 pthread_mutex_in_father_son_process2
+## 8.2 pthread_mutex_in_father_son_process2
 
 本段代码对应 [3.3.2.2 父子进程间使用互斥锁](#3322-父子进程间使用互斥锁) 示例2。  
 
