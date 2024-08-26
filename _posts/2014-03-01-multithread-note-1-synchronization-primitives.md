@@ -656,6 +656,8 @@ int pthread_cond_timedwait(pthread_cond_t* cond, pthread_mutex_t *mutex,
 1. 进入函数，先解锁 `mutex`，并阻塞到等待队列中。   
 2. 退出函数，重新加锁 `mutex`，加锁成功再返回。     
 
+`pthread_cond_wait` 本质上是忙等的一种优化。如果不使用条件变量，我们可以用忙等来达到相同的效果，只不过效率很低下。大致模拟：循环的（加锁）检测标志位，直到标志位达到要求再执行后续的逻辑。   
+
 条件变量的一般编程模式如下面的伪码：    
 
 ```c
