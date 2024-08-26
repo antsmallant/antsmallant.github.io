@@ -33,6 +33,10 @@ Cache Coherence 保证对单个地址读写的正确性，Sequential Consistency
 
 # 问题引入
 
+简单的理解，atomic 是在 cpu 指令级实现的"锁"，除了内存栅栏带来的流水线效率损失外，几乎没有额外开销。而 mutex 这种级别的锁，单单是内核调用，睡眠和唤醒，就已经是毫秒级的了。   
+
+可使用原子库替代互斥库实现线程同步。    
+
 ---
 
 # 内存一致性 (memory coherence) 和内存连贯性 (memory consistency)
