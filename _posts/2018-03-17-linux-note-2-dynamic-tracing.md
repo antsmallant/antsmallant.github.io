@@ -28,6 +28,8 @@ tags: [操作系统 linux bpf]
 
 * [《codedump - 通过实例快速入门Systemtap》](https://www.codedump.info/post/20200128-systemtap-by-example/)
 
+* [《余锋 - Linux下如何知道文件被那个进程写》](https://blog.yufeng.info/archives/2581)
+
 ---
 
 # bpf
