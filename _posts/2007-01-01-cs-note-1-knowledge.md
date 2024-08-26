@@ -23,7 +23,7 @@ tags: [基础理论]
 
 ## 1.1 二元关系
 
-[二元关系](https://blog.csdn.net/nameofcsdn/article/details/104826886)   
+* [《二元关系》](https://blog.csdn.net/nameofcsdn/article/details/104826886)   
 
 ---
 
