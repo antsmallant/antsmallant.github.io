@@ -37,6 +37,8 @@ Cache Coherence 保证对单个地址读写的正确性，Sequential Consistency
 
 可使用原子库替代互斥库实现线程同步。    
 
+无锁编程是基于原子操作的。  
+
 ---
 
 # 内存一致性 (memory coherence) 和内存连贯性 (memory consistency)
