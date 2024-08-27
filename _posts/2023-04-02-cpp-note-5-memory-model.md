@@ -96,10 +96,6 @@ futex 的性能是否与 atomic 相当？
 
 # 拓展阅读
 
-* 《计算机体系结构：量化研究方法（第6版）》第5章
-
-* 《c++ 并发编程实战（第2版）》第5章
-
 * [Shared Memory Consistency Models: A Tutorial](https://rsim.cs.illinois.edu/arch/qual_papers/arch/adve_shared.pdf)
 
 * [A Primer on Memory Consistency and Cache Coherence Second Edition](https://pages.cs.wisc.edu/~markhill/papers/primer2020_2nd_edition.pdf)
@@ -109,6 +105,10 @@ futex 的性能是否与 atomic 相当？
 * [Russ Cox - Programming Language Memory Models(Memory Models, Part 2)](https://research.swtch.com/plmm)
 
 * [Russ Cox - Updating the Go Memory Model (Memory Models, Part 3)](https://research.swtch.com/gomm)
+
+* 《计算机体系结构：量化研究方法（第6版）》第5章
+
+* 《c++ 并发编程实战（第2版）》第5章
 
 ---
 
