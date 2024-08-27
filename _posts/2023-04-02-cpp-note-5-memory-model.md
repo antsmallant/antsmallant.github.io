@@ -15,6 +15,26 @@ tags: [c++ cpp]
 
 ---
 
+# 什么是 memory model，它的作用是什么？  
+
+Russ Cox 在 [《Programming Language Memory Models》](https://research.swtch.com/plmm) 写道："Programming language memory model answers the question of what behaviors parrallel programs can rely on to share memory between their threads" 。   
+
+而 wikipedia 上 [《Memory Model(programming)》](https://en.wikipedia.org/wiki/Memory_model_(programming)) 词条的描述是 "In computing, a memory model describes the interactions of threads through memory and their shared use of the data"。   
+
+简单的说，内存模型描述了使用共享内存 (shared memory) 执行多线程程序所需要的规范。  
+
+---
+
+# 几种 memory model
+
+## Sequential Consistency 
+
+## Total Store Order
+
+## 
+
+---
+
 # 术语
 
 谈论存储的时候，在《计算机体系结构：量化研究方法（第5版）》[1] 这本书的 5.2.1 节，Coherence 译作一致性，而 Consistency 译作连贯性。  
@@ -43,13 +63,6 @@ Cache Coherence 保证对单个地址读写的正确性，Sequential Consistency
 
 ---
 
-# 内存一致性 (memory coherence) 和内存连贯性 (memory consistency)
-
-## 缓存连贯性问题（cache coherence problem）
-
-
----
-
 # 内存一致性模型 (memory consistency model)
 
 本质上，内存一致性模型限制了读操作的返回值。  
@@ -63,17 +76,20 @@ Cache Coherence 保证对单个地址读写的正确性，Sequential Consistency
 1. 顺序一致性模型 (sequential consistency model)    
 2. 松弛一致性模型 (relaxed consistency model)    
 
---- 
-
-
-
-
-
-
 
 ---
 
-# MESI
+# futex
+
+futex 的性能是否与 atomic 相当？  
+
+[《flaneur - 为什么atomic比mutex性能更高？》](https://www.zhihu.com/question/302472384/answer/719726236)   
+ 
+>atomic 做的事情：原子指令修改内存，内存栅栏保障修改可见，必要时锁总线。    
+>mutex 大致做的事情：      
+>短暂原子 compare and set 自旋如果未成功上锁，futex(&lock, FUTEX_WAIT... ) 退避进入阻塞等待直到 lock 值变化时唤醒。futex 在设计上期望做到如果无争用，则可以不进内核态，不进内核态的 fast path 的开销等价于 atomic 判断。    
+>内核里维护按地址维护一张 wait queue 的哈希表，发现锁变量值的变化（解锁）时，唤醒对应的 wait queue 中的一个 task。wait queue 这个哈希表的槽在更新时也会遭遇争用，这时继续通过 spin lock 保护。     
+
 
 
 ---
@@ -84,11 +100,15 @@ Cache Coherence 保证对单个地址读写的正确性，Sequential Consistency
 
 * 《c++ 并发编程实战（第2版）》第5章
 
----
+* [Shared Memory Consistency Models: A Tutorial](https://rsim.cs.illinois.edu/arch/qual_papers/arch/adve_shared.pdf)
 
-# 论文
+* [A Primer on Memory Consistency and Cache Coherence Second Edition](https://pages.cs.wisc.edu/~markhill/papers/primer2020_2nd_edition.pdf)
 
-* [Shared Memory Consistency Models:A Tutorial](https://rsim.cs.illinois.edu/arch/qual_papers/arch/adve_shared.pdf)   
+* [Russ Cox - Hardware Memory Models (Memory Models, Part 1)](https://research.swtch.com/hwmm)
+
+* [Russ Cox - Programming Language Memory Models(Memory Models, Part 2)](https://research.swtch.com/plmm)
+
+* [Russ Cox - Updating the Go Memory Model (Memory Models, Part 3)](https://research.swtch.com/gomm)
 
 ---
 
