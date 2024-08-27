@@ -50,7 +50,7 @@ tags: [gameserver]
 
 共用数据库，那么数据库的容量就是个需要考虑的问题，单靠 scale up 不太行，要能 scale out。所以，带 sharding 能力的数据库需要考察一下。  
 
-1、MySQL 
+1、MySQL    
 
 带 sharding 能力的 MySQL 也有，但是用于生产，多少有些力不从心，分析如下。  
 
@@ -66,7 +66,7 @@ c. 某 Cat，这个很垃圾，不要用就是了。
 
 <br/>
 
-2、tcaplus  
+2、tcaplus     
 
 腾讯内部基本上都是用的这个，腾讯云有提供。性能跟实践无需多言，肯定是支持海量数据的，sharding 能力不用担心。但腾讯云专有，容易被锁定。除非是跟腾讯合作发行的游戏，否则不应该使用。   
 
@@ -74,7 +74,7 @@ c. 某 Cat，这个很垃圾，不要用就是了。
 
 <br/>
 
-3、MongoDB
+3、MongoDB     
 
 MongoDB 的 scale out 方案是分片集群，相关的调研，我写在了这篇文章：[《mongodb 笔记：分片集群》](https://blog.antsmallant.top/2024/08/19/mongodb-note-2-sharding) 。   
 
@@ -82,13 +82,13 @@ MongoDB 从 1.6 版本就开始支持 sharding 了，至今（2024-8-22）已经
 
 使用 MongoDB 分片集群，首要就是做好 shard key 的选择，花足够多的注意力在这个上面，基本上不会翻车。  
 
-而且，也有不少游戏使用 MongoDB 作为数据库，行业经验比较丰富。  
+而且，也有不少游戏使用 MongoDB 作为数据库，行业经验比较丰富。    
 
 <br/>
 
 **总结**
 
-综合下来考虑，MongoDB 的分片集群是一个比较合适的方案。  
+综合下来考虑，MongoDB 的分片集群是一个比较合适的方案。    
 
 ---
 
