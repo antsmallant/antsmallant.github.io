@@ -78,9 +78,9 @@ c. 某 Cat，这个很垃圾，不要用就是了。
 
 MongoDB 的 scale out 方案是分片集群，相关的调研，我写在了这篇文章：[《mongodb 笔记：分片集群》](https://blog.antsmallant.top/2024/08/19/mongodb-note-2-sharding) 。   
 
-MongoDB 从 1.6 版本就开始支持 sharding 了，至今（2024-8-22）已经迭代到 7.0 版本了，技术上已经比较成熟了，而且从 5.0 开始，也支持自动的 reshard 了，即可以修改 sharding key，虽然仍然会有不少负载，但至少是比较自动化的执行。   
+MongoDB 从 1.6 版本就开始支持 sharding 了，至今（2024-8-22）已经迭代到 7.0 版本，技术上比较成熟了。而且从 5.0 开始，支持自动的 reshard，即可以修改 shard key，后台自动进行 reshard，虽然这种操作仍然需要有不少的性能冗余，但至少是自动化执行的。   
 
-使用 MongoDB 分片集群，首要就是做好 sharding key 的选择，花 1000% 的精力在这个上面，基本上就不会翻车了。  
+使用 MongoDB 分片集群，首要就是做好 shard key 的选择，花足够多的注意力在这个上面，基本上不会翻车。  
 
 而且，也有不少游戏使用 MongoDB 作为数据库，行业经验比较丰富。  
 
