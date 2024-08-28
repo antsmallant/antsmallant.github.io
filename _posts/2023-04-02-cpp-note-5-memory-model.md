@@ -21,7 +21,11 @@ Russ Cox 在 [《Programming Language Memory Models》](https://research.swtch.c
 
 而 wikipedia 上 [《Memory Model(programming)》](https://en.wikipedia.org/wiki/Memory_model_(programming)) 词条的描述是 "In computing, a memory model describes the interactions of threads through memory and their shared use of the data"。   
 
-简单的说，内存模型描述了使用共享内存 (shared memory) 执行多线程程序所需要的规范。  
+简单的说，内存模型描述了使用共享内存 (shared memory) 执行多线程程序所需要的规范。   
+
+原子操作：不可分割的操作，在系统的任一线程内，都不会观察到这种操作处于半完成状态，它或者完全做好，或者完全没做。    
+
+原子操作不能天然的使操作强制服从预定次序，它不能预防数据竞争本身，但它可以在发生数据竞争的时候，避免未定义行为。   
 
 ---
 
@@ -31,7 +35,9 @@ Russ Cox 在 [《Programming Language Memory Models》](https://research.swtch.c
 
 ## Total Store Order
 
-## 
+---
+
+# 无锁编程可以完全替代锁吗？可以支持哪些逻辑范式？  
 
 ---
 
