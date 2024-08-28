@@ -525,6 +525,12 @@ wording 可以理解为技术规范、法律文件、合同、政策声明或任
 
 ---
 
+## 4.4 TS
+
+Technical Specification，技术规约。  
+
+---
+
 # 5. 参考  
 
 [1] cppreference. Expressions. Available at https://en.cppreference.com/w/cpp/language/expressions.   
