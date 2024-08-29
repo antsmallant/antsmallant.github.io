@@ -35,11 +35,51 @@ c++ 多线程特性的意义：以标准化形式借助多线程支持并发。
 
 ---
 
-# 几种 memory model
+# memory model 的分类
+
+参考：[《一文读懂Memory consistency model (内存模型)》](https://blog.csdn.net/W1Z1Q/article/details/137478525)      
+
+* Memory model
+    * Strong model
+        * SC
+        * TSO
+        * RVTSO
+        * zTSO
+    * Relaxed model
+        * RVVMO
+        * Power Memory Model
+        * RMO
+        * Alpha
+        * Other-multi-copy-atomic
 
 ## Sequential Consistency 
 
 ## Total Store Order
+
+## Relaxed 
+
+---
+
+# c++ 的几种 memory order 组合 
+
+参考：[《原子操作 线程通信- Linux系统编程-(pthread)》](https://blog.csdn.net/u012294613/article/details/126485586)      
+
+1、memory_order_relaxed    
+
+宽松操作，没有同步或顺序
+
+2、memory_order_release & memory_order_acquire   
+
+两个线程 A与B，A release 后，B acquire 保证一定读到的是最新被修改过的值，并且，保证发生在 A release 前的所有写操作，在 B acquire 后都能读到最新值。  
+
+3、memory_order_release & memory_order_consume    
+
+相较于 "memory_order_release & memory_order_acquire" 有所放松，只确保指定的对象在 A release 前，B acquire 之后读到最新值，不确保 A release 前的所有写操作对象。   
+
+4、memory_order_seq_cst    
+
+顺序一致性模型，相当于对每个变量都进行 release-acquire 操作。   
+
 
 ---
 
