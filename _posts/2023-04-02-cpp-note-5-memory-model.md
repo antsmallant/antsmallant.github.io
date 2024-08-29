@@ -21,7 +21,7 @@ Russ Cox 在 [《Programming Language Memory Models》](https://research.swtch.c
 
 而 wikipedia 上 [《Memory Model(programming)》](https://en.wikipedia.org/wiki/Memory_model_(programming)) 词条的描述是 "In computing, a memory model describes the interactions of threads through memory and their shared use of the data"。   
 
-简单的说，内存模型描述了使用共享内存 (shared memory) 执行多线程程序所需要的规范，主要是定义内存中数据变化的可见性和一致性，以及与此相关的，在执行特定程序时，硬件和编译程序有哪些精确的行为。   
+内存模型，描述了使用共享内存 (shared memory) 执行多线程程序所需要的规范，定义了在并发环境下，程序的内存操作如何被序列化和执行的规则。  
 
 原子操作：不可分割的操作，在系统的任一线程内，都不会观察到这种操作处于半完成状态，它或者完全做好，或者完全没做。    
 
@@ -163,9 +163,13 @@ futex 的性能是否与 atomic 相当？
 
 # 拓展阅读
 
-* [Shared Memory Consistency Models: A Tutorial](https://rsim.cs.illinois.edu/arch/qual_papers/arch/adve_shared.pdf)
+* [Shared Memory Consistency Models: A Tutorial](https://rsim.cs.illinois.edu/arch/qual_papers/arch/adve_shared.pdf)   
 
 * [A Primer on Memory Consistency and Cache Coherence Second Edition](https://pages.cs.wisc.edu/~markhill/papers/primer2020_2nd_edition.pdf)
+
+对应的中文翻译：[https://github.com/kaitoukito/A-Primer-on-Memory-Consistency-and-Cache-Coherence](https://github.com/kaitoukito/A-Primer-on-Memory-Consistency-and-Cache-Coherence)
+
+* [A Tutorial Introduction to the ARM and POWER Relaxed Memory Models](https://www.cl.cam.ac.uk/~pes20/ppc-supplemental/test7.pdf)
 
 * [Russ Cox - Hardware Memory Models (Memory Models, Part 1)](https://research.swtch.com/hwmm)
 
