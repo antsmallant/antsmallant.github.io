@@ -457,9 +457,13 @@ const-volatile-qualified  ：同时被 const / volatile 修饰的
 
 ---
 
-## 1.17 explicit
+## 1.17 c++ 的类型系统
 
+参考：[《【C++ 类型系统】了解C++ 中 标量、复合、标准布局、平凡和聚合类型》](https://blog.csdn.net/qq_21438461/article/details/131604404)    
 
+---
+
+## 1.18 explicit
 
 ---
 

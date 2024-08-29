@@ -21,7 +21,7 @@ Russ Cox 在 [《Programming Language Memory Models》](https://research.swtch.c
 
 而 wikipedia 上 [《Memory Model(programming)》](https://en.wikipedia.org/wiki/Memory_model_(programming)) 词条的描述是 "In computing, a memory model describes the interactions of threads through memory and their shared use of the data"。   
 
-简单的说，内存模型描述了使用共享内存 (shared memory) 执行多线程程序所需要的规范。   
+简单的说，内存模型描述了使用共享内存 (shared memory) 执行多线程程序所需要的规范，主要是定义内存中数据变化的可见性和一致性，以及与此相关的，在执行特定程序时，硬件和编译程序有哪些精确的行为。   
 
 原子操作：不可分割的操作，在系统的任一线程内，都不会观察到这种操作处于半完成状态，它或者完全做好，或者完全没做。    
 
@@ -71,19 +71,29 @@ c++ 多线程特性的意义：以标准化形式借助多线程支持并发。
 
 1、memory_order_relaxed    
 
-宽松操作，没有同步或顺序
+宽松操作，没有同步或顺序    
+
+<br/>
 
 2、memory_order_release & memory_order_acquire   
 
-两个线程 A与B，A release 后，B acquire 保证一定读到的是最新被修改过的值，并且，保证发生在 A release 前的所有写操作，在 B acquire 后都能读到最新值。  
+两个线程 A与B，A release 后，B acquire 保证一定读到的是最新被修改过的值，并且，保证发生在 A release 前的所有写操作，在 B acquire 后都能读到最新值。   
+
+<br/>
 
 3、memory_order_release & memory_order_consume    
 
 相较于 "memory_order_release & memory_order_acquire" 有所放松，只确保指定的对象在 A release 前，B acquire 之后读到最新值，不确保 A release 前的所有写操作对象。   
 
+c++17 标准暂时不鼓励使用 memory_order_consume: "The specification of release-consume ordering is being revised, and the use of memory_order_consume is temporarily descouraged."[4]。    
+
+<br/>
+
 4、memory_order_seq_cst    
 
 顺序一致性模型，相当于对每个变量都进行 release-acquire 操作。   
+
+<br/>
 
 
 ---
@@ -187,3 +197,5 @@ futex 的性能是否与 atomic 相当？
 [2] Furion W. 如何理解 C++11 的六种 memory order. Available at https://www.zhihu.com/question/24301047/answer/83422523, 2016-2-11.   
 
 [3] [英] Anthony Williams. C++ 并发编程实战（第2版）. 吴天明. 北京: 人民邮电出版社, 2021-12(2).   
+
+[4] cppreference. memory_order. Available at https://en.cppreference.com/w/cpp/atomic/memory_order.    
