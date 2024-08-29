@@ -118,9 +118,7 @@ futex 的性能是否与 atomic 相当？
 
 * [Russ Cox - Updating the Go Memory Model (Memory Models, Part 3)](https://research.swtch.com/gomm)
 
-* 《计算机体系结构：量化研究方法（第6版）》第5章
-
-* 《c++ 并发编程实战（第2版）》第5章
+* 《计算机体系结构：量化研究方法（第6版）》第 5 章
 
 ---
 
