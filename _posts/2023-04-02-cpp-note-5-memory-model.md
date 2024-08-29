@@ -62,7 +62,12 @@ c++ 多线程特性的意义：以标准化形式借助多线程支持并发。
 
 # c++ 的几种 memory order 组合 
 
-参考：[《原子操作 线程通信- Linux系统编程-(pthread)》](https://blog.csdn.net/u012294613/article/details/126485586)      
+虽然内存次序有 6 种，但归类起来只有 3 种模式 [3]：   
+1. 先后一致次序： memory_order_seq_cst     
+2. 获取-释放次序：memory_order_release、memory_order_acquire、memory_order_consume    
+3. 宽松次序：memory_order_relaxed    
+
+具体的组合，可以有 4 种（ 参考：[《原子操作 线程通信- Linux系统编程-(pthread)》](https://blog.csdn.net/u012294613/article/details/126485586) ）：   
 
 1、memory_order_relaxed    
 
