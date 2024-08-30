@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "c++ 笔记：memory model"
+title: "c++ 笔记：Memory Model"
 date: 2023-04-02
 last_modified_at: 2024-07-01
 categories: [c++]
@@ -11,19 +11,72 @@ tags: [c++ cpp]
 {:toc}
 <br/>
 
-本文记录 c++ memory model 相关的要点。  
+本文记录 Memory Model 相关的要点。这一块的内容挺复杂的，它有两个层面上的定义：编程语言和计算机体系结构，要搞清楚并不容易。   
+
+对于理解复杂事物或概念，我的经验是，尽量找权威的、体系化论述的材料来看，不要随便找到一些博客文章就开始研究，它们只能作为索引，帮你找到真正权威的材料。很多博客文章的作者其实没有理解到位或理解全面，往往只会误导人，或者使概念更难以理解。  
+
+权威的材料有时候也未必靠谱，比如 《C++ 并发编程实战（第2版）》这本书，挺不错的，但第 5 章里面关于 memory order 的论述，很不好理解，越看越头大。  
+
+尽管如此，还是要以权威材料为主去研究。  
 
 ---
 
-# 什么是 memory model，它的作用是什么？  
+# Memory Model 
+
+---
+
+## 概述
+
+时间充裕的情况，可以读这本书：。时间不充裕，可以读 Russ Cox 的这两篇文章，建立起基本的概念。  
+
+而 《C++ 并发编程实战（第2版）》的第 5 章中关于 c++ memory order 的内容，是我见过最糟糕的论述了。这本书的其他内容尚可，但这一章太糟糕了，完全没有讲清楚，很让人费解。   
+
+
+
+---
+
+## 概念与作用
+
+Memory Model，实际上应该是 Memory Consistency Model，即内存连贯性模型。它描述了使用共享内存 (shared memory) 执行多线程程序所需要的规范，定义了在并发环境下，程序的内存操作如何被序列化和执行的规则。   
 
 Russ Cox 在 [《Programming Language Memory Models》](https://research.swtch.com/plmm) 写道："Programming language memory model answers the question of what behaviors parrallel programs can rely on to share memory between their threads" 。   
 
 而 wikipedia 上 [《Memory Model(programming)》](https://en.wikipedia.org/wiki/Memory_model_(programming)) 词条的描述是 "In computing, a memory model describes the interactions of threads through memory and their shared use of the data"。   
 
-内存模型，描述了使用共享内存 (shared memory) 执行多线程程序所需要的规范，定义了在并发环境下，程序的内存操作如何被序列化和执行的规则。  
+---
 
-原子操作：不可分割的操作，在系统的任一线程内，都不会观察到这种操作处于半完成状态，它或者完全做好，或者完全没做。    
+## 为什么要引入 Memory Model ？  
+
+使用操作系统提供的同步原语就可以基于共享内存进行多线程编程了，为什么还需要 Memory Model？   
+
+简单来说，是为了使用无锁编程以提高多线程编程的性能。  
+
+操作系统提供的同步原语（互斥锁、条件变量之类），其消耗往往很大，当涉及到内核态与用户态的切换时，耗时往往是毫秒级的。   
+
+无锁编程的核心是原子操作，原子操作可以粗糙的理解为 cpu 指令级别实现的 "锁"，除了内存栅栏（fence）带来的流水线损失之外，几乎没有额外消息。无锁编程并不能完全代替基于普通同步原语的多线程编程，但是基于原子操作的一些特性，经过精心设计，是可以实现出一些无锁的数据结构的，这种数据结构可以在性能攸关的场景下发挥重要作用。   
+
+要定义清楚原子操作，就必须先定义清楚 Memory Model。至于 c++ 里面的六种 memory order，其实都是 Memory Model 的一部分规范。    
+
+必须指出的是，无锁编程特别难，很容易就写成 busy wait 的逻辑，反而性能更糟糕。所以一般人并不需要折腾无锁编程。    
+
+---
+
+## Memory Model 
+
+
+
+
+---
+
+## Memory order 又是什么东西？  
+
+
+
+---
+
+# 术语
+
+原子操作：不可分割的操作，在系统的任一线程内，都不会观察到这种操作处于半完成状态，它或者完全做好，或者完全没做。     
 
 原子操作不能天然的使操作强制服从预定次序，它不能预防数据竞争本身，但它可以在发生数据竞争的时候，避免未定义行为。   
 
