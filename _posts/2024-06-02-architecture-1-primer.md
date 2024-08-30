@@ -17,6 +17,17 @@ tags: [计算机体系结构]
 
 # 资料
 
+---
+
+## 资料的搜索与下载
+
+1. 找到 doi，到 scihub 搜索，一般可以找到。  
+2. 书名 + pdf 到 google 搜索，一般也可以搜到。    
+
+---
+
+## 论文、书、文章
+
 * [《A Primer on Memory Consistency and Cache Coherence Second Edition》](https://pages.cs.wisc.edu/~markhill/papers/primer2020_2nd_edition.pdf)  
 
 * [《A Primer on Memory Consistency and Cache Coherence Second Edition》中文翻译](https://github.com/kaitoukito/A-Primer-on-Memory-Consistency-and-Cache-Coherence)
@@ -30,6 +41,10 @@ tags: [计算机体系结构]
 * [Multithreading Architecture](https://picture.iczhiku.com/resource/eetop/wHiEgQFarSEuKCnN.pdf)
 
 * [Multi-core Cache Hierarchies](http://users.eecs.northwestern.edu/~kch479/docs/multicore_cache_hierarch.pdf)
+
+* [General-Purpose Graphics Processor Architecture (2018)](https://github.com/tpn/pdfs/blob/master/General-Purpose%20Graphics%20Processor%20Architecture%20(2018).pdf)
+
+* [COMPUTER ARITHMETIC Algorithms and Hardware Designs SECOND EDITION](https://ashkanyeganeh.com/wp-content/uploads/2020/03/computer-arithmetic-algorithms-2nd-edition-Behrooz-Parhami.pdf)
 
 * [计算机体系结构综合讲座(52本)Synthesis Lectures on Architecture](https://zhuanlan.zhihu.com/p/262116768)
 
