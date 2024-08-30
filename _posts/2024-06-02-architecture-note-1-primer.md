@@ -77,6 +77,10 @@ tags: [计算机体系结构]
 
 * [Memory Systems Cache Dram Disk](https://github.com/kaitoukito/Computer-Science-Textbooks/blob/master/Memory-Systems-Cache-DRAM-Disk.pdf)
 
+* [What Every Programmer Should Know About Memory](https://people.freebsd.org/~lstewart/articles/cpumemory.pdf)
+
+* [中文扩写-What Every Programmer Should Know About Memory](https://zhuanlan.zhihu.com/p/611133924)
+
 * [计算机体系结构综合讲座(52本)Synthesis Lectures on Architecture](https://zhuanlan.zhihu.com/p/262116768)
 
 * [【目录与序言汉化】共享内存同步技术《Shared-Memory Synchronization》](https://zhuanlan.zhihu.com/p/378066745)
