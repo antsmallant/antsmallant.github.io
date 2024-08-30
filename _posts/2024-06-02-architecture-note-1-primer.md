@@ -22,8 +22,8 @@ tags: [计算机体系结构]
 ## 1.1 资料的搜索与下载
 
 1. 找到 doi，到 scihub 搜索，一般可以找到。  
-2. 书名 + pdf 到 google 搜索，一般可以搜到。    
-3. 书名 + pdf 使用 google 搜索 github，比如 "书名 pdf site:github.com" 。  
+2. 书名 + pdf 到 google 搜索，一般可以搜到，比如 "Innovations in the Memory System pdf"。    
+3. 书名 + pdf 使用 google 搜索 github，比如 "Innovations in the Memory System pdf site:github.com"。  
 
 ---
 
@@ -66,6 +66,10 @@ tags: [计算机体系结构]
 * [Innovations in the Memory System](https://github.com/kaitoukito/Computer-Science-Textbooks/blob/master/Innovations-in-the-Memory-System.pdf)
 
 * [Shared-Memory Synchronization](https://github.com/kaitoukito/Computer-Science-Textbooks/blob/master/Shared-Memory-Synchronization.pdf)
+
+* [Computer Architecture Performance Evaluation Methods](https://picture.iczhiku.com/resource/eetop/wyIEtqeKlYilpNxX.pdf)
+
+* [Quantum Computing for Computer Architects 2nd](https://picture.iczhiku.com/resource/eetop/WyiDgAgeGhiYonXc.pdf)
 
 * [计算机体系结构综合讲座(52本)Synthesis Lectures on Architecture](https://zhuanlan.zhihu.com/p/262116768)
 
