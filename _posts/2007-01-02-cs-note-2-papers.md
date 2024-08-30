@@ -50,8 +50,6 @@ doi 由两部分组成，前缀和后缀，中间用 `/` 分割，所有 DOI 都
 
 * doi 介绍：[什么是doi？如何查找文献doi？怎么通过doi查找文章？](https://zhuanlan.zhihu.com/p/687637310)
 
-* doi 解析：[https://dx.doi.org/](https://dx.doi.org/)
-
 ---
 
 ## 1.2 论文下载
