@@ -167,7 +167,7 @@ SomeType get(bool flag) {
 
 3、返回全局变量，不会优化。  
 
-4、返回值使用 move 转换，不会优化。  
+4、返回值使用 `std::move` 转换，不会优化。  
 
 比如这样：  
 
@@ -188,7 +188,7 @@ SomeType get() {
 
 还有意义，因为 copy elision 并不总是有效，特别 nrvo 的场景。  
 
-比如这样，编译器也做不出优化，编译器版本是： g++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0，默认采用的 c++ 版本是 `#define __cplusplus 201703L`。  
+比如以下例子，编译器也做不出优化（编译器版本： g++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0，默认采用的 c++ 版本是 `#define __cplusplus 201703L`）：  
 
 ```cpp
 #include <iostream>
