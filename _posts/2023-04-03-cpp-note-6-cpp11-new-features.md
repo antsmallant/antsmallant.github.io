@@ -1831,6 +1831,28 @@ T&& forward(remove_reference_t<T>& param) {
 }
 ```
 
+这里需要注意的是，param 的实参为右值的时候，为什么这里 forward 的参数类型是左值引用呢？   
+
+原因在于，forward 接受的参数是别的函数的形参，无论是：  
+
+```cpp
+template<typename T>
+void func(T&& param) {
+    func2(std::forward<T>(param));
+}
+```
+
+还是：     
+
+```cpp
+template<typename T>
+void func(T& param) {
+    func2(std::forward<T>(param));
+}
+```
+
+其中的 `param` 实际上是形参，而形参总是一个左值，所以 `std::forward` 接收的实际上是上一层函数的形参。   
+
 ---
 
 ## std::to_string
