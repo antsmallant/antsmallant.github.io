@@ -27,6 +27,10 @@ tags: [计算机体系结构]
 
 * [Alpha 21264 Microprocessor Hardware Reference Manual](https://course.ece.cmu.edu/~ece447/s15/lib/exe/fetch.php?media=21264hrm.pdf)
 
+* [Multithreading Architecture](https://picture.iczhiku.com/resource/eetop/wHiEgQFarSEuKCnN.pdf)
+
+* [Multi-core Cache Hierarchies](http://users.eecs.northwestern.edu/~kch479/docs/multicore_cache_hierarch.pdf)
+
 * [计算机体系结构综合讲座(52本)Synthesis Lectures on Architecture](https://zhuanlan.zhihu.com/p/262116768)
 
 * [【目录与序言汉化】共享内存同步技术《Shared-Memory Synchronization》](https://zhuanlan.zhihu.com/p/378066745)
