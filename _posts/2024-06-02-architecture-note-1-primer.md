@@ -47,6 +47,10 @@ tags: [计算机体系结构]
 
 ## 1.3 文献
 
+* [计算机体系结构综合讲座(52本)Synthesis Lectures on Architecture](https://zhuanlan.zhihu.com/p/262116768)
+
+* [Synthesis Lectures on Computer Architecture 书单](https://www.springer.com/series/16916/books?page=1)
+
 * [A Primer on Memory Consistency and Cache Coherence Second Edition](https://pages.cs.wisc.edu/~markhill/papers/primer2020_2nd_edition.pdf)  
 
 * [A Primer on Memory Consistency and Cache Coherence Second Edition (中文翻译)](https://github.com/kaitoukito/A-Primer-on-Memory-Consistency-and-Cache-Coherence)
@@ -81,9 +85,9 @@ tags: [计算机体系结构]
 
 * [中文扩写-What Every Programmer Should Know About Memory](https://zhuanlan.zhihu.com/p/611133924)
 
-* [计算机体系结构综合讲座(52本)Synthesis Lectures on Architecture](https://zhuanlan.zhihu.com/p/262116768)
-
 * [【目录与序言汉化】共享内存同步技术《Shared-Memory Synchronization》](https://zhuanlan.zhihu.com/p/378066745)
+
+
 
 
 ---
