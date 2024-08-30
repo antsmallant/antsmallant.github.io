@@ -21,8 +21,8 @@ tags: [基础理论]
 
 |英文|中文|备注|
 |:--|:--|:--|
-|memory consistency|存储连贯性||
-|cache coherence|缓存一致性||
+|memory consistency|存储连贯性|执行的先后顺序是一致的，可以理解为时间上的一致|
+|cache coherence|缓存一致性|数据的多个副本（在某一致性模型下）是一致的，可以理解为空间上的一致|
 
 
 ---

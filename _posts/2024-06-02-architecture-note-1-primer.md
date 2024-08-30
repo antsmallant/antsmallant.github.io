@@ -29,7 +29,9 @@ tags: [计算机体系结构]
 
 ## 1.2 资料仓库
 
-* [https://github.com/kaitoukito/Computer-Science-Textbooks/tree/master](https://github.com/kaitoukito/Computer-Science-Textbooks/tree/master)
+* [https://github.com/kaitoukito/Computer-Science-Textbooks](https://github.com/kaitoukito/Computer-Science-Textbooks)
+
+* [https://github.com/kaitoukito/Integrated-Circuit-Textbooks](https://github.com/kaitoukito/Integrated-Circuit-Textbooks)
 
 * [https://github.com/tpn/pdfs](https://github.com/tpn/pdfs)
 
