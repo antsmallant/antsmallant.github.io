@@ -25,10 +25,11 @@ tags: [基础理论]
 |cache coherence|缓存一致性|数据的多个副本（在某一致性模型下）是一致的，可以理解为空间上的一致|
 
 
-注1：consistency 与 coherence 的翻译很混乱，在交流的时候尽量用原文，不要用翻译的版本。   
+注1：consistency 与 coherence 的翻译很混乱，在交流的时候尽量用原文，不要用翻译的版本。[1]    
 
 
 ---
 
 # 2. 参考
 
+[1] binder.【目录序言翻译】内存连贯性与缓存一致性导论（第二版）《A Primer on Memory Consistency and Cache Coherence》(Second Edition). Available at https://zhuanlan.zhihu.com/p/377182654, 2021-7-20.   
