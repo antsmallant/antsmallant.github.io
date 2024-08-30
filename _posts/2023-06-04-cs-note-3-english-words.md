@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "计算机理论笔记：常用术语翻译"
+title: "常用术语翻译"
 date: 2023-06-04
 last_modified_at: 2023-06-04
 categories: [基础理论与算法]
