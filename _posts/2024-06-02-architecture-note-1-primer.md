@@ -33,6 +33,10 @@ tags: [计算机体系结构]
 
 * [https://github.com/tpn/pdfs](https://github.com/tpn/pdfs)
 
+* [binder-知乎专栏-计算机硬件算法与体系结构资源](https://www.zhihu.com/column/c_1270803745370914816)
+
+* [binder-知乎专栏-一些计算机科学书的目录与序言翻译](https://www.zhihu.com/column/c_1366693249554481152)
+
 ---
 
 ## 1.3 文献
@@ -58,6 +62,8 @@ tags: [计算机体系结构]
 * [Architectural and Operating System Support for Virtual Memory](https://picture.iczhiku.com/resource/eetop/WYiDTqtZRyJhebnn.pdf)
 
 * [Innovations in the Memory System](https://github.com/kaitoukito/Computer-Science-Textbooks/blob/master/Innovations-in-the-Memory-System.pdf)
+
+* [Shared-Memory Synchronization](https://github.com/kaitoukito/Computer-Science-Textbooks/blob/master/Shared-Memory-Synchronization.pdf)
 
 * [计算机体系结构综合讲座(52本)Synthesis Lectures on Architecture](https://zhuanlan.zhihu.com/p/262116768)
 
