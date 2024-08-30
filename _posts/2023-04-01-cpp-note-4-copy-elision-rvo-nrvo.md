@@ -47,6 +47,7 @@ int main() {
 ```
 
 1、对于 c++11 或 c++14    
+
 如果关闭编译器的 copy elision 优化，即加上 `-fno-elide-constructors` 选项，则输出是：   
 
 ```
@@ -60,7 +61,10 @@ Call A(const A&)
 Call A(int)
 ```
 
+<br/>
+
 2、对于 c++17    
+
 无论是否关闭编译器的 copy elision 优化，输出都是：     
 
 ```
@@ -94,6 +98,7 @@ int main() {
 ```
 
 1、对于 c++11 或 c++14   
+
 如果关闭编译器的 copy elision 优化，即加上 `-fno-elide-constructors` 选项，则输出是：  
 
 ```
@@ -110,7 +115,10 @@ Call A(int)
 
 如果没有定义移动构造函数，则调用拷贝构造函数，可以编译器的 copy elision 可以优先掉移动构造或者拷贝构造。   
 
+<br/>
+
 2、对于 c++17    
+
 无论是否关闭编译器的 copy elision 优化，输出都是：    
 
 ```
