@@ -1798,7 +1798,9 @@ decltype(auto) move(T&& param) {
 }
 ```
 
-`remove_reference_t` 是 c++14 引入的 helper function，它的原型 ( 参考：[cppreference-remove_reference](https://en.cppreference.com/w/cpp/types/remove_reference) ) 是： 
+<br/>
+
+`remove_reference_t` 是 c++14 引入的 helper function，它的原型 ( 参考：[cppreference-remove_reference](https://en.cppreference.com/w/cpp/types/remove_reference) ) 是：   
 
 ```cpp
 template< class T >
@@ -1809,7 +1811,25 @@ using remove_reference_t = typename remove_reference<T>::type;
 
 ## std::forward
 
-当入参是右值时，把入参转换为右值，返回右值引用。  
+当入参是右值时，把入参转换为右值，返回右值引用。   
+
+在 c++11 中，可以类似于这样实现[4]：    
+
+```cpp
+template<typename T>
+T&& forward(typename remove_reference<T>::type& param) {
+    return static_cast<T&&>(param);
+}
+```
+
+而在 c++14，可以这样实现[4]：   
+
+```cpp
+template<typename T>
+T&& forward(remove_reference_t<T>& param) {
+    return static_cast<T&&>(param);
+}
+```
 
 ---
 
