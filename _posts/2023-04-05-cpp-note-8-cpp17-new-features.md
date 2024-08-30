@@ -92,6 +92,8 @@ for (auto& [k, v] : m) {
 // m 变成了 { {1, "hello_abc"}, {2, "world_abc"} }
 ```
 
+详细参考：[《C++17中的结构化绑定详解》](https://blog.csdn.net/haokan123456789/article/details/137613251)。   
+
 ---
 
 ## 构造函数模板推导
