@@ -1,10 +1,10 @@
 ---
 layout: post
-title: "c++ 笔记：Memory Model"
+title: "C++ 笔记：Memory Model"
 date: 2023-04-02
 last_modified_at: 2024-07-01
-categories: [c++]
-tags: [c++ cpp]
+categories: [C++]
+tags: [C++ cpp]
 ---
 
 * 目录  
@@ -29,7 +29,7 @@ tags: [c++ cpp]
 
 时间充裕的情况，可以读这本书：。时间不充裕，可以读 Russ Cox 的这两篇文章，建立起基本的概念。  
 
-而 《C++ 并发编程实战（第2版）》的第 5 章中关于 c++ memory order 的内容，是我见过最糟糕的论述了。这本书的其他内容尚可，但这一章太糟糕了，完全没有讲清楚，很让人费解。   
+而 《C++ 并发编程实战（第2版）》的第 5 章中关于 C++ memory order 的内容，是我见过最糟糕的论述了。这本书的其他内容尚可，但这一章太糟糕了，完全没有讲清楚，很让人费解。   
 
 
 
@@ -51,11 +51,11 @@ Russ Cox 在 [《Programming Language Memory Models》](https://research.swtch.c
 
 简单来说，是为了使用无锁编程以提高多线程编程的性能。  
 
-操作系统提供的同步原语（互斥锁、条件变量之类），其消耗往往很大，当涉及到内核态与用户态的切换时，耗时往往是毫秒级的。   
+操作系统提供的同步原语（互斥锁、条件变量之类），其消耗往往很大，当涉及到内核态与用户态的切换时，耗时往往是毫秒级的。而无锁编程的核心是原子操作，原子操作可以粗糙的理解为 cpu 指令级别实现的 "锁"，除了内存栅栏（fence）带来的流水线损失之外，几乎没有额外消耗。    
 
-无锁编程的核心是原子操作，原子操作可以粗糙的理解为 cpu 指令级别实现的 "锁"，除了内存栅栏（fence）带来的流水线损失之外，几乎没有额外消息。无锁编程并不能完全代替基于普通同步原语的多线程编程，但是基于原子操作的一些特性，经过精心设计，是可以实现出一些无锁的数据结构的，这种数据结构可以在性能攸关的场景下发挥重要作用。   
+无锁编程并不能完全代替基于普通同步原语的多线程编程，但是基于原子操作的一些特性，经过精心设计，可以实现出一些高性能的无锁数据结构，这种数据结构可以在性能攸关的场景下发挥重要作用。   
 
-要定义清楚原子操作，就必须先定义清楚 Memory Model。至于 c++ 里面的六种 memory order，其实都是 Memory Model 的一部分规范。    
+要定义清楚原子操作，就必须先定义清楚 Memory Model。至于 C++ 里面的六种 memory order，其实都属于整个 C++ Memory Model 规范的一部分。    
 
 必须指出的是，无锁编程特别难，很容易就写成 busy wait 的逻辑，反而性能更糟糕。所以一般人并不需要折腾无锁编程。    
 
@@ -84,7 +84,7 @@ Russ Cox 在 [《Programming Language Memory Models》](https://research.swtch.c
 
 并行和并发有很大程度的重叠，都是指使用可调配的硬件资源同时运行多个任务，但并行更强调性能。谈到并行时，主要关心是利用可调配的资源提升大规模数据处理的性能；当谈及并发时，主要关心的是分离关注点或响应能力。[3]     
 
-c++ 多线程特性的意义：以标准化形式借助多线程支持并发。  
+C++ 多线程特性的意义：以标准化形式借助多线程支持并发。  
 
 ---
 
@@ -113,7 +113,7 @@ c++ 多线程特性的意义：以标准化形式借助多线程支持并发。
 
 ---
 
-# c++ 的几种 memory order 组合 
+# C++ 的几种 memory order 组合 
 
 虽然内存次序有 6 种，但归类起来只有 3 种模式 [3]：   
 1. 先后一致次序： memory_order_seq_cst     
@@ -138,7 +138,7 @@ c++ 多线程特性的意义：以标准化形式借助多线程支持并发。
 
 相较于 "memory_order_release & memory_order_acquire" 有所放松，只确保指定的对象在 A release 前，B acquire 之后读到最新值，不确保 A release 前的所有写操作对象。   
 
-c++17 标准暂时不鼓励使用 memory_order_consume: "The specification of release-consume ordering is being revised, and the use of memory_order_consume is temporarily descouraged."[4]。    
+C++17 标准暂时不鼓励使用 memory_order_consume: "The specification of release-consume ordering is being revised, and the use of memory_order_consume is temporarily descouraged."[4]。    
 
 <br/>
 
@@ -238,7 +238,7 @@ futex 的性能是否与 atomic 相当？
 
 ---
 
-## 《c++ 并发编程实战（第2版）》
+## 《C++ 并发编程实战（第2版）》
 
 这本书的豆瓣评分 9.4 (截至 2024-8-29)，但仔细读过之后就会发现：1、英文原版唠唠叨叨，没能简要的把问题说清楚，反而大量增加理解负担；2、中文翻译特别稀烂，经常偏离原文。   
 

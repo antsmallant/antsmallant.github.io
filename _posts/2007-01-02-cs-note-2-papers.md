@@ -21,7 +21,7 @@ tags: [基础理论]
 
 ## 1.1 doi
 
-doi 即 digital object identifier，相当于文献的身份证号，国际上从 1998 年才开始普及，旧的文章一般没有。  
+doi 即 digital object identifier，相当于文献的身份证号，国际上从 1998 年才开始普及，旧的文章一般没有，不排除有些文章补录了 doi。  
 
 1、格式   
 
