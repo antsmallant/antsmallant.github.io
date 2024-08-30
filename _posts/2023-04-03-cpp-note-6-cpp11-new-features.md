@@ -868,7 +868,7 @@ void g(T&& t) {
 ```cpp
 template<typename T>
 void f(T&& t) {
-    g(std::forward(t));   // std::forward 转发了 t 的 value category，如果 t 确实是一个右值
+    g(std::forward<T>(t));   // std::forward 转发了 t 的 value category，如果 t 确实是一个右值
 }
 ```
 

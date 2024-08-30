@@ -22,7 +22,9 @@ tags: [计算机体系结构]
 ## 1.1 资料的搜索与下载
 
 1. 找到 doi，到 scihub 搜索，一般可以找到。  
+
 2. 书名 + pdf 到 google 搜索，一般可以搜到，比如 "Innovations in the Memory System pdf"。    
+
 3. 书名 + pdf 使用 google 搜索 github，比如 "Innovations in the Memory System pdf site:github.com"。  
 
 ---
