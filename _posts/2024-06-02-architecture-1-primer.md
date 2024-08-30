@@ -15,11 +15,11 @@ tags: [计算机体系结构]
 
 ---
 
-# 资料
+# 1. 资料
 
 ---
 
-## 资料的搜索与下载
+## 1.1 资料的搜索与下载
 
 1. 找到 doi，到 scihub 搜索，一般可以找到。  
 2. 书名 + pdf 到 google 搜索，一般可以搜到。    
@@ -27,7 +27,7 @@ tags: [计算机体系结构]
 
 ---
 
-## 资料仓库
+## 1.2 资料仓库
 
 * [https://github.com/kaitoukito/Computer-Science-Textbooks/tree/master](https://github.com/kaitoukito/Computer-Science-Textbooks/tree/master)
 
@@ -35,7 +35,7 @@ tags: [计算机体系结构]
 
 ---
 
-## 论文、书、文章
+## 1.3 文献
 
 * [A Primer on Memory Consistency and Cache Coherence Second Edition](https://pages.cs.wisc.edu/~markhill/papers/primer2020_2nd_edition.pdf)  
 
@@ -66,10 +66,10 @@ tags: [计算机体系结构]
 
 ---
 
-# 常识
+# 2. 常识
 
 
 ---
 
-# 参考
+# 3. 参考
 
