@@ -34,9 +34,15 @@ doi 由两部分组成，前缀和后缀，中间用 `/` 分割，所有 DOI 都
 1. 可以用文章名在搜索引擎上找到 doi 信息。   
 
 2. 如果知道 doi，可以用以下网站查看文献的基础信息：   
+
 * doi.org: [https://dx.doi.org/](https://dx.doi.org/)
+
 * crossref: [https://search.crossref.org/](https://search.crossref.org/)   
+
 * 中文 doi： [http://www.chinadoi.cn/portal/index.htm](http://www.chinadoi.cn/portal/index.htm)
+
+* 计算机-acm： [https://dl.acm.org/](https://dl.acm.org/)   
+
 
 <br/>
 
@@ -45,6 +51,24 @@ doi 由两部分组成，前缀和后缀，中间用 `/` 分割，所有 DOI 都
 * doi 介绍：[什么是doi？如何查找文献doi？怎么通过doi查找文章？](https://zhuanlan.zhihu.com/p/687637310)
 
 * doi 解析：[https://dx.doi.org/](https://dx.doi.org/)
+
+---
+
+## 1.2 论文下载
+
+1、校外    
+
+淘宝买个永久账号，十几块钱，各种数据库都有了。   
+
+<br/>
+
+2、一些免费的     
+
+* [sci-hub](https://sci-hub.st/)    
+
+* [google学术](https://scholar.google.com/)   
+
+* [公益学术平台](https://pubscholar.cn/)
 
 ---
 
