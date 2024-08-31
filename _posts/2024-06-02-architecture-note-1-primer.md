@@ -29,7 +29,9 @@ tags: [计算机体系结构]
 
 * 书名 + pdf 使用 google 搜索 github，比如 "Innovations in the Memory System pdf site:github.com"。  
 
-* 以上方法都无效，就用 zlibrary（ 但 zlib 有很多仿冒的网站，小心被钓鱼，可以在 zlib 的这个 reddit 主页上找到最新的访问方法：[https://www.reddit.com/r/zlibrary/](https://www.reddit.com/r/zlibrary/) ）
+* 以上方法都无效，就用 zlibrary 或 Anna's Archive，基本上是能找到的
+    * zlib 有很多仿冒的网站，小心被钓鱼，可以在它的 reddit 主页上找到最新入口：[https://www.reddit.com/r/zlibrary/](https://www.reddit.com/r/zlibrary/) 
+    * Anna's Archive 可以在它的 wikipedia 上找到入口：[https://en.wikipedia.org/wiki/Anna%27s_Archive](https://en.wikipedia.org/wiki/Anna%27s_Archive)
 
 ---
 
