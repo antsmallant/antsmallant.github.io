@@ -132,7 +132,15 @@ f(nullptr);  // 调用 f(int*)
 
 初始值列表，对应的标准库类型是 `std::initializer_list`，头文件是 `<initializer_list>`。    
 
-它是一个代表数组的轻量级包装器，通常用于构造函数或函数参数中，以允许传递一个初始化元素列表。可以用花括号初始化来构造 `initializer_list`，比如 `{1,2,3}` 就创建了一个数字序列，它的类型为 `std::initializer_list<int>`。   
+`std::initializer_list` 类型的对象是一个轻量级代理对象，提供对 `const T` 类型对象数组的访问，要注意，`std::initializer_list` 中的值都是常量。  
+
+通常用于构造函数或函数参数中，以允许传递一个初始化元素列表，可以用大括号初始化来构造 `initializer_list`，比如 `{1,2,3}` 就创建了一个数字序列，它的类型为 `std::initializer_list<int>`。   
+
+用大括号括起来的一串元素，需要在特定的条件下才会被构造为 `std::initializer_list`：   
+
+1. 用大括号括起来的初始化 list 用于对象的列表初始化，其中相应的构造函数接受一个 `std::initializer_list` 类型的参数。    
+2. 用大括号括起来的初始化 list 用作赋值的操作数或函数调用参数，其中相应的赋值运算符/函数接受一个 `std::initializer_list` 类型的参数。   
+3. 用大括号括起来的初始化 list 绑定到 `auto`，包括范围 for 循环。    
 
 示例代码[7]：   
 
@@ -146,16 +154,49 @@ int sum(const std::initializer_list<int>& list) {
 }
 
 auto list = {1,2,3};  // list 推导出来的类型是 std::initializer_list<int>
+//auto list2 {1,2,3};   // 错误，无法推导
 sum(list);    // 结果是 6
 sum({1,2,3}); // 结果是 6
 sum({});      // 结果是 0
-```
+
+// 输出 1 2 3
+for (auto x : {1, 2, 3})
+    std::cout << x << " ";
+``` 
 
 有了 `initializer_list` 之后，标准库的一些容器就可以支持使用这种类型来构造，比如 `std::vector`，在 c++11 后，加入了这样的构造函数，`vector( std::initializer_list<T> init, const Allocator& alloc = Allocator() )`。  
 
 可以这样构造一个 `vector` ：`std::vector<int> v {1,2,3}` 或 `std::vector<int> v = {1,2,3}`，效果都一样。  
 
-另外，要注意，`initializer_list` 中的值都是常量。  
+<br/>
+
+上文提到在特定条件下才会构造 `std::initializer_list`，下面举一个例子说明，参考自 [《c++中为什么push_back({1,2})可以，emplace_back({1,2})会报错?》](https://www.zhihu.com/question/438004429/answer/3348723205) ：  
+
+>vector<vector<int>> a;    
+>a.push_back({1,2});可以    
+>a.emplace_back({1,2})；报错     
+
+原因是：  
+
+1. `{}` 大括号初始化器列表不是表达式，因此它没有类型，意味着模板类型推导无法推导出与花括号初始化器列表相匹配的类型。  
+
+2. `push_back` 不是成员函数模板，它只是使用了类模板 `std::vector` 的类型模板形参，当实例化了的对象调用这个成员函数时，它的参数是确定，使用 `{}` 没问题，相当于调用对应的构造函数构造一个临时对象出来。  
+
+3. `emplace_back` 是成员函数模板，用到了形参包、包展开、完美转发、布置 new 等技术，它是模板，推导不出 `{}` 是什么。   
+
+而要让 `emplace_back` 可以工作，只能变相这样：  
+
+```cpp
+// 手动构造一个 initializer_list
+a.emplace_back(std::initializer_list<int>{1,2});
+
+// 手动指定模板参数类型，放弃自动推导
+a.emplace_back<std::initializer_list<int>>({1,2});
+
+// 用 auto 构造
+auto x = {1, 2};
+a.emplace_back(x);
+```
 
 ---
 
