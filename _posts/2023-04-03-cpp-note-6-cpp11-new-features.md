@@ -252,9 +252,9 @@ auto f(int a, int b) {
 
 <br/>
 
-`auto` 有时候推断出来的类型与初始值的类型不一样，下面是一些规则：  
+`auto` 有时候推断出来的类型与初始值的类型不一样，下面是一些规则。  
 
-1、初始值是一个引用时，真正参与初始化的其实是引用对象的值：  
+1、初始值是一个引用时，真正参与初始化的其实是引用对象的值。   
 
 ```cpp
 #include <iostream>
@@ -271,7 +271,7 @@ int main() {
 }
 ```
 
-2、`auto` 一般会忽略掉顶层 `const`，而底层 `const` 则会保留下来[10]   
+2、`auto` 一般会忽略掉顶层 `const`，而底层 `const` 则会保留下来[10]。   
 
 比如：  
 
@@ -1231,7 +1231,7 @@ auto sptr3 = wptr.lock();  // sptr3.use_count() == 0;  (!sptr3) == true;
 
 ## memory model
 
-
+写在另一篇文章：[《》]() 。  
 
 
 
@@ -2016,6 +2016,12 @@ std::tuple<int&, std::string&, std::string&> {age, name, city} =
 ## 无序的容器 (unordered container)
 
 这些容器提供常数时间复杂度的搜索、插入、删除操作，代价是使用哈希算法，牺牲了元素的有序性。包括这些： `unordered_set`, `unordered_multiset`, `unordered_map`, `unordered_multimap`。   
+
+---
+
+## 为容器增加 emplace_back 函数
+
+
 
 ---
 
