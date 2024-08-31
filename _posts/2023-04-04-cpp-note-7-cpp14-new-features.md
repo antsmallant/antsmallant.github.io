@@ -36,11 +36,62 @@ c++14 是一个 minor 版本，主要是对于 c++11 一些不完善之处的补
 
 ---
 
-## 1.1 decltype(auto)
+## binary literals (二进制字面值)
 
-`decltype(auto)` 是一个类型标识符，它会像 `auto` 那样进行类型的推导，不同之处在于，`decltype(auto)` 返回的结果类型会保留引用以及cv标记 (cv-qualifiers)，而 `auto` 不会。   
+提供了一种方便的形式来书写二进制数值，以 `0b` 开头，比如这样：  
 
-示例[1]:  
+```cpp
+0b101        // 表示 5
+```
+
+---
+
+## 整型字面量分隔符  
+
+支持用 `'` 分隔数值字面量，比如：   
+
+```cpp
+int a = 0b1111'1111;       // 二进制，表示 255
+double b = 3.14'15'926;    // 3.1415926
+```
+
+---
+
+## 变量模板
+
+大致用法：  
+
+```cpp
+template<class T>
+constexpr T e = T(2.718281828459);
+
+int main() {
+    std::cout << e<int> << std::endl;    // 2
+    std::cout << e<double> << std::endl; // 2.71828
+}
+
+```
+
+---
+
+## lambda 支持使用 auto 作为参数类型声明符
+
+通过这种方式，可以写出支持多态的 lambda 函数。比如：   
+
+```cpp
+
+auto id = [](auto x) { return x; }
+int no1 = id(1);   // no1 == 1
+std::string name = id("hello"); // name == "hello"
+
+```
+
+---
+## decltype(auto)
+
+`decltype(auto)` 是一个类型标识符，它会像 `auto` 那样进行类型的推导，不同之处在于，`decltype(auto)` 返回的结果类型会保留引用以及cv 标记 (cv-qualifiers)，而 `auto` 不会。   
+
+示例[1]:   
 
 ```cpp
 const int x = 0;
@@ -80,12 +131,14 @@ static_assert(std::is_same<const int&, decltype(g(x))>::value == 1);
 
 ## 放松 `constexpr` 函数的约束
 
-在 c++11 中，`constexpr` 函数只能包含一些很有限的语法，比如 `typedef`、`using`，以及只能有一个 return 表达式。但在 c++14，大大放松了限制，支持的语法范围扩大到 `if` 语句，多个 `return` 表达式，循环等。  
+在 c++11 中，`constexpr` 函数只能包含一些很有限的语法，比如 `typedef`、`using`，以及只能有一个 return 表达式。但在 c++14，大大放松了限制，支持的语法范围扩大到 `if` 语句，局部变量，多个 `return` 表达式，循环等。  
 
 示例[1]：   
 
 ```cpp
-constexpr int fac(int n) {
+
+// c++11 not ok, c++14 ok
+constexpr int fac(int n) {  
     if (n <= 1) {
         return 1;
     } else {
@@ -93,7 +146,18 @@ constexpr int fac(int n) {
     }
 }
 
-constexpr int a = fac(5); // ok，不会报错，a == 120
+// c++11 not ok, c++14 ok
+constexpr int fac2(int n) {
+    int ans = 0;
+    for (int i = 0; i < n; ++i) {
+        ans += i;
+    }
+    return ans;
+}
+
+constexpr int a = fac(5);  // c++14 ok，不会报错，a == 120
+
+constexpr int b = fac2(5); // c++14 also ok
 ```
 
 ---
@@ -129,7 +193,37 @@ void legacy_method();
 
 ---
 
-## `std::make_unique`
+## std::make_unique
+
+c++11 中只有 `std::make_shared`，现在 c++14 把 `std::make_unique` 也补上了。   
+
+这样用：  
+
+```cpp
+struct X {};
+std::unique_ptr<X> p = std::make_unique<X>();
+```
+
+使用 `std::make_unique` 的理由与使用 `std::make_shared` 的一样，见：[c++ 笔记：c++11 的新特性 - std::make_shared](https://blog.antsmallant.top/2023/04/03/cpp-note-6-cpp11-new-features#stdmake_shared)。   
+
+---
+
+## std::quoted
+
+用于给字符串添加双引号，效果是这样的：  
+
+```cpp
+std::string s = "hello, world";
+std::cout << s << std::endl;
+std::cout << std::quoted(s) << std::endl;
+```
+
+输出：  
+
+```
+hello, world
+"hello, world"
+```
 
 ---
 
