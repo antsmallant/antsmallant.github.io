@@ -37,21 +37,21 @@ tags: [计算机体系结构]
 
 ## 1.2 资料仓库
 
-* [https://github.com/kaitoukito/Computer-Science-Textbooks](https://github.com/kaitoukito/Computer-Science-Textbooks)
+* 电子书仓库：[https://github.com/kaitoukito/Computer-Science-Textbooks](https://github.com/kaitoukito/Computer-Science-Textbooks)
 
-* [https://github.com/kaitoukito/Integrated-Circuit-Textbooks](https://github.com/kaitoukito/Integrated-Circuit-Textbooks)
+* 电子书仓库：[https://github.com/kaitoukito/Integrated-Circuit-Textbooks](https://github.com/kaitoukito/Integrated-Circuit-Textbooks)
 
-* [https://github.com/tpn/pdfs](https://github.com/tpn/pdfs)
+* 电子书仓库：[https://github.com/tpn/pdfs](https://github.com/tpn/pdfs)
 
 * [binder-知乎专栏-计算机硬件算法与体系结构资源](https://www.zhihu.com/column/c_1270803745370914816)
-
-* [binder-知乎专栏-一些计算机科学书的目录与序言翻译](https://www.zhihu.com/column/c_1366693249554481152)
 
 * [binder-【目录与序言汉化】共享内存同步技术《Shared-Memory Synchronization》](https://zhuanlan.zhihu.com/p/378066745)
 
 * [binder-计算机体系结构综合讲座(52本)Synthesis Lectures on Architecture](https://zhuanlan.zhihu.com/p/262116768)
 
-* [Synthesis Lectures on Computer Architecture 书单](https://www.springer.com/series/16916/books?page=1)
+* 体系结构书单的书名汉化：[binder-知乎专栏-一些计算机科学书的目录与序言翻译](https://www.zhihu.com/column/c_1366693249554481152)
+
+* Springer 体系结构书单：[Synthesis Lectures on Computer Architecture 书单](https://www.springer.com/series/16916/books?page=1)
 
 ---
 
