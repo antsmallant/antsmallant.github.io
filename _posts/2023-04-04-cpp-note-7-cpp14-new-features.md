@@ -87,6 +87,61 @@ std::string name = id("hello"); // name == "hello"
 ```
 
 ---
+
+## Return type deduction (返回值类型推导)
+
+使用 `auto` 作为返回值类型的时候，编译器会尝试进行类型推导。  
+
+1、用于普通函数
+
+```cpp
+auto f(int i) {
+    return i;
+}
+```
+
+2、用于模板     
+
+```cpp
+template<typename T>
+auto f(T t) {
+    return t; 
+}
+```
+
+3、用于 lambda，可以返回类型引用[1]   
+
+```cpp
+auto g = [](auto& x) -> auto& { return f(x); };   
+```
+
+<br/>
+
+一些注意事项[3]   
+
+1、函数内有多个 return 语句，它们必须返回相同的类型，否则编译会失败。   
+
+2、如果 return 语句返回初始化列表，返回值类型推导也会失败。   
+
+```cpp
+auto f() {
+    return {1,2,3};   // 编译报错
+}
+```
+
+3、如果函数是虚函数，不能使用返回值类型推导    
+
+```cpp
+struct X {
+    // 编译报错
+    virtual  auto f() { return 0; }  
+}
+```
+
+4、返回值类型推导可以用在前向声明中，但在使用前，
+
+---
+
 ## decltype(auto)
 
 `decltype(auto)` 是一个类型标识符，它会像 `auto` 那样进行类型的推导，不同之处在于，`decltype(auto)` 返回的结果类型会保留引用以及cv 标记 (cv-qualifiers)，而 `auto` 不会。   
@@ -231,4 +286,6 @@ hello, world
 
 [1] AnthonyCalandra. C++14. Available at https://github.com/AnthonyCalandra/modern-cpp-features/blob/master/CPP14.md.     
 
-[2] Wikipedia. c++14. Available at: https://zh.wikipedia.org/wiki/c++14.   
+[2] Wikipedia. c++14. Available at: https://zh.wikipedia.org/wiki/c++14.    
+
+[3] 程序喵大人. C++14新特性的所有知识点全在这儿啦. Available at https://zhuanlan.zhihu.com/p/165389083, 2021-03-24.   
