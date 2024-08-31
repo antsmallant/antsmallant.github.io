@@ -284,6 +284,34 @@ hello, world
 
 ---
 
+## std::integer_sequence
+
+Manual: [cppreference-std::integer_sequence](https://en.cppreference.com/w/cpp/utility/integer_sequence) 。  
+
+表示一个运行时的整型序列，主要用于模板元编程和泛型编程。有一些帮助函数用于构造：   
+
+* `std::make_integer_sequence<T, N>` 创建一串 0, ..., N-1 的类型为 T 的序列。  
+* `std::index_sequence_for<T...>` 将一组模板参数打包成一个整型序列。  
+
+示例[1]：    
+
+```cpp
+// 将一个 array 转换成 tuple
+
+template<typename Array, std::size_t... I>
+decltype(auto) a2t_impl(const Array& a, std::integer_sequence<std::size_t, I...>) {
+    return std::make_tuple(a[I]...);
+}
+
+template<typename T, std::size_t N, typename Indices = std::make_index_sequence<N>>
+decltype(auto) a2t(const std::array<T, N>& a) {
+    return a2t_impl(a, Indices());
+}
+
+```
+
+---
+
 # 3. 参考
 
 [1] AnthonyCalandra. C++14. Available at https://github.com/AnthonyCalandra/modern-cpp-features/blob/master/CPP14.md.     
