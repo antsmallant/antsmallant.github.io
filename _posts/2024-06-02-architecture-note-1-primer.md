@@ -19,7 +19,7 @@ tags: [计算机体系结构]
 
 ---
 
-## 1.1 资料的搜索与下载
+## 1.1 书籍的搜索与下载
 
 以下方法可以逐个尝试：  
 
@@ -46,6 +46,8 @@ tags: [计算机体系结构]
 * [binder-知乎专栏-计算机硬件算法与体系结构资源](https://www.zhihu.com/column/c_1270803745370914816)
 
 * [binder-知乎专栏-一些计算机科学书的目录与序言翻译](https://www.zhihu.com/column/c_1366693249554481152)
+
+* [binder-【目录与序言汉化】共享内存同步技术《Shared-Memory Synchronization》](https://zhuanlan.zhihu.com/p/378066745)
 
 ---
 
@@ -88,8 +90,6 @@ tags: [计算机体系结构]
 * [What Every Programmer Should Know About Memory](https://people.freebsd.org/~lstewart/articles/cpumemory.pdf)
 
 * [中文扩写-What Every Programmer Should Know About Memory](https://zhuanlan.zhihu.com/p/611133924)
-
-* [【目录与序言汉化】共享内存同步技术《Shared-Memory Synchronization》](https://zhuanlan.zhihu.com/p/378066745)
 
 * [The Datacenter as a Computer Designing Warehouse-Scale Machines Third Edition](https://pages.cs.wisc.edu/~shivaram/cs744-readings/dc-computer-v3.pdf)
 
