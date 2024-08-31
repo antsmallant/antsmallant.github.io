@@ -29,6 +29,8 @@ tags: [计算机体系结构]
 
 * 书名 + pdf 使用 google 搜索 github，比如 "Innovations in the Memory System pdf site:github.com"。  
 
+* 以上方法都无效，就用 zlibrary（ 但 zlib 有很多仿冒的网站，小心被钓鱼，可以在 zlib 的这个 reddit 主页上找到最新的访问方法：[https://www.reddit.com/r/zlibrary/](https://www.reddit.com/r/zlibrary/) ）
+
 ---
 
 ## 1.2 资料仓库
@@ -87,7 +89,9 @@ tags: [计算机体系结构]
 
 * [【目录与序言汉化】共享内存同步技术《Shared-Memory Synchronization》](https://zhuanlan.zhihu.com/p/378066745)
 
+* [The Datacenter as a Computer Designing Warehouse-Scale Machines Third Edition](https://pages.cs.wisc.edu/~shivaram/cs744-readings/dc-computer-v3.pdf)
 
+* [The Datacenter as a Computer An Introduction to the Design of Warehouse-Scale Machines Second Edition](https://web.eecs.umich.edu/~mosharaf/Readings/DC-Computer.pdf)
 
 
 ---
