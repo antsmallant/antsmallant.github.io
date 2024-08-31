@@ -88,6 +88,39 @@ std::string name = id("hello"); // name == "hello"
 
 ---
 
+## lambda 支持初始化捕获
+
+可以在 `[]` 对初始化捕获任意的表达式。  
+
+比如这样：  
+
+```cpp
+// 在 [] 中赋值了一个参数
+auto func = [x = 3](auto y) { return x + y; };
+```
+
+如果想将初始化捕获的跟原本的捕获方式一起使用，则需要将初始化捕获的放在 `[]` 的最后面，像这样：  
+
+```cpp
+int a = 10;
+int b = 20;
+
+auto func = [a,b,x=30,y=50]() { return a + b + x + y; };
+```
+
+初始化捕获的好处是可以支持移动捕获，否则就只能像 c++11 那样只支持值捕获和拷贝捕获。  
+
+示例：  
+
+```cpp
+std::unique_ptr<X> obj = std::make_unique_ptr<X>();
+auto func = [o = std::move(obj)]() { 
+    // do something
+};
+```
+
+---
+
 ## Return type deduction (返回值类型推导)
 
 使用 `auto` 作为返回值类型的时候，编译器会尝试进行类型推导。  
@@ -309,6 +342,22 @@ decltype(auto) a2t(const std::array<T, N>& a) {
 }
 
 ```
+
+---
+
+## User-defined literals for standard library types
+
+---
+
+## std::shared_timed_mutex
+
+---
+
+## std::shared_lock
+
+---
+
+## std::exchange
 
 ---
 
