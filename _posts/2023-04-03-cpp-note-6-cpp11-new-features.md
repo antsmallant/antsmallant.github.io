@@ -1231,9 +1231,7 @@ auto sptr3 = wptr.lock();  // sptr3.use_count() == 0;  (!sptr3) == true;
 
 ## memory model
 
-写在另一篇文章：[《》]() 。  
-
-
+相关内容很复杂，需要比较长的篇幅才能讲清楚，写在了另一篇文章：[《C++ 笔记：Memory Model》](https://blog.antsmallant.top/2023/04/02/cpp-note-5-memory-model) 。    
 
 ---
 
