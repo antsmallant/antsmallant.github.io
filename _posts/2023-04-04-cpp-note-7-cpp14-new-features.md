@@ -265,7 +265,9 @@ std::unique_ptr<X> p = std::make_unique<X>();
 
 ## std::quoted
 
-用于给字符串添加双引号，效果是这样的：  
+用于给字符串添加双引号，头文件是：`<iomanip>`。    
+
+效果是这样的：    
 
 ```cpp
 std::string s = "hello, world";

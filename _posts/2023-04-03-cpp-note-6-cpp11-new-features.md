@@ -1336,6 +1336,7 @@ std::this_thread::id this_id = std::this_thread::get_id();
 Manual: [《cppreference - sleep_for》](https://en.cppreference.com/w/cpp/thread/sleep_for)   
 
 原型： 
+
 ```cpp
 template< class Rep, class Period>
 void sleep_for( const std::chrono::duration<Rep, Period>& sleep_duration );
@@ -2019,7 +2020,33 @@ std::tuple<int&, std::string&, std::string&> {age, name, city} =
 
 ## 为容器增加 emplace_back 函数
 
+是 c++11 新引入的函数，允许直接在容器的尾部构造一个元素，而不需要先创建一个临时对象再将其插入容器中。`emplace_back` 接受任意数量的参数，并将这些参数传递给元素的构造函数来创建新的元素，可以省略掉一次拷贝或移动操作。  
 
+原型：  
+
+```cpp
+template< class... Args >
+void emplace_back( Args&&... args );
+```
+
+示例：  
+
+```cpp
+
+struct X {
+    int id;
+    std::string name;
+    X(int _id, std::string _name) : id(_id), name(_name) {}
+};
+
+int main() {
+    std::vector<X> xvec;
+    xvec.emplace_back(1, "Jim");
+    xvec.emplace_back(2, "Lily");
+    xvec.push_back(X{3, "Lucy"});
+}
+
+```
 
 ---
 
