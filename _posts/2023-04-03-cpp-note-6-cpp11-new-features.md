@@ -985,6 +985,98 @@ auto&& w2 = getWidget(); // w2 的类型是 Widget&& 。由于 getWidget() 返�
 
 ---
 
+## 用户定义字面量 (user-defined literals)
+
+Manual: [User-defined literals](https://en.cppreference.com/w/cpp/language/user_literal)。   
+
+允许定义一个用户自定义的后缀，来使得整型、浮点型、字符型、字符串型的字面量产生对象。   
+
+函数原型是：  `ReturnType operator X(...) { ... }`。  
+
+函数名的形式是： 
+1. operator "" identifer
+2. operator ""ud-suffix
+
+第1种形式已经废弃了。  
+
+第2种形式：   
+1）`""` 与 ud-suffix 之间不能有空格；  
+2）ud-suffix 需要以下划线 `_` 开头，不以下划线开头的是标准库保留的；   
+3）ud-suffix 不能以双下划线 `__` 开头，这也是被保留的；   
+4）operator 与 `""` 的空格可以省略，比如这样也是合法的： `operator""ud-suffix`；   
+
+只支持以下参数列表：   
+
+```cpp
+( const char* )
+( unsigned long long int )
+( long double )
+( char )
+( wchar_t )
+( char8_t )     // (since c++20)
+( char16_t )
+( char32_t )
+( const char*, std::size_t )
+( const wchar_t*, std::size_t )
+( const char8_t*, std::size_t )   // (since c++20)
+( const char16_t*, std::size_t )
+( const char32_t*, std::sizee_t )
+```
+
+如果是写成模板，大致形式：   
+
+```cpp
+template<char...>
+double operator ""_x();
+```
+
+示例1[17]:   
+
+```cpp
+long double operator ""_w(long double);
+std::string operator ""_w(const char16_t*, size_t);
+unsigned    operator ""_w(const char*);
+
+int main() {
+    1.2_w;        // 调用 operator ""_w(1.2L);
+    u"one"_w;     // 调用 operator ""_w(u"one", 3);
+    12_w;         // 调用 operator ""_w("12");
+    "two"_w;      // 错误，没有合适的字面量 operator 
+}
+
+```
+
+示例2[17]:   
+
+```cpp
+#include <string>
+
+void        operator ""_km(long double);  // ok，比如 1.0_km 会调用
+void        operator "" _km(long double); // 也 ok，不过已经废弃了
+std::string operator ""_i18n(const char*, std::size_t);  // ok
+
+template<char...>
+double operator ""_pi(); // ok
+
+float operator ""_e(const char*);  // ok
+
+// 错误，后缀需要以下划线开头
+float operator ""Z(const char*);
+
+// 错误，"" 与 `_` 有空格的时候，`_`+大写字母开头的是保留的。  
+double operator"" _Z(long double);
+
+// ok，"" 与 `_` 没有空格
+double operator""_Z(long double);  
+
+// ok，字面量 operator 可以重载
+double operator ""_Z(const char* args);
+
+int main() {}
+```
+
+---
+
 # 2. c++11 新的库特性
 
 **概览**  
@@ -2089,3 +2181,5 @@ int main() {
 [15] cppreference. unique_lock. Available at https://en.cppreference.com/w/cpp/thread/unique_lock.    
 
 [16] cppreference. condition_variable. Available at https://en.cppreference.com/w/cpp/thread/condition_variable.    
+
+[17] cppreference. User-defined literals. Available at https://en.cppreference.com/w/cpp/language/user_literal.   

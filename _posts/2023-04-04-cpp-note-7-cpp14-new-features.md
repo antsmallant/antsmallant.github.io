@@ -217,7 +217,7 @@ static_assert(std::is_same<const int&, decltype(g(x))>::value == 1);
 
 ---
 
-## 放松 `constexpr` 函数的约束
+## 放松 constexpr 函数的约束
 
 在 c++11 中，`constexpr` 函数只能包含一些很有限的语法，比如 `typedef`、`using`，以及只能有一个 return 表达式。但在 c++14，大大放松了限制，支持的语法范围扩大到 `if` 语句，局部变量，多个 `return` 表达式，循环等。  
 
@@ -345,7 +345,9 @@ decltype(auto) a2t(const std::array<T, N>& a) {
 
 ---
 
-## User-defined literals for standard library types
+## User-defined literals for standard library types （用户自定义字面量）
+
+
 
 ---
 
