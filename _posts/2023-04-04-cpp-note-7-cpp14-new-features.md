@@ -90,12 +90,12 @@ std::string name = id("hello"); // name == "hello"
 
 ## lambda 支持初始化捕获
 
-可以在 `[]` 对初始化捕获任意的表达式。  
+可以在 `[]` 里面初始化捕获任意的表达式。  
 
 比如这样：  
 
 ```cpp
-// 在 [] 中赋值了一个参数
+// 在 [] 中初始化捕获了 x
 auto func = [x = 3](auto y) { return x + y; };
 ```
 
