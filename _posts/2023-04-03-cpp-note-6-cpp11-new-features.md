@@ -694,6 +694,8 @@ y = x;    // 错误，operator = 也是 deleted
 
 ## Converting constructors
 
+Manual: [cppreference - Converting constructor](https://en.cppreference.com/w/cpp/language/converting_constructor)     
+
 
 ---
 
