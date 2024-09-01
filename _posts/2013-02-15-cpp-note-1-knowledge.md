@@ -457,13 +457,7 @@ const-volatile-qualified  ：同时被 const / volatile 修饰的
 
 ---
 
-## 1.17 c++ 的类型系统
-
-参考：[《【C++ 类型系统】了解C++ 中 标量、复合、标准布局、平凡和聚合类型》](https://blog.csdn.net/qq_21438461/article/details/131604404)    
-
----
-
-## 1.18 c++ 的几种初始化方式
+## 1.17 c++ 的几种初始化方式
 
 参考：[《C++中常见的几种初始化方法》](https://zhuanlan.zhihu.com/p/696384646)    
 
@@ -644,7 +638,19 @@ A* a4 = new A{};
 
 ---
 
-## 1.19 explicit
+## 1.18 c++ 的类型系统
+
+参考：[《【C++ 类型系统】了解C++ 中 标量、复合、标准布局、平凡和聚合类型》](https://blog.csdn.net/qq_21438461/article/details/131604404)    
+
+---
+
+## 1.19 C++ 的类型转换
+
+参考：[《C++的类型转换》](https://zhuanlan.zhihu.com/p/575121995)    
+
+---
+
+## 1.20 explicit
 
 通常表示不允许进行隐式转换。   
 
