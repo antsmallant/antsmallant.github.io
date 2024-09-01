@@ -552,13 +552,65 @@ int i2 {};       // ok，是值初始化
 2. 形式统一，大多数情况下都可使用统一初始化或值初始化；    
 
 原理：  
-1. 使用统一初始化，系统首先会调用值初始化(value initialization)，将初始值转化为 std::initializer_list；   
-2. 使用得到的 std::initializer_list 对象来初始化变量；  
+1. 使用统一初始化，系统首先会调用值初始化(value initialization)，将初始值转化为 `std::initializer_list`；   
+2. 使用得到的 `std::initializer_list` 对象来初始化变量；  
 3. 对于对象的初始化：
-    - 如果定义了参数为 `std::initializer_list` 有构造函数，优先使用该构造函数；   
+    - 如果定义了参数为 `std::initializer_list` 的构造函数，优先使用该构造函数；   
     - 如果没有参数为 `std::initializer_list` 的构造函数，调用 `std::initializer_list` 元素个数相同的构造函数；
     - 如果没有参数为 `std::initializer_list` 的构造函数，且对应的构造函数定义为 explict 时，不能使用 `std::initializer_list` 进行隐式赋值，必须显式调用;  
 
+示例1：  
+
+```cpp
+#include <iostream>
+#include <vector>
+
+class A {
+public:
+    A(int _a, int _b) {
+        std::cout << "call A::A(int, int)" << std::endl;
+    }
+    A(std::initializer_list<int> lst) {
+        std::cout << "call A::A(initializer_list)" << std::endl;
+    }
+};
+
+int main() {
+    // 直接初始化
+    A a1(1,2);          // call A::A(int, int)
+
+    // 统一初始化
+    A a2{1,2,3};        // call A::A(initializer_list)
+    A a3{1,2};          // call A::A(initializer_list)
+    A a4 = {1,2,3,4,5}; // call A::A(initializer_list)
+}
+```
+
+示例2：  
+
+```cpp
+#include <iostream>
+#include <vector>
+
+class A{
+public:
+    A(int _x, int _y){
+        std::cout << "call A::A(int, int)" << std::endl;
+    }
+    explicit A(int _x, int _y, int _z){
+        std::cout << "call A::A(int, int, int)" << std::endl;
+    }
+};
+
+int main(){
+    // 统一初始化
+    A p1(2, 3);             // call A(int, int)
+    A p2{1, 2, 3};          // call A(int, int, int)
+    A p3{1, 2};             // call A(int, int)
+    A p4 = {1, 2};          // call A(int, int)
+    A p5 = {1, 2, 3};       // 报错，A(int, int, int) 被 explict 修饰了，不能隐式转换
+}
+```
 
 ---
 
@@ -573,7 +625,22 @@ int a {};    // a == 0
 float b {};  // b == 0
 double c {}; // c == 0
 char d {};   // (int) d == 0
+
+// 按照以下方式初始化类对象也算是值初始化
+A a1 = A();
+A a2 = A{};
+A* a3 = new A();
+A* a4 = new A{};
 ```
+
+要点：  
+1. 如果类型 A 是数组类型，则数组的每个元素都是值初始化；   
+2. 局部静态对象在没有显式初始化时会进行值初始化；   
+3. 类对象进行值初始化的规则： 
+    - 如果类有用户自定义的默认构造函数，调用之；   
+    - 如果类有编译器生成的默认构造函数，先0值初始化再调用之；   
+    - 没有默认构造函数，报错；   
+4. 对聚合类进行值初始化相当于对类中的每个变量进行值初始化；   
 
 ---
 
