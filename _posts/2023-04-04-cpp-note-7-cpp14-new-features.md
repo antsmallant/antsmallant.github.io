@@ -252,7 +252,7 @@ constexpr int b = fac2(5); // c++14 also ok
 
 ## `[[deprecated]]` 属性
 
-c++14 引入了 `[[deprecated]]` 属性用于表明一个单位（函数、类等）不再推荐使用了，并且会在编译的时候报一个 warning。支持一个可选的 warning 信息。   
+c++14 引入了 `[[deprecated]]` 属性用于表明一个单元（函数、类等）不再推荐使用了，并且会在编译的时候报一个 warning。支持一个可选的 warning 信息。   
 
 示例[1]:   
 

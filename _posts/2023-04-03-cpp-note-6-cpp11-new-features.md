@@ -1077,6 +1077,35 @@ int main() {}
 
 ---
 
+## Attributes
+
+Manual：[cppreference - Attribute specifier sequence](https://en.cppreference.com/w/cpp/language/attributes)。   
+
+可以将任意的信息与一个名字关联起来。  
+
+语法是：`[[ attribute-list ]]`。  attribute-list 是一个逗号分隔的序列，包括 0 个或多个属性。  
+
+c++11 引入的属性包括：  
+
+|attributes|comment|
+|:--|:--|
+|`[[noreturn]]`|表明此函数没有返回|     
+|`[[carries_dependency]]`|indicates that dependency chain in release-consume std::memory_order propagates in and out of the function|    
+
+示例：  
+
+```cpp
+// ok
+[[noreturn]] void f() {
+    throw "error";
+}
+
+// not ok，会报错
+// void h() [[noreturn]]; 
+```
+
+---
+
 # 2. c++11 新的库特性
 
 **概览**  
