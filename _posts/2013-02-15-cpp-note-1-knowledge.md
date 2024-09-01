@@ -556,8 +556,8 @@ int i2 {};       // ok，是值初始化
 2. 使用得到的 `std::initializer_list` 对象来初始化变量；  
 3. 对于对象的初始化：
     - 如果定义了参数为 `std::initializer_list` 的构造函数，优先使用该构造函数；   
-    - 如果没有参数为 `std::initializer_list` 的构造函数，调用 `std::initializer_list` 元素个数相同的构造函数；
-    - 如果没有参数为 `std::initializer_list` 的构造函数，且对应的构造函数定义为 explict 时，不能使用 `std::initializer_list` 进行隐式赋值，必须显式调用;  
+    - 如果没有参数为 `std::initializer_list` 的构造函数，调用与 `std::initializer_list` 元素个数相同的构造函数；
+    - 如果没有参数为 `std::initializer_list` 的构造函数，且对应的构造函数定义为 `explict` 时，不能使用 `std::initializer_list` 进行隐式赋值，必须显式调用;  
 
 示例1：  
 
