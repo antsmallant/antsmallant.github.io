@@ -1583,7 +1583,9 @@ int main() {
 
 锁包装器 (wrapper)，利用 RAII 机制，以异常安全的方式控制锁资源，包括 `std::lock_guard`，`std::unique_lock`。   
 
-1、`std::lock_guard`   
+---
+
+#### std::lock_guard
 
 Manual: [《cppreference - lock_guard》](https://en.cppreference.com/w/cpp/thread/lock_guard)     
 
@@ -1625,9 +1627,9 @@ int main() {
 }
 ```
 
-<br/>
+---
 
-2、`std::unique_lock`   
+#### std::unique_lock
 
 Manual：[《cppreference unique_lock》](https://en.cppreference.com/w/cpp/thread/unique_lock)      
 
@@ -1737,6 +1739,7 @@ Manual: [《cppreference - condition_variable》](https://en.cppreference.com/w/
 |native_handle|返回原始句柄，这个与具体实现有关，在Posix系统，可能是 pthread_cond_t*，在Windows，可能是 PCONDITION_VARIABLE|
 
 注意：  
+
 1. 一般在 `notify_` 之前，要先解锁，避免把等待线程唤醒了，但它又需要阻塞在加锁上。  
 2. c++ 里 `condition_variable` 的 `wait` 与 pthread 里的 `pthread_cond_wait` 有小小差异，c++ 这里支持两个函数原型：   
 

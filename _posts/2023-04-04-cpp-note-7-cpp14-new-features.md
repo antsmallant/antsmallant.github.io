@@ -362,15 +362,57 @@ std::chrono::duration_cast<std::chrono::minutes>(day).count();  // == 1440
 
 ---
 
+## std::exchange
+
+Manual：[cppreference - std::exchange](https://en.cppreference.com/w/cpp/utility/exchange)。    
+
+原型：  
+
+```cpp
+// 参数说明
+//   obj ： 需要被替换值的对象
+//   new_value ：用于赋值给 obj 的值
+// 返回值
+//   obj 的旧值
+template< class T, class U = T >
+T exchange( T& obj, U&& new_value );
+```
+
+`T` 需要满足可移动构造，同时也需要满足从类型 U 到类型 T 的移动赋值。  
+
+它与 swap 的区别：单向的移动赋值，不是交换。  
+
+它的一个可能实现：   
+
+```cpp
+template<class T, class U = T>
+T exchange(T& obj, U&& new_value) {
+    T old_value = std::move(obj);
+    obj = std::forward<U>(new_value);
+    return old_value; 
+}
+```
+
+示例：  
+
+```cpp
+int main() {
+    std::vector<int> v;
+    std::exchange(v, {1,3,5,7});
+    std::cout << v.size() << std::endl;  // 4
+    for (auto x : v) std::cout << x << " ";  // 1 3 5 7
+}
+```
+
+---
+
 ## std::shared_timed_mutex
 
 ---
 
 ## std::shared_lock
 
----
 
-## std::exchange
 
 ---
 
