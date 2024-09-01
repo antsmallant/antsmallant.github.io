@@ -66,7 +66,7 @@ Color c = Color::Red;
 
 ## 类内初始值 (in-class initializer)
 
-c++11 之后，非 static 成员变量也可以在声明时初始化了，不需要再放在构造函数里初始化。   
+c++11 之后，非 static 成员变量可以在声明时初始化，不需要再放在构造函数里初始化。   
 
 static 的成员变量，如果是 const 的，则也可以使用这种类内初始化。  
 
@@ -134,7 +134,7 @@ f(nullptr);  // 调用 f(int*)
 
 `std::initializer_list` 类型的对象是一个轻量级代理对象，提供对 `const T` 类型对象数组的访问，要注意，`std::initializer_list` 中的值都是常量。  
 
-通常用于构造函数或函数参数中，以允许传递一个初始化元素列表，可以用大括号初始化来构造 `initializer_list`，比如 `{1,2,3}` 就创建了一个数字序列，它的类型为 `std::initializer_list<int>`。   
+通常用于构造函数或函数参数，以允许传递一个初始化元素列表，可以用大括号初始化来构造 `initializer_list`，比如 `{1,2,3}` 就创建了一个数字序列，它的类型为 `std::initializer_list<int>`。   
 
 用大括号括起来的一串元素，需要在特定的条件下才会被构造为 `std::initializer_list`：   
 
