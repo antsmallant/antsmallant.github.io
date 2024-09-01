@@ -535,12 +535,12 @@ double b {3.14};   // b == 3.14
 int c = {30};      // c == 30
 double d = {2.17}; // d == 2.17
 
-int arr[] {1,2,3};  // arr == [3]{1,2,3}
+int arr[] { 1,2,3 };  // arr == [3]{1,2,3}
 
-std::vector<int> vec {1,3,5};  // vec = {1,3,5}
-std::vector<std::string> svec{"dog", "cat"}; // svec = {"dog", "cat"}
+std::vector<int> vec { 1,3,5 };  // vec = {1,3,5}
+std::vector<std::string> svec{ "dog", "cat" }; // svec = {"dog", "cat"}
 
-std::map<int, std::string> m{ {1, "A"}, {2, "B"}}; // m[1] == "A", m[2] == "B"
+std::map<int, std::string> m{ {1, "A"}, {2, "B"} }; // m[1] == "A", m[2] == "B"
 
 int i1 {10.1};   // 报错，double 不能赋值给 int，会发生精度截断
 int i2 {};       // ok，是值初始化
@@ -557,7 +557,7 @@ int i2 {};       // ok，是值初始化
 3. 对于对象的初始化：
     - 如果定义了参数为 `std::initializer_list` 有构造函数，优先使用该构造函数；   
     - 如果没有参数为 `std::initializer_list` 的构造函数，调用 `std::initializer_list` 元素个数相同的构造函数；
-    - 如果没有参数为 `std::initializer_list` 的构造函数，且对应的构造函数定义为 explict 时，不能使用 `std::initializer_list` 进行隐式赋值，必须显式调用
+    - 如果没有参数为 `std::initializer_list` 的构造函数，且对应的构造函数定义为 explict 时，不能使用 `std::initializer_list` 进行隐式赋值，必须显式调用;  
 
 
 ---
