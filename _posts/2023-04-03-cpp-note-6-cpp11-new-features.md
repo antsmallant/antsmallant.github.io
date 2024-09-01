@@ -638,10 +638,57 @@ for (auto num : vec)
 
 ## default functions
 
+一种更优雅和高效的方式，让编译器提供函数的默认实现，比如一个构造函数。   
+
+示例[7]：  
+
+```cpp
+struct A {
+    A() = default; 
+    A(int x) : x {x} {}
+    int x {1};
+};
+A a;         // a.x == 1
+A a2 {123};  // a.x == 123
+```
+
+有继承的情况：   
+
+```cpp
+struct B {
+    B() : x{1} {}
+    int x;
+};
+
+struct C : B {
+    // 会调用 B::B
+    C() = default;
+};
+
+C c; // c.x == 1
+```
 
 ---
 
 ## deleted functions
+
+一种更优雅和高效的方法让编译器不要为指定的函数生成默认实现。   
+
+示例[7]：   
+
+```cpp
+class A {
+    int x;
+public:
+    A(int x) : x{x} {}
+    A(const A&) = delete;
+    A& operator=(const A&) = delete;
+};
+
+A x{123};
+A y = x;  // 错误，调用了 deleted 的拷贝构造函数
+y = x;    // 错误，operator = 也是 deleted 
+```
 
 ---
 

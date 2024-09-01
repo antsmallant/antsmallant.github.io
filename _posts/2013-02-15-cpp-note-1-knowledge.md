@@ -463,7 +463,123 @@ const-volatile-qualified  ：同时被 const / volatile 修饰的
 
 ---
 
-## 1.18 explicit
+## 1.18 c++ 的几种初始化方式
+
+参考：[《C++中常见的几种初始化方法》](https://zhuanlan.zhihu.com/p/696384646)    
+
+有几种不同的初始化方法：    
+* 默认初始化 (default initialization)
+* 直接初始化 (direct initialization)
+* 拷贝初始化 (copy initialization)
+* 统一初始化 (uniform initialization)
+* 值初始化 (value initialization)
+
+---
+
+### 默认初始化 (default initialization)
+
+创建一个变量的时候，未提供任何初始值的做法，叫做默认初始化。默认初始化得到的变量值是不确定的，可能造成未定义的行为。   
+
+```cpp
+A a;    // 默认初始化
+int a;  // 默认初始化
+```
+
+---
+
+### 直接初始化 (direct initialization)
+
+使用圆括号进行初始化叫做直接初始化。   
+
+```cpp
+int a(10);
+double b(13.2);
+char c('x');
+
+int d();       // 这是函数声明，不是定义变量 d
+int e(3.14);   // 不对类型进行检查，能够通过编译 e == 1
+```
+
+要点：   
+1. 直接初始化的初始值不能为空，否则变成函数声明；  
+2. 直接初始化不对类型进行检查，会进行精度截断；   
+3. 直接初始化可以更高效的初始化某些复杂的对象；   
+
+---
+
+### 拷贝初始化 (copy initialization)
+
+用等号对变量进行初始化的方法是拷贝初始化。  
+
+```cpp
+int a = 10;
+double b = 20.3;
+char c = 'm';
+
+int a  = 3.14;  // a == 3，没有类型检查 
+```
+
+要点：  
+1. 对于某些复杂对象的初始化效率较低；   
+2. 没有类型检查，会进行精度截断；    
+
+---
+
+### 统一初始化 (uniform initialization)
+
+也叫列表初始化 (list initialization)，c++ 为了统一各种初始化形式，创造了统一初始化，用大括号 `{}` 表示。   
+
+```cpp
+int a {20};        // a == 20
+double b {3.14};   // b == 3.14
+int c = {30};      // c == 30
+double d = {2.17}; // d == 2.17
+
+int arr[] {1,2,3};  // arr == [3]{1,2,3}
+
+std::vector<int> vec {1,3,5};  // vec = {1,3,5}
+std::vector<std::string> svec{"dog", "cat"}; // svec = {"dog", "cat"}
+
+std::map<int, std::string> m{ {1, "A"}, {2, "B"}}; // m[1] == "A", m[2] == "B"
+
+int i1 {10.1};   // 报错，double 不能赋值给 int，会发生精度截断
+int i2 {};       // ok，是值初始化
+
+```
+
+要点：   
+1. 不会也不允许发生精度截断 (narrowing conversion)，如果初始值的类型不符，则编译报错；     
+2. 形式统一，大多数情况下都可使用统一初始化或值初始化；    
+
+原理：  
+1. 使用统一初始化，系统首先会调用值初始化(value initialization)，将初始值转化为 std::initializer_list；   
+2. 使用得到的 std::initializer_list 对象来初始化变量；  
+3. 对于对象的初始化：
+    - 如果定义了参数为 `std::initializer_list` 有构造函数，优先使用该构造函数；   
+    - 如果没有参数为 `std::initializer_list` 的构造函数，调用 `std::initializer_list` 元素个数相同的构造函数；
+    - 如果没有参数为 `std::initializer_list` 的构造函数，且对应的构造函数定义为 explict 时，不能使用 `std::initializer_list` 进行隐式赋值，必须显式调用
+
+
+---
+
+### 值初始化 (value initialization)
+
+当大括号中的初始化值为空的时候，是值初始化，往往会直接初始化为 0 （也叫零初始化，zero initialization）或 空.  
+
+值初始化确保了那些没有定义默认构造函数的类对象也能够被正确的初始化。  
+
+```cpp
+int a {};    // a == 0
+float b {};  // b == 0
+double c {}; // c == 0
+char d {};   // (int) d == 0
+```
+
+---
+
+## 1.19 explicit
+
+
 
 ---
 
