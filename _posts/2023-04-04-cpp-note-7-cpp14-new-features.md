@@ -408,11 +408,58 @@ int main() {
 
 ## std::shared_timed_mutex
 
+Manual：[cppreferecne - std::shared_timed_mutex](https://en.cppreference.com/w/cpp/thread/shared_lock) 。  
+头文件：`<shared_mutex>`。  
+
+c++14 引入的新同步原语，可以用于实现读写锁。它符合 `SharedTimedMutex` 要求，而 `SharedTimedMutex` 符合 `TimedMutex` 和 `SharedMutex` 要求，所以 `std::shared_timed_mutex` 可以配合 `std::shared_lock` 使用。  
+
+它有两种访问方式：  
+
+1. 独占的(exclusive)，只有一条线程可以占有这个 mutex。   
+2. 共享的(shared)，多条线程可以分享同个 mutex。   
+
+当需要“读锁”时，可配合 `std::shared_lock` 使用；当需要“写锁”时，可配合 `std::lock_guard` 或 `std::unique_lock` 使用。   
+
+独占锁定 (exclusive locking) 的 api：   
+
+```
+lock
+try_lock
+try_lock_for
+try_lock_until
+unlock
+```
+
+共享锁定 (shared locking) 的 api:    
+
+```
+lock_shared
+try_lock_shared
+try_lock_shared_for
+try_lock_shared_until
+unlock_shared
+```
+
 ---
 
 ## std::shared_lock
 
+Manual: [cppreference - std::shared_lock](https://en.cppreference.com/w/cpp/thread/shared_lock) 。  
 
+头文件：`<shared_mutex>`。  
+
+与 `std::unique_lock` 类似，是一种通用的 mutex 包装器。`std::shared_lock` 对应的 mutex 的类型 L 是要符合 `SharedLockable` 要求的，相当于一种接口规范吧，即对于一个 L 类型的对象 m，要支持以下几种调用：  
+
+```cpp
+m.lock_shared();
+m.try_lock_shared();
+m.unlock_shared();
+```
+
+示例[4]：   
+
+```cpp
+```
 
 ---
 
@@ -423,3 +470,5 @@ int main() {
 [2] Wikipedia. c++14. Available at: https://zh.wikipedia.org/wiki/c++14.    
 
 [3] 程序喵大人. C++14新特性的所有知识点全在这儿啦. Available at https://zhuanlan.zhihu.com/p/165389083, 2021-03-24.   
+
+[4] cppreference. std::shared_lock. Available at https://en.cppreference.com/w/cpp/thread/shared_lock/lock.   
