@@ -321,7 +321,7 @@ hello, world
 
 Manual: [cppreference-std::integer_sequence](https://en.cppreference.com/w/cpp/utility/integer_sequence) 。  
 
-表示一个运行时的整型序列，主要用于模板元编程和泛型编程。有一些帮助函数用于构造：   
+表示一个编译时的整型序列，主要用于模板元编程和泛型编程。有一些帮助函数用于构造：   
 
 * `std::make_integer_sequence<T, N>` 创建一串 0, ..., N-1 的类型为 T 的序列。  
 * `std::index_sequence_for<T...>` 将一组模板参数打包成一个整型序列。  
