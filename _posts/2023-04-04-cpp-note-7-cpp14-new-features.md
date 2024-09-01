@@ -177,7 +177,7 @@ struct X {
 
 ## decltype(auto)
 
-`decltype(auto)` 是一个类型标识符，它会像 `auto` 那样进行类型的推导，不同之处在于，`decltype(auto)` 返回的结果类型会保留引用以及cv 标记 (cv-qualifiers)，而 `auto` 不会。   
+`decltype(auto)` 是一个类型标识符，它会像 `auto` 那样进行类型的推导，不同之处在于，`decltype(auto)` 返回的结果类型会保留引用以及 cv 标记 (cv-qualifiers)，而 `auto` 不会。   
 
 示例[1]:   
 
