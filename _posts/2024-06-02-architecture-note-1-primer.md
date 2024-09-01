@@ -3,7 +3,7 @@ layout: post
 title: "计算机体系结构笔记：入门"
 date: 2024-06-02
 last_modified_at: 2024-06-02
-categories: [基础理论与算法]
+categories: [计算机体系结构]
 tags: [计算机体系结构]
 ---
 
