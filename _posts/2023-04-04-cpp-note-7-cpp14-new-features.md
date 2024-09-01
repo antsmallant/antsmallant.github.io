@@ -345,9 +345,20 @@ decltype(auto) a2t(const std::array<T, N>& a) {
 
 ---
 
-## User-defined literals for standard library types （用户自定义字面量）
+## User-defined literals for standard library types （标准库的一些用户定义字面量）
 
+用户定义字面量在 c++11 就引入，详见这篇笔记：[《c++ 笔记：c++11 的新特性 - 用户定义字面量》](https://blog.antsmallant.top/2023/04/03/cpp-note-6-cpp11-new-features#%E7%94%A8%E6%88%B7%E5%AE%9A%E4%B9%89%E5%AD%97%E9%9D%A2%E9%87%8F-user-defined-literals)。   
 
+主要是 `chrono` 和 `basic_string` 这两个库。  
+
+示例[1]：  
+
+```cpp
+using namespace std::chrono_literals;
+auto day = 24h;
+day.count();  // == 24
+std::chrono::duration_cast<std::chrono::minutes>(day).count();  // == 1440
+```
 
 ---
 
