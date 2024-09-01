@@ -371,7 +371,7 @@ Manual：[cppreference - std::exchange](https://en.cppreference.com/w/cpp/utilit
 ```cpp
 // 参数说明
 //   obj ： 需要被替换值的对象
-//   new_value ：用于赋值给 obj 的值
+//   new_value ：用于赋值给 obj 的新值
 // 返回值
 //   obj 的旧值
 template< class T, class U = T >
@@ -380,7 +380,7 @@ T exchange( T& obj, U&& new_value );
 
 `T` 需要满足可移动构造，同时也需要满足从类型 U 到类型 T 的移动赋值。  
 
-它与 swap 的区别：单向的移动赋值，不是交换。  
+它与 `std::swap` 的区别：单向的移动赋值，不是交换。  
 
 它的一个可能实现：   
 
@@ -459,6 +459,62 @@ m.unlock_shared();
 示例[4]：   
 
 ```cpp
+#include <iostream>
+#include <mutex>
+#include <shared_mutex>
+#include <string>
+#include <thread>
+
+std::string file = "Original content";   // 模拟一个文件
+std::mutex output_mutex;  // 保护输出操作的 mutex
+std::shared_mutex file_mutex; // reader/writer mutex
+
+void read_content(int id) {
+    std::string content;
+    {
+        std::shared_lock lock(file_mutex, std::defer_lock); // 暂时不加锁
+        lock.lock();  // 加锁
+        content = file;
+    }
+    std::lock_guard lock(output_mutex);
+    std::cout << "Contents read by reader #" << id << ": " << content << '\n';
+}
+
+void write_content() {
+    {
+        std::lock_guard file_lock(file_mutex);
+        file = "New content";
+    }
+    std::lock_guard output_lock(output_mutex);
+    std::cout << "New content saved.\n";
+}
+
+int main() {
+    std::cout << "Two readers reading from file.\n"
+              << "A writer competes with them.\n";
+    std::thread reader1{read_content, 1};
+    std::thread reader2{read_content, 2};
+    std::thread writer{write_content};
+    reader1.join();
+    reader2.join();
+    writer.join();
+    std::cout << "The first few operations to file are done.\n";
+    reader1 = std::std::thread{read_content, 3};
+    reader1.join();
+}
+
+```
+
+一个可能的输出是：   
+
+```
+Two readers reading from file.
+A writer competes with them.
+Contents read by reader #1: Original content
+Contents read by reader #2: Original content
+New content saved.
+The first few operations to file are done.
+Contents read by reader #3: New content
 ```
 
 ---
