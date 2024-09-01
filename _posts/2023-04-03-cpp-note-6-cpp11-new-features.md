@@ -1155,6 +1155,28 @@ c++11 引入的属性包括：
 
 ---
 
+## raw string literals 
+
+一种新的声明字符串字面量的方式，这种方式不需要对一些特殊字符进行 escape。  
+
+语法： `R"delimiter(raw_characters)delimiter"`   
+
+* delimiter 是定界符，是一串可选的字符序列，不能包含这几种字符：小括号`(` `)`、反斜杠 `\`、空格 ` `。    
+* raw_characters 是任意的字符序列，但不能包含 `)delimiter`。   
+
+示例[7]：  
+
+```cpp
+// msg1 与 msg2 是等价的
+const char* msg1 = "\nHello,\n\tworld!\n";
+const char* msg2 = R"(
+Hello,
+    world!
+)";
+```
+
+---
+
 # 2. c++11 新的库特性
 
 **概览**  
