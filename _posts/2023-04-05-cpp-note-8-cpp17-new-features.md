@@ -353,6 +353,7 @@ std::any a;            // ok，初始值可以为空
 std::any b = 100;      // ok，保存 int 
 std::any c = "hello,world"; // ok，保存 const char*
 
+
 // 使用 any_cast 访问包含的值
 // std::any_cast<int>(a);  // 会报错，bad_cast
 std::cout << std::any_cast<int>(b);  // 100
@@ -372,6 +373,37 @@ auto n = std::any_cast<A>(m);     // n == A{10,20,30}
 std::any h {std::in_place_type<int>, 30.33};   // == 30
 std::any i {std::in_place_type<std::string>, "hello, world"}; // == std::string("hello, world")
 
+```
+
+示例2：  
+
+```cpp
+std::any d = 1;
+std::cout << d.type().name() << ": " << std::any_cast<int>(d) << std::endl;
+d = 3.14;
+std::cout << d.type().name() << ": " << std::any_cast<double>(d) << std::endl;
+d = true;
+std::cout << d.type().name() << ": " << std::any_cast<bool>(d) << std::endl;
+```
+
+输出（gcc-13.2.0 版本）：  
+
+```
+i: 1
+d: 3.14
+b: 1
+```
+
+示例3：  
+
+```cpp
+// 可以使用 std::any 接收函数的返回值
+int f() {
+    return 100;
+}
+
+std::any x = f();
+std::cout<< std::any_cast<int>(x);  // 100
 ```
 
 ---
