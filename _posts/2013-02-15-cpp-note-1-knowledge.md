@@ -610,7 +610,7 @@ int main(){
 
 ### 值初始化 (value initialization)
 
-当大括号中的初始化值为空的时候，是值初始化，往往会直接初始化为 0 （也叫零初始化，zero initialization）或 空.  
+当大括号中的初始化值为空的时候，是值初始化，往往会直接初始化为 0 （也叫零初始化，zero initialization）或 空。   
 
 值初始化确保了那些没有定义默认构造函数的类对象也能够被正确的初始化。  
 
@@ -653,6 +653,14 @@ A* a4 = new A{};
 ## 1.20 explicit
 
 通常表示不允许进行隐式转换。   
+
+---
+
+## 1.21 C++ 非虚多态
+
+参考：
+* [《C++ 非虚多态（std::any, std::variant, std::tuple）》](https://zhuanlan.zhihu.com/p/690920999)    
+* [《A Journey Into Non-Virtual Polymorphism in C++ - Rudyard Merriam - CppCon 2023》](https://github.com/CppCon/CppCon2023/blob/main/Presentations/A_Journey_into_Non_Virtual_Polymorphism_Rud_Merriam.pdf)     
 
 ---
 

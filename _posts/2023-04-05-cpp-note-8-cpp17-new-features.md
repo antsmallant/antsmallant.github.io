@@ -283,7 +283,7 @@ std::variant<std::monostate, A, int> a;  // ok 了
 
 Manual: [cppreference - std::optional](https://en.cppreference.com/w/cpp/utility/optional) 。   
 
-标准库模板类，提供了一种表示可选值的方式，也就是值可能存在，也可能不存在。主要目的是避免使用特殊的标志值（比如 空指针或者特殊值）来表示缺少值。    
+标准库模板类，管理一个可选的值，既可以存在，也可以不存在。主要目的是避免使用特殊的标志值（比如 空指针或者特殊值）来表示缺少值。    
 
 ```cpp
 std::optional<double> f(int x, int y) {
@@ -317,6 +317,62 @@ int main() {
 * 可选值的修改     
     1. 通过 `reset()` 清除值。     
     2. 用赋值操作符，比如 `std::optional<int> opt_val; opt_val = 300;`。   
+
+---
+
+## std::any
+
+用于任何可拷贝构造的单个值的类型安全容器。`std::any` 不是模板类，而是一种特殊的容器，只能容纳一个元素，这个元素可以是任意类型。  
+
+`std::any` 可以用于实现非虚多态，参考这个文章： [《A Journey Into Non-Virtual Polymorphism in C++ - Rudyard Merriam - CppCon 2023》](https://github.com/CppCon/CppCon2023/blob/main/Presentations/A_Journey_into_Non_Virtual_Polymorphism_Rud_Merriam.pdf) 。   
+
+头文件：`<any>`。   
+
+Manual: [cppreference - std::any](https://en.cppreference.com/w/cpp/utility/any)    
+
+一些成员函数：    
+
+|函数|作用|
+|:--|:--|
+|has_value|检查是否持有一个值|
+|type|返回持有值的 typeid|
+
+一些可使用的非成员函数：   
+
+|函数|作用|
+|:--|:--|
+|any_cast|类型安全的访问持有的对象|
+|make_any|创建一个any对象|
+
+
+示例：  
+
+```cpp
+// 构造时不需要指定类型
+std::any a;            // ok，初始值可以为空
+std::any b = 100;      // ok，保存 int 
+std::any c = "hello,world"; // ok，保存 const char*
+
+// 使用 any_cast 访问包含的值
+// std::any_cast<int>(a);  // 会报错，bad_cast
+std::cout << std::any_cast<int>(b);  // 100
+std::cout << std::any_cast<const char*>(c);  // "hello, world"
+
+
+// 或者使用 make_any 构造，必须显式指定类型 T，参数会传递给 T 的构造函数
+struct A {
+    int x, y, z;
+    A(int _x, int _y, int _z):x(_x), y(_y), z(_z) {}
+};
+auto m = std::make_any<A>(10, 20, 30);
+auto n = std::any_cast<A>(m);     // n == A{10,20,30}
+
+
+// 要保存的类型与初始值不符时，使用 in_place_type 指定
+std::any h {std::in_place_type<int>, 30.33};   // == 30
+std::any i {std::in_place_type<std::string>, "hello, world"}; // == std::string("hello, world")
+
+```
 
 ---
 
