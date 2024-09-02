@@ -223,6 +223,10 @@ void f(int a, [[maybe_unused]] std::string b) {
 
 ## std::variant
 
+头文件：`<variant>`。   
+
+表示一种类型安全的 union。`std::variant` 的实例，在任何
+
 ---
 
 # 3. 参考
