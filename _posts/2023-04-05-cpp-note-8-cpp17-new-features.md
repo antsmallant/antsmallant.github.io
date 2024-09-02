@@ -467,6 +467,41 @@ std::cout<< std::any_cast<int>(x);  // 100
 
 ---
 
+## std::string_view
+
+---
+
+## std::invoke
+
+用一组参数调用一个可调用（Callable）对象。可调用对象可以是 `std::function` 或者 lambda。   
+
+头文件：`<functional>` 。    
+
+```cpp
+auto f = [](int x, int y) {
+    return x+y;
+};
+auto x = std::invoke(f, 3, 7);  // x == 10
+```
+
+---
+
+## std::apply
+
+用一个包含着参数的 `std::tuple` 来调用一个可调用对象。    
+
+头文件：`<tuple>`。   
+
+```cpp
+auto f = [](int x, int y) {
+    return x+y;
+};
+
+auto ret = std::apply(f, std::make_tuple(10, 20));  // ret == 30;
+```
+
+---
+
 # 3. 参考
 
 [1] [美] Bjarne Stroustrup. C++之旅（第3版）. pansz. 北京: 电子工业出版社, 2023-10(1).   
