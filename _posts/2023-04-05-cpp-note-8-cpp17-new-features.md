@@ -51,6 +51,33 @@ c++17 是一个 "中" 版本，它本来应该是一个 major 版本的，不过
 
 ## 超对齐类型的动态分配（over-aligned allocation）
 
+参考：   
+
+* [`/Zc:alignedNew (C++17 over-aligned allocation)`](https://learn.microsoft.com/en-us/cpp/build/reference/zc-alignednew?view=msvc-170)   
+* [cppreference - std::aligned_alloc](https://en.cppreference.com/w/cpp/memory/c/aligned_alloc)
+* [C++ over-aligned memory allocation](https://www.cnblogs.com/thomas76/p/8618175.html)
+* [Dynamic memory allocation for over-aligned data](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0035r4.html)
+
+不太明白是什么特性，暂时没空深究。  
+
+TODO.  
+
+---
+
+## 严格指定运算顺序
+
+
+
+---
+
+## utf-8 字面量
+
+以 u8 开头修饰一个字符，它的值与 ISO 10646 的 code point 值相等。  
+
+```cpp
+char x = u8'x';
+```
+
 
 
 ---
