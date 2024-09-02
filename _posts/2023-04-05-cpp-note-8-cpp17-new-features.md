@@ -234,9 +234,9 @@ void f(int a, [[maybe_unused]] std::string b) {
 
 头文件：`<variant>`。   
 
-表示一种类型安全的 union。`std::variant` 的实例，在任何时候它要么有一个可选值，要么处于“无值”的错误状态。  
+类似于 union，但类型安全，且支持更多的类型。约束：不允许持有引用、array、以及 void 类型。    
 
-约束：不允许持有引用、array、以及 void 类型。  
+`std::variant` 的实例，在任何时候要么有一个可选值，要么处于 “无值” 的错误状态。   
 
 示例[2]：    
 
@@ -244,14 +244,35 @@ void f(int a, [[maybe_unused]] std::string b) {
 std::variant<int, double> v { 100 };
 std::get<int>(v);  // == 100
 std::get<0>(v);    // == 100
+v.index();         // == 0，当前持有的是第1个类型的值
 std::get<1>(v);    // 会报错：std::get: wrong index for variant
 
 v = 100.01;        
 std::get<double>(v); // == 100.01
 std::get<1>(v);      // == 100.01
+v.index();           // == 1，当前持有的是第2个类型的值
 std::get<0>(v);      // 会报错
 std::get<int>(v);    // 会报错
 
+std::variant<int, char> w; 
+std::get<int>(w);    // ok，== 0
+```
+
+一般情况下，`std::variant` 的第一个类型要有对应的构造函数，否则编译报错：   
+
+```cpp
+struct X {
+    X(int v){}
+};
+int main() {
+    std::variant<A, int> a;  // 编译报错
+}
+```
+
+这种情况下，可以使用 `std::monostate` 占个位，避免报错：    
+
+```cpp
+std::variant<std::monostate, A, int> a;  // ok 了
 ```
 
 ---
