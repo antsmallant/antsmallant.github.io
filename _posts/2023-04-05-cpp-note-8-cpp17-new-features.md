@@ -291,6 +291,31 @@ void f(int a, [[maybe_unused]] std::string b) {
 
 ---
 
+## 文件系统 (std::filesystem)
+
+提供了关于文件的大多数功能，可以操作文件、目录、路径。功能比较庞杂，使用的时候具体看 cppreference 上的 specification 就行了。  
+
+头文件：`<filesystem>`。  
+
+Manual: [cppreference - Filesystem library](https://en.cppreference.com/w/cpp/filesystem) 。   
+
+示例[2]：  
+
+```cpp
+// 如果临时空间足够大，则把一个大文件拷贝进去 
+const auto bigFilePath {"bigFileToCopy"};
+if (std::filesystem::exists(bigFilePath)) {
+    const auto sz {std::filesystem::file_size(bigFilePath)};
+    std::filesystem::path tmpPath {"/tmp"};
+    if (std::filesystem::space(tmpPath).available > sz) {
+        std::filesystem::create_directory(tmpPath.append("example"));
+        std::filesystem::copy_file(bigFilePath, tmpPath.append("newfile"));
+    }
+}
+```
+
+---
+
 ## std::variant
 
 头文件：`<variant>`。   
