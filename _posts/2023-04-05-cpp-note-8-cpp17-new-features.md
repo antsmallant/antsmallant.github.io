@@ -44,7 +44,7 @@ c++17 是一个 "中" 版本，它本来应该是一个 major 版本的，不过
 
 形式如：`auto [x,y,z] = expr`。  
 
-specification: [《cppreference - Structured binding declaration》](https://en.cppreference.com/w/cpp/language/structured_binding)。    
+specification: [《cppreference - Structured binding declaration》](https://en.cppreference.com/w/cpp/language/structured_binding) 。    
 
 示例 [1]：
 
@@ -129,6 +129,78 @@ namespace A {
 
 namespace A::B::C {
     void func();
+}
+```
+
+---
+
+## 新的属性（attributes）: `[[fallthrough]]`, `[[nodiscard]]`, `[[maybe_unused]]`
+
+1、`[[fallthrough]]`    
+
+告诉编译器，switch 语句里面，case 不加 break 是有意为之的，不需要给出 warning。只能用于 switch 语句中，且需要放置在下一个 `case/default` 标签的前面。  
+
+示例[3]：  
+
+```cpp
+switch(x) {
+    case 1: 
+    // ...
+    [[fallthrough]];
+    case 2:
+    // ...
+    break;
+    case 3:
+    // ...
+    [[fallthrough]];
+    default:
+    //...
+}
+```
+
+<br/>
+
+2、`[[nodiscard]]`    
+
+用于修饰一个函数或类，但返回值被抛弃（不处理）时，会给出一个警告。  
+
+示例[3]:  
+
+```cpp
+[[nodiscard]] bool f() {
+    // ...
+    return ok; 
+}
+
+f();  // 会给出警告，因为忽略了返回值
+```
+
+```cpp
+struct [[nodiscard]] X {
+    //...
+};
+
+X f() {
+    X x;
+    return x;
+}
+
+f();  // 会给出警告，因为 X 这种类型有 nodiscard 属性，它作为返回值的时候，
+      // 如果被抛弃就会告警
+```
+
+<br/>
+
+3、`[[maybe_unused]]`    
+
+告诉编译器，一个变量或参数可能不会被使用，是有意为之的。   
+
+示例[3]:  
+
+```cpp
+void f(int a, [[maybe_unused]] std::string b) {
+    // 函数内不使用 b 也不会告警
+    std::cout << a << std::endl;
 }
 ```
 
