@@ -21,20 +21,25 @@ c++17 是一个 "中" 版本，它本来应该是一个 major 版本的，不过
 
 **概览**  
 
-参考自：[《快速入门c++17：了解最新的语言特性和功能》](https://zhuanlan.zhihu.com/p/664746128) [2]。    
+参考自：《C++之旅（第3版）》[2]。   
 
-* 构造函数模板参数推导——简化对象定义
-* 推导指引——解决构造函数模板参数推导歧义的显式标注
-* 结构化绑定——简化标注，并消除一种未初始化变量的来源
-* inline 变量——简化了那些仅有头文件的库实现中的静态分配变量的使用
-* 折叠表达式——简化变参模板的一些用法
-* 条件中的显式测试——有点像 for 语句中的条件
-* 保证的复制消除——去除了很多不必要的拷贝操作
-* 更严格的表达式求值顺序——防止了一些细微的求值顺序错误
-* auto 当作模板参数类型——值模板参数的类型推导
-* 捕捉常见错误的标准属性——`[[maybe_unused]]、[[nodiscard]] 和 [[fallthrough]]`
-* 十六进制浮点字面量
-* 常量表达式 if——简化编译期求值的代码
+* 保证拷贝省略。  
+* 超对齐类型的动态分配。
+* 严格指定运算顺序。
+* UTF-8 字面量。
+* 十六进制浮点字面量。
+* 折叠表达式。
+* 泛型值模板参数（auto模板参数）。
+* 类模板参数的类型推导。
+* 编译时 if。 
+* 带有初始值设定项的选择语句。
+* constexpr 匿名函数。
+* inline 变量。
+* 结构化绑定。
+* 新的标准属性：`[[maybe_unused]]、[[nodiscard]] 和 [[fallthrough]]`。 
+* std::byte 类型。 
+* 用底层类型的值来初始化 enum 类型。 
+* 一些小的扩展。
 
 ---
 
@@ -210,14 +215,20 @@ void f(int a, [[maybe_unused]] std::string b) {
 
 **概览**    
 
-参考自：[《快速入门c++17：了解最新的语言特性和功能》](https://zhuanlan.zhihu.com/p/664746128) [2]。    
+参考自：《C++之旅（第3版）》[2]。    
 
-* optional、any 和 variant——用于表达“可选”的标准库类型
-* shared_mutex 和 shared_lock（读写锁）和 scoped_lock
-* 并行 STL——标准库算法的多线程及矢量化版本
-* 文件系统——可移植地操作文件系统路径和目录的能力
-* string_view——对不可变字符序列的非所有权引用
-* 数学特殊函数——包括拉盖尔和勒让德多项式、贝塔函数、黎曼泽塔函数
+* 文件系统。
+* 并行算法。
+* 数学特殊函数。
+* string_view。
+* any。
+* variant。
+* optional。 
+* 调用任何可以为给定参数集调用的方法：invoke()。 
+* 基本字符串转换：to_chars() 和 from_chars()。 
+* 多态分配器。
+* scoped_lock。
+* 一些小的扩展。
 
 ---
 
@@ -233,6 +244,6 @@ void f(int a, [[maybe_unused]] std::string b) {
 
 [1] 流星雨爱编程. C++17中的结构化绑定详解. Available at https://blog.csdn.net/haokan123456789/article/details/137613251, 2024-6-2.    
 
-[2] 玩转Linux内核. 快速入门c++17：了解最新的语言特性和功能. Available at: https://zhuanlan.zhihu.com/p/664746128, 2023-11-06.    
+[2] [美] Bjarne Stroustrup. C++之旅（第3版）. pansz. 北京: 电子工业出版社, 2023-10(1).   
 
 [3] AnthonyCalandra. C++17. Available at https://github.com/AnthonyCalandra/modern-cpp-features/blob/master/CPP17.md.   
