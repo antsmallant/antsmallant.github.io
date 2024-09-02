@@ -61,6 +61,7 @@ tags: [计算机体系结构]
 
 找书的方法上文已经提及了。   
 
+* 《计算机体系结构：量化研究方法（第6版）》
 
 * [A Primer on Memory Consistency and Cache Coherence Second Edition](https://pages.cs.wisc.edu/~markhill/papers/primer2020_2nd_edition.pdf)  
 
