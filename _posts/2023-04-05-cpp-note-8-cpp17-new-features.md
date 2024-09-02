@@ -53,10 +53,12 @@ c++17 是一个 "中" 版本，它本来应该是一个 major 版本的，不过
 
 参考：   
 
+* [Dynamic memory allocation for over-aligned data](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0035r4.html)
+
 * [`/Zc:alignedNew (C++17 over-aligned allocation)`](https://learn.microsoft.com/en-us/cpp/build/reference/zc-alignednew?view=msvc-170)   
 * [cppreference - std::aligned_alloc](https://en.cppreference.com/w/cpp/memory/c/aligned_alloc)
 * [C++ over-aligned memory allocation](https://www.cnblogs.com/thomas76/p/8618175.html)
-* [Dynamic memory allocation for over-aligned data](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0035r4.html)
+
 
 不太明白是什么特性，暂时没空深究。  
 
@@ -67,9 +69,10 @@ TODO.
 ## 严格指定运算顺序
 
 * [Refining Expression Evaluation Order for Idiomatic C++](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0145r3.pdf)
-
 * [Trip report: Summer ISO C++ standards meeting (Oulu)](https://herbsutter.com/2016/06/30/trip-report-summer-iso-c-standards-meeting-oulu/)   
 * [GotW #56](http://gotw.ca/gotw/056.htm)
+
+
 * [What are the evaluation order guarantees introduced by C++17?](https://stackoverflow.com/questions/38501587/what-are-the-evaluation-order-guarantees-introduced-by-c17)
 * [C++求值顺序](https://cloud.tencent.com/developer/article/1394034)
 * [C++避坑---函数参数求值顺序和使用独立语句将newed对象存储于智能指针中](https://cloud.tencent.com/developer/article/2288023)
@@ -84,8 +87,6 @@ TODO.
 ```cpp
 char x = u8'x';
 ```
-
-
 
 ---
 
