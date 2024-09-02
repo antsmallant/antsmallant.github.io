@@ -19,6 +19,8 @@ tags: [c++ cpp]
 
 尽管如此，还是要以权威材料为主去研究。  
 
+**TODO：本文还没写完。**
+
 ---
 
 # Memory Model 
@@ -61,19 +63,6 @@ Russ Cox 在 [《Programming Language Memory Models》](https://research.swtch.c
 
 ---
 
-## Memory Model 
-
-
-
-
----
-
-## Memory order 又是什么东西？  
-
-
-
----
-
 # 术语
 
 原子操作：不可分割的操作，在系统的任一线程内，都不会观察到这种操作处于半完成状态，它或者完全做好，或者完全没做。     
@@ -104,12 +93,6 @@ C++ 多线程特性的意义：以标准化形式借助多线程支持并发。
         * RMO
         * Alpha
         * Other-multi-copy-atomic
-
-## Sequential Consistency 
-
-## Total Store Order
-
-## Relaxed 
 
 ---
 
@@ -148,27 +131,6 @@ C++17 标准暂时不鼓励使用 memory_order_consume: "The specification of re
 
 <br/>
 
-
----
-
-# 无锁编程可以完全替代锁吗？可以支持哪些逻辑范式？  
-
----
-
-# 术语
-
-谈论存储的时候，在《计算机体系结构：量化研究方法（第5版）》[1] 这本书的 5.2.1 节，Coherence 译作一致性，而 Consistency 译作连贯性。  
-
-* Cache Coherence：缓存一致性。    
-
-* Coherence： 一致性，它确定了读取操作可能返回什么值。[1]    
-
-* Consistency: 连贯性，它确定了一个写入值什么时候被读取操作返回。[1]     
-
-而 Sequential Consistency 译作顺序连贯性，但也有人译作顺序一致性。     
-
-Cache Coherence 保证对单个地址读写的正确性，Sequential Consistency 保证对多个地址读写的正确性。    
-
 ---
 
 # 问题引入
@@ -180,22 +142,6 @@ Cache Coherence 保证对单个地址读写的正确性，Sequential Consistency
 无锁编程是基于原子操作的。   
 
 基于 atomic，可以用乐观锁的方式来实现一些数据结构，比如这个： [《C++使用std::atomic实现并发无锁同步》](https://blog.yanjingang.com/?p=6687)。   
-
----
-
-# 内存一致性模型 (memory consistency model)
-
-本质上，内存一致性模型限制了读操作的返回值。  
-
----
-
-## 分类
-
-内存一致性模型可以分为两类： 
-
-1. 顺序一致性模型 (sequential consistency model)    
-2. 松弛一致性模型 (relaxed consistency model)    
-
 
 ---
 
@@ -231,19 +177,6 @@ futex 的性能是否与 atomic 相当？
 * [Russ Cox - Updating the Go Memory Model (Memory Models, Part 3)](https://research.swtch.com/gomm)
 
 * 《计算机体系结构：量化研究方法（第6版）》第 5 章
-
----
-
-# 感受与吐槽
-
----
-
-## 《C++ 并发编程实战（第2版）》
-
-这本书的豆瓣评分 9.4 (截至 2024-8-29)，但仔细读过之后就会发现：1、英文原版唠唠叨叨，没能简要的把问题说清楚，反而大量增加理解负担；2、中文翻译特别稀烂，经常偏离原文。   
-
-总之，这本书被过誉了，它只会增加你的理解负担。不信，读一读第 5 章。   
-
 
 ---
 
