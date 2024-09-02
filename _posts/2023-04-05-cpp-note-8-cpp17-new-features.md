@@ -237,6 +237,8 @@ switch(x) {
 f();  // 会给出警告，因为忽略了返回值
 ```
 
+<br/>
+
 ```cpp
 struct [[nodiscard]] X {
     //...
