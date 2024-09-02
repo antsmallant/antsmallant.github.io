@@ -43,6 +43,18 @@ c++17 是一个 "中" 版本，它本来应该是一个 major 版本的，不过
 
 ---
 
+## 保证拷贝省略
+
+我在这篇文章 [《c++ 笔记：copy elision、rvo、nrvo》](https://blog.antsmallant.top/2023/04/01/cpp-note-4-copy-elision-rvo-nrvo) 做了相关的论述了。  
+
+---
+
+## 超对齐类型的动态分配（over-aligned allocation）
+
+
+
+---
+
 ## 结构化绑定 (Structured binding)
 
 允许一种简单直观的方式从复合结构中提取成员变量，并绑定到命名变量上。能够处理元组（tuple）、pair、数组、结构体。  
