@@ -66,7 +66,14 @@ TODO.
 
 ## 严格指定运算顺序
 
+* [Refining Expression Evaluation Order for Idiomatic C++](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0145r3.pdf)
 
+* [Trip report: Summer ISO C++ standards meeting (Oulu)](https://herbsutter.com/2016/06/30/trip-report-summer-iso-c-standards-meeting-oulu/)   
+* [GotW #56](http://gotw.ca/gotw/056.htm)
+* [What are the evaluation order guarantees introduced by C++17?](https://stackoverflow.com/questions/38501587/what-are-the-evaluation-order-guarantees-introduced-by-c17)
+* [C++求值顺序](https://cloud.tencent.com/developer/article/1394034)
+* [C++避坑---函数参数求值顺序和使用独立语句将newed对象存储于智能指针中](https://cloud.tencent.com/developer/article/2288023)
+* [《C++17之定义表达式求值顺序》](https://blog.csdn.net/janeqi1987/article/details/100181769) 
 
 ---
 
