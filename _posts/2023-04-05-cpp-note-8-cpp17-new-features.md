@@ -68,11 +68,23 @@ TODO.
 
 ## 严格指定运算顺序
 
+比较难以说清。但带来的效果是很好的，在 c++17 之前，这样使用 `f(std::shared_ptr<A>(new A()), get_some_param());` 是不安全的，可能会内存泄漏。 
+
+因为编译器的求值顺序可能是这样的： 
+1. new A();
+2. get_some_param();
+3. 构造 shared_ptr;  
+
+假如第2步抛出异常，那么第3步就来不及执行了，第1步new出来的对象就内存泄漏了。  
+
+而在 c++17 之后，求值顺序明确了，要么是 (2,1,3)，要么是 (1,3,2)，2 不会再插到 1,3 的中间了。   
+
+
+一些参考文章：  
+
 * [Refining Expression Evaluation Order for Idiomatic C++](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0145r3.pdf)
 * [Trip report: Summer ISO C++ standards meeting (Oulu)](https://herbsutter.com/2016/06/30/trip-report-summer-iso-c-standards-meeting-oulu/)   
 * [GotW #56](http://gotw.ca/gotw/056.htm)
-
-
 * [What are the evaluation order guarantees introduced by C++17?](https://stackoverflow.com/questions/38501587/what-are-the-evaluation-order-guarantees-introduced-by-c17)
 * [C++求值顺序](https://cloud.tencent.com/developer/article/1394034)
 * [C++避坑---函数参数求值顺序和使用独立语句将newed对象存储于智能指针中](https://cloud.tencent.com/developer/article/2288023)
