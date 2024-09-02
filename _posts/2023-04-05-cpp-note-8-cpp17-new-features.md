@@ -277,6 +277,49 @@ std::variant<std::monostate, A, int> a;  // ok 了
 
 ---
 
+## std::optional
+
+头文件：`<optional>`。    
+
+Manual: [cppreference - std::optional](https://en.cppreference.com/w/cpp/utility/optional) 。   
+
+标准库模板类，提供了一种表示可选值的方式，也就是值可能存在，也可能不存在。主要目的是避免使用特殊的标志值（比如 空指针或者特殊值）来表示缺少值。    
+
+```cpp
+std::optional<double> f(int x, int y) {
+    if (y == 0)
+        return std::nullopt;  // 表示值缺失
+    return x/y;
+}
+
+int main() {
+    auto ret = f(100, 0);
+    if (ret) {
+        std::cout << "call suc, ret = " << *ret << std::endl; // 如果调用成功，可以通过 * 号解引用获取值
+    } else {
+        std::cout << "call fail" << std::endl;
+    }
+}
+```
+
+一些用法：   
+
+* 可选值的创建
+    1. 通过构造函数创建：`std::optional<int> opt_val(1000);`
+    2. 通过 `std::make_optional` 创建，比如：`auto opt = std::make_optional<int>(100);`
+    3. 使用 `std::nullopt` 表示空值，`std::optional<int> x = std::nullopt;`    
+
+* 可选值的访问   
+    1. `has_value()` 或 `operator bool` 判断值是否存在。     
+    2. 如果值存在，可以用 `value()` 方法获取，但是如果不存在，则行为未定义。     
+    3. 使用 `value_or` 在对象为空时提供一个备用值，比如 `std::optional<int> opt_value; opt_value.value_or(200);`      
+
+* 可选值的修改     
+    1. 通过 `reset()` 清除值。     
+    2. 用赋值操作符，比如 `std::optional<int> opt_val; opt_val = 300;`     
+
+---
+
 # 3. 参考
 
 [1] [美] Bjarne Stroustrup. C++之旅（第3版）. pansz. 北京: 电子工业出版社, 2023-10(1).   
