@@ -316,7 +316,7 @@ int main() {
 
 * 可选值的修改     
     1. 通过 `reset()` 清除值。     
-    2. 用赋值操作符，比如 `std::optional<int> opt_val; opt_val = 300;`     
+    2. 用赋值操作符，比如 `std::optional<int> opt_val; opt_val = 300;`。   
 
 ---
 
