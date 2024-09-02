@@ -21,7 +21,7 @@ c++17 是一个 "中" 版本，它本来应该是一个 major 版本的，不过
 
 **概览**  
 
-参考自：《C++之旅（第3版）》[2]。   
+参考自：《C++之旅（第3版）》[1]。   
 
 * 保证拷贝省略。  
 * 超对齐类型的动态分配。
@@ -51,7 +51,7 @@ c++17 是一个 "中" 版本，它本来应该是一个 major 版本的，不过
 
 specification: [《cppreference - Structured binding declaration》](https://en.cppreference.com/w/cpp/language/structured_binding) 。    
 
-示例 [1]：
+示例：  
 
 ```cpp
 // 数组
@@ -96,8 +96,6 @@ for (auto& [k, v] : m) {
 }
 // m 变成了 { {1, "hello_abc"}, {2, "world_abc"} }
 ```
-
-详细参考：[《C++17中的结构化绑定详解》](https://blog.csdn.net/haokan123456789/article/details/137613251)。   
 
 ---
 
@@ -145,7 +143,7 @@ namespace A::B::C {
 
 告诉编译器，switch 语句里面，case 不加 break 是有意为之的，不需要给出 warning。只能用于 switch 语句中，且需要放置在下一个 `case/default` 标签的前面。  
 
-示例[3]：  
+示例[2]：  
 
 ```cpp
 switch(x) {
@@ -169,7 +167,7 @@ switch(x) {
 
 用于修饰一个函数或类，但返回值被抛弃（不处理）时，会给出一个警告。  
 
-示例[3]:  
+示例[2]:  
 
 ```cpp
 [[nodiscard]] bool f() {
@@ -200,7 +198,7 @@ f();  // 会给出警告，因为 X 这种类型有 nodiscard 属性，它作为
 
 告诉编译器，一个变量或参数可能不会被使用，是有意为之的。   
 
-示例[3]:  
+示例[2]:  
 
 ```cpp
 void f(int a, [[maybe_unused]] std::string b) {
@@ -215,7 +213,7 @@ void f(int a, [[maybe_unused]] std::string b) {
 
 **概览**    
 
-参考自：《C++之旅（第3版）》[2]。    
+参考自：《C++之旅（第3版）》[1]。    
 
 * 文件系统。
 * 并行算法。
@@ -242,8 +240,6 @@ void f(int a, [[maybe_unused]] std::string b) {
 
 # 3. 参考
 
-[1] 流星雨爱编程. C++17中的结构化绑定详解. Available at https://blog.csdn.net/haokan123456789/article/details/137613251, 2024-6-2.    
+[1] [美] Bjarne Stroustrup. C++之旅（第3版）. pansz. 北京: 电子工业出版社, 2023-10(1).   
 
-[2] [美] Bjarne Stroustrup. C++之旅（第3版）. pansz. 北京: 电子工业出版社, 2023-10(1).   
-
-[3] AnthonyCalandra. C++17. Available at https://github.com/AnthonyCalandra/modern-cpp-features/blob/master/CPP17.md.   
+[2] AnthonyCalandra. C++17. Available at https://github.com/AnthonyCalandra/modern-cpp-features/blob/master/CPP17.md.   
