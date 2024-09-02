@@ -721,20 +721,43 @@ std::vector<std::vector<int> > x;   // ok
 
 ## noexcept
 
-好处是什么？ 
-
-
 有两个用法，一个是作为标识符 (specifier)，一个是作为运算符 (operator)。作为标识符的时候是表明此函数不会抛出异常，作为运算符的时候是判断一个函数是否会抛出异常。   
+
+主要作用：帮助编译器进行优化，减少运行时开销。  
+
 
 1、作为标识符    
 
-specification: [https://en.cppreference.com/w/cpp/language/noexcept_spec](https://en.cppreference.com/w/cpp/language/noexcept_spec) 。  
+specification: [https://en.cppreference.com/w/cpp/language/noexcept_spec](https://en.cppreference.com/w/cpp/language/noexcept_spec) 。   
+
+表示一个函数是否会抛异常，是比 `throw()` 更好的替代。   
+
+```cpp
+void f1() noexcept;         // 不会抛异常
+void f2() noexcept(true);   // 不会抛异常
+void f3() throw();          // 不会抛异常
+
+void f4() noexcept(false);  // 可能抛异常
+```
+
+`noexcept` 标识的不抛异常的函数，可以调用可能会抛异常的函数，也可以自己抛异常。但是，如果在运行时，`noexcept` 函数向外抛出了异常，程序会直接终止，调用 `std::terminate()` 函数，`std::terminate()` 内部会调用 `std::abort()` 终止程序。  
+
+示例[7]：    
+```cpp
+extern void f(); // 可能会抛异常的函数
+void g() noexcept {
+    f();           // 合法的，即使 f 可能抛异常
+    throw 100;     // 合法的，相当于调用 std::terminate()
+}
+```
 
 <br/>
 
-2、作为运算符的   
+2、作为运算符      
 
-specification: [https://en.cppreference.com/w/cpp/language/noexcept](https://en.cppreference.com/w/cpp/language/noexcept) 。 
+specification: [https://en.cppreference.com/w/cpp/language/noexcept](https://en.cppreference.com/w/cpp/language/noexcept) 。   
+
+编译时检查，如果表达式不会抛出任何异常则返回 true，否则返回 false。  
 
 ---
 
@@ -1174,6 +1197,24 @@ Hello,
     world!
 )";
 ```
+
+---
+
+## char16_t 和 char32_t
+
+标准类型，可用于表示 utf-8 编码的字符。  
+
+String Literal 的 Manual: [cppreference - String Literal](https://en.cppreference.com/w/cpp/language/string_literal)   
+
+```cpp
+char32_t u32_str[] = U"\u0123";  // 大U 表示 utf-32 的 string literal
+char16_t u16_str[] = u"\u0123";  // 小u 表示 utf-16 的 string literal
+char u8_str[] = u8"\u0123";      // u8 表示 utf-8 的 string literal
+```
+
+如何输出的参考：[【C++】char16_t 和 char32_t](https://blog.csdn.net/u013043408/article/details/138436819)     
+
+
 
 ---
 

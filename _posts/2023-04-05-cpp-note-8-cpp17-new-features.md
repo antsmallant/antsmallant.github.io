@@ -134,11 +134,9 @@ namespace A::B::C {
 
 ---
 
-## utf8 字符
-
----
-
 # 2. c++17 新的库特性
+
+## std::variant
 
 ---
 
@@ -147,3 +145,5 @@ namespace A::B::C {
 [1] 流星雨爱编程. C++17中的结构化绑定详解. Available at https://blog.csdn.net/haokan123456789/article/details/137613251, 2024-6-2.    
 
 [2] 玩转Linux内核. 快速入门c++17：了解最新的语言特性和功能. Available at: https://zhuanlan.zhihu.com/p/664746128, 2023-11-06.    
+
+[3] AnthonyCalandra. C++17. Available at https://github.com/AnthonyCalandra/modern-cpp-features/blob/master/CPP17.md.   
