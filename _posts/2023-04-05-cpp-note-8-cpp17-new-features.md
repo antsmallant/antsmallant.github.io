@@ -234,7 +234,25 @@ void f(int a, [[maybe_unused]] std::string b) {
 
 头文件：`<variant>`。   
 
-表示一种类型安全的 union。`std::variant` 的实例，在任何
+表示一种类型安全的 union。`std::variant` 的实例，在任何时候它要么有一个可选值，要么处于“无值”的错误状态。  
+
+约束：不允许持有引用、array、以及 void 类型。  
+
+示例[2]：    
+
+```cpp
+std::variant<int, double> v { 100 };
+std::get<int>(v);  // == 100
+std::get<0>(v);    // == 100
+std::get<1>(v);    // 会报错：std::get: wrong index for variant
+
+v = 100.01;        
+std::get<double>(v); // == 100.01
+std::get<1>(v);      // == 100.01
+std::get<0>(v);      // 会报错
+std::get<int>(v);    // 会报错
+
+```
 
 ---
 
