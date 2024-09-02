@@ -55,7 +55,10 @@ tags: [计算机体系结构]
 
 ---
 
-## 1.3 文献
+## 1.3 相关的书或文章
+
+主要是 Synthesis Lectures on Computer Architecture 这套丛书的一些书籍，可以照着这个书单找： [Synthesis Lectures on Computer Architecture 书单](https://www.springer.com/series/16916/books?page=1) 。找书的方法上文已经提及了。   
+
 
 * [A Primer on Memory Consistency and Cache Coherence Second Edition](https://pages.cs.wisc.edu/~markhill/papers/primer2020_2nd_edition.pdf)  
 
