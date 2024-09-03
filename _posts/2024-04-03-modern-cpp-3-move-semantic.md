@@ -13,6 +13,8 @@ tags: [c++]
 
 ---
 
+Manual：[cppreference - Value categories](https://en.cppreference.com/w/cpp/language/value_category) 。    
+
 移动语义很简单，但它相关联的术语很复杂。本文尝试从历史的角度解释清楚这些乱七八糟的术语及其关联：  
 
 * 表达式 (expression)、类型（type）、值类别 (value categories)；    
@@ -219,7 +221,66 @@ Bjarne Stroustrup 觉得上面的分类很混乱，自己尝试对表达式的�
 
 ## 2.5 c++17 对于值类别的修正
 
+参考自：[《如何评价 C++17 之后的 Value Categories(值类别)》](https://www.zhihu.com/question/382696217/answer/3288110830) [8]。    
 
+---
+
+### 明确的分类依据
+
+1、有无 “身份”   
+
+有“身份”的值可以被多个表达式、函数、乃至翻译单元访问，可以被访问到的有“身份”的表达式称为 glvalue，而“身份”的重要特征是“名”，对象名、引用名、指针名、函数名对应的表达式都是 glvalue。  
+
+没有“身份”的表达式只用于初始化，如临时对象、中间结果等，只在其父表达式内有效，称为 prvalue。  
+
+2、xvalue、lvalue、rvalue 是对 glvalue 和 prvalue 的细分    
+
+xvalue：生命周期可以提前结束、资源可以转移（即可被move）的表达式。    
+lvalue：可被重新赋值、有确定地址可供外部读写的表达式。  
+rvalue：只供读取、不一定需要身份的表达式。   
+
+xvalue 是有身份的，所以属于 glvalue，而同时又是为了初始化其他对象，没有单独存在的意义，所以和 prvalue 一起从属于 rvalue。  
+
+而 lvalue 是依赖 xvalue 来定义的，即 glvalue 中不是 xvalue 的就是 lvalue。  
+
+<br/>
+
+### 一些调整
+
+1、 c++17 的 prvalue 不再可移动   
+
+这是为了将 copy elision 机制作为明确的语言特性，比如这样：   
+
+```cpp
+struct T {...};
+T obj = T();
+```
+
+在 c++17 之前，是将 `T()` 作为 prvalue 移动到新对象 obj 中，但 c++17 规定 `T()` 就是 obj，不需要移动了，故 T 的移动构造 `=delete` 也没问题。    
+
+2、更严谨的值类别分类，比如 [temporary materialization](https://en.cppreference.com/w/cpp/language/implicit_conversion#Temporary_materialization):   
+
+```cpp
+struct T { int m = 0;};
+int i = T().m;
+```
+
+`T()` 和 `T().m` 的值类别分别是？首先，`m` 是有名称的成员，有名称意味着有身体，但 `m` 的所属 `T()` 没有名称，对于这种情况，C++17 规定 `T()` 是 xvalue，也就是一个 `glvalue` 了，有身份了。  
+
+<br/>
+
+### xvalue 的具体例子
+
+参考：[cppreference - value_category#xvalue](https://en.cppreference.com/w/cpp/language/value_category#xvalue)。    
+
+* `a.m`，对象的成员，当 `a` 是一个右值，且 `m` 是一个非静态的成员。  
+* `a.*mp`，对象的成员指针，当 `a` 是一个右值，`mp` 是成员指针。   
+* `a,b`，逗号表达式，`b` 是一个 xvalue。  
+* `a ? b:c`，条件表达式，比较复杂，见定义（ https://en.cppreference.com/w/cpp/language/operator_other#Conditional_operator ）。 
+* 返回类型为指向对象的右值引用(ravlue reference to object)的函数或重载操作符，比如 `std::move(x)` 。 
+* a[n]，下标表达式，如果`a`是一个右值数组。 
+* 对一个对象的强制右值引用转换，如：`static_cast<char&&>(x)`。   
+* temporary materialization，`struct T{int m = 0;}; int i = T().m`，此处的 `T()` 规定为 xvalue。  
 
 ---
 
@@ -611,3 +672,5 @@ p 是一个指向了对象的指针，则 *p 就是获得指针 p 所指的对�
 [6] 王健伟. C++新经典. 北京: 清华大学出版社, 2020-08-01.   
 
 [7] [美]Scott Meyers. Effective Modern C++(中文版). 高博. 北京: 中国电力出版社, 2018-4: 149, 151.    
+
+[8] 快乐代码. 如何评价 C++17 之后的 Value Categories(值类别). Available at https://www.zhihu.com/question/382696217/answer/3288110830, 2023-11-14.   
