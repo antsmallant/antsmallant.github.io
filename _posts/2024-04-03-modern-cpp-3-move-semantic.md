@@ -225,7 +225,7 @@ Bjarne Stroustrup 觉得上面的分类很混乱，自己尝试对表达式的�
 
 ---
 
-### 明确的分类依据
+**明确的分类依据**    
 
 1、有无 “身份”   
 
@@ -245,7 +245,7 @@ xvalue 是有身份的，所以属于 glvalue，而同时又是为了初始化�
 
 <br/>
 
-### 一些调整
+**一些调整**      
 
 1、 c++17 的 prvalue 不再可移动   
 
@@ -269,7 +269,7 @@ int i = T().m;
 
 <br/>
 
-### xvalue 的具体例子
+**xvalue 的具体例子**     
 
 参考：[cppreference - value_category#xvalue](https://en.cppreference.com/w/cpp/language/value_category#xvalue)。    
 
