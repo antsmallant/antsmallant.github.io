@@ -64,7 +64,7 @@ categories: [工具]
 
 第二步      
 
-地域，选择跟cos一个地域（据说这样更好些，因为同园区与 cos 互访不产生外网流量）；    
+地域，选择跟 cos 一个地域（据说这样更好些，因为同园区与 cos 互访不产生外网流量）；    
 
 日志投递，选择启用，默认投递，默认格式（follow 指引，如果需要新开通则开通，有日志查看还是方便些，也不贵的）；      
 
@@ -89,7 +89,7 @@ region
 bucket 
 ```
 
-secret_id 和 secret_key 是在 cam 里的 "API 密钥设置" 设置的，链接是：[https://console.cloud.tencent.com/cam/capi](https://console.cloud.tencent.com/cam/capi)。    
+`secret_id` 和 `secret_key` 是在 Cam 里的 "API 密钥设置" 设置的，链接是：[https://console.cloud.tencent.com/cam/capi](https://console.cloud.tencent.com/cam/capi)。    
 
 3、修改代码中的流量阈值     
 
