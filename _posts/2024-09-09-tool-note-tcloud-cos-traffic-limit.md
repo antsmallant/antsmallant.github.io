@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "腾讯云 cos 流量防盗刷：自动监测流量修改桶的读写权限"
+title: "腾讯云 cos 流量防盗刷：自动监测流量并自动修改桶的读写权限"
 date: 2024-09-09
 last_modified_at: 2024-09-09
 categories: [工具]
