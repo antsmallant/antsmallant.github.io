@@ -46,6 +46,8 @@ categories: [工具]
 
 简单描述一下做法。    
 
+---
+
 ## 2.1 购买云函数服务     
 
 链接：[https://console.cloud.tencent.com/scf/list?rid=1&ns=default](https://console.cloud.tencent.com/scf/list?rid=1&ns=default) 。  
@@ -76,9 +78,9 @@ categories: [工具]
 
 ---
 
-## 2.3 修改函数代码    
+## 2.3 修改云函数代码    
 
-1、点进创建好的函数，点到函数管理，把这段代码：[https://github.com/colasun/serverless-demo/blob/master/Python3.6-COSLimitSpendingDemo/src/index.py](https://github.com/colasun/serverless-demo/blob/master/Python3.6-COSLimitSpendingDemo/src/index.py) 拷贝到函数编辑器里。    
+1、点进创建好的云函数，点到函数管理，把这段代码：[https://github.com/colasun/serverless-demo/blob/master/Python3.6-COSLimitSpendingDemo/src/index.py](https://github.com/colasun/serverless-demo/blob/master/Python3.6-COSLimitSpendingDemo/src/index.py) 拷贝到函数编辑器里。    
 
 2、修改代码中的几个变量     
 
