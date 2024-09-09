@@ -44,9 +44,9 @@ categories: [工具]
 
 # 大概做法
 
-简单描述一下做法。   
+简单描述一下做法。    
 
-1、购买云函数服务
+1、购买云函数服务     
 
 链接：[https://console.cloud.tencent.com/scf/list?rid=1&ns=default](https://console.cloud.tencent.com/scf/list?rid=1&ns=default) 。  
 
@@ -62,9 +62,9 @@ categories: [工具]
 
 第二步      
 
-地域，选择跟cos一个地域（据说这样更好些，因为同园区与cos互访不产生外网流量）；
-日志投递，选择启用，默认投递，默认格式（follow指引，如果需要新开通则开通，有日志查看还是方便些，也不贵的）；    
-触发器配置，选择自定义创建，触发周期改为一分钟；    
+地域，选择跟cos一个地域（据说这样更好些，因为同园区与 cos 互访不产生外网流量）；    
+日志投递，选择启用，默认投递，默认格式（follow 指引，如果需要新开通则开通，有日志查看还是方便些，也不贵的）；       
+触发器配置，选择自定义创建，触发周期改为一分钟；      
 
 搞完就点完成，等待创建。   
 
@@ -85,7 +85,7 @@ bucket
 
 secret_id 和 secret_key 是在 cam 里的 "API 密钥设置" 设置的，链接是：[https://console.cloud.tencent.com/cam/capi](https://console.cloud.tencent.com/cam/capi)。    
 
-3）修改代码中的流量阈值
+3）修改代码中的流量阈值     
 
 下面的这里改一下，目前代码逻辑是 5 分钟内的流量总和超过 5GB 就修改桶的权限为私有读写，根据自己的需要作调整。  
 
