@@ -30,7 +30,7 @@ tags: [c++]
 
 ### 步骤3：vscode 创建 launch.json 文件   
 
-这个文件就是配置文件，可以配置很多种调试组合：即动作+程序，典型的动作就是 attach(附加) 和 launch(调试运行)，程序就是你的程序，还可以预先配置程序的运行参数，等等。  
+这个文件就是配置文件，可以配置很多种调试组合：即动作+程序+参数，典型的动作就是 attach(附加) 和 launch(调试运行)，程序就是你的程序，还可以预先配置程序的运行参数，等等。  
 
 下面是我自己的两个简单例子，一个是 launch，一个是 attach，参数看着多而复杂，实际上不用管太多，需要改的无非就是：程序路径、参数，以及像是否开始调试时停在 main 函数的入口这种简单的控制，具体参数参考这个文档： [Visual Studio Code debug configuration](https://code.visualstudio.com/docs/editor/debugging-configuration)。    
 
