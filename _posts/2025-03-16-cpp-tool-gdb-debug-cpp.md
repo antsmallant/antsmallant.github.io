@@ -57,21 +57,21 @@ tags: [c++]
 
 # 2. gdb debug 子进程的问题
 
-程序中使用 daemon 或者 fork 函数，会出现 debug 不了子进程的问题，像这样：       
+程序中使用 `daemon` 或者 `fork` 函数，会出现 debug 不了子进程的问题，像这样：       
 
 ```
 [Detaching after fork from child process 42918]
 [Inferior 1 (process 42891) exited normally]  
 ```
 
-这种情况，原因是进程启动时通过 fork 出了子进程。典型的就是使用了 daemon 函数，它会 fork 子进程，然后父进程退出。   
+这种情况，原因是进程启动时通过 fork 出了子进程。典型的就是使用了 `daemon` 函数，它会 `fork` 子进程，然后父进程退出。   
 
 解决方法大致如下几个：   
 
 
-## 方法1：不用 daemon    
+## 方法1：不用 `daemon`    
 
-如果可以不使用 daemon，则调试时不使用 daemon，像我们自己的服务端程序，就是可以在启动的时候选择不要使用 daemon 的，skynet 记得也是。  
+如果可以不使用 `daemon`，则调试时不使用，像我们自己的服务端程序，就是可以在启动的时候选择不要使用 `daemon` 的，skynet 记得也是。  
 
 ---
 
