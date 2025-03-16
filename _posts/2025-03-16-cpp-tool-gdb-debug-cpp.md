@@ -55,7 +55,7 @@ tags: [c++]
 
 ---
 
-# 2. gdb 解决 debug 子进程问题
+# 2. gdb debug 子进程的问题
 
 程序中使用 daemon 函数，会出现导致 debug 不了子进程的问题，像这样    
 
