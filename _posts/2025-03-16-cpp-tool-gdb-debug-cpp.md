@@ -45,7 +45,7 @@ tags: [c++]
 
 1、启动gdb，`$ gdb 进程文件`，比如 `gdb xxxserver`。    
 
-2、设置参数，`set args arg1 arg2 arg3 ...`，比如 `set args ../conf/xxxserver.conf arg1 arg2 arg3` 。  
+2、设置参数，`set args arg1 arg2 arg3 ...`，比如 `set args ../conf/xxxserver.conf arg2 arg3 arg4` 。  
 
 3、运行进程，`start` 或 `run` 。  
 
