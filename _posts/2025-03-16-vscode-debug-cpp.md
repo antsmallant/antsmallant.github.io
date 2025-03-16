@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "vscode 远程调试 c++"
+title: "c++ 工具：vscode 远程调试 c++"
 date: 2025-03-16
 last_modified_at: 2025-03-16
 categories: [c++]
