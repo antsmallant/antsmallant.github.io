@@ -13,8 +13,7 @@ tags: [c++]
 
 工作中有时候需要调试一下的，用 gdb 有时候效率不高，所以也会用一用 vscode 进行调试。大多数时候用日志看一看也就解决问题了，但有些情况下，还是得调试的，否则就要临时加好多 log。   
 
-这里只简单记录一下 vscode 远程调试 linux 上的 c++ 程序，具体操作参考这个文档：[Debug code with Visual Studio Code
-](https://code.visualstudio.com/docs/editor/debugging#_launch-configurations)，里面写得很详细了。   
+这里只简单记录一下 vscode 远程调试 linux 上的 c++ 程序，具体操作参考这个文档：[Debug code with Visual Studio Code](https://code.visualstudio.com/docs/editor/debugging#_launch-configurations)，里面写得很详细了。   
 
 ---
 
