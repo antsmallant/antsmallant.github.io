@@ -57,7 +57,7 @@ tags: [c++]
 
 # 2. gdb debug 子进程的问题
 
-程序中使用 daemon 函数或者 fork，会出现 debug 不了子进程的问题，像这样：       
+程序中使用 daemon 或者 fork 函数，会出现 debug 不了子进程的问题，像这样：       
 
 ```
 [Detaching after fork from child process 42918]
