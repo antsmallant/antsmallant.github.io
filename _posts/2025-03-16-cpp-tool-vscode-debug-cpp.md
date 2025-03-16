@@ -166,7 +166,7 @@ clear:
 
 ## 使用
 
-我用的是 cursor，其实是 vscode 是差不多的。   
+我用的是 cursor，其实 vscode 也差不多的。   
 
 ### launch  
 
