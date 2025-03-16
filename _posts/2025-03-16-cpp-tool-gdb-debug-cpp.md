@@ -64,26 +64,30 @@ tags: [c++]
 [Inferior 1 (process 42891) exited normally]  
 ```
 
-这种情况，原因是进程启动时通过 fork 出了子进程，典型的就是使用了 daemon 函数，它会 fork 子进程，然后父进程退出。   
+这种情况，原因是进程启动时通过 fork 出了子进程。典型的就是使用了 daemon 函数，它会 fork 子进程，然后父进程退出。   
 
-解决方法：   
+解决方法大致如下几个：   
+
 
 ## 方法1：不用 daemon    
 
-如果可以不使用 daemon，则调试时不使用 daemon。    
+如果可以不使用 daemon，则调试时不使用 daemon，像我们自己的服务端程序，就是可以在启动的时候选择不要使用 daemon 的，skynet 记得也是。  
 
 ---
 
-## 方法2：run 之前 `set follow-fork-mode child`    
+## 方法2：只 attach 子进程
 
-使用这个方法的前提是 `detach-on-fork` 使用默认的配置 `on`。 
+run 之前 `set follow-fork-mode child`，设置之后，在 fork 子进程之后，gdb 就会跟着进入子进程的调试了。  
 
-需要提前在子进程的逻辑中加个断点（确保是在 daemon 或 fork 之后的逻辑），否则没法中途中断执行（ctrl+c）来设置断点。 
+使用这个方法的前提是确保 `detach-on-fork` 使用的是默认配置 `on`。要查看 `detach-on-fork` 配置，可以 `show detach-on-fork`；要设置 on，可以 `set detach-on-fork on`；要设置 off，可以 `set detach-on-fork off`，具体参考：[set detach-on-fork command](https://visualgdb.com/gdbreference/commands/set_detach-on-fork)。   
+
+另外一个注意点，需要提前在子进程的逻辑中加个断点（确保是在 daemon 或 fork 之后的逻辑），否则没法中途中断执行（ctrl+c）来设置断点，具体原因，暂时没有去考究。   
 
 ---
 
-## 方法3：
+## 方法3：同时 attach 父进程和子进程
 
+方法2的做法是只能 attach 子进程，但如果要当时 attach 父进程或子进程，也是 ok 的。先设置 `set detach-on-fork off`，这样即使有 fork，那么 gdb 也能同时 attach 父进程和子进程。之后再通过 `info inferiors` 查看有哪些可以切换的，再通过 `inferior xxx` 切换到想要 debug 的进程。       
 
 ---
 
