@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "工作笔记：一些总结"
+title: "工作笔记：转正及其他"
 date: 2025-03-01
 last_modified_at: 2025-03-01
 categories: [工作]
