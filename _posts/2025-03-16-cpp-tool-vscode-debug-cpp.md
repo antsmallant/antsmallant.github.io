@@ -19,13 +19,15 @@ tags: [c++]
 
 ## 三个步骤 
 
-### 步骤1：确保宿主机有安装了 gdb     
+<br/>
+
+### 步骤1：确保宿主机安装了 gdb     
 
 我目前是这个版本： GNU gdb (Ubuntu 12.1-0ubuntu1~22.04.2) 12.1 。  
 
 ### 步骤2：vscode 安装这个 extension: c/c++    
 
-名字就叫 c/c++ ，搜索 c++ 就会出来的，是 microsoft 制作的。    
+名字就叫 c/c++ ，搜索 c++ 就会出来的，制作方是 microsoft。      
 
 ### 步骤3：vscode 创建 launch.json 文件   
 
@@ -33,7 +35,7 @@ tags: [c++]
 
 下面是我自己的两个简单例子，一个是 launch，一个是 attach，参数看着多而复杂，实际上不用管太多，需要改的无非就是：程序路径、参数，以及像是否开始调试时停在 main 函数的入口这种简单的控制，具体参数参考这个文档： [Visual Studio Code debug configuration](https://code.visualstudio.com/docs/editor/debugging-configuration)。    
 
-项目的文件组织:      
+项目文件的目录结构是这样的:      
 
 ```
 mytest/
@@ -44,8 +46,6 @@ mytest/
             test_debug.cpp
             makefile
 ```
-
-大概这样：  
 
 <br/>
 <div align="center">
