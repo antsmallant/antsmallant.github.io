@@ -13,5 +13,11 @@ tags: []
 
 Content here
 
-## image example
-![lua-coroutine-yield](https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/2023-10-08-lua-coroutine-yield-across-a-c-call-boundary/lua-coroutine-yield.png)  
+## image example PicGo 可以上传
+
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/vscode-debug-attach.png"/>
+</div>
+<center>图3: attach1</center>
+<br/>
