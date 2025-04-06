@@ -44,13 +44,15 @@ type  times  objcnt  cost(us)  avgcost(us)  备注
 ```
 #!/bin/bash
 
-echo "type  objcnt  cost(us)  avgcost(us)  备注"
-cat aoiobj-time.txt | grep "some_type =  1" | awk '{totalcost += $20; avgcost += $23; objcnt += $17; times++} END {printf("%-4d  %-6d  %-8.3f  %-11.3f  %-15s\n", 1, objcnt/times, times, avgcost/times, "xxx")}'
-cat aoiobj-time.txt | grep "some_type =  5" | awk '{totalcost += $20; avgcost += $23; objcnt += $17; times++} END {printf("%-4d  %-6d  %-8.3f  %-11.3f  %-15s\n", 5, objcnt/times, times, avgcost/times, "xxx")}'
+echo "type  times  objcnt  cost(us)  avgcost(us)  备注"
+cat aoiobj-time.txt | grep "some_type =  1" | awk '{totalcost += $20; avgcost += $23; objcnt += $17; times++} END {printf("%-4d  %-5d  %-6d  %-8.3f  %-11.3f  %-15s\n", 1, times, objcnt/times, totalcost/times, avgcost/times, "xxx")}'
+cat aoiobj-time.txt | grep "some_type =  5" | awk '{totalcost += $20; avgcost += $23; objcnt += $17; times++} END {printf("%-4d  %-5d  %-6d  %-8.3f  %-11.3f  %-15s\n", 5, times, objcnt/times, totalcost/times, avgcost/times, "xxx")}'
 ```
 
 表头是  `type  objcnt  cost(us)  avgcost(us)  备注`，那么awk 输出用这样的格式 `%-4d  %-6d  %-8.3f  %-11.3f  %-15s\n`，就可以让数据项与表头对齐了。   
 
-在 awk 中， `%-4d` 其中 `-` 表示左对齐， `4` 表示输出宽度为4， `d` 表示整数。type 的宽度是 4，那么数据项用 `%-4d`，而 objcnt 的宽度是 6，那么数据项项 `%-6d`。   
+在 awk 中， `%-4d` 其中 `-` 表示左对齐， `4` 表示输出宽度为 4， `d` 表示整数。   
+
+type 的宽度是 4，那么数据项用 `%-4d`，而 objcnt 的宽度是 6，那么数据项项 `%-6d`。   
 
 其他场景下，也都用这种方式就行了，不同语言的格式化输出基本上都是类似的。   
