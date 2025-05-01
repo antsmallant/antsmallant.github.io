@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "linux 笔记：awk 输出对齐的技巧"
+title: "linux 笔记：awk 对齐技巧"
 date: 2025-04-06
 last_modified_at: 2025-04-06
 categories: [linux]
@@ -13,7 +13,7 @@ tags: []
 
 最近的工作需要做很多性能优化，会需要打 log，然后用 awk 做一些统计分析。而这些分析也需要写到文档里，我希望这些分析结果尽量是格式优雅的，所以经常要在 awk 输出的时候做一些对齐。   
 
-实际上我要的就是表头与数据项的对齐，比如这样：    
+实际上我要的就是表头与数据项对齐，比如这样：    
 
 ```
 type  times  objcnt  cost(us)  avgcost(us)  备注
