@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "数据库笔记：常识"
-date: 2011-03-01
+date: 2014-03-01
 last_modified_at: 2023-05-01
 categories: [数据库]
 tags: [db 数据库]

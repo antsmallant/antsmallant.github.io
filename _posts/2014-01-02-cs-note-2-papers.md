@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "论文常识"
-date: 2007-01-02
+date: 2014-01-02
 last_modified_at: 2024-07-01
 categories: [基础理论与算法]
 tags: [基础理论]
