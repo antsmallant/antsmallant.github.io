@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "c 笔记：c 语言模拟面向对象"
-date: 2009-03-14
+date: 2014-03-14
 last_modified_at: 2023-05-01
 categories: [c]
 tags: [c]
