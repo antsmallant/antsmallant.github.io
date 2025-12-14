@@ -52,11 +52,15 @@ tags: [game]
 
 四元数 $q$ 有 4 个分量：
 
-$$q = w + xi + yj + zk$$
+$$
+q = w + xi + yj + zk
+$$
 
 为了方便理解，我们可以把它拆成两部分来看：**一个标量（Scalar）** 和 **一个向量（Vector）**。
 
-$$q = (w, \mathbf{v})$$
+$$
+q = (w, \mathbf{v})
+$$
 
 其中：
 * $w$ 是**实部**（标量）。
@@ -76,13 +80,15 @@ $$q = (w, \mathbf{v})$$
 
 假设我们要绕着一个**单位轴向量** $\mathbf{u} = (u_x, u_y, u_z)$ 旋转 $\theta$ 度。对应的四元数 $q$ 写法如下：
 
-$$q = \cos(\frac{\theta}{2}) + \sin(\frac{\theta}{2})\mathbf{u}$$
+$$
+q = \cos(\frac{\theta}{2}) + \sin(\frac{\theta}{2})\mathbf{u}
+$$
 
 展开来看就是：
-* $w = \cos(\frac{\theta}{2})$
-* $x = u_x \cdot \sin(\frac{\theta}{2})$
-* $y = u_y \cdot \sin(\frac{\theta}{2})$
-* $z = u_z \cdot \sin(\frac{\theta}{2})$
+$w = \cos(\frac{\theta}{2})$   
+$x = u_x \cdot \sin(\frac{\theta}{2})$    
+$y = u_y \cdot \sin(\frac{\theta}{2})$    
+$z = u_z \cdot \sin(\frac{\theta}{2})$    
 
 > **疑问：为什么是 $\theta/2$（半角）？**
 > 这是一个非常深刻的数学特性。简单来说，四元数覆盖了三维旋转群两次。
@@ -98,11 +104,15 @@ $$q = \cos(\frac{\theta}{2}) + \sin(\frac{\theta}{2})\mathbf{u}$$
 
 1.  **把点变成四元数：**
     我们要把三维点 $P$ 伪装成一个四元数 $p$。实部设为 0，虚部就是坐标：
-    $$p = 0 + p_x i + p_y j + p_z k$$
+    $$
+    p = 0 + p_x i + p_y j + p_z k
+    $$
 
 2.  **执行“三明治”乘法：**
     旋转后的新点 $p'$ 的计算公式是：
-    $$p' = q \cdot p \cdot q^{-1}$$
+    $$
+    p' = q \cdot p \cdot q^{-1}
+    $$
     （其中 $q^{-1}$ 是 $q$ 的逆，对于单位四元数，$q^{-1}$ 就是把虚部取反）。
 
 **直觉解释：**
