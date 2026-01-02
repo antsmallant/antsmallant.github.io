@@ -1,8 +1,8 @@
 ---
 layout: post
 title: "工作笔记：避免资源泄漏"
-date: 2025-08-23
-last_modified_at: 2025-08-23
+date: 2026-01-02
+last_modified_at: 2026-01-02
 categories: [工作]
 tags: [工作 总结]
 ---
