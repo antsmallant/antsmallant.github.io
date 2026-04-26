@@ -3,8 +3,8 @@ layout: post
 title: "ai 笔记：agent 协作"
 date: 2026-04-26
 last_modified_at: 2026-04-26
-categories: [AI]
-tags: [AI 工作 总结]
+categories: [ai]
+tags: [ai 工作 总结]
 ---
 
 * 目录  
