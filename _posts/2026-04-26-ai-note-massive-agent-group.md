@@ -39,6 +39,7 @@ ai 的产能太高了，人类 review 和验证已经完全跟不上了，必须
 
 [全行业都狂卷 Harness，Anthropic 还在加码，Codex 负责人却说它正在退场](https://www.infoq.cn/article/vblM3MlOEs86dmVdH8d1?utm_source=1&utm_medium=article)
 
+[OpenAI 不想写 spec 了：Codex 只留 10 条要点，把执行交给 skills](https://www.infoq.cn/article/C2fWkH2EgBlDPNUNlcZX?utm_source=1&utm_medium=article)   
 
 [motedb:Agent-First 软件工程](https://xie.infoq.cn/article/25241d69bf8e5578e037bc433?utm_campaign=geek_search&utm_content=geek_search&utm_medium=geek_search&utm_source=geek_search&utm_term=geek_search)
 [motedb:一场变化真正开始深入现实，往往不是先改工具，而是先改语言。](https://xie.infoq.cn/article/80542a0c513645f25a03c3b3f) 
