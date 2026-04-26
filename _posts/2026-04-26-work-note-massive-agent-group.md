@@ -29,8 +29,8 @@ ai 的产能太高了，人类 review 和验证已经完全跟不上了，必须
 ## harness engineering 几个问题
 
 1、是什么
-2、要做什么
-3、包含哪些方面
+2、为什么
+3、然后呢
 
 
 ## harness engineering 相关文章
