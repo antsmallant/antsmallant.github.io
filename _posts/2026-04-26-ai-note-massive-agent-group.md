@@ -33,6 +33,12 @@ ai 的产能太高了，人类 review 和验证已经完全跟不上了，必须
 3、然后呢
 
 原始文章是哪个？
+[Harness engineering: leveraging Codex in an agent-first world](https://openai.com/index/harness-engineering/)
+如果被跳转成中文版了，可以看这里：
+
+英文版留存：[Harness engineering: leveraging Codex in an agent-first world](/assets/resources/harness-engineering.html)
+
+中文版：[工程技术：在智能体优先的世界中利用 Codex](https://openai.com/zh-Hans-CN/index/harness-engineering/)
 
 
 ## harness engineering 相关文章
