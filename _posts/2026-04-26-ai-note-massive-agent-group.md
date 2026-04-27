@@ -57,6 +57,8 @@ ai 的产能太高了，人类 review 和验证已经完全跟不上了，必须
 [智能体走向“企业操作系统”，Google 扔出五把钥匙](https://xie.infoq.cn/article/b1acfb77132dcb31fcad9b253?utm_campaign=geek_search&utm_content=geek_search&utm_medium=geek_search&utm_source=geek_search&utm_term=geek_search)
 
 
+---
+
 # harness engineering 参考资料
 
 ## 分享定位
