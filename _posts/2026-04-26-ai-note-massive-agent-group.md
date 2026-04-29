@@ -51,6 +51,8 @@ ai 的产能太高了，人类 review 和验证已经完全跟不上了，必须
 
 ## harness engineering 相关文章
 
+[Harness Engineering in 2026.3](https://mp.weixin.qq.com/s/st1yRe_Y_sBBY6bV5BH6KA)    
+
 [Harness Engineering实践心得：如何高效驾驭AI？](https://mp.weixin.qq.com/s/NtsksL2gkMtMqkILi4xvRg)    
 
 
