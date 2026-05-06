@@ -53,7 +53,20 @@ ai 的产能太高了，人类 review 和验证已经完全跟不上了，必须
 
 [Harness Engineering in 2026.3](https://mp.weixin.qq.com/s/st1yRe_Y_sBBY6bV5BH6KA)    
 
-[Harness Engineering实践心得：如何高效驾驭AI？](https://mp.weixin.qq.com/s/NtsksL2gkMtMqkILi4xvRg)    
+[Harness Engineering实践心得：如何高效驾驭AI？](https://mp.weixin.qq.com/s/NtsksL2gkMtMqkILi4xvRg)  
+
+[最新！Claude Code创始人：编程已经解决了，Harness重要性持续降低，cc未来只有100行代码](https://mp.weixin.qq.com/s/-RmZAqKSM7wFxQFG0ix33Q)
+
+>Anthropic内部和外部的差距在哪
+>有人问，Anthropic内部有没有比外部领先一段时间的情况？
+
+>Boris说，在模型层面，领先幅度不大，因为他们用的是和所有人一样的模型。内部会用一些尚未发布的版本做测试，但这些最终都会对外发布。
+
+>真正的差距在组织层面。
+
+>Anthropic内部，Claude已经渗透进每一个工作环节。SQL由模型写，代码由模型写，整个公司没有任何手写代码。不同人的Claude实例通过Slack互相通信：一个人的Agent在工作时遇到问题，会自动给另一个人的Agent发消息来确认信息，双方都在循环中运行。
+
+>他说，这不是技术领先，而是组织和流程的领先。这个差距，初创公司比大公司更容易弥合，因为从零开始搭，没有历史负担。
 
 
 [Harness Engineering: 让 Coding Agent 可靠完成长程任务](https://xie.infoq.cn/article/cc898b22851f99970fec00494?utm_campaign=geek_search&utm_content=geek_search&utm_medium=geek_search&utm_source=geek_search&utm_term=geek_search)
