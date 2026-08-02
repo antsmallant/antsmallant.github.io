@@ -106,6 +106,7 @@ grafana panel 的 Visualization 使用 Time Series。  promsql 如下：
 sum(rate(redis_rank_cost_stat{serverid=~"$serverid", tag="total_call_count"}[$interval]))
 ```
 
+---
 
 # 2. grafana
 
@@ -120,6 +121,7 @@ sum(rate(redis_rank_cost_stat{serverid=~"$serverid", tag="total_call_count"}[$in
 
 实操下来，生成效果很好，agent 能充分理解你这些指标的内涵，以及与之匹配的最佳呈现方式。最近的一次，我让 agent 生成了 10 个面板，只有 2 个面板需要微调一下而已。   
 
+---
 
 # 3. prometheus/日志 mcp
 
@@ -127,6 +129,7 @@ sum(rate(redis_rank_cost_stat{serverid=~"$serverid", tag="total_call_count"}[$in
 
 我们的运维就做了这样的 mcp，实际使用起来非常方便，现在生产环境的问题排查基本上都直接 agent 闭环了，不需要人介入去查日志，导日志。  
 
+---
 
 # 4. 小结
 grafana 多少还有点前 AI 时代的感觉，在这个过渡阶段，还是有存在的必要的。  
