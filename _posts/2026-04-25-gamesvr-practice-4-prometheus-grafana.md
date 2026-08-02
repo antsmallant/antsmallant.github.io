@@ -22,7 +22,7 @@ tags: [gameserver]
 
 可以统计几个项：延迟分布，avg延迟，最近请求量（总/成功/失败），请求QPS。
 
-**延迟分布**
+**1、延迟分布**
 需要的指标（分桶统计各个延迟区间的请求量）：
 ```
 xx_latent_stat{serverid="xx", tag="latent_ngt_1ms_count"} xxxx
@@ -52,8 +52,9 @@ sum by (tag) (increase (xxx_latent_stat{serverid=~"$serverid",tag=~"latent_.*s_c
 
 说明：latent_ngt_20ms_count 表示延迟处于 (10ms, 20ms] 这一区间的请求量。
 
+<br/>
 
-**avg 延迟** 
+**2、avg 延迟** 
 需要的指标（总延迟时间，总完成次数）：
 ```
 xx_latent_stat{serverid="x", tag="total_latent_ms"} xxxx
@@ -65,8 +66,9 @@ grafana panel 的 Visualization 使用 Time Series。promsql 如下：
 sum(increase(xxx_latent_stat{serverid=~"$serverid", tag="total_latent_ms"}[$interval])) / (sum(increase(xxx_latent_stat{serverid=~"$serverid", tag="total_done_count"}[$interval])) or vector(1))
 ```
 
+<br/>
 
-**最近请求量**     
+**3、最近请求量**     
 需要的指标（总请求量、已完成量、成功量、失败量）：
 ```
 xx_latent_stat{serverid="x", tag="total_call_count"} xxxx
@@ -93,8 +95,9 @@ sum (increase(xx_latent_stat{serverid=~"$serverid", tag="total_suc_count"}[$__ra
 sum (increase(xx_latent_stat{serverid=~"$serverid", tag="total_fail_count"}[$__range]))
 ```
 
+<br/>
 
-**请求QPS**
+**4、请求QPS**
 需要的指标（总请求量）：
 ```
 xx_latent_stat{serverid="x", tag="total_call_count"} xxxx
@@ -106,15 +109,18 @@ grafana panel 的 Visualization 使用 Time Series。  promsql 如下：
 sum(rate(redis_rank_cost_stat{serverid=~"$serverid", tag="total_call_count"}[$interval]))
 ```
 
+<br/>
+
 ---
 
 # 2. grafana
 
 ## 2.1 几个关键点
 1. dashboard 增加一个 datatype 为 Data Source 的 variable，比如叫它 ds，然后各个 panel 的数据源不要写死，要配为这个 variable：${ds}，这样一来 dashboard 导出的 json 文件就可以到处导入到各个环境去。  
-
+<br/>
 2. dashboard 导出的 json 文件统一放到项目里面管理起来，提交 git/svn，并且要做到开发环境和生产环境通用。基本上就是把动态的东西都配置为 variable，比如上面说的数据源。  
 
+<br/>
 
 ## 2.2 利用 AI 快速生成 dashboard
 
