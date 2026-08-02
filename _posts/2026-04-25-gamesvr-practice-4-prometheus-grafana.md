@@ -22,6 +22,14 @@ tags: [gameserver]
 
 可以统计几个项：延迟分布，avg延迟，最近请求量（总/成功/失败），请求QPS。
 
+大致效果：
+<br/>
+<div align="center">
+<img src="https://antsmallant-blog-1251470010.cos.ap-guangzhou.myqcloud.com/media/blog/prometheus-latent-demo.png"/>
+</div>
+<center>图1：请求延迟grafana展示</center>
+<br/>
+
 **1、延迟分布**
 需要的指标（分桶统计各个延迟区间的请求量）：
 ```
