@@ -111,7 +111,8 @@ sum(rate(redis_rank_cost_stat{serverid=~"$serverid", tag="total_call_count"}[$in
 # 2. grafana
 
 ## 2.1 几个关键点
-1. dashboard 增加一个 datatype 为 Data Source 的 variable，比如叫它 ds，然后各个 panel 的数据源不要配死，要配为这个  variable：${ds}，这样 dashboard 导出的 json 文件就可以到处导入到各个环境去。 
+1. dashboard 增加一个 datatype 为 Data Source 的 variable，比如叫它 ds，然后各个 panel 的数据源不要写死，要配为这个 variable：${ds}，这样一来 dashboard 导出的 json 文件就可以到处导入到各个环境去。  
+
 2. dashboard 导出的 json 文件统一放到项目里面管理起来，提交 git/svn，并且要做到开发环境和生产环境通用。基本上就是把动态的东西都配置为 variable，比如上面说的数据源。  
 
 
